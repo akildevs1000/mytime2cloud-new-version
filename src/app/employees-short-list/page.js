@@ -34,6 +34,7 @@ import { Button } from '@/components/ui/button';
 import axios from 'axios'; // Ensure you import axios at the top of your file
 import { getBranches, getEmployees } from '@/lib/api';
 import { EmployeeExtras } from '@/components/Employees/Extras';
+import { Input } from '@/components/ui/input';
 
 // -----------------------------------------------------------
 // 1. Custom Debounce Hook
@@ -70,6 +71,9 @@ const TABS = [
 
 export default function Home() {
 
+  const router = useRouter();
+
+  const [searchTerm, setSearchTerm] = useState("");
 
   const [activeTab, setActiveTab] = useState('profile');
 
@@ -183,7 +187,7 @@ export default function Home() {
         per_page: perPage,
         sortDesc: 'false',
         branch_id: selectedBranch,
-        search: debouncedSearchQuery || null, // Only include search if it's not empty
+        search: searchTerm || null, // Only include search if it's not empty
       };
       const result = await getEmployees(params);
 
@@ -217,9 +221,8 @@ export default function Home() {
       }
       setIsLoading(false); // Make sure loading state is turned off on error
     }
-  }, [perPage, selectedBranch]);
+  }, [perPage, selectedBranch, searchTerm]);
 
-  const router = useRouter();
 
 
   useEffect(() => {
@@ -328,10 +331,12 @@ export default function Home() {
                   className="material-icons absolute left-3 top-1/2 -translate-y-1/2 text-subtext-light dark:text-subtext-dark"
                 >search</span
                 >
-                <input
-                  className="w-full pl-10 pr-4 py-2 rounded-lg border border-border-light dark:border-border-dark bg-background-light dark:bg-background-dark focus:ring-primary focus:border-primary"
+                <Input
+                  className="w-full  pl-10 pr-4 py-2 rounded-lg border border-border-light dark:border-border-dark   focus:ring-primary focus:border-primary"
                   placeholder="Search Employees"
                   type="text"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
                 />
               </div>
 

@@ -57,6 +57,7 @@ export default function EmployeeDataTable() {
     const [totalPages, setTotalPages] = useState(1);
     const [totalEmployees, setTotalEmployees] = useState(0);
     const [searchQuery, setSearchQuery] = useState('');
+    const [searchTerm, setSearchTerm] = useState('');
 
     const [selectedBranch, setSelectedBranch] = useState(null);
     const [open, setOpen] = useState(false);
@@ -130,7 +131,7 @@ export default function EmployeeDataTable() {
                 per_page: perPage,
                 sortDesc: 'false',
                 branch_id: selectedBranch,
-                search: debouncedSearchQuery || null, // Only include search if it's not empty
+                search: searchTerm || null, // Only include search if it's not empty
             };
             const result = await getEmployees(params);
 
@@ -163,7 +164,7 @@ export default function EmployeeDataTable() {
             }
             setIsLoading(false); // Make sure loading state is turned off on error
         }
-    }, [perPage, selectedBranch]);
+    }, [perPage, selectedBranch, searchTerm]);
 
     const router = useRouter();
 
@@ -379,8 +380,8 @@ export default function EmployeeDataTable() {
                             className="pl-10 bg-white h-9 w-full" // Increased left padding (pl-10) for the icon
                             placeholder="Search by name or ID"
                             type="text"
-                            value={searchQuery}
-                            onChange={handleSearchChange}
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
                         />
                         <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
                     </div>
