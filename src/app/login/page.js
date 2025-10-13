@@ -158,7 +158,7 @@ const Login = () => {
         try {
 
             const {data} = await axios.post(
-                `${process.env.NEXT_PUBLIC_API_URL}/login`, credentials
+                `${process.env.NEXT_PUBLIC_API_URL || "https://backend.mytime2cloud.com/api"}/login`, credentials
             );
 
             const token = data?.token; // Sanctum returns your token here
