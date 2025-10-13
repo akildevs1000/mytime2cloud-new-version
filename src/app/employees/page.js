@@ -125,7 +125,6 @@ export default function EmployeeDataTable() {
         setError(null);
 
         try {
-
             const params = {
                 page: page,
                 per_page: perPage,

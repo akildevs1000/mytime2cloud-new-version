@@ -9,17 +9,31 @@ import Address from '@/components/Address';
 import Document from '@/components/Document';
 
 import React, { useState, useEffect, useCallback } from 'react';
-import { Briefcase, User, MapPin, FileText, Search, Plus, MoreVertical, QrCode, Fingerprint, ChevronLeft, ChevronRight, Loader2, RefreshCw, Router } from 'lucide-react';
+import { Briefcase, User, MapPin, FileText } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
 // NOTE: For live execution, this external API might require authentication headers (like an API Key or Authorization token) not provided here.
 // The fetch logic includes retry/backoff but may still fail without proper authorization.
-const API_BASE_URL = 'https://backend.mytime2cloud.com/api';
-const COMPANY_ID = 22;
-import axios from 'axios'; // Ensure you import axios at the top of your file
-import { Input } from '@/components/ui/input';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+} from "@/components/ui/command";
+
 import { Button } from '@/components/ui/button';
+
+
+import axios from 'axios'; // Ensure you import axios at the top of your file
+import { getBranches, getEmployees } from '@/lib/api';
+import { EmployeeExtras } from '@/components/Employees/Extras';
 
 // -----------------------------------------------------------
 // 1. Custom Debounce Hook
@@ -60,21 +74,21 @@ export default function Home() {
   const [activeTab, setActiveTab] = useState('profile');
 
   // Placeholder content based on the active tab
-  const renderTabContent = () => {
+  const renderTabContent = (employee) => {
     switch (activeTab) {
       case 'profile':
-        return <Profile />;
+        return <Profile payload={employee} />;
       case 'payroll':
-        return <Payroll />;
+        return <Payroll payload={employee} />;
       case 'performance':
-        return <Performance />;
+        return <Performance payload={employee} />;
       case 'address':
-        return <Address />;
+        return <Address payload={employee} />;
       case 'documents':
-        return <Document />;
+        return <Document payload={employee} />;
       case 'emergency':
         return (
-          <EmergencyContact />
+          <EmergencyContact payload={employee} />
         );
       default:
         return null;
@@ -146,7 +160,6 @@ export default function Home() {
 
   // Fetch branches
   useEffect(() => {
-    if (!COMPANY_ID) return;
     const fetchBranches = async () => {
       try {
         setBranches(await getBranches());
@@ -155,32 +168,24 @@ export default function Home() {
       }
     };
     fetchBranches();
-  }, [COMPANY_ID]);
+  }, []);
 
 
   const fetchEmployees = useCallback(async (page, perPage) => {
     setIsLoading(true);
     setError(null);
 
-    // Construct the URL with query parameters
-    const url = `${API_BASE_URL}/employeev1`;
-    const params = {
-      company_id: COMPANY_ID,
-      page: page,
-      per_page: perPage,
-      sortDesc: 'false',
-      branch_id: selectedBranch,
-      search: debouncedSearchQuery || null, // Only include search if it's not empty
-    };
+
 
     try {
-      // Axios automatically serializes the 'params' object into the URL query string
-      // and handles JSON response parsing, as well as throwing an error on HTTP status codes outside of the 2xx range.
-      const response = await axios.get(url, {
-        params: params,
-      });
-
-      const result = response.data; // Axios puts the response body directly in response.data
+      const params = {
+        page: page,
+        per_page: perPage,
+        sortDesc: 'false',
+        branch_id: selectedBranch,
+        search: debouncedSearchQuery || null, // Only include search if it's not empty
+      };
+      const result = await getEmployees(params);
 
       // Check if result has expected structure before setting state
       if (result && Array.isArray(result.data)) {
@@ -268,7 +273,56 @@ export default function Home() {
             </Link>
           </div>
           <div className="p-4 space-y-4">
+            <div className="flex space-x-2">
+              <Popover open={open} onOpenChange={setOpen}>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="outline"
+                    role="combobox"
+                    aria-expanded={open}
+                    className="w-full justify-between py-4 text-gray-500 border border-gray-300 rounded-lg bg-white hover:bg-gray-100"
+                  >
+                    {selectedBranch
+                      ? branches.find((b) => b.id === selectedBranch)?.name
+                      : "Select Branch"}
+
+                    {/* Arrow icon */}
+                    <span className="material-icons text-gray-400">
+                      expand_more
+                    </span>
+                  </Button>
+                </PopoverTrigger>
+
+                <PopoverContent className="w-[320px] p-0">
+                  <Command>
+                    <CommandInput placeholder="Search branch..." />
+                    <CommandEmpty>No branch found.</CommandEmpty>
+                    <CommandGroup>
+                      <CommandItem
+                        className="text-gray-500"
+                        value="Select All"
+                        onSelect={handleSelectBranch}
+                      >
+                        Select All
+                      </CommandItem>
+                      {branches.map((branch) => (
+                        <CommandItem
+                          className="text-gray-500"
+                          key={branch.id}
+                          value={branch.name}
+                          onSelect={handleSelectBranch}
+                        >
+                          {branch.name}
+                        </CommandItem>
+                      ))}
+                    </CommandGroup>
+                  </Command>
+                </PopoverContent>
+              </Popover>
+            </div>
             <div className="flex items-center space-x-2">
+
+
               <div className="relative flex-grow">
                 <span
                   className="material-icons absolute left-3 top-1/2 -translate-y-1/2 text-subtext-light dark:text-subtext-dark"
@@ -280,27 +334,7 @@ export default function Home() {
                   type="text"
                 />
               </div>
-              <div className="relative">
-                <button
-                  className="p-2 rounded-lg border border-border-light dark:border-border-dark bg-background-light dark:bg-background-dark text-subtext-light dark:text-subtext-dark"
-                >
-                  <span className="material-icons">filter_list</span>
-                </button>
-              </div>
-            </div>
-            <div className="flex space-x-2">
-              <button
-                className="w-full px-4 py-2 rounded-lg border border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark text-text-light dark:text-text-dark flex items-center justify-center space-x-2 text-sm"
-              >
-                <span className="material-icons text-base">download</span>
-                <span>Export</span>
-              </button>
-              <button
-                className="w-full px-4 py-2 rounded-lg border border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark text-text-light dark:text-text-dark flex items-center justify-center space-x-2 text-sm"
-              >
-                <span className="material-icons text-base">print</span>
-                <span>Print</span>
-              </button>
+
             </div>
           </div>
           <div className="flex-1 overflow-y-auto">
@@ -322,17 +356,7 @@ export default function Home() {
                 <span className="material-icons text-base">edit</span>
                 <span>Edit</span>
               </button>
-              {/* <button
-                className="px-4 py-2 rounded-lg bg-primary text-white flex items-center space-x-2"
-              >
-                <span className="material-icons text-base">mail_outline</span>
-                <span>Send Offer</span>
-              </button> */}
-              <button
-                className="p-2 rounded-lg border border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark text-text-light dark:text-text-dark"
-              >
-                <span className="material-icons">more_vert</span>
-              </button>
+              <EmployeeExtras data={employees} onUploadSuccess={fetchEmployees} />
             </div>
           </header>
           <div className="bg-surface-light dark:bg-surface-dark p-6 rounded-lg">
@@ -390,7 +414,7 @@ export default function Home() {
 
               {/* Tab Content Area */}
               <div className="min-h-[250px]">
-                {renderTabContent()}
+                {renderTabContent(selectedEmployee)}
               </div>
             </div>
           </div>
