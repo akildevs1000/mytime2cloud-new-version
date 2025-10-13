@@ -11,21 +11,11 @@ const Document = () => {
                         All Documents
                     </h3>
                     <div className="flex items-center space-x-2">
-                        <div className="relative">
-                            <span
-                                className="material-icons absolute left-3 top-1/2 -translate-y-1/2 text-subtext-light dark:text-subtext-dark text-base"
-                            >search</span
-                            >
-                            <input
-                                className="w-full pl-10 pr-4 py-2 rounded-lg border border-border-light dark:border-border-dark bg-background-light dark:bg-background-dark focus:ring-primary focus:border-primary text-sm"
-                                placeholder="Search documents"
-                                type="text"
-                            />
-                        </div>
                         <button
-                            className="p-2 rounded-lg border border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark text-subtext-light dark:text-subtext-dark"
+                            className="px-4 py-2 rounded-lg bg-primary text-white flex items-center space-x-2 text-sm font-medium"
                         >
-                            <span className="material-icons text-base">filter_alt</span>
+                            <span className="material-icons text-base">add</span>
+                            <span>Add Document</span>
                         </button>
                     </div>
                 </div>

@@ -1,120 +1,230 @@
-import React, { useEffect, useRef, useState } from 'react';
+"use client";
 
-const EmergencyContact = () => {
+import React, { useState } from "react";
+import { useForm } from "react-hook-form";
+import { SuccessDialog } from "@/components/SuccessDialog";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { useRouter } from "next/navigation";
+import { Phone, PhoneCall, Users } from "lucide-react";
 
-    const [formData, setFormData] = useState({
-        primaryPhone: '+1 (555) 987-6543',
-        secondaryPhone: '',
-        contactName: 'Jane Smith',
-        relationship: 'Sister',
-        // ... other fields (contactName, relationship, etc.)
-    });
+const EmergencyContact = ({ payload }) => {
+  const router = useRouter();
+  const [open, setOpen] = useState(false);
+  const [globalError, setGlobalError] = useState(null);
 
-    // Handler to update the state when the input changes
-    const handleChange = (event) => {
-        setFormData({
-            ...formData,
-            [event.target.id]: event.target.value,
-        });
-    };
+  const form = useForm({
+    defaultValues: {
+      phone_number: payload?.phone_number || "",
+      whatsapp_number: payload?.whatsapp_number || "",
+      alternate_email: payload?.alternate_email || "",
+      relative_contact: payload?.relative_contact || "",
+      relation: payload?.relation || "",
+      local_address: payload?.local_address || "",
+      local_city: payload?.local_city || "",
+      local_country: payload?.local_country || "",
+    },
+  });
 
+  const { handleSubmit, formState } = form;
+  const { isSubmitting } = formState;
 
-    return (
+  const handleCancel = () => router.push(`/employees`);
 
-        <div className="py-6 space-y-8">
-            <div className="flex justify-between items-center">
-                <h3
-                    className="text-lg font-semibold text-text-light dark:text-text-dark"
-                >
-                    Emergency Contact Information
-                </h3>
-                <button
-                    className="px-4 py-2 rounded-lg bg-primary text-white flex items-center space-x-2 text-sm font-medium"
-                >
-                    <span className="material-icons text-base">add</span>
-                    <span>Add Contact</span>
-                </button>
+  const onSubmit = async (data) => {
+    setGlobalError(null);
+    try {
+      console.log("Emergency Contact Submitted:", data);
+      await new Promise((r) => setTimeout(r, 1000));
+
+      setOpen(true);
+      await new Promise((r) => setTimeout(r, 2000));
+      setOpen(false);
+      router.push(`/employees`);
+    } catch (error) {
+      console.error("Error saving contact:", error);
+      setGlobalError("Failed to save contact. Please try again.");
+    }
+  };
+
+  return (
+    <div className="bg-white dark:bg-gray-800 py-8">
+      <div className="">
+        <Form {...form}>
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
+            <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-6 flex items-center">
+              <PhoneCall className="mr-3 h-6 w-6 text-primary" />
+              Emergency Contact Information
+            </h2>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* Phone Number */}
+              <FormField
+                control={form.control}
+                name="phone_number"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Phone Number</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Enter phone number" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              {/* WhatsApp Number */}
+              <FormField
+                control={form.control}
+                name="whatsapp_number"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>WhatsApp Number</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Enter WhatsApp number" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              {/* Alternate Email */}
+              <FormField
+                control={form.control}
+                name="alternate_email"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Alternate Email</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="email"
+                        placeholder="Enter alternate email"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              {/* Relative Contact */}
+              <FormField
+                control={form.control}
+                name="relative_contact"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Relative Contact</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Enter relative contact number" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              {/* Relation */}
+              <FormField
+                control={form.control}
+                name="relation"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Relation</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Enter relation (e.g. Brother, Friend)" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              {/* Local Address */}
+              <FormField
+                control={form.control}
+                name="local_address"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Local Address</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Enter local address" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              {/* Local City */}
+              <FormField
+                control={form.control}
+                name="local_city"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Local City</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Enter local city" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              {/* Local Country */}
+              <FormField
+                control={form.control}
+                name="local_country"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Local Country</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Enter local country" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
             </div>
-            <div
-                className="border border-border-light dark:border-border-dark rounded-lg p-6 space-y-6"
-            >
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                        <label
-                            className="block text-sm font-medium text-subtext-light dark:text-subtext-dark"
-                            htmlFor="contact-name"
-                        >Contact Name</label
-                        >
-                        <input
-                            className="mt-1 block w-full rounded-lg border-border-light dark:border-border-dark bg-background-light dark:bg-background-dark focus:ring-primary focus:border-primary p-2"
-                            id="contact-name"
-                            type="text"
-                            value={formData.contactName}
-                            onChange={handleChange}
-                        />
-                    </div>
-                    <div>
-                        <label
-                            className="block text-sm font-medium text-subtext-light dark:text-subtext-dark"
-                            htmlFor="relationship"
-                        >Relationship</label
-                        >
-                        <input
-                            className="mt-1 block w-full rounded-lg border-border-light dark:border-border-dark bg-background-light dark:bg-background-dark focus:ring-primary focus:border-primary p-2"
-                            id="relationship"
-                            type="text"
-                            value={formData.relationship}
-                            onChange={handleChange}
-                        />
-                    </div>
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                        <label
-                            className="block text-sm font-medium text-subtext-light dark:text-subtext-dark"
-                            htmlFor="primary-phone"
-                        >Primary Phone Number</label
-                        >
-                        <input
-                            className="mt-1 block w-full rounded-lg border-border-light dark:border-border-dark bg-background-light dark:bg-background-dark focus:ring-primary focus:border-primary p-2"
-                            id="primary-phone"
-                            type="text"
-                            value={formData.primaryPhone}
-                            onChange={handleChange}
-                        />
-                    </div>
-                    <div>
-                        <label
-                            className="block text-sm font-medium text-subtext-light dark:text-subtext-dark"
-                            htmlFor="secondary-phone"
-                        >Secondary Phone Number (Optional)</label
-                        >
-                        <input
-                            className="mt-1 block w-full rounded-lg border-border-light dark:border-border-dark bg-background-light dark:bg-background-dark focus:ring-primary focus:border-primary p-2"
-                            id="secondary-phone"
-                            type="text"
-                            value={formData.secondaryPhone}
-                            onChange={handleChange}
-                        />
-                    </div>
-                </div>
-                <div className="flex justify-end space-x-4">
-                    <button
-                        className="px-4 py-2 rounded-lg border border-red-500 text-red-500 flex items-center space-x-2 text-sm font-medium"
-                    >
-                        <span className="material-icons text-base">delete</span>
-                        <span>Delete</span>
-                    </button>
-                    <button
-                        className="px-4 py-2 rounded-lg bg-primary text-white flex items-center space-x-2 text-sm font-medium hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
-                    >
-                        <span className="material-icons text-base">save</span>
-                        <span>Save Changes</span>
-                    </button>
-                </div>
+
+            {globalError && (
+              <div
+                className="mb-4 p-3 border border-red-500 bg-red-50 text-red-700 rounded-lg"
+                role="alert"
+              >
+                {globalError}
+              </div>
+            )}
+
+            {/* Buttons */}
+            <div className="flex justify-end space-x-4 pt-4">
+              <Button type="button" variant="secondary" onClick={handleCancel}>
+                CANCEL
+              </Button>
+              <Button
+                type="submit"
+                className="bg-primary hover:bg-indigo-700"
+                disabled={isSubmitting}a
+              >
+                {isSubmitting ? "SUBMITTING..." : "SUBMIT"}
+              </Button>
             </div>
-        </div>
-    );
+          </form>
+        </Form>
+
+        <SuccessDialog
+          open={open}
+          onOpenChange={setOpen}
+          title="Contact Saved"
+          description="Contact details have been saved successfully."
+        />
+      </div>
+    </div>
+  );
 };
 
 export default EmergencyContact;

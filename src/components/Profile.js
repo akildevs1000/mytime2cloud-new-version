@@ -44,7 +44,7 @@ import { getBranches, getDepartments, storeEmployee } from '@/lib/api';
 
 
 const Profile = ({ payload }) => {
-console.log("🚀 ~ Profile ~ payload:", payload)
+  console.log("🚀 ~ Profile ~ payload:", payload)
 
   const router = useRouter();
   const handleCancel = () => router.push(`/employees`);
@@ -116,9 +116,11 @@ console.log("🚀 ~ Profile ~ payload:", payload)
     fetchBranches();
   }, []);
 
+
   useEffect(() => {
-    // Reset departments and department_id if no branch is selected
-    if (!selectedBranchId) {
+    const branchId = watch("branch_id");
+
+    if (!branchId) {
       setDepartments([]);
       setValue("department_id", null);
       return;
@@ -126,22 +128,22 @@ console.log("🚀 ~ Profile ~ payload:", payload)
 
     const fetchDepartments = async () => {
       try {
-
-        let data = await getDepartments(selectedBranchId)
+        const data = await getDepartments(branchId);
         setDepartments(data);
 
         const currentDeptId = watch("department_id");
         if (currentDeptId && !data.some(d => d.id === currentDeptId)) {
           setValue("department_id", null);
         }
-
       } catch (error) {
         console.error("Error fetching departments:", error);
-        setDepartments([]); // Clear departments on error
+        setDepartments([]);
       }
     };
+
     fetchDepartments();
-  }, [selectedBranchId]); // 👈 Depend on selectedBranchId and setValue
+  }, [watch("branch_id"), payload]); // ✅ also depend on payload
+
 
   const selectedBranchName = branches.find((b) => b.id === selectedBranchId)?.name || "Select Branch";
   // 2. Function triggered when a file is selected (on file input change)
