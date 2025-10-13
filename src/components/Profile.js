@@ -35,16 +35,20 @@ import {
   CommandItem,
 } from "@/components/ui/command";
 
-import { Check, ChevronsUpDown, User, Briefcase, Phone, ArrowLeft, Upload, Calendar, CheckCircle2 } from "lucide-react";
+import { Calendar } from "@/components/ui/calendar"
+
+
+import { Check, ChevronsUpDown, User, Briefcase, Phone, ArrowLeft, Upload, Calendar as CalendarIcon, CheckCircle2 } from "lucide-react";
 import { cn, convertFileToBase64 } from "@/lib/utils";
 import { useRouter } from 'next/navigation';
 
 import { getBranches, getDepartments, storeEmployee } from '@/lib/api';
+import { format } from 'date-fns';
 
 
 
 const Profile = ({ payload }) => {
-  console.log("🚀 ~ Profile ~ payload:", payload)
+  const [isDatePickerOpen, setIsDatePickerOpen] = useState(false) // ✅ renamed
 
   const router = useRouter();
   const handleCancel = () => router.push(`/employees`);
@@ -454,14 +458,37 @@ const Profile = ({ payload }) => {
                     control={form.control}
                     name="joining_date"
                     render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Joining Date (YYYY-MM-DD)</FormLabel>
-                        <FormControl>
-                          <div className="relative">
-                            <Input type="text" placeholder="YYYY-MM-DD" {...field} />
-                            <Calendar className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
-                          </div>
-                        </FormControl>
+                      <FormItem className="flex flex-col">
+                        <FormLabel>Joining Date</FormLabel>
+                        <Popover open={isDatePickerOpen} onOpenChange={setIsDatePickerOpen}>
+                          <PopoverTrigger asChild>
+                            <FormControl>
+                              <Button
+                                variant="outline"
+                                className={`w-full pl-3 text-left font-normal ${!field.value && "text-muted-foreground"
+                                  }`}
+                              >
+                                {field.value ? (
+                                  format(field.value, "yyyy-MM-dd")
+                                ) : (
+                                  <span>Pick a date</span>
+                                )}
+                                <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                              </Button>
+                            </FormControl>
+                          </PopoverTrigger>
+                          <PopoverContent className="w-auto p-0" align="start">
+                            <Calendar
+                              mode="single"
+                              selected={field.value}
+                              onSelect={(date) => {
+                                field.onChange(date)
+                                setIsDatePickerOpen(false) // ✅ closes after selection
+                              }}
+                              initialFocus
+                            />
+                          </PopoverContent>
+                        </Popover>
                         <FormMessage />
                       </FormItem>
                     )}
