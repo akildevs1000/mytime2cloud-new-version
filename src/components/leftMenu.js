@@ -19,17 +19,17 @@ export default function LeftMenu() {
 
   return (
     <aside
-      className="w-20 bg-surface-light dark:bg-surface-dark border-r border-border-light dark:border-border-dark flex flex-col items-center py-4"
+      className="w-20 bg-gray-700 dark:bg-surface-dark border-border-light dark:border-border-dark flex flex-col items-center py-4"
     >
-      <nav className="flex flex-col space-y-6">
+      <nav className="flex flex-col space-y-4">
         {links.map((link) => (
           <Link
             key={link.label}
             href={link.href}
             // Logic for active link: is the current pathname exactly the link's href?
             className={`p-2 rounded-lg ${pathname === link.href
-                ? "bg-primary/10 text-primary" // Active styling
-                : "text-subtext-light dark:text-subtext-dark hover:bg-primary/10 hover:text-primary" // Default styling
+                ? "text-white" // Active styling
+                : "text-gray-100 dark:text-subtext-dark" // Default styling
               }`}
           >
             <span className="material-icons">{link.icon}</span>

@@ -1,9 +1,23 @@
 'use client'; // This directive must be at the very top
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname,useRouter  } from "next/navigation";
+import { useEffect } from "react";
+import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover';
 
 export default function Header() {
+
+    const router = useRouter();
+
+    useEffect(() => {
+        const token = localStorage.getItem("token");
+
+        if (!token) {
+            router.push("/login");
+            return;
+        }
+    }, []);
+
     const pathname = usePathname();
 
     // Define the navigation links and their paths
@@ -60,9 +74,28 @@ export default function Header() {
                     <span className="material-icons absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500">search</span>
                     <input className="pl-10 pr-4 py-2 text-sm rounded-md border border-border-light dark:border-border-dark bg-background-light dark:bg-gray-700 text-text-light dark:text-text-dark focus:outline-none focus:ring-2 focus:ring-purple-500" placeholder="Search" type="text" />
                 </div>
-                <div className="w-10 h-10">
-                    <img alt="User profile" className="rounded-full border-2 border-purple-400" src="https://backend.mytime2cloud.com/upload/1752909672.png" />
-                </div>
+                <Popover>
+                    <PopoverTrigger asChild>
+                        <button className="w-10 h-10 rounded-full overflow-hidden border-2 border-purple-400 focus:outline-none">
+                            <img alt="User profile" className="w-full h-full object-cover" src="https://backend.mytime2cloud.com/upload/1752909672.png" />
+                        </button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-40 p-2">
+                        <div className="flex flex-col">
+                            <button
+                                onClick={() => {
+                                    if (typeof window !== 'undefined') {
+                                        localStorage.removeItem('token');
+                                    }
+                                    router.push('/login');
+                                }}
+                                className="text-left px-3 py-2 rounded hover:bg-gray-100"
+                            >
+                                Logout
+                            </button>
+                        </div>
+                    </PopoverContent>
+                </Popover>
             </div>
         </header>
     );

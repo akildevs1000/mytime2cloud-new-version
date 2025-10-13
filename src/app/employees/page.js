@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useCallback } from 'react';
-import { Briefcase, User, MapPin, FileText, Search, Plus, MoreVertical, QrCode, Fingerprint, ChevronLeft, ChevronRight, Loader2, RefreshCw, Router } from 'lucide-react';
+import { Search, Plus, MoreVertical, QrCode, Fingerprint, ChevronLeft, ChevronRight, Loader2, RefreshCw, Download, Upload } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
@@ -19,20 +19,13 @@ import {
 } from "@/components/ui/command";
 
 
-// --- Constants and Utility Functions ---
 
-// Base URL provided in the prompt.
-// NOTE: For live execution, this external API might require authentication headers (like an API Key or Authorization token) not provided here.
-// The fetch logic includes retry/backoff but may still fail without proper authorization.
-const API_BASE_URL = 'https://backend.mytime2cloud.com/api';
-const COMPANY_ID = 22;
 import axios from 'axios'; // Ensure you import axios at the top of your file
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import { getBranches, getEmployees } from '@/lib/api';
+import { EmployeeExtras } from '@/components/Employees/Extras';
 
-// -----------------------------------------------------------
-// 1. Custom Debounce Hook
-// -----------------------------------------------------------
 const useDebounce = (value, delay) => {
     const [debouncedValue, setDebouncedValue] = useState(value);
 
@@ -53,9 +46,6 @@ const useDebounce = (value, delay) => {
 
 
 export default function EmployeeDataTable() {
-
-
-
 
     const [employees, setEmployees] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
@@ -115,50 +105,35 @@ export default function EmployeeDataTable() {
         setOpen(false);
     };
 
-    // Fetch branches
+
     useEffect(() => {
-        if (!COMPANY_ID) return;
         const fetchBranches = async () => {
             try {
-                const { data } = await axios.get(`${API_BASE_URL}/branch-list`, {
-                    params: {
-                        company_id: COMPANY_ID,
-                        order_by: 'name',
-                    }
-                });
-                console.log("🚀 ~ fetchBranches ~ data:", data)
-                setBranches(data);
+                setBranches(await getBranches());
             } catch (error) {
                 console.error("Error fetching branches:", error);
+                setBranches([]);
             }
         };
         fetchBranches();
-    }, [COMPANY_ID]);
+    }, []);
+
 
 
     const fetchEmployees = useCallback(async (page, perPage) => {
         setIsLoading(true);
         setError(null);
 
-        // Construct the URL with query parameters
-        const url = `${API_BASE_URL}/employeev1`;
-        const params = {
-            company_id: COMPANY_ID,
-            page: page,
-            per_page: perPage,
-            sortDesc: 'false',
-            branch_id: selectedBranch,
-            search: debouncedSearchQuery || null, // Only include search if it's not empty
-        };
-
         try {
-            // Axios automatically serializes the 'params' object into the URL query string
-            // and handles JSON response parsing, as well as throwing an error on HTTP status codes outside of the 2xx range.
-            const response = await axios.get(url, {
-                params: params,
-            });
 
-            const result = response.data; // Axios puts the response body directly in response.data
+            const params = {
+                page: page,
+                per_page: perPage,
+                sortDesc: 'false',
+                branch_id: selectedBranch,
+                search: debouncedSearchQuery || null, // Only include search if it's not empty
+            };
+            const result = await getEmployees(params);
 
             // Check if result has expected structure before setting state
             if (result && Array.isArray(result.data)) {
@@ -212,17 +187,9 @@ export default function EmployeeDataTable() {
         router.push('/employees-short-list');
     }
 
-
-
-    // --- Render Helpers ---
-
-    /**
-     * Renders a single row in the employee table.
-     * @param {Object} employee - Employee data object.
-     */
     const renderEmployeeRow = (employee) => {
         // Fallback for nested objects that might be empty ({}) in the API sample
-        const branchName = employee.branch?.name || 'N/A';
+        const branchName = employee.branch?.branch_name || 'N/A';
         const departmentName = employee.department?.name || 'N/A';
         const designationTitle = employee.designation?.title || employee.last_name; // Using last_name as a fallback title
         const employeeEmail = employee.user?.email || 'N/A';
@@ -428,6 +395,9 @@ export default function EmployeeDataTable() {
                     >
                         <RefreshCw className={`w-4 h-4  ${isLoading ? 'animate-spin' : ''}`} />
                     </button>
+
+                    <EmployeeExtras data={employees} onUploadSuccess={fetchEmployees} />
+
 
                     {/* New Employee Button */}
                     <Link href="/employees/create">

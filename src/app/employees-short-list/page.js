@@ -13,26 +13,9 @@ import { Briefcase, User, MapPin, FileText, Search, Plus, MoreVertical, QrCode, 
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-} from "@/components/ui/command";
-
-
-// --- Constants and Utility Functions ---
-
-// Base URL provided in the prompt.
 // NOTE: For live execution, this external API might require authentication headers (like an API Key or Authorization token) not provided here.
 // The fetch logic includes retry/backoff but may still fail without proper authorization.
-const API_BASE_URL = 'https://mytime2cloud-backend.test/api';
+const API_BASE_URL = 'https://backend.mytime2cloud.com/api';
 const COMPANY_ID = 22;
 import axios from 'axios'; // Ensure you import axios at the top of your file
 import { Input } from '@/components/ui/input';
@@ -166,14 +149,7 @@ export default function Home() {
     if (!COMPANY_ID) return;
     const fetchBranches = async () => {
       try {
-        const { data } = await axios.get(`${API_BASE_URL}/branch-list`, {
-          params: {
-            company_id: COMPANY_ID,
-            order_by: 'name',
-          }
-        });
-        console.log("🚀 ~ fetchBranches ~ data:", data)
-        setBranches(data);
+        setBranches(await getBranches());
       } catch (error) {
         console.error("Error fetching branches:", error);
       }

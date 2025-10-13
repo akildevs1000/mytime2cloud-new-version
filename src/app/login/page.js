@@ -2,10 +2,10 @@
 
 import React, { useState, useEffect } from 'react';
 
-import Link from 'next/link';
-import Image from 'next/image';
-
 import { useRouter } from 'next/navigation'; // Or 'next/navigation' for App Router
+
+import axios from 'axios';
+
 
 // Placeholder components (You would replace these with actual modal/otp/snackbar components)
 const WhatsappVerificationDialog = ({ open, onClose, mobileNumber, onVerify }) => {
@@ -111,7 +111,7 @@ const Login = () => {
 
     const router = useRouter(); // Initialize router
 
-    const [credentials, setCredentials] = useState({ email: 'demo@gmail.com', password: 'demo', source: 'admin' });
+    const [credentials, setCredentials] = useState({ email: 'info@taklahinteriors.com', password: 'AkiL@332211', source: 'admin' });
     const [showPassword, setShowPassword] = useState(false);
     const [loading, setLoading] = useState(false);
     const [msg, setMsg] = useState('');
@@ -147,7 +147,9 @@ const Login = () => {
         return true;
     };
 
-    const handleLogin = async () => {
+    const handleLogin = async (e) => {
+
+        e.preventDefault();
         if (!validateForm()) return;
 
         setMsg('');
@@ -155,9 +157,22 @@ const Login = () => {
 
         try {
 
+            const {data} = await axios.post(
+                `${process.env.NEXT_PUBLIC_API_URL}/login`, credentials
+            );
 
-            // Simulating a successful login delay
-            await new Promise(resolve => setTimeout(resolve, 500));
+            const token = data?.token; // Sanctum returns your token here
+            const user = data?.user; // Sanctum returns your user object here
+
+
+            if (token) {
+                localStorage.setItem("token", token);
+                localStorage.setItem("user", JSON.stringify(user));
+                // router.push("/dashboard");
+            } else {
+                setError("No token received from server");
+            }
+
 
             console.log("Login successful. Redirecting to /");
 
@@ -228,12 +243,12 @@ const Login = () => {
                     <div className="p-8 max-w-lg mx-auto text-center">
                         <div className="min-h-[100px]">
                             <div className="w-full text-center mb-4">
-                                <Image
-                                    src="/logo22.png" // Update with the correct path to your logo
+                                <img
+                                    src="/logo22.png" // The direct URL
                                     alt="Mytime2Cloud Logo"
-                                    width={200}
+                                    width={200} // Set explicit dimensions
                                     height={50}
-                                    className="mx-auto"
+                                    className="mx-auto" // Tailwind classes still work
                                 />
                             </div>
                             <h3 className="pb-7 pt-10 text-xl font-medium">
@@ -241,7 +256,7 @@ const Login = () => {
                             </h3>
                         </div>
                         <div>
-                            <form onSubmit={(e) => { e.preventDefault(); handleLogin(); }} autoComplete="off" className="space-y-4">
+                            <form onSubmit={handleLogin} autoComplete="off" className="space-y-4">
                                 {/* Email Field */}
                                 <div className="form-outline">
                                     <div className="relative">
