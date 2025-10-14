@@ -3,10 +3,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useForm } from "react-hook-form"; // Used for standard form handling
 import { SuccessDialog } from "@/components/SuccessDialog"; // Import the new component
-import { Calendar } from "@/components/ui/calendar"
-
-
-// --- SHADCN/UI & Icon Imports (lucide-react is the standard for shadcn) ---
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -24,18 +20,6 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
-import {
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
-} from "@/components/ui/popover";
-import {
-    Command,
-    CommandEmpty,
-    CommandGroup,
-    CommandInput,
-    CommandItem,
-} from "@/components/ui/command";
 
 import { Check, ChevronsUpDown, User, Briefcase, Phone, ArrowLeft, Upload, Calendar as CalenddarIcon, CheckCircle2, CalendarIcon } from "lucide-react";
 import { cn, convertFileToBase64 } from "@/lib/utils";
@@ -47,10 +31,10 @@ import { getBranches, getDepartments, storeEmployee } from '@/lib/api';
 import { user } from '@/config';
 import { format } from 'date-fns';
 import BranchSelect from '@/components/ui/BranchSelect';
+import DatePicker from '@/components/ui/DatePicker';
 
 
 const EmployeeProfileForm = () => {
-    const [isDatePickerOpen, setIsDatePickerOpen] = useState(false) // ✅ renamed
     const router = useRouter();
     const handleUploadClick = () => fileInputRef.current.click();
     const handleGoBack = () => router.push(`/employees`);
@@ -128,7 +112,6 @@ const EmployeeProfileForm = () => {
         fetchDepartments();
     }, [selectedBranchId]); // 👈 Depend on selectedBranchId and setValue
 
-    const selectedBranchName = branches.find((b) => b.id === selectedBranchId)?.name || "Select Branch";
     // 2. Function triggered when a file is selected (on file input change)
     const handleFileChange = async (event) => {
         const file = event.target.files[0];
@@ -199,7 +182,6 @@ const EmployeeProfileForm = () => {
                 const responseData = error.response.data;
 
                 if (status === 422) {
-                    // 💥 422: Set a concise global error message.
                     setGlobalError(
                         responseData.message || "Validation failed. Please check the form fields for errors."
                     );
@@ -408,7 +390,6 @@ const EmployeeProfileForm = () => {
                                             </h2>
 
                                             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                                                {/* Branch Dropdown (using Popover/Command for combobox) */}
                                                 <FormField
                                                     control={form.control}
                                                     name="branch_id"
@@ -465,40 +446,17 @@ const EmployeeProfileForm = () => {
                                                     render={({ field }) => (
                                                         <FormItem className="flex flex-col">
                                                             <FormLabel>Joining Date</FormLabel>
-                                                            <Popover open={isDatePickerOpen} onOpenChange={setIsDatePickerOpen}>
-                                                                <PopoverTrigger asChild>
-                                                                    <FormControl>
-                                                                        <Button
-                                                                            variant="outline"
-                                                                            className={`w-full pl-3 text-left font-normal ${!field.value && "text-muted-foreground"
-                                                                                }`}
-                                                                        >
-                                                                            {field.value ? (
-                                                                                format(field.value, "yyyy-MM-dd")
-                                                                            ) : (
-                                                                                <span>Pick a date</span>
-                                                                            )}
-                                                                            <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                                                                        </Button>
-                                                                    </FormControl>
-                                                                </PopoverTrigger>
-                                                                <PopoverContent className="w-auto p-0" align="start">
-                                                                    <Calendar
-                                                                        mode="single"
-                                                                        selected={field.value}
-                                                                        onSelect={(date) => {
-                                                                            field.onChange(date)
-                                                                            setIsDatePickerOpen(false) // ✅ closes after selection
-                                                                        }}
-                                                                        initialFocus
-                                                                    />
-                                                                </PopoverContent>
-                                                            </Popover>
+                                                            <FormControl>
+                                                                <DatePicker
+                                                                    value={field.value}
+                                                                    onChange={(date) => field.onChange(date)}
+                                                                    placeholder="Pick a date"
+                                                                />
+                                                            </FormControl>
                                                             <FormMessage />
                                                         </FormItem>
                                                     )}
                                                 />
-
 
                                                 {/* Employee ID Input */}
                                                 <FormField
