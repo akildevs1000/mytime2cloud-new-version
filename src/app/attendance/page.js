@@ -30,8 +30,9 @@ import {
 import axios from 'axios'; // Ensure you import axios at the top of your file
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { getBranches, getEmployees, getShifts, removeEmployee } from '@/lib/api';
+import { getShifts, removeEmployee } from '@/lib/api';
 import { EmployeeExtras } from '@/components/Employees/Extras';
+import BranchSelect from '@/components/ui/BranchSelect';
 
 const useDebounce = (value, delay) => {
     const [debouncedValue, setDebouncedValue] = useState(value);
@@ -67,8 +68,6 @@ export default function EmployeeDataTable() {
     const [searchTerm, setSearchTerm] = useState('');
 
     const [selectedBranch, setSelectedBranch] = useState(null);
-    const [open, setOpen] = useState(false);
-    const [branches, setBranches] = useState([]);
 
 
     const debouncedSearchQuery = useDebounce(searchQuery, 500);
@@ -97,36 +96,6 @@ export default function EmployeeDataTable() {
         }
 
     }, [debouncedSearchQuery]);
-
-
-    const handleSelectBranch = (currentValue) => {
-        if (currentValue === "Select All") {
-            setSelectedBranch(null);
-        } else {
-            const selectedBranchItem = branches.find((b) => b.name === currentValue);
-            if (selectedBranchItem) {
-                setSelectedBranch(
-                    selectedBranchItem.id === selectedBranch ? null : selectedBranchItem.id
-                );
-            }
-        }
-        setOpen(false);
-    };
-
-
-    useEffect(() => {
-        const fetchBranches = async () => {
-            try {
-                setBranches(await getBranches());
-            } catch (error) {
-                console.error("Error fetching branches:", error);
-                setBranches([]);
-            }
-        };
-        fetchBranches();
-    }, []);
-
-
 
     const fetchEmployees = useCallback(async (page, perPage) => {
         setIsLoading(true);
@@ -344,52 +313,10 @@ export default function EmployeeDataTable() {
 
                     {/* Branch Filter Dropdown */}
                     <div className="relative">
-
-                        <Popover open={open} onOpenChange={setOpen}>
-                            <PopoverTrigger asChild>
-                                <Button
-                                    variant="outline"
-                                    role="combobox"
-                                    aria-expanded={open}
-                                    className="w-50 justify-between py-4 text-gray-500 border border-gray-300 rounded-lg bg-white hover:bg-gray-100"
-                                >
-                                    {selectedBranch
-                                        ? branches.find((b) => b.id === selectedBranch)?.name
-                                        : "Select Branch"}
-
-                                    {/* Arrow icon */}
-                                    <span className="material-icons text-gray-400">
-                                        expand_more
-                                    </span>
-                                </Button>
-                            </PopoverTrigger>
-
-                            <PopoverContent className="w-[320px] p-0">
-                                <Command>
-                                    <CommandInput placeholder="Search branch..." />
-                                    <CommandEmpty>No branch found.</CommandEmpty>
-                                    <CommandGroup>
-                                        <CommandItem
-                                            className="text-gray-500"
-                                            value="Select All"
-                                            onSelect={handleSelectBranch}
-                                        >
-                                            Select All
-                                        </CommandItem>
-                                        {branches.map((branch) => (
-                                            <CommandItem
-                                                className="text-gray-500"
-                                                key={branch.id}
-                                                value={branch.name}
-                                                onSelect={handleSelectBranch}
-                                            >
-                                                {branch.name}
-                                            </CommandItem>
-                                        ))}
-                                    </CommandGroup>
-                                </Command>
-                            </PopoverContent>
-                        </Popover>
+                        <BranchSelect
+                            selectedBranchId={selectedBranch}
+                            onSelect={(id) => { setSelectedBranch(id); setCurrentPage(1); }}
+                        />
                     </div>
 
                     {/* Search Input */}
