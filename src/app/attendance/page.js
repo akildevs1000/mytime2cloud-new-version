@@ -341,7 +341,7 @@ export default function EmployeeDataTable() {
                         <RefreshCw className={`w-4 h-4  ${isLoading ? 'animate-spin' : ''}`} />
                     </button>
 
-                    <EmployeeExtras data={employees} onUploadSuccess={fetchEmployees} />
+                    {/* <EmployeeExtras data={employees} onUploadSuccess={fetchEmployees} /> */}
 
 
                     {/* New Employee Button */}
