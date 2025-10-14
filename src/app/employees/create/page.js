@@ -25,7 +25,7 @@ import { Check, ChevronsUpDown, User, Briefcase, Phone, ArrowLeft, Upload, Calen
 import { cn, convertFileToBase64 } from "@/lib/utils";
 import { useRouter } from 'next/navigation';
 
-import { getBranches, getDepartments, storeEmployee } from '@/lib/api';
+import { getBranches, getDepartments, parseApiError, storeEmployee } from '@/lib/api';
 
 
 import { user } from '@/config';
@@ -135,6 +135,28 @@ const EmployeeProfileForm = () => {
                 setImagePreview(null);
                 setImageFile(null);
             }
+        }
+    };
+
+    const onSubmitNew = async (data) => {
+
+        setGlobalError(null);
+
+        let profile_image_base64 = null;
+
+        if (imageFile) {
+            profile_image_base64 = await convertFileToBase64(imageFile);
+        }
+
+        try {
+            await storeEmployee({ ...data, profile_image_base64 });
+            setOpen(true);
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            setOpen(false);
+            router.push(`/employees`);
+
+        } catch (error) {
+            setGlobalError(parseApiError(error));
         }
     };
 
