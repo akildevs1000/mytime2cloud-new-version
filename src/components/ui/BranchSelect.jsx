@@ -41,37 +41,35 @@ export default function BranchSelect({ selectedBranchId = null, onSelect = () =>
     };
 
     return (
-        <div className="relative">
-            <Popover open={open} onOpenChange={setOpen}>
-                <PopoverTrigger asChild>
-                    <Button
-                        variant="outline"
-                        role="combobox"
-                        aria-expanded={open}
-                        className={`w-50 justify-between py-4 text-gray-500 border border-gray-300 rounded-lg bg-white hover:bg-gray-100`}
-                    >
-                        {selected ? selected.name : 'Select Branch'}
-                        <span className="material-icons text-gray-400">expand_more</span>
-                    </Button>
-                </PopoverTrigger>
+        <Popover open={open} onOpenChange={setOpen}>
+            <PopoverTrigger asChild >
+                <Button 
+                    variant="outline"
+                    role="combobox"
+                    aria-expanded={open}
+                    className={`w-full justify-between py-4 text-gray-500 border border-gray-300 rounded-lg bg-white hover:bg-gray-100`}
+                >
+                    {selected ? selected.name : 'Select Branch'}
+                    <span className="material-icons text-gray-400">expand_more</span>
+                </Button>
+            </PopoverTrigger>
 
-                <PopoverContent className="w-[320px] p-0">
-                    <Command>
-                        <CommandInput placeholder="Search branch..." />
-                        <CommandEmpty>No branch found.</CommandEmpty>
-                        <CommandGroup>
-                            <CommandItem className="text-gray-500" value="Select All" onSelect={handleSelect}>
-                                Select All
+            <PopoverContent className="w-[320px] p-0">
+                <Command>
+                    <CommandInput placeholder="Search branch..." />
+                    <CommandEmpty>No branch found.</CommandEmpty>
+                    <CommandGroup>
+                        <CommandItem className="text-gray-500" value="Select All" onSelect={handleSelect}>
+                            Select All
+                        </CommandItem>
+                        {branches.map((branch) => (
+                            <CommandItem key={branch.id} className="text-gray-500" value={`${branch.id}`} onSelect={handleSelect}>
+                                {branch.name}
                             </CommandItem>
-                            {branches.map((branch) => (
-                                <CommandItem key={branch.id} className="text-gray-500" value={`${branch.id}`} onSelect={handleSelect}>
-                                    {branch.name}
-                                </CommandItem>
-                            ))}
-                        </CommandGroup>
-                    </Command>
-                </PopoverContent>
-            </Popover>
-        </div>
+                        ))}
+                    </CommandGroup>
+                </Command>
+            </PopoverContent>
+        </Popover>
     );
 }

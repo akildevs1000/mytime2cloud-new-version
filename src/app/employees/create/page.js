@@ -46,6 +46,7 @@ import { getBranches, getDepartments, storeEmployee } from '@/lib/api';
 
 import { user } from '@/config';
 import { format } from 'date-fns';
+import BranchSelect from '@/components/ui/BranchSelect';
 
 
 const EmployeeProfileForm = () => {
@@ -416,53 +417,11 @@ const EmployeeProfileForm = () => {
                                                     render={({ field }) => (
                                                         <FormItem className="flex flex-col">
                                                             <FormLabel>Branch</FormLabel>
-                                                            <Popover open={isBranchPopoverOpen} onOpenChange={setIsBranchPopoverOpen}>
-                                                                <PopoverTrigger asChild>
-                                                                    <FormControl>
-                                                                        <Button
-                                                                            variant="outline"
-                                                                            role="combobox"
-                                                                            className={cn(
-                                                                                "justify-between w-full",
-                                                                                !field.value && "text-muted-foreground"
-                                                                            )}
-                                                                            onClick={() => setIsBranchPopoverOpen(true)} // Manually control open on click
-                                                                        >
-                                                                            {/* Assuming selectedBranchName is defined elsewhere */}
-                                                                            {selectedBranchName}
-                                                                            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                                                                        </Button>
-                                                                    </FormControl>
-                                                                </PopoverTrigger>
-                                                                <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0">
-                                                                    <Command>
-                                                                        <CommandInput placeholder="Search branch..." />
-                                                                        <CommandEmpty>No branch found.</CommandEmpty>
-                                                                        <CommandGroup>
-                                                                            {/* Assuming 'branches' and 'setValue' are defined elsewhere */}
-                                                                            {branches.map((branch) => (
-                                                                                <CommandItem
-                                                                                    value={branch.name}
-                                                                                    key={branch.id}
-                                                                                    onSelect={() => {
-                                                                                        setValue("branch_id", branch.id);
-                                                                                        // 2. Close the popover after selection
-                                                                                        setIsBranchPopoverOpen(false);
-                                                                                    }}
-                                                                                >
-                                                                                    <Check
-                                                                                        className={cn(
-                                                                                            "mr-2 h-4 w-4",
-                                                                                            branch.id === field.value ? "opacity-100" : "opacity-0"
-                                                                                        )}
-                                                                                    />
-                                                                                    {branch.name}
-                                                                                </CommandItem>
-                                                                            ))}
-                                                                        </CommandGroup>
-                                                                    </Command>
-                                                                </PopoverContent>
-                                                            </Popover>
+
+                                                            <BranchSelect
+                                                                onSelect={(id) => { setValue("branch_id", id); }}
+                                                            />
+
                                                             <FormMessage />
                                                         </FormItem>
                                                     )}

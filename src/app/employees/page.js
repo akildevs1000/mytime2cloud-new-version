@@ -338,10 +338,13 @@ export default function EmployeeDataTable() {
                 <div className="flex flex-wrap items-center space-x-3 space-y-2 sm:space-y-0">
 
                     {/* Branch Filter Dropdown */}
-                    <BranchSelect
-                        selectedBranchId={selectedBranch}
-                        onSelect={(id) => { setSelectedBranch(id); setCurrentPage(1); }}
-                    />
+                    <div className="relative">
+                        <BranchSelect
+                            selectedBranchId={selectedBranch}
+                            onSelect={(id) => { setSelectedBranch(id); setCurrentPage(1); }}
+                        />
+                    </div>
+
 
                     {/* Search Input */}
                     <div className="relative">
