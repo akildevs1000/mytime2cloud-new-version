@@ -36,10 +36,10 @@ import DatePicker from '@/components/ui/DatePicker';
 
 const EmployeeProfileForm = () => {
     const router = useRouter();
+    const fileInputRef = useRef(null);
     const handleUploadClick = () => fileInputRef.current.click();
     const handleGoBack = () => router.push(`/employees`);
     const handleCancel = () => router.push(`/employees`);
-    const fileInputRef = useRef(null);
     const form = useForm({
         defaultValues: {
             // Personal Details

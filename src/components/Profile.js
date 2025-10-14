@@ -49,10 +49,11 @@ import { format } from 'date-fns';
 
 const Profile = ({ payload }) => {
   const [isDatePickerOpen, setIsDatePickerOpen] = useState(false) // ✅ renamed
+  const fileInputRef = useRef(null);
+  const handleUploadClick = () => fileInputRef.current.click();
 
   const router = useRouter();
   const handleCancel = () => router.push(`/employees`);
-  const fileInputRef = useRef(null);
   const form = useForm({
     defaultValues: {
       // Personal Details
@@ -261,94 +262,94 @@ const Profile = ({ payload }) => {
                   Personal Details
                 </h2>
 
-                {/* Row 1: Title, First Name, Last Name */}
+                    {/* Row 1: Title, First Name, Last Name */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                  {/* Title Select */}
-                  <FormField
-                    control={form.control}
-                    name="title"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Title</FormLabel>
-                        <Select onValueChange={field.onChange} defaultValue={field.value}>
-                          <FormControl>
-                            <SelectTrigger className="w-full">
-                              <SelectValue placeholder="Select Title" />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            {['Mr.', 'Mrs.', 'Ms.'].map((option) => (
-                              <SelectItem key={option} value={option}>
-                                {option}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+                      {/* Title Select */}
+                      <FormField
+                        control={form.control}
+                        name="title"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Title</FormLabel>
+                            <Select onValueChange={field.onChange} defaultValue={field.value}>
+                              <FormControl>
+                                <SelectTrigger className="w-full">
+                                  <SelectValue placeholder="Select Title" />
+                                </SelectTrigger>
+                              </FormControl>
+                              <SelectContent>
+                                {['Mr.', 'Mrs.', 'Ms.'].map((option) => (
+                                  <SelectItem key={option} value={option}>
+                                    {option}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
 
-                  {/* First Name Input */}
-                  <FormField
-                    control={form.control}
-                    name="first_name"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>First Name</FormLabel>
-                        <FormControl>
-                          <Input placeholder="Enter first name" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+                      {/* First Name Input */}
+                      <FormField
+                        control={form.control}
+                        name="first_name"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>First Name</FormLabel>
+                            <FormControl>
+                              <Input placeholder="Enter first name" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
 
-                  {/* Last Name Input */}
-                  <FormField
-                    control={form.control}
-                    name="last_name"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Last Name</FormLabel>
-                        <FormControl>
-                          <Input placeholder="Enter last name" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
+                      {/* Last Name Input */}
+                      <FormField
+                        control={form.control}
+                        name="last_name"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Last Name</FormLabel>
+                            <FormControl>
+                              <Input placeholder="Enter last name" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
 
-                {/* Row 2: Full Legal Name, Display Name */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-                  <FormField
-                    control={form.control}
-                    name="full_name"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Full Legal Name</FormLabel>
-                        <FormControl>
-                          <Input placeholder="Enter employee's full legal name" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+                    {/* Row 2: Full Legal Name, Display Name */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                      <FormField
+                        control={form.control}
+                        name="full_name"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Full Legal Name</FormLabel>
+                            <FormControl>
+                              <Input placeholder="Enter employee's full legal name" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
 
-                  <FormField
-                    control={form.control}
-                    name="display_name"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Display Name / Nickname</FormLabel>
-                        <FormControl>
-                          <Input placeholder="Nickname or preferred display name" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+                      <FormField
+                        control={form.control}
+                        name="display_name"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Display Name / Nickname</FormLabel>
+                            <FormControl>
+                              <Input placeholder="Nickname or preferred display name" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
                 </div>
               </section>
 
