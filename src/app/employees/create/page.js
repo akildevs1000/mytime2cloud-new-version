@@ -80,8 +80,6 @@ const EmployeeProfileForm = () => {
     });
     const { watch, setValue, handleSubmit, formState: { isSubmitting } } = form;
 
-    const [isBranchPopoverOpen, setIsBranchPopoverOpen] = useState(false);
-
     const [open, setOpen] = useState(false);
     const [globalError, setGlobalError] = useState(null);
     const [branches, setBranches] = useState([]);
