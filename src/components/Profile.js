@@ -42,7 +42,7 @@ import { Check, ChevronsUpDown, User, Briefcase, Phone, ArrowLeft, Upload, Calen
 import { cn, convertFileToBase64 } from "@/lib/utils";
 import { useRouter } from 'next/navigation';
 
-import { getBranches, getDepartments, storeEmployee } from '@/lib/api';
+import { getBranches, getDepartments, storeEmployee, updateEmployee } from '@/lib/api';
 import { format } from 'date-fns';
 
 
@@ -80,6 +80,7 @@ const Profile = ({ payload }) => {
   useEffect(() => {
     if (payload) {
       reset({
+        id: payload.id || 0,
         title: payload.title || "Mr.",
         first_name: payload.first_name || "",
         last_name: payload.last_name || "",
@@ -203,7 +204,7 @@ const Profile = ({ payload }) => {
 
     try {
 
-      await storeEmployee(finalPayload);
+      await updateEmployee(finalPayload, data.id);
 
       setOpen(true);
 

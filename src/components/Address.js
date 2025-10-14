@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/form";
 import { useRouter } from "next/navigation";
 import { Phone, MapPin, Mail, Globe, Home, Map, LocationEdit } from "lucide-react";
+import { updateAddress } from "@/lib/api";
 
 const EmergencyContact = ({ payload }) => {
   const router = useRouter();
@@ -23,14 +24,13 @@ const EmergencyContact = ({ payload }) => {
 
   const form = useForm({
     defaultValues: {
-      address: payload?.address || "",
-      tel: payload?.tel || "",
-      mobile: payload?.mobile || "",
-      fax: payload?.fax || "",
-      city: payload?.city || "",
-      state: payload?.state || "",
-      nationality: payload?.nationality || "",
-      personal_email: payload?.personal_email || "",
+      home_address: payload?.home_address || "",
+      home_tel: payload?.home_tel || "",
+      home_mobile: payload?.home_mobile || "",
+      home_fax: payload?.home_fax || "",
+      home_city: payload?.home_city || "",
+      home_state: payload?.home_state || "",
+      home_country: payload?.home_country || "",
     },
   });
 
@@ -42,15 +42,24 @@ const EmergencyContact = ({ payload }) => {
   const onSubmit = async (data) => {
     setGlobalError(null);
     try {
-      // 👉 Replace this with your API endpoint when ready
-      console.log("Emergency Contact Submitted:", data);
+      const finalPayload = {
+        home_address: data.home_address,
+        home_tel: data.home_tel,
+        home_mobile: data.home_mobile,
+        home_fax: data.home_fax,
+        home_city: data.home_city,
+        home_state: data.home_state,
+        home_country: data.home_country,
+      };
 
-      // simulate async API save
-      await new Promise((r) => setTimeout(r, 1000));
+      await updateAddress(finalPayload, payload.id);
+
       setOpen(true);
 
-      await new Promise((r) => setTimeout(r, 2000));
+      await new Promise(resolve => setTimeout(resolve, 2000));
+
       setOpen(false);
+
       router.push(`/employees`);
     } catch (error) {
       console.error("Error saving emergency contact:", error);
@@ -70,9 +79,11 @@ const EmergencyContact = ({ payload }) => {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* Address */}
+
+
               <FormField
                 control={form.control}
-                name="address"
+                name="home_address"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Address</FormLabel>
@@ -87,7 +98,7 @@ const EmergencyContact = ({ payload }) => {
               {/* Tel */}
               <FormField
                 control={form.control}
-                name="tel"
+                name="home_tel"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Tel</FormLabel>
@@ -102,7 +113,7 @@ const EmergencyContact = ({ payload }) => {
               {/* Mobile */}
               <FormField
                 control={form.control}
-                name="mobile"
+                name="home_mobile"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Mobile</FormLabel>
@@ -117,7 +128,7 @@ const EmergencyContact = ({ payload }) => {
               {/* Fax */}
               <FormField
                 control={form.control}
-                name="fax"
+                name="home_fax"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Fax</FormLabel>
@@ -132,7 +143,7 @@ const EmergencyContact = ({ payload }) => {
               {/* City */}
               <FormField
                 control={form.control}
-                name="city"
+                name="home_city"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>City</FormLabel>
@@ -147,7 +158,7 @@ const EmergencyContact = ({ payload }) => {
               {/* State */}
               <FormField
                 control={form.control}
-                name="state"
+                name="home_state"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>State</FormLabel>
@@ -162,31 +173,12 @@ const EmergencyContact = ({ payload }) => {
               {/* Nationality */}
               <FormField
                 control={form.control}
-                name="nationality"
+                name="home_country"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Nationality</FormLabel>
                     <FormControl>
                       <Input placeholder="Enter nationality" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              {/* Personal Email */}
-              <FormField
-                control={form.control}
-                name="personal_email"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Personal Email</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="email"
-                        placeholder="Enter personal email"
-                        {...field}
-                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

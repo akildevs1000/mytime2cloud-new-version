@@ -30,7 +30,7 @@ import {
 import axios from 'axios'; // Ensure you import axios at the top of your file
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { getBranches, getEmployees, removeEmployee } from '@/lib/api';
+import { getBranches, getEmployees, getShifts, removeEmployee } from '@/lib/api';
 import { EmployeeExtras } from '@/components/Employees/Extras';
 
 const useDebounce = (value, delay) => {
@@ -140,7 +140,7 @@ export default function EmployeeDataTable() {
                 branch_id: selectedBranch,
                 search: searchTerm || null, // Only include search if it's not empty
             };
-            const result = await getEmployees(params);
+            const result = await getShifts(params);
 
             // Check if result has expected structure before setting state
             if (result && Array.isArray(result.data)) {
@@ -206,6 +206,7 @@ export default function EmployeeDataTable() {
     }
 
     const renderEmployeeRow = (employee) => {
+        console.log("🚀 ~ renderEmployeeRow ~ employee:", employee)
         // Fallback for nested objects that might be empty ({}) in the API sample
         const branchName = employee.branch?.branch_name || 'N/A';
         const departmentName = employee.department?.name || 'N/A';
@@ -215,61 +216,35 @@ export default function EmployeeDataTable() {
         return (
             <tr key={employee.id} className="border-b border-gray-200 hover:bg-indigo-50 transition-colors"
             >
-                {/* Name & Designation */}
-                <td onClick={() => handleRowClick(employee.id)} className="p-4 whitespace-nowrap">
-                    <div className="flex items-center space-x-3">
-                        <img
-                            alt={employee.full_name}
-                            className="w-10 h-10 rounded-full object-cover shadow-sm"
-                            src={employee.profile_picture || `https://placehold.co/40x40/6946dd/ffffff?text=${employee.full_name.charAt(0)}`}
-                            onError={(e) => { e.target.onerror = null; e.target.src = `https://placehold.co/40x40/6946dd/ffffff?text=${employee.full_name.charAt(0)}`; }}
-                        />
-                        <div>
-                            <p className="font-medium text-gray-800">{employee.full_name}</p>
-                            <p className="text-sm text-gray-500">{designationTitle}</p>
-                        </div>
-                    </div>
-                </td>
 
-                {/* Emp Id / Device Id */}
-                <td onClick={() => handleRowClick(employee.id)} className="p-4 whitespace-nowrap">
-                    <p className="text-gray-800">{employee.employee_id || '—'}</p>
-                    <p className="text-sm text-gray-500">Device ID: {employee.system_user_id || '—'}</p>
-                </td>
-
-                {/* Branch */}
-                <td onClick={() => handleRowClick(employee.id)} className="p-4 whitespace-nowrap">
-                    <p className="text-gray-800">{branchName}</p>
-                    {/* Placeholder for Branch Owner/Role */}
-                    {/* <p className="text-sm text-gray-500">(Branch Owner)</p> */}
-                </td>
-
-                {/* Department */}
-                <td onClick={() => handleRowClick(employee.id)} className="p-4 whitespace-nowrap text-gray-800">{departmentName}</td>
-
-                {/* Mobile / Email */}
                 <td className="p-4 whitespace-nowrap">
-                    <p className="text-gray-800">{employee.phone_number || '—'}</p>
-                    <p className="text-sm text-gray-500">{employeeEmail}</p>
+                    <p className="text-gray-800">{employee.name || '—'}</p>
                 </td>
 
-                {/* Timezone */}
-                <td onClick={() => handleRowClick(employee.id)} className="p-4 whitespace-nowrap text-gray-800">{employee.show_joining_date || '—'}</td>
-
-                {/* Access */}
-                <td onClick={() => handleRowClick(employee.id)} className="p-4 whitespace-nowrap">
-                    <span className="inline-flex items-center px-3 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">
-                        Full Access
-                    </span>
+                <td className="p-4 whitespace-nowrap">
+                    <p className="text-gray-800">{employee?.shift_type?.name}</p>
                 </td>
+
+                <td className="p-4 whitespace-nowrap">
+                    <p className="text-gray-800">{employee?.on_duty_time} - {employee.off_duty_time}</p>
+                </td>
+
+                <td className="p-4 whitespace-nowrap">
+                    <p className="text-gray-800">{employee?.isAutoShift ? "Yes" : "No"}</p>
+                </td>
+
+                <td className="p-4 whitespace-nowrap">
+                    <p className="text-gray-800">{employee?.halfday}</p>
+                </td>
+
+                <td className="p-4 whitespace-nowrap">
+                    <p className="text-gray-800">{employee?.halfday_working_hours}</p>
+                </td>
+
+
+
 
                 {/* Options/Security */}
-                <td onClick={() => handleRowClick(employee.id)} className="p-4 whitespace-nowrap">
-                    <div className="flex items-center space-x-2 text-gray-500">
-                        <QrCode className="w-5 h-5 cursor-pointer hover:text-indigo-600 transition-colors" title="QR Code Access" />
-                        <Fingerprint className="w-5 h-5 cursor-pointer hover:text-indigo-600 transition-colors" title="Fingerprint Setup" />
-                    </div>
-                </td>
 
                 {/* Actions */}
                 <td className="p-4 whitespace-nowrap">
@@ -363,7 +338,7 @@ export default function EmployeeDataTable() {
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6  sm:space-y-0">
                 <h1 className="text-2xl font-extrabold text-gray-900 flex items-center">
                     {/* <User className="w-7 h-7 mr-3 text-indigo-600" /> */}
-                    Employees
+                    Shifts
                 </h1>
                 <div className="flex flex-wrap items-center space-x-3 space-y-2 sm:space-y-0">
 
@@ -443,7 +418,7 @@ export default function EmployeeDataTable() {
 
 
                     {/* New Employee Button */}
-                    <Link href="/employees/create">
+                    <Link href="/attendance/create">
                         <button className="bg-primary text-white px-4 py-1 rounded-lg font-semibold shadow-md hover:bg-indigo-700 transition-all flex items-center space-x-2 whitespace-nowrap">
                             <Plus className="w-4 h-4" />
                             <span>New</span>
@@ -457,15 +432,13 @@ export default function EmployeeDataTable() {
                     <table className="w-full text-left table-auto">
                         <thead className="bg-gray-50 border-b border-gray-200">
                             <tr>
-                                <th className="p-4 font-semibold text-xs text-gray-600 uppercase tracking-wider min-w-[150px]">Name</th>
-                                <th className="p-4 font-semibold text-xs text-gray-600 uppercase tracking-wider min-w-[150px]">Emp Id / Device Id</th>
-                                <th className="p-4 font-semibold text-xs text-gray-600 uppercase tracking-wider min-w-[150px]">Branch</th>
-                                <th className="p-4 font-semibold text-xs text-gray-600 uppercase tracking-wider min-w-[150px]">Department</th>
-                                <th className="p-4 font-semibold text-xs text-gray-600 uppercase tracking-wider min-w-[150px]">Mobile / Email</th>
-                                <th className="p-4 font-semibold text-xs text-gray-600 uppercase tracking-wider min-w-[100px]">Joining</th>
-                                <th className="p-4 font-semibold text-xs text-gray-600 uppercase tracking-wider min-w-[100px]">Access</th>
-                                <th className="p-4 font-semibold text-xs text-gray-600 uppercase tracking-wider min-w-[120px]">Security</th>
-                                <th className="p-4 font-semibold text-xs text-gray-600 uppercase tracking-wider min-w-[50px]">Actions</th>
+                                <th className="p-4 font-semibold text-xs text-gray-600 uppercase tracking-wider min-w-[150px]">Name of Schedule</th>
+                                <th className="p-4 font-semibold text-xs text-gray-600 uppercase tracking-wider min-w-[150px]">Type Schedule</th>
+                                <th className="p-4 font-semibold text-xs text-gray-600 uppercase tracking-wider min-w-[150px]">Scheduled Time</th>
+                                <th className="p-4 font-semibold text-xs text-gray-600 uppercase tracking-wider min-w-[150px]">Auto Shift</th>
+                                <th className="p-4 font-semibold text-xs text-gray-600 uppercase tracking-wider min-w-[150px]">Half Day</th>
+                                <th className="p-4 font-semibold text-xs text-gray-600 uppercase tracking-wider min-w-[100px]">Half Day Working Hours</th>
+                                <th className="p-4 font-semibold text-xs text-gray-600 uppercase tracking-wider min-w-[100px]">Actions</th>
                             </tr>
                         </thead>
                         <tbody>

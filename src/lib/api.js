@@ -44,6 +44,18 @@ export const getEmployees = async (params = {}) => {
     return data;
 };
 
+export const getShifts = async (params = {}) => {
+    const user = await getUser();
+
+    const { data } = await axios.get(`${API_BASE}/shift`, {
+        params: {
+            ...params,
+            company_id: user?.company_id || 0,
+        },
+    });
+    return data;
+};
+
 export const getAttendnaceCount = async (branch_id = null) => {
     const user = await getUser();
     const { data } = await axios.get(`${API_BASE}/dashbaord_attendance_count`, {
@@ -88,6 +100,130 @@ export const storeEmployee = async (payload) => {
     console.log("Storing employee with payload:", payload, user?.company_id || 0);
 
     await axios.post(`${API_BASE}/employee-store-new`, { ...payload, company_id: user?.company_id || 0 });
+
+    return true;
+};
+
+export const updateEmployee = async (payload, id = 0) => {
+    await axios.post(`${API_BASE}/employee-update-new/${id}`, payload);
+    return true;
+};
+
+export const removeEmployee = async (id = 0) => {
+
+    await axios.delete(`${API_BASE}/employee/${id}`);
+
+    return true;
+};
+
+export const updateEmergencyContact = async (payload, id = 0) => {
+
+    await axios.post(`${API_BASE}/employee-update-emergency-contact-new/${id}`, payload);
+
+    return true;
+};
+
+export const updateBank = async (payload) => {
+
+    const user = await getUser();
+
+    await axios.post(`${API_BASE}/employee-update-bank-new`, { ...payload, company_id: user?.company_id || 0 });
+
+    return true;
+};
+
+export const updateAccessSettings = async (payload) => {
+
+    const user = await getUser();
+
+    await axios.post(`${API_BASE}/employee-update-access-settings-new`, { ...payload, company_id: user?.company_id || 0 });
+
+    return true;
+};
+
+export const updateLogin = async (payload) => {
+
+    const user = await getUser();
+
+    await axios.post(`${API_BASE}/employee-update-login-new`, { ...payload, company_id: user?.company_id || 0 });
+
+    return true;
+};
+
+export const updateSettings = async (payload) => {
+
+    const user = await getUser();
+
+    await axios.post(`${API_BASE}/employee-update-settings-new`, { ...payload, company_id: user?.company_id || 0 });
+
+    return true;
+};
+
+export const getLeaveGroups = async () => {
+
+    const user = await getUser();
+
+    let { data } = await axios.get(`${API_BASE}/leave_groups`, { company_id: user?.company_id || 0, per_page: 100 });
+
+    return data.data;
+};
+
+export const getLeaveManagers = async () => {
+
+    const user = await getUser();
+
+    let { data } = await axios.get(`${API_BASE}/employeesList`, { company_id: user?.company_id || 0, per_page: 100 });
+
+    return data.data;
+};
+
+export const updateAddress = async (payload, id = 0) => {
+
+    await axios.post(`${API_BASE}/employee-update-address-new/${id}`, payload);
+
+    return true;
+};
+
+export const updateVisa = async (payload) => {
+
+    const user = await getUser();
+
+    console.log("Storing employee with payload:", payload, user?.company_id || 0);
+
+    await axios.post(`${API_BASE}/employee-update-visa-new`, { ...payload, company_id: user?.company_id || 0 });
+
+    return true;
+};
+
+export const updateEmirate = async (payload) => {
+
+    const user = await getUser();
+
+    console.log("Storing employee with payload:", payload, user?.company_id || 0);
+
+    await axios.post(`${API_BASE}/employee-update-emirate-new`, { ...payload, company_id: user?.company_id || 0 });
+
+    return true;
+};
+
+export const updatePassport = async (payload) => {
+
+    const user = await getUser();
+
+    console.log("Storing employee with payload:", payload, user?.company_id || 0);
+
+    await axios.post(`${API_BASE}/employee-update-passport-new`, { ...payload, company_id: user?.company_id || 0 });
+
+    return true;
+};
+
+export const updateQualification = async (payload) => {
+
+    const user = await getUser();
+
+    console.log("Storing employee with payload:", payload, user?.company_id || 0);
+
+    await axios.post(`${API_BASE}/employee-update-qualification-new`, { ...payload, company_id: user?.company_id || 0 });
 
     return true;
 };

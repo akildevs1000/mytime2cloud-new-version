@@ -35,6 +35,14 @@ import axios from 'axios'; // Ensure you import axios at the top of your file
 import { getBranches, getEmployees } from '@/lib/api';
 import { EmployeeExtras } from '@/components/Employees/Extras';
 import { Input } from '@/components/ui/input';
+import Visa from '@/components/Visa';
+import Emirate from '@/components/Emirate';
+import Passport from '@/components/Passport';
+import Qualification from '@/components/Qualification';
+import Bank from '@/components/Bank';
+import RFID from '@/components/RFID';
+import Login from '@/components/Login';
+import Settings from '@/components/Settings';
 
 // -----------------------------------------------------------
 // 1. Custom Debounce Hook
@@ -61,17 +69,23 @@ const useDebounce = (value, delay) => {
 // Data structure for the tabs
 const TABS = [
   { id: 'profile', name: 'Profile', icon: User },
+  { id: 'emergency', name: 'Emergency', icon: FileText },
+  { id: 'address', name: 'Address', icon: MapPin },
+  { id: 'visa', name: 'Visa', icon: MapPin },
+  { id: 'passport', name: 'Passport', icon: MapPin },
+  { id: 'emirate', name: 'Emirate', icon: MapPin },
+  { id: 'qualification', name: 'Qualification', icon: MapPin },
+  { id: 'bank', name: 'Bank', icon: MapPin },
+  { id: 'rfid', name: 'RFID', icon: MapPin },
+  { id: 'login', name: 'Login', icon: MapPin },
+  { id: 'settings', name: 'Settings', icon: MapPin },
+  { id: 'documents', name: 'Documents', icon: FileText },
   { id: 'payroll', name: 'Payroll', icon: Briefcase },
   { id: 'performance', name: 'Performance', icon: Briefcase },
-  { id: 'address', name: 'Home Address', icon: MapPin },
-  { id: 'documents', name: 'Documents', icon: FileText },
-  { id: 'emergency', name: 'Emergency', icon: FileText },
 ];
 
 
 export default function Home() {
-
-  const router = useRouter();
 
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -79,21 +93,40 @@ export default function Home() {
 
   // Placeholder content based on the active tab
   const renderTabContent = (employee) => {
+
     switch (activeTab) {
       case 'profile':
         return <Profile payload={employee} />;
-      case 'payroll':
-        return <Payroll payload={employee} />;
-      case 'performance':
-        return <Performance payload={employee} />;
-      case 'address':
-        return <Address payload={employee} />;
-      case 'documents':
-        return <Document payload={employee} />;
       case 'emergency':
         return (
           <EmergencyContact payload={employee} />
         );
+      case 'address':
+        return <Address payload={employee} />;
+      case 'visa':
+        return <Visa employee_id={employee.id} visa={employee.visa} />;
+      case 'emirate':
+        return <Emirate employee_id={employee.id} emirate={employee.emirate} />;
+      case 'qualification':
+        return <Qualification employee_id={employee.id} qualification={employee.qualification} />;
+      case 'bank':
+        return <Bank employee_id={employee.id} bank={employee.bank} />;
+      case 'rfid':
+        return <RFID employee_id={employee.employee_id} rfid_card_number={employee.rfid_card_number} rfid_card_password={employee.rfid_card_password} />;
+      case 'login':
+        return <Login employee_id={employee.id} user={employee.user} />;
+      case 'settings':
+        return <Settings employee_id={employee.employee_id} leave_group_id={employee.leave_group_id} reporting_manager_id={employee.reporting_manager_id} status={employee.status} />;
+      case 'passport':
+        return <Passport employee_id={employee.id} passport={employee.passport} />;
+      case 'payroll':
+        return <Payroll payload={employee} />;
+      case 'performance':
+        return <Performance payload={employee} />;
+
+      case 'documents':
+        return <Document payload={employee} />;
+
       default:
         return null;
     }
