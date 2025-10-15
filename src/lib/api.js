@@ -151,6 +151,13 @@ export const removeEmployee = async (id = 0) => {
     return true;
 };
 
+export const removeShift = async (id = 0) => {
+
+    await axios.delete(`${API_BASE}/shift/${id}`);
+
+    return true;
+};
+
 export const updateEmergencyContact = async (payload, id = 0) => {
 
     await axios.post(`${API_BASE}/employee-update-emergency-contact-new/${id}`, payload);

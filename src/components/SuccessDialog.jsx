@@ -1,6 +1,11 @@
 // SuccessDialog.jsx
 import React from "react";
-import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 
 // Note: Removed 'SuccessDialogProps' interface and type annotations
@@ -13,7 +18,6 @@ export function SuccessDialog({ open, onOpenChange, title, description }) {
           border-none shadow-xl bg-white dark:bg-gray-900
           max-w-sm w-[90%] rounded-2xl p-8 text-center flex flex-col items-center justify-center
         "
-        hideClose
       >
         {/* Hidden title for accessibility */}
         <VisuallyHidden>
@@ -35,9 +39,7 @@ export function SuccessDialog({ open, onOpenChange, title, description }) {
         </h1>
 
         <DialogDescription asChild>
-          <p className="text-gray-600 dark:text-gray-300">
-            {description}
-          </p>
+          <p className="text-gray-600 dark:text-gray-300">{description}</p>
         </DialogDescription>
       </DialogContent>
     </Dialog>
