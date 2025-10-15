@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/form";
 import { useRouter } from "next/navigation";
 import { Phone, MapPin, Mail, Globe, Home, Map, LocationEdit } from "lucide-react";
-import { updateAddress } from "@/lib/api";
+import { parseApiError, updateAddress } from "@/lib/api";
 
 const EmergencyContact = ({ payload }) => {
   const router = useRouter();
@@ -62,8 +62,7 @@ const EmergencyContact = ({ payload }) => {
 
       router.push(`/employees`);
     } catch (error) {
-      console.error("Error saving emergency contact:", error);
-      setGlobalError("Failed to save emergency contact. Please try again.");
+      setGlobalError(parseApiError(error));
     }
   };
 

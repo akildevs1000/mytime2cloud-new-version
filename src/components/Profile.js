@@ -4,7 +4,6 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useForm } from "react-hook-form"; // Used for standard form handling
 import { SuccessDialog } from "@/components/SuccessDialog"; // Import the new component
 
-// --- SHADCN/UI & Icon Imports (lucide-react is the standard for shadcn) ---
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -35,20 +34,19 @@ import {
   CommandItem,
 } from "@/components/ui/command";
 
-import { Calendar } from "@/components/ui/calendar"
 
 
-import { Check, ChevronsUpDown, User, Briefcase, Phone, ArrowLeft, Upload, Calendar as CalendarIcon, CheckCircle2 } from "lucide-react";
+import { Check, ChevronsUpDown, User, Briefcase, Phone } from "lucide-react";
 import { cn, convertFileToBase64 } from "@/lib/utils";
 import { useRouter } from 'next/navigation';
 
-import { getBranches, getDepartments, storeEmployee, updateEmployee } from '@/lib/api';
+import { getBranches, getDepartments, parseApiError, storeEmployee, updateEmployee } from '@/lib/api';
 import { format } from 'date-fns';
+import DatePicker from './ui/DatePicker';
 
 
 
 const Profile = ({ payload }) => {
-  const [isDatePickerOpen, setIsDatePickerOpen] = useState(false) // ✅ renamed
   const fileInputRef = useRef(null);
   const handleUploadClick = () => fileInputRef.current.click();
 
@@ -216,31 +214,7 @@ const Profile = ({ payload }) => {
       router.push(`/employees`);
 
     } catch (error) {
-      if (error.response) {
-
-        const status = error.response.status;
-        const responseData = error.response.data;
-
-        if (status === 422) {
-          // 💥 422: Set a concise global error message.
-          setGlobalError(
-            responseData.message || "Validation failed. Please check the form fields for errors."
-          );
-
-          // You may also want to integrate responseData.errors with react-hook-form's setError here
-
-        } else if (status >= 500) {
-          // 500: Server error
-          setGlobalError("A critical server error occurred. Please try again later.");
-        } else {
-          // Other errors (401, 403, 404, etc.)
-          setGlobalError(responseData.message || `An error occurred with status ${status}.`);
-        }
-
-      } else {
-        // Network error
-        setGlobalError("Network error: Could not connect to the API.");
-      }
+      setGlobalError(parseApiError(error));
     }
   };
 
@@ -262,94 +236,94 @@ const Profile = ({ payload }) => {
                   Personal Details
                 </h2>
 
-                    {/* Row 1: Title, First Name, Last Name */}
+                {/* Row 1: Title, First Name, Last Name */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                      {/* Title Select */}
-                      <FormField
-                        control={form.control}
-                        name="title"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Title</FormLabel>
-                            <Select onValueChange={field.onChange} defaultValue={field.value}>
-                              <FormControl>
-                                <SelectTrigger className="w-full">
-                                  <SelectValue placeholder="Select Title" />
-                                </SelectTrigger>
-                              </FormControl>
-                              <SelectContent>
-                                {['Mr.', 'Mrs.', 'Ms.'].map((option) => (
-                                  <SelectItem key={option} value={option}>
-                                    {option}
-                                  </SelectItem>
-                                ))}
-                              </SelectContent>
-                            </Select>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
+                  {/* Title Select */}
+                  <FormField
+                    control={form.control}
+                    name="title"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Title</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <FormControl>
+                            <SelectTrigger className="w-full">
+                              <SelectValue placeholder="Select Title" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {['Mr.', 'Mrs.', 'Ms.'].map((option) => (
+                              <SelectItem key={option} value={option}>
+                                {option}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
 
-                      {/* First Name Input */}
-                      <FormField
-                        control={form.control}
-                        name="first_name"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>First Name</FormLabel>
-                            <FormControl>
-                              <Input placeholder="Enter first name" {...field} />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
+                  {/* First Name Input */}
+                  <FormField
+                    control={form.control}
+                    name="first_name"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>First Name</FormLabel>
+                        <FormControl>
+                          <Input placeholder="Enter first name" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
 
-                      {/* Last Name Input */}
-                      <FormField
-                        control={form.control}
-                        name="last_name"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Last Name</FormLabel>
-                            <FormControl>
-                              <Input placeholder="Enter last name" {...field} />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    </div>
+                  {/* Last Name Input */}
+                  <FormField
+                    control={form.control}
+                    name="last_name"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Last Name</FormLabel>
+                        <FormControl>
+                          <Input placeholder="Enter last name" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
 
-                    {/* Row 2: Full Legal Name, Display Name */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-                      <FormField
-                        control={form.control}
-                        name="full_name"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Full Legal Name</FormLabel>
-                            <FormControl>
-                              <Input placeholder="Enter employee's full legal name" {...field} />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
+                {/* Row 2: Full Legal Name, Display Name */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                  <FormField
+                    control={form.control}
+                    name="full_name"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Full Legal Name</FormLabel>
+                        <FormControl>
+                          <Input placeholder="Enter employee's full legal name" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
 
-                      <FormField
-                        control={form.control}
-                        name="display_name"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Display Name / Nickname</FormLabel>
-                            <FormControl>
-                              <Input placeholder="Nickname or preferred display name" {...field} />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
+                  <FormField
+                    control={form.control}
+                    name="display_name"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Display Name / Nickname</FormLabel>
+                        <FormControl>
+                          <Input placeholder="Nickname or preferred display name" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
                 </div>
               </section>
 
@@ -462,35 +436,11 @@ const Profile = ({ payload }) => {
                     render={({ field }) => (
                       <FormItem className="flex flex-col">
                         <FormLabel>Joining Date</FormLabel>
-                        <Popover open={isDatePickerOpen} onOpenChange={setIsDatePickerOpen}>
-                          <PopoverTrigger asChild>
-                            <FormControl>
-                              <Button
-                                variant="outline"
-                                className={`w-full pl-3 text-left font-normal ${!field.value && "text-muted-foreground"
-                                  }`}
-                              >
-                                {field.value ? (
-                                  format(field.value, "yyyy-MM-dd")
-                                ) : (
-                                  <span>Pick a date</span>
-                                )}
-                                <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                              </Button>
-                            </FormControl>
-                          </PopoverTrigger>
-                          <PopoverContent className="w-auto p-0" align="start">
-                            <Calendar
-                              mode="single"
-                              selected={field.value}
-                              onSelect={(date) => {
-                                field.onChange(date)
-                                setIsDatePickerOpen(false) // ✅ closes after selection
-                              }}
-                              initialFocus
-                            />
-                          </PopoverContent>
-                        </Popover>
+                        <DatePicker
+                          value={field.value}
+                          onChange={(date) => field.onChange(date)}
+                          placeholder="Pick a date"
+                        />
                         <FormMessage />
                       </FormItem>
                     )}

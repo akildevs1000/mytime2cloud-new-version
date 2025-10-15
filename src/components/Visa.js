@@ -13,18 +13,12 @@ import {
     FormLabel,
     FormMessage,
 } from "@/components/ui/form";
-import {
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
-} from "@/components/ui/popover";
 
 
-import { Calendar } from "@/components/ui/calendar"
 import { useRouter } from "next/navigation";
-import { CalendarIcon, Plane } from "lucide-react";
-import { updateVisa } from "@/lib/api";
-import { format } from "date-fns";
+import {  Plane } from "lucide-react";
+import { parseApiError, updateVisa } from "@/lib/api";
+import DatePicker from "./ui/DatePicker";
 
 const Visa = ({ employee_id, visa }) => {
 
@@ -33,10 +27,6 @@ const Visa = ({ employee_id, visa }) => {
     const [open, setOpen] = useState(false);
     const [globalError, setGlobalError] = useState(null);
 
-    const [isIssueDatePickerOpen, setIsIssueDatePickerOpen] = useState(false);
-    const [isExpiryDatePickerOpen, setIsExpiryDatePickerOpen] = useState(false);
-    const [isLabourIssueDatePickerOpen, setIsLabourIssueDatePickerOpen] = useState(false);
-    const [isLabourExpiryDatePickerOpen, setIsLabourExpiryDatePickerOpen] = useState(false);
 
     const form = useForm({
         defaultValues: {
@@ -86,299 +76,179 @@ const Visa = ({ employee_id, visa }) => {
 
             router.push(`/employees`);
         } catch (error) {
-            if (error.response) {
-
-                const status = error.response.status;
-                const responseData = error.response.data;
-
-                if (status === 422) {
-                    // 💥 422: Set a concise global error message.
-                    setGlobalError(
-                        responseData.message || "Validation failed. Please check the form fields for errors."
-                    );
-
-                    // You may also want to integrate responseData.errors with react-hook-form's setError here
-
-                } else if (status >= 500) {
-                    // 500: Server error
-                    setGlobalError("A critical server error occurred. Please try again later.");
-                } else {
-                    // Other errors (401, 403, 404, etc.)
-                    setGlobalError(responseData.message || `An error occurred with status ${status}.`);
-                }
-
-            } else {
-                // Network error
-                setGlobalError("Network error: Could not connect to the API.");
-            }
+            setGlobalError(parseApiError(error));
         }
     };
 
     return (
         <div className="bg-white dark:bg-gray-800 py-8">
             <div className="">
-                    <Form {...form}>
-                        <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
-                            <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-6 flex items-center">
-                                <Plane className="mr-3 h-6 w-6 text-primary" />
-                                Visa Information
-                            </h2>
+                <Form {...form}>
+                    <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
+                        <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-6 flex items-center">
+                            <Plane className="mr-3 h-6 w-6 text-primary" />
+                            Visa Information
+                        </h2>
 
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
-                                <FormField
-                                    control={form.control}
-                                    name="visa_no"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>Visa</FormLabel>
-                                            <FormControl>
-                                                <Input placeholder="Enter Visa Number" {...field} />
-                                            </FormControl>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
+                            <FormField
+                                control={form.control}
+                                name="visa_no"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Visa</FormLabel>
+                                        <FormControl>
+                                            <Input placeholder="Enter Visa Number" {...field} />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
 
-                                <FormField
-                                    control={form.control}
-                                    name="place_of_issues"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>Place of Issue</FormLabel>
-                                            <FormControl>
-                                                <Input placeholder="Enter Place of Issue" {...field} />
-                                            </FormControl>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
+                            <FormField
+                                control={form.control}
+                                name="place_of_issues"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Place of Issue</FormLabel>
+                                        <FormControl>
+                                            <Input placeholder="Enter Place of Issue" {...field} />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
 
-                                <FormField
-                                    control={form.control}
-                                    name="country"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>Country</FormLabel>
-                                            <FormControl>
-                                                <Input placeholder="Enter Country" {...field} />
-                                            </FormControl>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
+                            <FormField
+                                control={form.control}
+                                name="country"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Country</FormLabel>
+                                        <FormControl>
+                                            <Input placeholder="Enter Country" {...field} />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
 
-                                <FormField
-                                    control={form.control}
-                                    name="issue_date"
-                                    render={({ field }) => (
-                                        <FormItem className="flex flex-col">
-                                            <FormLabel>Issue Date</FormLabel>
-                                            <Popover open={isIssueDatePickerOpen} onOpenChange={setIsIssueDatePickerOpen}>
-                                                <PopoverTrigger asChild>
-                                                    <FormControl>
-                                                        <Button
-                                                            variant="outline"
-                                                            className={`w-full pl-3 text-left font-normal ${!field.value && "text-muted-foreground"
-                                                                }`}
-                                                        >
-                                                            {field.value ? (
-                                                                format(field.value, "yyyy-MM-dd")
-                                                            ) : (
-                                                                <span>Pick a date</span>
-                                                            )}
-                                                            <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                                                        </Button>
-                                                    </FormControl>
-                                                </PopoverTrigger>
-                                                <PopoverContent className="w-auto p-0" align="start">
-                                                    <Calendar
-                                                        mode="single"
-                                                        selected={field.value}
-                                                        onSelect={(date) => {
-                                                            field.onChange(date)
-                                                            setIsIssueDatePickerOpen(false) // ✅ closes after selection
-                                                        }}
-                                                        initialFocus
-                                                    />
-                                                </PopoverContent>
-                                            </Popover>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
+                            <FormField
+                                control={form.control}
+                                name="issue_date"
+                                render={({ field }) => (
+                                    <FormItem className="flex flex-col">
+                                        <FormLabel>Issue Date</FormLabel>
+                                        <DatePicker
+                                            value={field.value}
+                                            onChange={(date) => field.onChange(date)}
+                                            placeholder="Pick a date"
+                                        />
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
 
-                                <FormField
-                                    control={form.control}
-                                    name="expiry_date"
-                                    render={({ field }) => (
-                                        <FormItem className="flex flex-col">
-                                            <FormLabel>Expiry Date</FormLabel>
-                                            <Popover open={isExpiryDatePickerOpen} onOpenChange={setIsExpiryDatePickerOpen}>
-                                                <PopoverTrigger asChild>
-                                                    <FormControl>
-                                                        <Button
-                                                            variant="outline"
-                                                            className={`w-full pl-3 text-left font-normal ${!field.value && "text-muted-foreground"
-                                                                }`}
-                                                        >
-                                                            {field.value ? (
-                                                                format(field.value, "yyyy-MM-dd")
-                                                            ) : (
-                                                                <span>Pick a date</span>
-                                                            )}
-                                                            <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                                                        </Button>
-                                                    </FormControl>
-                                                </PopoverTrigger>
-                                                <PopoverContent className="w-auto p-0" align="start">
-                                                    <Calendar
-                                                        mode="single"
-                                                        selected={field.value}
-                                                        onSelect={(date) => {
-                                                            field.onChange(date)
-                                                            setIsExpiryDatePickerOpen(false) // ✅ closes after selection
-                                                        }}
-                                                        initialFocus
-                                                    />
-                                                </PopoverContent>
-                                            </Popover>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
+                            <FormField
+                                control={form.control}
+                                name="expiry_date"
+                                render={({ field }) => (
+                                    <FormItem className="flex flex-col">
+                                        <FormLabel>Expiry Date</FormLabel>
+                                        <DatePicker
+                                            value={field.value}
+                                            onChange={(date) => field.onChange(date)}
+                                            placeholder="Pick a date"
+                                        />
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
 
 
-                                <FormField
-                                    control={form.control}
-                                    name="labour_no"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>Labour No</FormLabel>
-                                            <FormControl>
-                                                <Input placeholder="Enter Labour No" {...field} />
-                                            </FormControl>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
+                            <FormField
+                                control={form.control}
+                                name="labour_no"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Labour No</FormLabel>
+                                        <FormControl>
+                                            <Input placeholder="Enter Labour No" {...field} />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
 
 
 
-                                <FormField
-                                    control={form.control}
-                                    name="labour_issue_date"
-                                    render={({ field }) => (
-                                        <FormItem className="flex flex-col">
-                                            <FormLabel>Labour Issue Date</FormLabel>
-                                            <Popover open={isLabourIssueDatePickerOpen} onOpenChange={setIsLabourIssueDatePickerOpen}>
-                                                <PopoverTrigger asChild>
-                                                    <FormControl>
-                                                        <Button
-                                                            variant="outline"
-                                                            className={`w-full pl-3 text-left font-normal ${!field.value && "text-muted-foreground"
-                                                                }`}
-                                                        >
-                                                            {field.value ? (
-                                                                format(field.value, "yyyy-MM-dd")
-                                                            ) : (
-                                                                <span>Pick a date</span>
-                                                            )}
-                                                            <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                                                        </Button>
-                                                    </FormControl>
-                                                </PopoverTrigger>
-                                                <PopoverContent className="w-auto p-0" align="start">
-                                                    <Calendar
-                                                        mode="single"
-                                                        selected={field.value}
-                                                        onSelect={(date) => {
-                                                            field.onChange(date)
-                                                            setIsLabourIssueDatePickerOpen(false) // ✅ closes after selection
-                                                        }}
-                                                        initialFocus
-                                                    />
-                                                </PopoverContent>
-                                            </Popover>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
+                            <FormField
+                                control={form.control}
+                                name="labour_issue_date"
+                                render={({ field }) => (
+                                    <FormItem className="flex flex-col">
+                                        <FormLabel>Labour Issue Date</FormLabel>
+                                        <DatePicker
+                                            value={field.value}
+                                            onChange={(date) => field.onChange(date)}
+                                            placeholder="Pick a date"
+                                        />
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
 
-                                <FormField
-                                    control={form.control}
-                                    name="labour_expiry_date"
-                                    render={({ field }) => (
-                                        <FormItem className="flex flex-col">
-                                            <FormLabel>Labour Expiry Date</FormLabel>
-                                            <Popover open={isLabourExpiryDatePickerOpen} onOpenChange={setIsLabourExpiryDatePickerOpen}>
-                                                <PopoverTrigger asChild>
-                                                    <FormControl>
-                                                        <Button
-                                                            variant="outline"
-                                                            className={`w-full pl-3 text-left font-normal ${!field.value && "text-muted-foreground"
-                                                                }`}
-                                                        >
-                                                            {field.value ? (
-                                                                format(field.value, "yyyy-MM-dd")
-                                                            ) : (
-                                                                <span>Pick a date</span>
-                                                            )}
-                                                            <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                                                        </Button>
-                                                    </FormControl>
-                                                </PopoverTrigger>
-                                                <PopoverContent className="w-auto p-0" align="start">
-                                                    <Calendar
-                                                        mode="single"
-                                                        selected={field.value}
-                                                        onSelect={(date) => {
-                                                            field.onChange(date)
-                                                            setIsLabourExpiryDatePickerOpen(false) // ✅ closes after selection
-                                                        }}
-                                                        initialFocus
-                                                    />
-                                                </PopoverContent>
-                                            </Popover>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
+                            <FormField
+                                control={form.control}
+                                name="labour_expiry_date"
+                                render={({ field }) => (
+                                    <FormItem className="flex flex-col">
+                                        <FormLabel>Labour Expiry Date</FormLabel>
+                                        <DatePicker
+                                            value={field.value}
+                                            onChange={(date) => field.onChange(date)}
+                                            placeholder="Pick a date"
+                                        />
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
 
+                        </div>
+
+                        {globalError && (
+                            <div
+                                className="mb-4 p-3 border border-red-500 bg-red-50 text-red-700 rounded-lg"
+                                role="alert"
+                            >
+                                {globalError}
                             </div>
+                        )}
 
-                            {globalError && (
-                                <div
-                                    className="mb-4 p-3 border border-red-500 bg-red-50 text-red-700 rounded-lg"
-                                    role="alert"
-                                >
-                                    {globalError}
-                                </div>
-                            )}
+                        {/* Buttons */}
+                        <div className="flex justify-end space-x-4 pt-4">
+                            <Button type="button" variant="secondary" onClick={handleCancel}>
+                                CANCEL
+                            </Button>
+                            <Button
+                                type="submit"
+                                className="bg-primary hover:bg-indigo-700"
+                                disabled={isSubmitting} a
+                            >
+                                {isSubmitting ? "SUBMITTING..." : "SUBMIT"}
+                            </Button>
+                        </div>
+                    </form>
+                </Form>
 
-                            {/* Buttons */}
-                            <div className="flex justify-end space-x-4 pt-4">
-                                <Button type="button" variant="secondary" onClick={handleCancel}>
-                                    CANCEL
-                                </Button>
-                                <Button
-                                    type="submit"
-                                    className="bg-primary hover:bg-indigo-700"
-                                    disabled={isSubmitting} a
-                                >
-                                    {isSubmitting ? "SUBMITTING..." : "SUBMIT"}
-                                </Button>
-                            </div>
-                        </form>
-                    </Form>
-
-                    <SuccessDialog
-                        open={open}
-                        onOpenChange={setOpen}
-                        title="Contact Saved"
-                        description="Contact details have been saved successfully."
-                    />
-                </div>
+                <SuccessDialog
+                    open={open}
+                    onOpenChange={setOpen}
+                    title="Contact Saved"
+                    description="Contact details have been saved successfully."
+                />
+            </div>
 
         </div>
     );

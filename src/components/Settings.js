@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/form";
 import { useRouter } from "next/navigation";
 import { LogIn, Settings2 } from "lucide-react";
-import { updateSettings, getLeaveManagers, getLeaveGroups } from "@/lib/api";
+import { updateSettings, getLeaveManagers, getLeaveGroups, parseApiError } from "@/lib/api";
 import { Toggle } from "./ui/toggle";
 import { Switch } from "./ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
@@ -84,31 +84,7 @@ const Settings = ({ employee_id, leave_group_id, reporting_manager_id, status })
 
             router.push(`/employees`);
         } catch (error) {
-            if (error.response) {
-
-                const status = error.response.status;
-                const responseData = error.response.data;
-
-                if (status === 422) {
-                    // 💥 422: Set a concise global error message.
-                    setGlobalError(
-                        responseData.message || "Validation failed. Please check the form fields for errors."
-                    );
-
-                    // You may also want to integrate responseData.errors with react-hook-form's setError here
-
-                } else if (status >= 500) {
-                    // 500: Server error
-                    setGlobalError("A critical server error occurred. Please try again later.");
-                } else {
-                    // Other errors (401, 403, 404, etc.)
-                    setGlobalError(responseData.message || `An error occurred with status ${status}.`);
-                }
-
-            } else {
-                // Network error
-                setGlobalError("Network error: Could not connect to the API.");
-            }
+            setGlobalError(parseApiError(error));
         }
     };
 
