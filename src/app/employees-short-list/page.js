@@ -409,9 +409,12 @@ export default function Home() {
               />
               <div>
                 <h3 className="text-xl font-semibold">{selectedEmployee?.full_name || "---"}</h3>
-                <p className="text-subtext-light dark:text-subtext-dark">
-                  {selectedEmployee?.department?.name || "---"}
-                </p>
+                 <div
+                  className="mt-2 flex items-center space-x-2 text-sm text-subtext-light dark:text-subtext-dark"
+                >
+                  <span className="material-icons text-base">domain</span>
+                  <span>Dept: {selectedEmployee?.department?.name ||  "---"}</span>
+                </div>
                 <div
                   className="mt-2 flex items-center space-x-2 text-sm text-subtext-light dark:text-subtext-dark"
                 >
