@@ -14,7 +14,7 @@ import {
     FormMessage,
 } from "@/components/ui/form";
 import { useRouter } from "next/navigation";
-import { Banknote, Phone, PhoneCall, Users } from "lucide-react";
+import { Banknote } from "lucide-react";
 import { parseApiError, updateBank } from "@/lib/api";
 
 const Bank = ({ employee_id, bank }) => {
@@ -38,7 +38,6 @@ const Bank = ({ employee_id, bank }) => {
     const handleCancel = () => router.push(`/employees`);
 
     const onSubmit = async (data) => {
-        console.log("🚀 ~ onSubmit ~ data:", data)
         setGlobalError(null);
         try {
             const finalPayload = {

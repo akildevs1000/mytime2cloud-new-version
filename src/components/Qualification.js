@@ -13,29 +13,17 @@ import {
     FormLabel,
     FormMessage,
 } from "@/components/ui/form";
-import {
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
-} from "@/components/ui/popover";
 
-
-import { Calendar } from "@/components/ui/calendar"
 import { useRouter } from "next/navigation";
-import { Book, CalendarIcon, IdCard, Plane } from "lucide-react";
+import { Book } from "lucide-react";
 import { parseApiError, updateQualification } from "@/lib/api";
-import { format } from "date-fns";
 import DatePicker from "./ui/DatePicker";
 
 const Qualification = ({ employee_id, qualification }) => {
 
-    console.log("🚀 ~ qualification ~ employee_id, qualification:", employee_id, qualification)
     const router = useRouter();
     const [open, setOpen] = useState(false);
     const [globalError, setGlobalError] = useState(null);
-
-    const [isIssueDatePickerOpen, setIsIssueDatePickerOpen] = useState(false);
-    const [isExpiryDatePickerOpen, setIsExpiryDatePickerOpen] = useState(false);
 
     const form = useForm({
         defaultValues: {
