@@ -26,7 +26,7 @@ import {
 import { cn, convertFileToBase64 } from "@/lib/utils";
 import { useRouter } from 'next/navigation';
 
-import { getBranches, getDepartments, storeEmployee } from '@/lib/api';
+import { getBranches, getDepartments, parseApiError, storeEmployee } from '@/lib/api';
 import {
     Select,
     SelectContent,
@@ -35,19 +35,18 @@ import {
     SelectValue,
 } from "@/components/ui/select"
 
-import { user } from '@/config';
-import { format } from 'date-fns';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
+import TimePicker from '@/components/ui/TimePicker';
 
 
 const EmployeeProfileForm = () => {
-    const [isDatePickerOpen, setIsDatePickerOpen] = useState(false) // ✅ renamed
+
+    const [time, setTime] = useState("09:00");
+
     const router = useRouter();
-    const handleUploadClick = () => fileInputRef.current.click();
     const handleGoBack = () => router.push(`/employees`);
     const handleCancel = () => router.push(`/employees`);
-    const fileInputRef = useRef(null);
     const form = useForm({
         defaultValues: {
             // Personal Details
@@ -72,82 +71,12 @@ const EmployeeProfileForm = () => {
     });
     const { watch, setValue, handleSubmit, formState: { isSubmitting } } = form;
 
-    const [isBranchPopoverOpen, setIsBranchPopoverOpen] = useState(false);
 
     const [open, setOpen] = useState(false);
     const [globalError, setGlobalError] = useState(null);
-    const [branches, setBranches] = useState([]);
-    const [departments, setDepartments] = useState([]);
-    const [imagePreview, setImagePreview] = useState(null);
     const [imageFile, setImageFile] = useState(null);
 
-    const selectedBranchId = watch("branch_id");
 
-    useEffect(() => {
-        const fetchBranches = async () => {
-            try {
-                setBranches(await getBranches());
-            } catch (error) {
-                console.error("Error fetching branches:", error);
-                setBranches([]);
-            }
-        };
-        fetchBranches();
-    }, []);
-
-    useEffect(() => {
-        // Reset departments and department_id if no branch is selected
-        if (!selectedBranchId) {
-            setDepartments([]);
-            setValue("department_id", null);
-            return;
-        }
-
-        const fetchDepartments = async () => {
-            try {
-
-                let data = await getDepartments(selectedBranchId)
-                setDepartments(data);
-
-                const currentDeptId = watch("department_id");
-                if (currentDeptId && !data.some(d => d.id === currentDeptId)) {
-                    setValue("department_id", null);
-                }
-
-            } catch (error) {
-                console.error("Error fetching departments:", error);
-                setDepartments([]); // Clear departments on error
-            }
-        };
-        fetchDepartments();
-    }, [selectedBranchId]); // 👈 Depend on selectedBranchId and setValue
-
-    const selectedBranchName = branches.find((b) => b.id === selectedBranchId)?.name || "Select Branch";
-    // 2. Function triggered when a file is selected (on file input change)
-    const handleFileChange = async (event) => {
-        const file = event.target.files[0];
-        if (file) {
-            // Basic file validation
-            if (file.size > 2 * 1024 * 1024) { // 2MB limit
-                setGlobalError("File size exceeds 2MB limit.");
-                return;
-            }
-            if (!['image/jpeg', 'image/png'].includes(file.type)) {
-                setGlobalError("Only JPG and PNG formats are supported.");
-                return;
-            }
-
-            try {
-                const base64String = await convertFileToBase64(file);
-                setImagePreview(base64String); // Set for preview
-                setImageFile(file);           // Store the file object for final payload processing
-            } catch (error) {
-                setGlobalError("Error converting file to Base64.");
-                setImagePreview(null);
-                setImageFile(null);
-            }
-        }
-    };
 
     const onSubmit = async (data) => {
 
@@ -179,39 +108,13 @@ const EmployeeProfileForm = () => {
             await storeEmployee(finalPayload);
 
             setOpen(true);
-
             await new Promise(resolve => setTimeout(resolve, 2000));
-
             setOpen(false);
 
             router.push(`/employees`);
 
         } catch (error) {
-            if (error.response) {
-
-                const status = error.response.status;
-                const responseData = error.response.data;
-
-                if (status === 422) {
-                    // 💥 422: Set a concise global error message.
-                    setGlobalError(
-                        responseData.message || "Validation failed. Please check the form fields for errors."
-                    );
-
-                    // You may also want to integrate responseData.errors with react-hook-form's setError here
-
-                } else if (status >= 500) {
-                    // 500: Server error
-                    setGlobalError("A critical server error occurred. Please try again later.");
-                } else {
-                    // Other errors (401, 403, 404, etc.)
-                    setGlobalError(responseData.message || `An error occurred with status ${status}.`);
-                }
-
-            } else {
-                // Network error
-                setGlobalError("Network error: Could not connect to the API.");
-            }
+            setGlobalError(parseApiError(error));
         }
     };
 
@@ -315,18 +218,14 @@ const EmployeeProfileForm = () => {
                                         >On Duty Time</Label
                                         >
                                         <div className="relative">
-                                            <Input
-                                                className="w-full rounded-lg border-border-light dark:border-border-dark bg-background-light dark:bg-gray-800/50 text-text-strong-light dark:text-text-strong-dark focus:ring-2 focus:ring-[var(--primary)] focus:border-[var(--primary)] pr-10 text-sm transition-all"
+                                            <TimePicker
                                                 id="on-duty-time"
-                                                type="text"
-                                                value="09:00"
-                                            /><span
-                                                className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none"
-                                            ><span
-                                                className="material-symbols-outlined text-text-light dark:text-text-dark text-base"
-                                            >schedule</span
-                                                ></span
-                                            >
+                                                name="on_duty_time"
+                                                placeholder="Enter time"
+                                                value={time}
+                                                onChange={(e) => setTime(e.target.value)}
+                                            // icon={ <span className="material-icons text-base">schedule</span> } // optional override
+                                            />
                                         </div>
                                     </div>
                                     <div>
@@ -336,18 +235,14 @@ const EmployeeProfileForm = () => {
                                         >Off Duty Time</Label
                                         >
                                         <div className="relative">
-                                            <Input
-                                                className="w-full rounded-lg border-border-light dark:border-border-dark bg-background-light dark:bg-gray-800/50 text-text-strong-light dark:text-text-strong-dark focus:ring-2 focus:ring-[var(--primary)] focus:border-[var(--primary)] pr-10 text-sm transition-all"
+                                            <TimePicker
                                                 id="off-duty-time"
-                                                type="text"
-                                                value="18:00"
-                                            /><span
-                                                className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none"
-                                            ><span
-                                                className="material-symbols-outlined text-text-light dark:text-text-dark text-base"
-                                            >schedule</span
-                                                ></span
-                                            >
+                                                name="off_duty_time"
+                                                placeholder="Enter time"
+                                                value={time}
+                                                onChange={(e) => setTime(e.target.value)}
+                                            // icon={ <span className="material-icons text-base">schedule</span> } // optional override
+                                            />
                                         </div>
                                     </div>
                                     <div>
@@ -357,18 +252,14 @@ const EmployeeProfileForm = () => {
                                         >Min working hrs</Label
                                         >
                                         <div className="relative">
-                                            <Input
-                                                className="w-full rounded-lg border-border-light dark:border-border-dark bg-background-light dark:bg-gray-800/50 text-text-strong-light dark:text-text-strong-dark focus:ring-2 focus:ring-[var(--primary)] focus:border-[var(--primary)] pr-10 text-sm transition-all"
+                                            <TimePicker
                                                 id="min-working-hrs"
-                                                type="text"
-                                                value="09:00"
-                                            /><span
-                                                className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none"
-                                            ><span
-                                                className="material-symbols-outlined text-text-light dark:text-text-dark text-base"
-                                            >schedule</span
-                                                ></span
-                                            >
+                                                name="francis"
+                                                placeholder="Enter time"
+                                                value={time}
+                                                onChange={(e) => setTime(e.target.value)}
+                                            // icon={ <span className="material-icons text-base">schedule</span> } // optional override
+                                            />
                                         </div>
                                     </div>
                                     <div>
@@ -378,18 +269,14 @@ const EmployeeProfileForm = () => {
                                         >OT start after</Label
                                         >
                                         <div className="relative">
-                                            <Input
-                                                className="w-full rounded-lg border-border-light dark:border-border-dark bg-background-light dark:bg-gray-800/50 text-text-strong-light dark:text-text-strong-dark focus:ring-2 focus:ring-[var(--primary)] focus:border-[var(--primary)] pr-10 text-sm transition-all"
+                                            <TimePicker
                                                 id="ot-start"
-                                                type="text"
-                                                value="00:30"
-                                            /><span
-                                                className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none"
-                                            ><span
-                                                className="material-symbols-outlined text-text-light dark:text-text-dark text-base"
-                                            >schedule</span
-                                                ></span
-                                            >
+                                                name="francis"
+                                                placeholder="Enter time"
+                                                value={time}
+                                                onChange={(e) => setTime(e.target.value)}
+                                            // icon={ <span className="material-icons text-base">schedule</span> } // optional override
+                                            />
                                         </div>
                                     </div>
                                     <div>
@@ -399,18 +286,14 @@ const EmployeeProfileForm = () => {
                                         >Beginning In</Label
                                         >
                                         <div className="relative">
-                                            <Input
-                                                className="w-full rounded-lg border-border-light dark:border-border-dark bg-background-light dark:bg-gray-800/50 text-text-strong-light dark:text-text-strong-dark focus:ring-2 focus:ring-[var(--primary)] focus:border-[var(--primary)] pr-10 text-sm transition-all"
+                                            <TimePicker
                                                 id="beginning-in"
-                                                type="text"
-                                                value="06:00"
-                                            /><span
-                                                className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none"
-                                            ><span
-                                                className="material-symbols-outlined text-text-light dark:text-text-dark text-base"
-                                            >schedule</span
-                                                ></span
-                                            >
+                                                name="francis"
+                                                placeholder="Enter time"
+                                                value={time}
+                                                onChange={(e) => setTime(e.target.value)}
+                                            // icon={ <span className="material-icons text-base">schedule</span> } // optional override
+                                            />
                                         </div>
                                     </div>
                                     <div>
@@ -420,18 +303,14 @@ const EmployeeProfileForm = () => {
                                         >Beginning Out</Label
                                         >
                                         <div className="relative">
-                                            <Input
-                                                className="w-full rounded-lg border-border-light dark:border-border-dark bg-background-light dark:bg-gray-800/50 text-text-strong-light dark:text-text-strong-dark focus:ring-2 focus:ring-[var(--primary)] focus:border-[var(--primary)] pr-10 text-sm transition-all"
+                                            <TimePicker
                                                 id="beginning-out"
-                                                type="text"
-                                                value="13:00"
-                                            /><span
-                                                className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none"
-                                            ><span
-                                                className="material-symbols-outlined text-text-light dark:text-text-dark text-base"
-                                            >schedule</span
-                                                ></span
-                                            >
+                                                name="francis"
+                                                placeholder="Enter time"
+                                                value={time}
+                                                onChange={(e) => setTime(e.target.value)}
+                                            // icon={ <span className="material-icons text-base">schedule</span> } // optional override
+                                            />
                                         </div>
                                     </div>
                                     <div>
@@ -441,18 +320,14 @@ const EmployeeProfileForm = () => {
                                         >Ending In</Label
                                         >
                                         <div className="relative">
-                                            <Input
-                                                className="w-full rounded-lg border-border-light dark:border-border-dark bg-background-light dark:bg-gray-800/50 text-text-strong-light dark:text-text-strong-dark focus:ring-2 focus:ring-[var(--primary)] focus:border-[var(--primary)] pr-10 text-sm transition-all"
+                                            <TimePicker
                                                 id="ending-in"
-                                                type="text"
-                                                value="15:00"
-                                            /><span
-                                                className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none"
-                                            ><span
-                                                className="material-symbols-outlined text-text-light dark:text-text-dark text-base"
-                                            >schedule</span
-                                                ></span
-                                            >
+                                                name="francis"
+                                                placeholder="Enter time"
+                                                value={time}
+                                                onChange={(e) => setTime(e.target.value)}
+                                            // icon={ <span className="material-icons text-base">schedule</span> } // optional override
+                                            />
                                         </div>
                                     </div>
                                     <div>
@@ -462,18 +337,14 @@ const EmployeeProfileForm = () => {
                                         >Ending Out</Label
                                         >
                                         <div className="relative">
-                                            <Input
-                                                className="w-full rounded-lg border-border-light dark:border-border-dark bg-background-light dark:bg-gray-800/50 text-text-strong-light dark:text-text-strong-dark focus:ring-2 focus:ring-[var(--primary)] focus:border-[var(--primary)] pr-10 text-sm transition-all"
+                                            <TimePicker
                                                 id="ending-out"
-                                                type="text"
-                                                value="23:00"
-                                            /><span
-                                                className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none"
-                                            ><span
-                                                className="material-symbols-outlined text-text-light dark:text-text-dark text-base"
-                                            >schedule</span
-                                                ></span
-                                            >
+                                                name="francis"
+                                                placeholder="Enter time"
+                                                value={time}
+                                                onChange={(e) => setTime(e.target.value)}
+                                            // icon={ <span className="material-icons text-base">schedule</span> } // optional override
+                                            />
                                         </div>
                                     </div>
                                 </div>
@@ -520,19 +391,14 @@ const EmployeeProfileForm = () => {
                                             >In Time</Label
                                             >
                                             <div className="relative">
-                                                <Input
-                                                    className="w-full rounded-lg border-border-light dark:border-border-dark bg-background-light dark:bg-gray-800/50 text-text-strong-light dark:text-text-strong-dark focus:ring-2 focus:ring-[var(--primary)] focus:border-[var(--primary)] pr-10 text-sm transition-all"
+                                                <TimePicker
                                                     id="half-day-in-time"
-                                                    type="text"
-                                                    value="09:00"
+                                                    name="francis"
+                                                    placeholder="Enter time"
+                                                    value={time}
+                                                    onChange={(e) => setTime(e.target.value)}
+                                                // icon={ <span className="material-icons text-base">schedule</span> } // optional override
                                                 />
-                                                <span
-                                                    className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none"
-                                                ><span
-                                                    className="material-symbols-outlined text-text-light dark:text-text-dark text-base"
-                                                >schedule</span
-                                                    ></span
-                                                >
                                             </div>
                                         </div>
                                         <div>
@@ -542,19 +408,14 @@ const EmployeeProfileForm = () => {
                                             >Out Time</Label
                                             >
                                             <div className="relative">
-                                                <Input
-                                                    className="w-full rounded-lg border-border-light dark:border-border-dark bg-background-light dark:bg-gray-800/50 text-text-strong-light dark:text-text-strong-dark focus:ring-2 focus:ring-[var(--primary)] focus:border-[var(--primary)] pr-10 text-sm transition-all"
+                                                <TimePicker
                                                     id="half-day-out-time"
-                                                    type="text"
-                                                    value="13:00"
+                                                    name="francis"
+                                                    placeholder="Enter time"
+                                                    value={time}
+                                                    onChange={(e) => setTime(e.target.value)}
+                                                // icon={ <span className="material-icons text-base">schedule</span> } // optional override
                                                 />
-                                                <span
-                                                    className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none"
-                                                ><span
-                                                    className="material-symbols-outlined text-text-light dark:text-text-dark text-base"
-                                                >schedule</span
-                                                    ></span
-                                                >
                                             </div>
                                         </div>
                                     </div>
@@ -744,8 +605,7 @@ const EmployeeProfileForm = () => {
                                             />
                                             <span
                                                 className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-sm text-text-light dark:text-text-dark"
-                                            >minutes</span
-                                            >
+                                            >minutes</span>
                                         </div>
                                     </div>
                                     <div>
