@@ -5,7 +5,6 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
 
-// --- helpers ---
 function pad2(n) {
   return String(n).padStart(2, "0");
 }
@@ -24,16 +23,6 @@ function fmt(h, m) {
   return `${pad2(h)}:${pad2(m)}`;
 }
 
-/**
- * TimePicker (shadcn-style)
- *
- * Props:
- * - value (string "HH:MM"), onChange (fn)
- * - defaultValue (string "HH:MM"), minuteStep (number, default 5)
- * - id, name, placeholder, disabled, required, autoComplete
- * - className (container), inputClassName (input)
- * - icon (ReactNode) — right-side icon; defaults to Material 'schedule'
- */
 const TimePicker = forwardRef(function TimePicker(
   {
     value,
@@ -64,14 +53,12 @@ const TimePicker = forwardRef(function TimePicker(
 
   const inputRef = useRef(null);
 
-  // sync internal when external value changes
   useEffect(() => {
     if (typeof value === "string") {
       const t = parseTime(value, { h, m });
       setH(t.h);
       setM(t.m);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [value]);
 
   const display = useMemo(() => {
@@ -80,8 +67,7 @@ const TimePicker = forwardRef(function TimePicker(
   }, [value, h, m]);
 
   function commitChange(nextH = h, nextM = m) {
-    const out = fmt(nextH, nextM);
-    onChange?.(out);
+    onChange?.(fmt(nextH, nextM));
   }
 
   function incHour(step = 1) {
@@ -97,26 +83,6 @@ const TimePicker = forwardRef(function TimePicker(
     setH(nextH);
     setM(nextM);
     commitChange(nextH, nextM);
-  }
-
-  function handleKeyDown(e) {
-    if (disabled) return;
-    if (e.key === "ArrowUp") {
-      e.preventDefault();
-      incMinute(minuteStep);
-    } else if (e.key === "ArrowDown") {
-      e.preventDefault();
-      incMinute(-minuteStep);
-    } else if (e.key === "ArrowRight") {
-      e.preventDefault();
-      incHour(1);
-    } else if (e.key === "ArrowLeft") {
-      e.preventDefault();
-      incHour(-1);
-    } else if (e.key === "Enter") {
-      e.preventDefault();
-      setOpen(false);
-    }
   }
 
   function onManualInput(e) {
@@ -136,12 +102,6 @@ const TimePicker = forwardRef(function TimePicker(
     commitChange(nh, nm);
   }
 
-  function clearTime() {
-    setH(0);
-    setM(0);
-    onChange?.("");
-  }
-
   return (
     <div className={`relative w-full ${className}`}>
       <Popover open={open} onOpenChange={setOpen}>
@@ -158,7 +118,6 @@ const TimePicker = forwardRef(function TimePicker(
               type="text"
               value={display}
               onChange={onManualInput}
-              onKeyDown={handleKeyDown}
               placeholder={placeholder}
               disabled={disabled}
               required={required}
@@ -167,85 +126,83 @@ const TimePicker = forwardRef(function TimePicker(
               {...rest}
             />
             <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3 text-gray-500 dark:text-gray-400">
-              {icon ? (
-                icon
-              ) : (
-                <span className="material-icons text-base">schedule</span>
-              )}
+              {icon ? icon : <span className="material-icons text-base">schedule</span>}
             </span>
-            {/* clickable area to open */}
             {!disabled && (
               <button
                 type="button"
                 aria-label="Open time picker"
                 className="absolute inset-0 cursor-text"
                 onClick={() => setOpen(true)}
-                // ensure text selection/caret still works
                 style={{ background: "transparent" }}
               />
             )}
           </div>
         </PopoverTrigger>
 
-        <PopoverContent align="start" className="w-64 p-3">
-          {/* Hours / Minutes controls */}
-          <div className="grid grid-cols-2 gap-3">
-            {/* Hours */}
-            <div className="rounded-md border p-2">
-              <div className="mb-2 text-xs font-medium">Hours</div>
-              <div className="flex items-center justify-between">
-                <Button type="button" size="icon" variant="outline" onClick={() => incHour(-1)}>
-                  <span className="material-icons text-sm">expand_more</span>
-                </Button>
-                <div className="text-lg font-semibold tabular-nums">{pad2(h)}</div>
-                <Button type="button" size="icon" variant="outline" onClick={() => incHour(1)}>
-                  <span className="material-icons text-sm">expand_less</span>
-                </Button>
-              </div>
-            </div>
-
-            {/* Minutes */}
-            <div className="rounded-md border p-2">
-              <div className="mb-2 text-xs font-medium">Minutes</div>
-              <div className="flex items-center justify-between">
-                <Button
-                  type="button"
-                  size="icon"
-                  variant="outline"
-                  onClick={() => incMinute(-minuteStep)}
-                >
-                  <span className="material-icons text-sm">expand_more</span>
-                </Button>
-                <div className="text-lg font-semibold tabular-nums">{pad2(m)}</div>
-                <Button
-                  type="button"
-                  size="icon"
-                  variant="outline"
-                  onClick={() => incMinute(minuteStep)}
-                >
-                  <span className="material-icons text-sm">expand_less</span>
-                </Button>
-              </div>
+        <PopoverContent
+          align="start"
+          className="w-50 rounded-lg p-4 shadow-lg border border-border-light dark:border-border-dark bg-background-light dark:bg-gray-800/90"
+        >
+          <div className="flex justify-between mb-3">
+            <div className="text-sm font-medium text-muted-foreground">Select Time</div>
+            <div className="text-base font-semibold tabular-nums">
+              {fmt(h, m)}
             </div>
           </div>
 
-          {/* Actions */}
-          <div className="mt-3 flex items-center justify-between">
-            <div className="space-x-2">
-              <Button type="button" variant="ghost" onClick={setNow}>
-                Now
+          <div className="flex justify-center gap-5 mb-4">
+            <div className="flex flex-col items-center">
+              <Button
+                type="button"
+                size="icon"
+                variant="outline"
+                onClick={() => incHour(1)}
+                className="h-7 w-7 p-0"
+              >
+                <span className="material-icons text-sm">expand_less</span>
               </Button>
-              <Button type="button" variant="ghost" onClick={clearTime}>
-                Clear
+              <div className="text-lg font-semibold tabular-nums mt-1">{pad2(h)}</div>
+              <Button
+                type="button"
+                size="icon"
+                variant="outline"
+                onClick={() => incHour(-1)}
+                className="h-7 w-7 p-0 mt-1"
+              >
+                <span className="material-icons text-sm">expand_more</span>
               </Button>
             </div>
-            <Button type="button" onClick={() => setOpen(false)}>
+
+            <div className="text-lg font-semibold tabular-nums flex items-center">:</div>
+
+            <div className="flex flex-col items-center">
+              <Button
+                type="button"
+                size="icon"
+                variant="outline"
+                onClick={() => incMinute(minuteStep)}
+                className="h-7 w-7 p-0"
+              >
+                <span className="material-icons text-sm">expand_less</span>
+              </Button>
+              <div className="text-lg font-semibold tabular-nums mt-1">{pad2(m)}</div>
+              <Button
+                type="button"
+                size="icon"
+                variant="outline"
+                onClick={() => incMinute(-minuteStep)}
+                className="h-7 w-7 p-0 mt-1"
+              >
+                <span className="material-icons text-sm">expand_more</span>
+              </Button>
+            </div>
+          </div>
+
+          <div className="">
+            <Button className=" w-full" type="button" size="sm" onClick={() => setOpen(false)}>
               Done
             </Button>
-          </div>
-
-          <div className="mt-2 text-xs text-muted-foreground">
-            Tip: Use Arrow ↑/↓ to adjust minutes, ←/→ hours.
           </div>
         </PopoverContent>
       </Popover>
