@@ -61,6 +61,29 @@ export const getDocuments = async (id) => {
     return data;
 };
 
+export const deleteDocument = async (id) => {
+    await axios.delete(`${API_BASE}/documentinfo/${id}`);
+    return true;
+};
+
+export async function uploadEmployeeDocument(employeeId, payload) {
+
+    // employee-update-document-new
+    const user = await getUser();
+
+    const fd = new FormData();
+    fd.append("title", payload.title);
+    fd.append("attachment", payload.file);
+    fd.append("employee_id", employeeId);
+    fd.append("company_id", user?.company_id || 0);
+
+    await axios.post(`${API_BASE}/employee-update-document-new/`, fd, {
+        headers: { "Content-Type": "multipart/form-data" },
+    });
+    return true;
+}
+
+
 export const getAttendnaceCount = async (branch_id = null) => {
     const user = await getUser();
     const { data } = await axios.get(`${API_BASE}/dashbaord_attendance_count`, {
