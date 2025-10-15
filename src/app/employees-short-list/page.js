@@ -125,7 +125,7 @@ export default function Home() {
         return <Performance payload={employee} />;
 
       case 'documents':
-        return <Document payload={employee} />;
+        return <Document employee_id={employee.id} />;
 
       default:
         return null;

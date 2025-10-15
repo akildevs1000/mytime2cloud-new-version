@@ -1,5 +1,25 @@
+"use client";
 
-const Document = () => {
+import { getDocuments } from "@/lib/api";
+import { getEmployeeDocumentDonwloadLink } from "@/lib/utils";
+import { useEffect, useState } from "react";
+
+const Document = ({ employee_id }) => {
+
+    const [documents, setDocuments] = useState([]);
+
+    // getDocuments
+
+    useEffect(() => {
+        const fetchBranches = async () => {
+            try {
+                setDocuments(await getDocuments(employee_id));
+            } catch (error) {
+                setDocuments([]);
+            }
+        };
+        fetchBranches();
+    }, []);
 
     return (
         <div className="py-6 space-y-8">
@@ -37,163 +57,33 @@ const Document = () => {
                                     className="px-6 py-3 text-left text-xs font-medium text-subtext-light dark:text-subtext-dark uppercase tracking-wider"
                                     scope="col"
                                 >
-                                    Upload Date
-                                </th>
-                                <th
-                                    className="px-6 py-3 text-left text-xs font-medium text-subtext-light dark:text-subtext-dark uppercase tracking-wider"
-                                    scope="col"
-                                >
-                                    Status
-                                </th>
-                                <th className="relative px-6 py-3" scope="col">
-                                    <span className="sr-only">Actions</span>
+                                    Document Attachment
                                 </th>
                             </tr>
                         </thead>
-                        <tbody
-                            className="bg-surface-light dark:bg-surface-dark divide-y divide-border-light dark:divide-border-dark"
-                        >
-                            <tr>
-                                <td
-                                    className="px-6 py-4 whitespace-nowrap text-sm font-medium text-text-light dark:text-text-dark"
-                                >
-                                    Offer Letter
-                                </td>
-                                <td
-                                    className="px-6 py-4 whitespace-nowrap text-sm text-subtext-light dark:text-subtext-dark"
-                                >
-                                    Jan 15, 2023
-                                </td>
-                                <td className="px-6 py-4 whitespace-nowrap text-sm">
-                                    <span
-                                        className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300"
-                                    >
-                                        Acknowledged
-                                    </span>
-                                </td>
-                                <td
-                                    className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium"
-                                >
-                                    <a className="text-primary hover:text-primary/80" href="#"
-                                    ><span className="material-icons align-middle"
-                                    >download</span
-                                        ></a
-                                    >
-                                </td>
-                            </tr>
-                            <tr>
-                                <td
-                                    className="px-6 py-4 whitespace-nowrap text-sm font-medium text-text-light dark:text-text-dark"
-                                >
-                                    Employment Contract
-                                </td>
-                                <td
-                                    className="px-6 py-4 whitespace-nowrap text-sm text-subtext-light dark:text-subtext-dark"
-                                >
-                                    Jan 15, 2023
-                                </td>
-                                <td className="px-6 py-4 whitespace-nowrap text-sm">
-                                    <span
-                                        className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300"
-                                    >
-                                        Acknowledged
-                                    </span>
-                                </td>
-                                <td
-                                    className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium"
-                                >
-                                    <a className="text-primary hover:text-primary/80" href="#"
-                                    ><span className="material-icons align-middle"
-                                    >download</span
-                                        ></a
-                                    >
-                                </td>
-                            </tr>
-                            <tr>
-                                <td
-                                    className="px-6 py-4 whitespace-nowrap text-sm font-medium text-text-light dark:text-text-dark"
-                                >
-                                    Performance Review Q4 2023
-                                </td>
-                                <td
-                                    className="px-6 py-4 whitespace-nowrap text-sm text-subtext-light dark:text-subtext-dark"
-                                >
-                                    Dec 20, 2023
-                                </td>
-                                <td className="px-6 py-4 whitespace-nowrap text-sm">
-                                    <button
-                                        className="px-3 py-1 rounded-md bg-primary text-white text-xs font-medium"
-                                    >
-                                        Acknowledge
-                                    </button>
-                                </td>
-                                <td
-                                    className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium"
-                                >
-                                    <a className="text-primary hover:text-primary/80" href="#"
-                                    ><span className="material-icons align-middle"
-                                    >download</span
-                                        ></a
-                                    >
-                                </td>
-                            </tr>
-                            <tr>
-                                <td
-                                    className="px-6 py-4 whitespace-nowrap text-sm font-medium text-text-light dark:text-text-dark"
-                                >
-                                    Company Handbook
-                                </td>
-                                <td
-                                    className="px-6 py-4 whitespace-nowrap text-sm text-subtext-light dark:text-subtext-dark"
-                                >
-                                    Oct 01, 2023
-                                </td>
-                                <td className="px-6 py-4 whitespace-nowrap text-sm">
-                                    <span
-                                        className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300"
-                                    >
-                                        Acknowledged
-                                    </span>
-                                </td>
-                                <td
-                                    className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium"
-                                >
-                                    <a className="text-primary hover:text-primary/80" href="#"
-                                    ><span className="material-icons align-middle"
-                                    >download</span
-                                        ></a
-                                    >
-                                </td>
-                            </tr>
-                            <tr>
-                                <td
-                                    className="px-6 py-4 whitespace-nowrap text-sm font-medium text-text-light dark:text-text-dark"
-                                >
-                                    Updated W-4 Form
-                                </td>
-                                <td
-                                    className="px-6 py-4 whitespace-nowrap text-sm text-subtext-light dark:text-subtext-dark"
-                                >
-                                    Sep 05, 2023
-                                </td>
-                                <td className="px-6 py-4 whitespace-nowrap text-sm">
-                                    <button
-                                        className="px-3 py-1 rounded-md bg-primary text-white text-xs font-medium"
-                                    >
-                                        Acknowledge
-                                    </button>
-                                </td>
-                                <td
-                                    className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium"
-                                >
-                                    <a className="text-primary hover:text-primary/80" href="#"
-                                    ><span className="material-icons align-middle"
-                                    >download</span
-                                        ></a
-                                    >
-                                </td>
-                            </tr>
+                        <tbody className="bg-surface-light dark:bg-surface-dark divide-y divide-border-light dark:divide-border-dark">
+                            {documents.map((e, index) => (
+                                <tr key={index}>
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-text-light dark:text-text-dark">
+                                        {e.title}
+                                    </td>
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-subtext-light dark:text-subtext-dark">
+
+                                        <a
+                                            title="Download Profile Picture"
+                                            href={getEmployeeDocumentDonwloadLink(e.employee_id, e.attachment)}
+                                            className="text-violet-600 hover:text-violet-800"
+                                        >
+                                            <span className="material-icons align-middle text-violet-600 text-sm">
+                                                download
+                                            </span>
+                                        </a>
+
+                                    </td>
+                                </tr>
+                            ))}
                         </tbody>
+
                     </table>
                 </div>
             </div>

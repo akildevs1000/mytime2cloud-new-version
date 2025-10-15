@@ -56,6 +56,11 @@ export const getShifts = async (params = {}) => {
     return data;
 };
 
+export const getDocuments = async (id) => {
+    const { data } = await axios.get(`${API_BASE}/documentinfo/${id}`);
+    return data;
+};
+
 export const getAttendnaceCount = async (branch_id = null) => {
     const user = await getUser();
     const { data } = await axios.get(`${API_BASE}/dashbaord_attendance_count`, {
@@ -355,6 +360,6 @@ export const parseApiError = (error) => {
 
     } else {
         // Network error
-        return("Network error: Could not connect to the API.");
+        return ("Network error: Could not connect to the API.");
     }
 }

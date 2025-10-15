@@ -14,3 +14,11 @@ export function convertFileToBase64(file) {
   });
 };
 
+
+
+export function getEmployeeDocumentDonwloadLink(pic, file_name) {
+  return (
+    `https://mytime2cloud-backend.test/api/download-emp-documents/${pic}/${file_name}`
+  );
+}
+
