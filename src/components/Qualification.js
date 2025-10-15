@@ -25,6 +25,7 @@ import { useRouter } from "next/navigation";
 import { Book, CalendarIcon, IdCard, Plane } from "lucide-react";
 import { parseApiError, updateQualification } from "@/lib/api";
 import { format } from "date-fns";
+import DatePicker from "./ui/DatePicker";
 
 const Qualification = ({ employee_id, qualification }) => {
 
@@ -75,7 +76,7 @@ const Qualification = ({ employee_id, qualification }) => {
 
             router.push(`/employees`);
         } catch (error) {
-           setGlobalError(parseApiError(error));
+            setGlobalError(parseApiError(error));
         }
     };
 
@@ -125,35 +126,11 @@ const Qualification = ({ employee_id, qualification }) => {
                                 render={({ field }) => (
                                     <FormItem className="flex flex-col">
                                         <FormLabel>Start Date</FormLabel>
-                                        <Popover open={isIssueDatePickerOpen} onOpenChange={setIsIssueDatePickerOpen}>
-                                            <PopoverTrigger asChild>
-                                                <FormControl>
-                                                    <Button
-                                                        variant="outline"
-                                                        className={`w-full pl-3 text-left font-normal ${!field.value && "text-muted-foreground"
-                                                            }`}
-                                                    >
-                                                        {field.value ? (
-                                                            format(field.value, "yyyy-MM-dd")
-                                                        ) : (
-                                                            <span>Pick a date</span>
-                                                        )}
-                                                        <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                                                    </Button>
-                                                </FormControl>
-                                            </PopoverTrigger>
-                                            <PopoverContent className="w-auto p-0" align="start">
-                                                <Calendar
-                                                    mode="single"
-                                                    selected={field.value}
-                                                    onSelect={(date) => {
-                                                        field.onChange(date)
-                                                        setIsIssueDatePickerOpen(false) // ✅ closes after selection
-                                                    }}
-                                                    initialFocus
-                                                />
-                                            </PopoverContent>
-                                        </Popover>
+                                        <DatePicker
+                                            value={field.value}
+                                            onChange={(date) => field.onChange(date)}
+                                            placeholder="Pick a date"
+                                        />
                                         <FormMessage />
                                     </FormItem>
                                 )}
@@ -165,35 +142,11 @@ const Qualification = ({ employee_id, qualification }) => {
                                 render={({ field }) => (
                                     <FormItem className="flex flex-col">
                                         <FormLabel>End Date</FormLabel>
-                                        <Popover open={isExpiryDatePickerOpen} onOpenChange={setIsExpiryDatePickerOpen}>
-                                            <PopoverTrigger asChild>
-                                                <FormControl>
-                                                    <Button
-                                                        variant="outline"
-                                                        className={`w-full pl-3 text-left font-normal ${!field.value && "text-muted-foreground"
-                                                            }`}
-                                                    >
-                                                        {field.value ? (
-                                                            format(field.value, "yyyy-MM-dd")
-                                                        ) : (
-                                                            <span>Pick a date</span>
-                                                        )}
-                                                        <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                                                    </Button>
-                                                </FormControl>
-                                            </PopoverTrigger>
-                                            <PopoverContent className="w-auto p-0" align="start">
-                                                <Calendar
-                                                    mode="single"
-                                                    selected={field.value}
-                                                    onSelect={(date) => {
-                                                        field.onChange(date)
-                                                        setIsExpiryDatePickerOpen(false) // ✅ closes after selection
-                                                    }}
-                                                    initialFocus
-                                                />
-                                            </PopoverContent>
-                                        </Popover>
+                                        <DatePicker
+                                            value={field.value}
+                                            onChange={(date) => field.onChange(date)}
+                                            placeholder="Pick a date"
+                                        />
                                         <FormMessage />
                                     </FormItem>
                                 )}
