@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from 'react';
-import { useForm } from "react-hook-form"; // Used for standard form handling
 import { SuccessDialog } from "@/components/SuccessDialog"; // Import the new component
 
 import {
@@ -23,10 +22,10 @@ import {
     FileText,
     Briefcase, Phone, ArrowLeft, Upload, Calendar as CalenddarIcon, CalendarIcon
 } from "lucide-react";
-import { cn, convertFileToBase64 } from "@/lib/utils";
+import { addTimes, cn, convertFileToBase64 } from "@/lib/utils";
 import { useRouter } from 'next/navigation';
 
-import { getBranches, getDepartments, parseApiError, storeEmployee } from '@/lib/api';
+import { getBranches, getDepartments, parseApiError, storeEmployee, storeShift } from '@/lib/api';
 import {
     Select,
     SelectContent,
@@ -40,81 +39,85 @@ import { Label } from '@/components/ui/label';
 import TimePicker from '@/components/ui/TimePicker';
 
 
+import DaysSelector from "@/components/DaysSelector";
+
+
 const EmployeeProfileForm = () => {
 
-    const [time, setTime] = useState("09:00");
+    const [schedule, setSchedule] = useState({
+        "shift_type_id": 6,
+        "branch_id": 0,
+        "on_duty_time": "09:00",
+        "off_duty_time": "18:00",
+        "working_hours": "09:00",
+        "overtime_interval": "00:30",
+        "days": [
+            "Mon",
+            "Tue",
+            "Wed",
+            "Thu",
+            "Fri",
+            "Sat",
+            "Sun"
+        ],
+        "weekend1": "Not Applicable",
+        "weekend2": "Not Applicable",
+        "monthly_flexi_holidays": 0,
+        "beginning_in": "06:00",
+        "beginning_out": "13:00",
+        "ending_in": "15:00",
+        "ending_out": "21:00",
+        "late_time": "00:15",
+        "early_time": "00:15",
+        "absent_min_in": "01:00",
+        "absent_min_out": "01:00",
+        "halfday": "Not Applicable",
+        "halfday_working_hours": "HH:MM",
+        "name": "test",
+        "overtime_type": "Both",
+        "company_id": 2,
+        "from_date": "2025-10-14T15:54:18.428Z",
+        "to_date": "2026-10-14T15:54:18.428Z"
+    });
+
+    const handleChange = (key, value) => {
+        console.log("🚀 ~ handleChange ~ key, value:", key, value)
+        setSchedule((prev) => ({
+            ...prev,
+            [key]: value,
+        }));
+    };
 
     const router = useRouter();
-    const handleGoBack = () => router.push(`/employees`);
-    const handleCancel = () => router.push(`/employees`);
-    const form = useForm({
-        defaultValues: {
-            // Personal Details
-            title: "Mr.",
-            first_name: null, // Initial value
-            last_name: null, // Initial value
-            full_name: null,
-            display_name: null,
-            // Employment Details
-            employee_id: null,
-            joining_date: null,
-            branch_id: null, // null for no selection
-            // Contact Information
-            phone_number: "",
-            whatsapp_number: "",
-            // Other payload fields not tied to a visible input
-            system_user_id: null,
-            department_id: null,
-            // Field present in original JSX but not in final payload keys (kept for form use)
-            employee_device_id: null,
-        },
-    });
-    const { watch, setValue, handleSubmit, formState: { isSubmitting } } = form;
-
+    const handleGoBack = () => router.push(`/attendance`);
+    const handleCancel = () => router.push(`/attendance`);
 
     const [open, setOpen] = useState(false);
     const [globalError, setGlobalError] = useState(null);
-    const [imageFile, setImageFile] = useState(null);
-
-
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const onSubmit = async (data) => {
-
-        setGlobalError(null); // 👈 CRITICAL: Clear previous errors on new submission
-
-        // Map the collected form data to the final required employee payload structure
-        const finalPayload = {
-            title: data.title,
-            joining_date: data.joining_date,
-            // Construct full_name if not explicitly entered
-            full_name: data.full_name || `${data.first_name || ''} ${data.last_name || ''}`.trim(),
-            display_name: data.display_name,
-            first_name: data.first_name,
-            last_name: data.last_name,
-            employee_id: data.employee_id,
-            system_user_id: data.system_user_id, // Empty string if no input field exists
-            phone_number: data.phone_number,
-            whatsapp_number: data.whatsapp_number,
-            branch_id: data.branch_id,
-            department_id: data.department_id,
-        };
-
-        if (imageFile) {
-            finalPayload.profile_image_base64 = await convertFileToBase64(imageFile);
-        }
-
+        setGlobalError(null);
+        setIsSubmitting(true);
+        console.log("Full Schedule Object:", schedule);
         try {
+            let r = await storeShift(schedule);
 
-            await storeEmployee(finalPayload);
+            if (!r.status) {
+                setGlobalError((Object.values(r.errors)[0][0]));
+                setIsSubmitting(false);
+                return;
+            }
 
             setOpen(true);
             await new Promise(resolve => setTimeout(resolve, 2000));
             setOpen(false);
-
-            router.push(`/employees`);
+            setIsSubmitting(false);
+            router.push(`/attendance`);
 
         } catch (error) {
             setGlobalError(parseApiError(error));
+            setIsSubmitting(false);
         }
     };
 
@@ -171,7 +174,7 @@ const EmployeeProfileForm = () => {
                                     <div>
                                         <Label
                                             className="block text-xs font-medium text-text-light dark:text-text-dark mb-1.5"
-                                            for="type-of-schedule"
+                                            htmlFor="type-of-schedule"
                                         >Type of Schedule*</Label>
                                         <Select>
                                             <SelectTrigger
@@ -190,14 +193,14 @@ const EmployeeProfileForm = () => {
                                     <div>
                                         <Label
                                             className="block text-xs font-medium text-text-light dark:text-text-dark mb-1.5"
-                                            for="name-of-schedule"
-                                        >Name of Schedule*</Label
-                                        >
+                                            htmlFor="name-of-schedule"
+                                        >Name of Schedule*</Label>
                                         <Input
                                             className="w-full rounded-lg border-border-light dark:border-border-dark bg-background-light dark:bg-gray-800/50 text-text-strong-light dark:text-text-strong-dark focus:ring-2 focus:ring-[var(--primary)] focus:border-[var(--primary)] text-sm transition-all"
                                             id="name-of-schedule"
                                             type="text"
-                                            value="Day Duty"
+                                            value={schedule.name}
+                                            onChange={(e) => handleChange("name", e.target.value)} // ✅ fixed
                                         />
                                     </div>
                                 </div>
@@ -214,136 +217,107 @@ const EmployeeProfileForm = () => {
                                     <div>
                                         <Label
                                             className="block text-xs font-medium text-text-light dark:text-text-dark mb-1.5"
-                                            for="on-duty-time"
+                                            htmlFor="on-duty-time"
                                         >On Duty Time</Label
                                         >
                                         <div className="relative">
+
                                             <TimePicker
-                                                id="on-duty-time"
-                                                name="on_duty_time"
-                                                placeholder="Enter time"
-                                                value={time}
-                                                onChange={(e) => setTime(e.target.value)}
-                                            // icon={ <span className="material-icons text-base">schedule</span> } // optional override
+                                                value={schedule.on_duty_time}
+                                                onChange={(val) => handleChange("on_duty_time", val)}
                                             />
+
+
                                         </div>
                                     </div>
                                     <div>
                                         <Label
                                             className="block text-xs font-medium text-text-light dark:text-text-dark mb-1.5"
-                                            for="off-duty-time"
+                                            htmlFor="off-duty-time"
                                         >Off Duty Time</Label
                                         >
                                         <div className="relative">
                                             <TimePicker
-                                                id="off-duty-time"
-                                                name="off_duty_time"
-                                                placeholder="Enter time"
-                                                value={time}
-                                                onChange={(e) => setTime(e.target.value)}
-                                            // icon={ <span className="material-icons text-base">schedule</span> } // optional override
+                                                value={schedule.off_duty_time}
+                                                onChange={(val) => handleChange("off_duty_time", val)}
                                             />
                                         </div>
                                     </div>
                                     <div>
                                         <Label
                                             className="block text-xs font-medium text-text-light dark:text-text-dark mb-1.5"
-                                            for="min-working-hrs"
+                                            htmlFor="min-working-hrs"
                                         >Min working hrs</Label
                                         >
                                         <div className="relative">
                                             <TimePicker
-                                                id="min-working-hrs"
-                                                name="francis"
-                                                placeholder="Enter time"
-                                                value={time}
-                                                onChange={(e) => setTime(e.target.value)}
-                                            // icon={ <span className="material-icons text-base">schedule</span> } // optional override
+                                                value={schedule.working_hours}
+                                                onChange={(val) => handleChange("working_hours", val)}
                                             />
                                         </div>
                                     </div>
                                     <div>
                                         <Label
                                             className="block text-xs font-medium text-text-light dark:text-text-dark mb-1.5"
-                                            for="ot-start"
+                                            htmlFor="ot-start"
                                         >OT start after</Label
                                         >
                                         <div className="relative">
                                             <TimePicker
-                                                id="ot-start"
-                                                name="francis"
-                                                placeholder="Enter time"
-                                                value={time}
-                                                onChange={(e) => setTime(e.target.value)}
-                                            // icon={ <span className="material-icons text-base">schedule</span> } // optional override
+                                                value={schedule.overtime_interval}
+                                                onChange={(val) => handleChange("overtime_interval", val)}
                                             />
                                         </div>
                                     </div>
                                     <div>
                                         <Label
                                             className="block text-xs font-medium text-text-light dark:text-text-dark mb-1.5"
-                                            for="beginning-in"
+                                            htmlFor="beginning-in"
                                         >Beginning In</Label
                                         >
                                         <div className="relative">
                                             <TimePicker
-                                                id="beginning-in"
-                                                name="francis"
-                                                placeholder="Enter time"
-                                                value={time}
-                                                onChange={(e) => setTime(e.target.value)}
-                                            // icon={ <span className="material-icons text-base">schedule</span> } // optional override
+                                                value={schedule.beginning_in}
+                                                onChange={(val) => handleChange("beginning_in", val)}
                                             />
                                         </div>
                                     </div>
                                     <div>
                                         <Label
                                             className="block text-xs font-medium text-text-light dark:text-text-dark mb-1.5"
-                                            for="beginning-out"
+                                            htmlFor="beginning-out"
                                         >Beginning Out</Label
                                         >
                                         <div className="relative">
                                             <TimePicker
-                                                id="beginning-out"
-                                                name="francis"
-                                                placeholder="Enter time"
-                                                value={time}
-                                                onChange={(e) => setTime(e.target.value)}
-                                            // icon={ <span className="material-icons text-base">schedule</span> } // optional override
+                                                value={schedule.beginning_out}
+                                                onChange={(val) => handleChange("beginning_out", val)}
                                             />
                                         </div>
                                     </div>
                                     <div>
                                         <Label
                                             className="block text-xs font-medium text-text-light dark:text-text-dark mb-1.5"
-                                            for="ending-in"
+                                            htmlFor="ending-in"
                                         >Ending In</Label
                                         >
                                         <div className="relative">
                                             <TimePicker
-                                                id="ending-in"
-                                                name="francis"
-                                                placeholder="Enter time"
-                                                value={time}
-                                                onChange={(e) => setTime(e.target.value)}
-                                            // icon={ <span className="material-icons text-base">schedule</span> } // optional override
+                                                value={schedule.ending_in}
+                                                onChange={(val) => handleChange("ending_in", val)}
                                             />
                                         </div>
                                     </div>
                                     <div>
                                         <Label
                                             className="block text-xs font-medium text-text-light dark:text-text-dark mb-1.5"
-                                            for="ending-out"
+                                            htmlFor="ending-out"
                                         >Ending Out</Label
                                         >
                                         <div className="relative">
                                             <TimePicker
-                                                id="ending-out"
-                                                name="francis"
-                                                placeholder="Enter time"
-                                                value={time}
-                                                onChange={(e) => setTime(e.target.value)}
-                                            // icon={ <span className="material-icons text-base">schedule</span> } // optional override
+                                                value={schedule.ending_out}
+                                                onChange={(val) => handleChange("ending_out", val)}
                                             />
                                         </div>
                                     </div>
@@ -361,10 +335,11 @@ const EmployeeProfileForm = () => {
                                     <div className="md:col-span-1">
                                         <Label
                                             className="block text-xs font-medium text-text-light dark:text-text-dark mb-1.5"
-                                            for="half-day-weekdays"
+                                            htmlFor="half-day-weekdays"
                                         >Half Day Setting</Label
                                         >
-                                        <Select defaultValue="saturday">
+
+                                        <Select defaultValue="Not Applicable" onValueChange={(value) => handleChange("halfday", value)}>
                                             <SelectTrigger
                                                 id="half-day-weekdays"
                                                 className="w-full rounded-lg text-sm"
@@ -373,6 +348,7 @@ const EmployeeProfileForm = () => {
                                             </SelectTrigger>
 
                                             <SelectContent>
+                                                <SelectItem value="Not Applicable">Not Applicable</SelectItem>
                                                 <SelectItem value="monday">Monday</SelectItem>
                                                 <SelectItem value="tuesday">Tuesday</SelectItem>
                                                 <SelectItem value="wednesday">Wednesday</SelectItem>
@@ -387,34 +363,26 @@ const EmployeeProfileForm = () => {
                                         <div>
                                             <Label
                                                 className="block text-xs font-medium text-text-light dark:text-text-dark mb-1.5"
-                                                for="half-day-in-time"
+                                                htmlFor="half-day-in-time"
                                             >In Time</Label
                                             >
                                             <div className="relative">
                                                 <TimePicker
-                                                    id="half-day-in-time"
-                                                    name="francis"
-                                                    placeholder="Enter time"
-                                                    value={time}
-                                                    onChange={(e) => setTime(e.target.value)}
-                                                // icon={ <span className="material-icons text-base">schedule</span> } // optional override
+                                                    value={schedule.halfday_in_time}
+                                                    onChange={(val) => handleChange("halfday_in_time", val)}
                                                 />
                                             </div>
                                         </div>
                                         <div>
                                             <Label
                                                 className="block text-xs font-medium text-text-light dark:text-text-dark mb-1.5"
-                                                for="half-day-out-time"
+                                                htmlFor="half-day-out-time"
                                             >Out Time</Label
                                             >
                                             <div className="relative">
                                                 <TimePicker
-                                                    id="half-day-out-time"
-                                                    name="francis"
-                                                    placeholder="Enter time"
-                                                    value={time}
-                                                    onChange={(e) => setTime(e.target.value)}
-                                                // icon={ <span className="material-icons text-base">schedule</span> } // optional override
+                                                    value={schedule.halfday_out_time}
+                                                    onChange={(val) => handleChange("halfday_out_time", val)}
                                                 />
                                             </div>
                                         </div>
@@ -429,156 +397,8 @@ const EmployeeProfileForm = () => {
                                 >
                                     Working Days Status
                                 </h3>
-                                <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-4">
-                                    <div
-                                        className="flex items-center justify-between py-2 px-3 rounded-lg bg-background-light dark:bg-gray-800/50 border border-border-light dark:border-border-dark"
-                                    >
-                                        <span className="font-medium text-sm">MON</span>
-                                        <div className="relative">
-                                            <Input
-                                                checked=""
-                                                className="sr-only toggle-checkbox"
-                                                id="mon-toggle"
-                                                type="checkbox"
-                                            />
-                                            <Label
-                                                className="toggle-Label flex items-center w-10 h-5 bg-gray-300 dark:bg-gray-600 rounded-full p-1 cursor-pointer transition-colors"
-                                                for="mon-toggle"
-                                            >
-                                                <div
-                                                    className="toggle-dot w-4 h-4 bg-white rounded-full shadow-md transform transition-transform"
-                                                ></div>
-                                            </Label>
-                                        </div>
-                                    </div>
-                                    <div
-                                        className="flex items-center justify-between py-2 px-3 rounded-lg bg-background-light dark:bg-gray-800/50 border border-border-light dark:border-border-dark"
-                                    >
-                                        <span className="font-medium text-sm">TUE</span>
-                                        <div className="relative">
-                                            <Input
-                                                checked=""
-                                                className="sr-only toggle-checkbox"
-                                                id="tue-toggle"
-                                                type="checkbox"
-                                            />
-                                            <Label
-                                                className="toggle-Label flex items-center w-10 h-5 bg-gray-300 dark:bg-gray-600 rounded-full p-1 cursor-pointer transition-colors"
-                                                for="tue-toggle"
-                                            >
-                                                <div
-                                                    className="toggle-dot w-4 h-4 bg-white rounded-full shadow-md transform transition-transform"
-                                                ></div>
-                                            </Label>
-                                        </div>
-                                    </div>
-                                    <div
-                                        className="flex items-center justify-between py-2 px-3 rounded-lg bg-background-light dark:bg-gray-800/50 border border-border-light dark:border-border-dark"
-                                    >
-                                        <span className="font-medium text-sm">WED</span>
-                                        <div className="relative">
-                                            <Input
-                                                checked=""
-                                                className="sr-only toggle-checkbox"
-                                                id="wed-toggle"
-                                                type="checkbox"
-                                            />
-                                            <Label
-                                                className="toggle-Label flex items-center w-10 h-5 bg-gray-300 dark:bg-gray-600 rounded-full p-1 cursor-pointer transition-colors"
-                                                for="wed-toggle"
-                                            >
-                                                <div
-                                                    className="toggle-dot w-4 h-4 bg-white rounded-full shadow-md transform transition-transform"
-                                                ></div>
-                                            </Label>
-                                        </div>
-                                    </div>
-                                    <div
-                                        className="flex items-center justify-between py-2 px-3 rounded-lg bg-background-light dark:bg-gray-800/50 border border-border-light dark:border-border-dark"
-                                    >
-                                        <span className="font-medium text-sm">THU</span>
-                                        <div className="relative">
-                                            <Input
-                                                checked=""
-                                                className="sr-only toggle-checkbox"
-                                                id="thu-toggle"
-                                                type="checkbox"
-                                            />
-                                            <Label
-                                                className="toggle-Label flex items-center w-10 h-5 bg-gray-300 dark:bg-gray-600 rounded-full p-1 cursor-pointer transition-colors"
-                                                for="thu-toggle"
-                                            >
-                                                <div
-                                                    className="toggle-dot w-4 h-4 bg-white rounded-full shadow-md transform transition-transform"
-                                                ></div>
-                                            </Label>
-                                        </div>
-                                    </div>
-                                    <div
-                                        className="flex items-center justify-between py-2 px-3 rounded-lg bg-background-light dark:bg-gray-800/50 border border-border-light dark:border-border-dark"
-                                    >
-                                        <span className="font-medium text-sm">FRI</span>
-                                        <div className="relative">
-                                            <Input
-                                                checked=""
-                                                className="sr-only toggle-checkbox"
-                                                id="fri-toggle"
-                                                type="checkbox"
-                                            />
-                                            <Label
-                                                className="toggle-Label flex items-center w-10 h-5 bg-gray-300 dark:bg-gray-600 rounded-full p-1 cursor-pointer transition-colors"
-                                                for="fri-toggle"
-                                            >
-                                                <div
-                                                    className="toggle-dot w-4 h-4 bg-white rounded-full shadow-md transform transition-transform"
-                                                ></div>
-                                            </Label>
-                                        </div>
-                                    </div>
-                                    <div
-                                        className="flex items-center justify-between py-2 px-3 rounded-lg bg-red-100/50 dark:bg-red-900/40 border border-red-200 dark:border-red-800/60"
-                                    >
-                                        <span className="font-medium text-sm text-red-700 dark:text-red-300"
-                                        >SAT</span
-                                        >
-                                        <div className="relative">
-                                            <Input
-                                                className="sr-only toggle-checkbox"
-                                                id="sat-toggle"
-                                                type="checkbox"
-                                            />
-                                            <Label
-                                                className="toggle-Label flex items-center w-10 h-5 bg-gray-300 dark:bg-gray-600 rounded-full p-1 cursor-pointer transition-colors"
-                                                for="sat-toggle"
-                                            >
-                                                <div
-                                                    className="toggle-dot w-4 h-4 bg-white rounded-full shadow-md transform transition-transform"
-                                                ></div>
-                                            </Label>
-                                        </div>
-                                    </div>
-                                    <div
-                                        className="flex items-center justify-between py-2 px-3 rounded-lg bg-red-100/50 dark:bg-red-900/40 border border-red-200 dark:border-red-800/60"
-                                    >
-                                        <span className="font-medium text-sm text-red-700 dark:text-red-300"
-                                        >SUN</span
-                                        >
-                                        <div className="relative">
-                                            <Input
-                                                className="sr-only toggle-checkbox"
-                                                id="sun-toggle"
-                                                type="checkbox"
-                                            />
-                                            <Label
-                                                className="toggle-Label flex items-center w-10 h-5 bg-gray-300 dark:bg-gray-600 rounded-full p-1 cursor-pointer transition-colors"
-                                                for="sun-toggle"
-                                            >
-                                                <div
-                                                    className="toggle-dot w-4 h-4 bg-white rounded-full shadow-md transform transition-transform"
-                                                ></div>
-                                            </Label>
-                                        </div>
-                                    </div>
+                                <div className="">
+                                    <DaysSelector schedule={schedule} setSchedule={setSchedule} />
                                 </div>
                             </div>
                             <div
@@ -593,7 +413,7 @@ const EmployeeProfileForm = () => {
                                     <div>
                                         <Label
                                             className="block text-xs font-medium text-text-light dark:text-text-dark mb-1.5"
-                                            for="grace-period-cin"
+                                            htmlFor="grace-period-cin"
                                         >Grace Period for Check-in (CIN)</Label
                                         >
                                         <div className="relative">
@@ -601,7 +421,8 @@ const EmployeeProfileForm = () => {
                                                 className="w-full rounded-lg border-border-light dark:border-border-dark bg-background-light dark:bg-gray-800/50 text-text-strong-light dark:text-text-strong-dark focus:ring-2 focus:ring-[var(--primary)] focus:border-[var(--primary)] pr-16 text-sm transition-all"
                                                 id="grace-period-cin"
                                                 type="number"
-                                                value="15"
+                                                value={schedule.late_time}
+                                                onChange={(e) => handleChange("late_time", e.target.value)} // ✅ fixed
                                             />
                                             <span
                                                 className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-sm text-text-light dark:text-text-dark"
@@ -611,7 +432,7 @@ const EmployeeProfileForm = () => {
                                     <div>
                                         <Label
                                             className="block text-xs font-medium text-text-light dark:text-text-dark mb-1.5"
-                                            for="grace-period-cout"
+                                            htmlFor="grace-period-cout"
                                         >Grace Period for Check-out (COUT)</Label
                                         >
                                         <div className="relative">
@@ -619,7 +440,8 @@ const EmployeeProfileForm = () => {
                                                 className="w-full rounded-lg border-border-light dark:border-border-dark bg-background-light dark:bg-gray-800/50 text-text-strong-light dark:text-text-strong-dark focus:ring-2 focus:ring-[var(--primary)] focus:border-[var(--primary)] pr-16 text-sm transition-all"
                                                 id="grace-period-cout"
                                                 type="number"
-                                                value="15"
+                                                value={schedule.early_time}
+                                                onChange={(e) => handleChange("early_time", e.target.value)} // ✅ fixed
                                             />
                                             <span
                                                 className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-sm text-text-light dark:text-text-dark"
@@ -628,10 +450,10 @@ const EmployeeProfileForm = () => {
                                         </div>
                                     </div>
                                     <div className="md:col-span-2 space-y-4">
-                                        <div>
+                                        {/* <div>
                                             <Label
                                                 className="block text-xs font-medium text-text-light dark:text-text-dark mb-1.5"
-                                                for="overtime-threshold"
+                                                htmlFor="overtime-threshold"
                                             >Calculate Overtime after</Label
                                             >
                                             <div className="relative">
@@ -646,7 +468,7 @@ const EmployeeProfileForm = () => {
                                                 >minutes</span
                                                 >
                                             </div>
-                                        </div>
+                                        </div> */}
                                         <div>
                                             <Label
                                                 className="block text-xs font-medium text-text-light dark:text-text-dark mb-1.5"
@@ -663,7 +485,7 @@ const EmployeeProfileForm = () => {
                                                     />
                                                     <Label
                                                         className="ml-2 block text-sm text-text-strong-light dark:text-text-strong-dark"
-                                                        for="ot-before"
+                                                        htmlFor="ot-before"
                                                     >Before Duty</Label
                                                     >
                                                 </div>
@@ -676,7 +498,7 @@ const EmployeeProfileForm = () => {
                                                     />
                                                     <Label
                                                         className="ml-2 block text-sm text-text-strong-light dark:text-text-strong-dark"
-                                                        for="ot-after"
+                                                        htmlFor="ot-after"
                                                     >After Duty</Label
                                                     >
                                                 </div>
@@ -689,7 +511,7 @@ const EmployeeProfileForm = () => {
                                                     />
                                                     <Label
                                                         className="ml-2 block text-sm text-text-strong-light dark:text-text-strong-dark"
-                                                        for="ot-both"
+                                                        htmlFor="ot-both"
                                                     >Both</Label
                                                     >
                                                 </div>
@@ -708,83 +530,61 @@ const EmployeeProfileForm = () => {
                                     <div className="flex items-center justify-between gap-4">
                                         <Label
                                             className="flex-grow text-sm text-text-strong-light dark:text-text-strong-dark whitespace-nowrap"
-                                            for="absent-for-in-threshold"
+                                            htmlFor="absent-for-in-threshold"
                                         >Mark as Absent for In after</Label
                                         >
                                         <div className="relative w-48">
-                                            <Input
-                                                className="w-full rounded-lg border-border-light dark:border-border-dark bg-background-light dark:bg-gray-800/50 text-text-strong-light dark:text-text-strong-dark focus:ring-2 focus:ring-[var(--primary)] focus:border-[var(--primary)] pr-16 text-sm transition-all"
-                                                id="absent-for-in-threshold"
-                                                type="number"
-                                                value="60"
+                                            <TimePicker
+                                                value={schedule.absent_min_in}
+                                                onChange={(val) => handleChange("absent_min_in", val)}
                                             />
-                                            <span
-                                                className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-sm text-text-light dark:text-text-dark"
-                                            >minutes</span
-                                            >
                                         </div>
                                         <div className="relative">
-                                            <Input
-                                                checked=""
-                                                className="sr-only toggle-checkbox"
-                                                id="late-exceeds-absent"
-                                                type="checkbox"
-                                            />
-                                            <Label
-                                                className="toggle-Label flex items-center w-10 h-5 bg-gray-300 dark:bg-gray-600 rounded-full p-1 cursor-pointer transition-colors"
-                                                for="late-exceeds-absent"
-                                            >
-                                                <div
-                                                    className="toggle-dot w-4 h-4 bg-white rounded-full shadow-md transform transition-transform"
-                                                ></div>
-                                            </Label>
+                                            <Switch id="late-exceeds-absent" />
                                         </div>
                                     </div>
                                     <div className="flex items-center justify-between gap-4">
                                         <Label
                                             className="flex-grow text-sm text-text-strong-light dark:text-text-strong-dark whitespace-nowrap"
-                                            for="absent-for-out-threshold"
+                                            htmlFor="absent-for-out-threshold"
                                         >Mark as Absent for Out before</Label
                                         >
                                         <div className="relative w-48">
-                                            <Input
-                                                className="w-full rounded-lg border-border-light dark:border-border-dark bg-background-light dark:bg-gray-800/50 text-text-strong-light dark:text-text-strong-dark focus:ring-2 focus:ring-[var(--primary)] focus:border-[var(--primary)] pr-16 text-sm transition-all"
-                                                id="absent-for-out-threshold"
-                                                type="number"
-                                                value="60"
+                                             <TimePicker
+                                                value={schedule.absent_min_out}
+                                                onChange={(val) => handleChange("absent_min_out", val)}
                                             />
-                                            <span
-                                                className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-sm text-text-light dark:text-text-dark"
-                                            >minutes</span
-                                            >
                                         </div>
                                         <div className="relative">
-                                            <Input
-                                                checked=""
-                                                className="sr-only toggle-checkbox"
-                                                id="early-exceeds-absent"
-                                                type="checkbox"
-                                            />
-                                            <Label
-                                                className="toggle-Label flex items-center w-10 h-5 bg-gray-300 dark:bg-gray-600 rounded-full p-1 cursor-pointer transition-colors"
-                                                for="early-exceeds-absent"
-                                            >
-                                                <div
-                                                    className="toggle-dot w-4 h-4 bg-white rounded-full shadow-md transform transition-transform"
-                                                ></div>
-                                            </Label>
+                                            <Switch id="early-exceeds-absent" />
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div className="flex justify-end mt-8">
-                            <button
-                                className="bg-[var(--primary)] text-white font-semibold py-2.5 px-6 rounded-lg shadow-md hover:bg-violet-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-500 transition-all text-sm transform hover:scale-105 active:scale-95 flex items-center gap-2"
+
+                        {globalError && (
+                            <div className="p-3 mt-5 border border-red-500 bg-red-50 text-red-700 rounded-lg" role="alert">
+                                {globalError}
+                            </div>
+                        )}
+
+                        <div className="mt-5 flex justify-end space-x-4">
+                            <Button
+                                type="button"
+                                variant="secondary"
+                                onClick={handleCancel}
                             >
-                                <span className="material-symbols-outlined text-xl">save</span> SAVE
-                                CHANGES
-                            </button>
+                                CANCEL
+                            </Button>
+                            <Button
+                                type="submit"
+                                className="bg-primary hover:bg-indigo-700"
+                                disabled={isSubmitting}
+                                onClick={onSubmit}
+                            >
+                                {isSubmitting ? "SUBMITTING..." : "SUBMIT"}
+                            </Button>
                         </div>
                     </div>
                     <Card className="lg:col-span-2 bg-card-light dark:bg-card-dark border-border-light dark:border-border-dark shadow-sm rounded-2xl">
@@ -800,14 +600,14 @@ const EmployeeProfileForm = () => {
                                 <div className="flex items-start justify-between mb-4">
                                     <div>
                                         <h3 className="font-semibold text-blue-800 dark:text-blue-200">
-                                            Day Duty
+                                            {schedule.name}
                                         </h3>
                                         <p className="text-sm text-text-light dark:text-text-dark">
                                             A standard daytime work schedule.
                                         </p>
                                     </div>
                                     <span className="text-xs font-medium text-blue-600 dark:text-blue-400 bg-blue-100 dark:bg-blue-900/50 py-1 px-2 rounded-full">
-                                        09:00 - 18:00
+                                        {schedule.on_duty_time} - {schedule.off_duty_time}
                                     </span>
                                 </div>
 
@@ -824,7 +624,7 @@ const EmployeeProfileForm = () => {
                                                 <p className="text-xs text-text-light dark:text-text-dark">
                                                     Start Time
                                                 </p>
-                                                <p className="font-medium">09:00</p>
+                                                <p className="font-medium">{schedule.on_duty_time}</p>
                                             </div>
                                         </div>
 
@@ -834,7 +634,7 @@ const EmployeeProfileForm = () => {
                                                 <p className="text-xs text-text-light dark:text-text-dark">
                                                     End Time
                                                 </p>
-                                                <p className="font-medium">18:00</p>
+                                                <p className="font-medium">{schedule.off_duty_time}</p>
                                             </div>
                                         </div>
 
@@ -864,7 +664,7 @@ const EmployeeProfileForm = () => {
                                                 <p className="text-xs text-text-light dark:text-text-dark">
                                                     OT Start
                                                 </p>
-                                                <p className="font-medium">18:30</p>
+                                                <p className="font-medium">{addTimes(schedule.off_duty_time, schedule.overtime_interval)}</p>
                                             </div>
                                         </div>
 
@@ -874,7 +674,7 @@ const EmployeeProfileForm = () => {
                                                 <p className="text-xs text-text-light dark:text-text-dark">
                                                     Grace Period
                                                 </p>
-                                                <p className="font-medium">15 min</p>
+                                                <p className="font-medium">{schedule.late_time} min</p>
                                             </div>
                                         </div>
                                     </div>

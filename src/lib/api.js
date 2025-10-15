@@ -127,6 +127,12 @@ export const storeEmployee = async (payload) => {
     return true;
 };
 
+export const storeShift = async (payload) => {
+    const user = await getUser();
+    let { data } = await axios.post(`${API_BASE}/shift`, { ...payload, company_id: user?.company_id || 0 });
+    return data;
+};
+
 export const storePayroll = async (payload) => {
     const user = await getUser();
     await axios.post(`${API_BASE}/payroll`, { ...payload, company_id: user?.company_id || 0 });
