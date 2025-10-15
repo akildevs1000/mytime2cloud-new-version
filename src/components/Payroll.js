@@ -1,219 +1,287 @@
-import React, { useEffect, useRef } from 'react';
+"use client";
 
-const Payroll = () => {
+import React, { useEffect, useMemo, useState } from "react";
+import { useForm, useFieldArray } from "react-hook-form";
+
+import { useRouter } from "next/navigation";
+
+// shadcn/ui
+import {
+    Form,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormControl,
+    FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { parseApiError, storePayroll } from "@/lib/api";
+import DatePicker from "./ui/DatePicker";
+import { SuccessDialog } from "./SuccessDialog";
+
+
+export default function Payroll({ employee_id, payroll }) {
+
+    const router = useRouter();
+
+    const form = useForm({
+        defaultValues: {
+            effective_date: payroll.effective_date || null,  // Date or string okay
+            basic_salary: payroll.basic_salary ?? "",
+            earnings: payroll.earnings.map((e) => ({
+                label: e.label ?? "",
+                value: e.value ?? "",
+            })),
+        },
+    });
+
+    const {
+        control,
+        handleSubmit,
+        setValue,
+        watch,
+        setError,
+        reset,
+        formState: { isSubmitting },
+    } = form;
+
+    const { fields, append, remove } = useFieldArray({
+        control,
+        name: "earnings",
+    });
+
+    const [open, setOpen] = useState(false);
+    const [editForm, setEditForm] = useState(true);
+    const [loading, setLoading] = useState(false);
+    const [globalError, setGlobalError] = useState("");
+
+    // If employeeObject changes, reset form (keeps edit mode state)
+    useEffect(() => {
+        reset({
+            effective_date: payroll.effective_date || null,  // Date or string okay
+            basic_salary: payroll.basic_salary ?? "",
+            earnings: payroll.earnings.map((e) => ({
+                label: e.label ?? "",
+                value: e.value ?? "",
+            })),
+        });
+    }, [reset]);
+
+    // Compute net salary like your Vue computed
+    const net_salary = useMemo(() => {
+        const basic = parseFloat(watch("basic_salary")) || 0;
+        const earnings = watch("earnings") || [];
+        const sum = earnings.reduce((acc, it) => acc + (parseFloat(it.value) || 0), 0);
+        return basic + sum;
+    }, [watch("basic_salary"), watch("earnings")]);
+
+    const handleCancel = () => router.push(`/employees`);
+
+    const onSubmit = async (values) => {
+        setGlobalError("");
+        setLoading(true);
+        try {
+            const payload = {
+                ...values,
+                effective_date: values.effective_date,
+                employee_id: employee_id,
+                net_salary,
+            };
+
+            await storePayroll(payload);
+
+            setOpen(true);
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            setOpen(false);
+
+            router.push(`/employees`);
+
+        } catch (error) {
+            setGlobalError(parseApiError(error));
+        } finally {
+            setLoading(false);
+        }
+    };
 
     return (
-        <div className="py-6 space-y-8">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div>
-                    <h3
-                        className="text-lg font-semibold text-text-light dark:text-text-dark mb-4"
-                    >
-                        Salary Details
-                    </h3>
-                    <div className="space-y-4">
-                        <div
-                            className="p-4 border border-border-light dark:border-border-dark rounded-lg"
-                        >
-                            <div className="flex justify-between items-center">
-                                <p
-                                    className="text-sm text-subtext-light dark:text-subtext-dark"
-                                >
-                                    Basic Salary
-                                </p>
-                                <p
-                                    className="text-sm font-medium text-text-light dark:text-text-dark"
-                                >
-                                    $4,500.00
-                                </p>
-                            </div>
+        <div className="flex flex-col rounded-lg py-4">
+            <Form {...form}>
+                <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+                    {/* Effective Date + Basic Salary */}
+                    <div className="overflow-hidden rounded-lg">
+                        <div className="grid grid-cols-1 gap-6 p-4 md:grid-cols-2">
+                            {/* Effective Date */}
+                            <FormField
+                                control={control}
+                                name="effective_date"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Effective Date</FormLabel>
+                                        <DatePicker
+                                            value={field.value}
+                                            onChange={(date) => field.onChange(date)}
+                                            placeholder="Pick a date"
+                                        />
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+
+                            {/* Basic Salary */}
+                            <FormField
+                                control={control}
+                                name="basic_salary"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Basic Salary</FormLabel>
+                                        <FormControl>
+                                            {editForm ? (
+                                                <Input
+                                                    type="number"
+                                                    placeholder="Enter Basic Salary"
+                                                    {...field}
+                                                />
+                                            ) : (
+                                                <div className="rounded-md border bg-background px-3 py-2 text-sm">
+                                                    {field.value}
+                                                </div>
+                                            )}
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
                         </div>
-                        <div
-                            className="p-4 border border-border-light dark:border-border-dark rounded-lg"
-                        >
-                            <div className="flex justify-between items-center mb-2">
-                                <p
-                                    className="text-sm text-subtext-light dark:text-subtext-dark"
-                                >
-                                    Housing Allowance
-                                </p>
-                                <p
-                                    className="text-sm font-medium text-text-light dark:text-text-dark"
-                                >
-                                    $300.00
-                                </p>
-                            </div>
-                            <div className="flex justify-between items-center">
-                                <p
-                                    className="text-sm text-subtext-light dark:text-subtext-dark"
-                                >
-                                    Transport Allowance
-                                </p>
-                                <p
-                                    className="text-sm font-medium text-text-light dark:text-text-dark"
-                                >
-                                    $200.00
-                                </p>
+                    </div>
+
+                    {/* Earnings Table */}
+                    <div className="overflow-hidden rounded-lg border">
+                        <div className="flex items-center justify-between bg-gray-50 p-3">
+                            <h4 className="text-sm font-medium">Particulars</h4>
+                            <Button
+                                type="button"
+                                variant="ghost"
+                                disabled={!editForm}
+                                onClick={() => append({ label: "Add Item", value: 100 })}
+                                className="inline-flex items-center gap-1 disabled:opacity-50"
+                            >
+                                <span className="material-icons text-sm">add_circle</span>
+                                Add
+                            </Button>
+                        </div>
+
+                        <div className="divide-y">
+                            {fields.map((item, index) => (
+                                <div className="flex flex-col md:flex-row md:items-end gap-3 p-3">
+                                    {/* Label */}
+                                    <div className="flex-1">
+                                        <FormField
+                                            control={control}
+                                            name={`earnings.${index}.label`}
+                                            render={({ field }) => (
+                                                <FormItem>
+                                                    <FormLabel className="text-xs">Label</FormLabel>
+                                                    <FormControl>
+                                                        {editForm ? (
+                                                            <Input placeholder="Label" {...field} />
+                                                        ) : (
+                                                            <div className="rounded-md border bg-background px-3 py-2 text-sm">
+                                                                {field.value}
+                                                            </div>
+                                                        )}
+                                                    </FormControl>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}
+                                        />
+                                    </div>
+
+                                    {/* Value */}
+                                    <div className="flex-1 md:w-1/3">
+                                        <FormField
+                                            control={control}
+                                            name={`earnings.${index}.value`}
+                                            render={({ field }) => (
+                                                <FormItem>
+                                                    <FormLabel className="text-xs">Value</FormLabel>
+                                                    <FormControl>
+                                                        {editForm ? (
+                                                            <Input type="number" placeholder="0" {...field} />
+                                                        ) : (
+                                                            <div className="rounded-md border bg-background px-3 py-2 text-sm">
+                                                                {field.value}
+                                                            </div>
+                                                        )}
+                                                    </FormControl>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}
+                                        />
+                                    </div>
+
+                                    {/* Remove */}
+                                    <div className="flex items-end justify-end">
+                                        <Button
+                                            type="button"
+                                            variant="ghost"
+                                            className="text-red-600 hover:bg-red-50"
+                                            disabled={!editForm}
+                                            onClick={() => remove(index)}
+                                            title="Remove"
+                                        >
+                                            <span className="material-icons text-sm">close</span>
+                                        </Button>
+                                    </div>
+                                </div>
+
+                            ))}
+
+                            {/* Net Salary Row */}
+                            <div className="flex items-center justify-between bg-gray-50 p-3">
+                                <div className="text-sm font-medium">Net Salary</div>
+                                <div className="text-sm">{net_salary}</div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div>
-                    <h3
-                        className="text-lg font-semibold text-text-light dark:text-text-dark mb-4"
-                    >
-                        Bank Information
-                    </h3>
-                    <div
-                        className="p-4 border border-border-light dark:border-border-dark rounded-lg flex items-start"
-                    >
-                        <span className="material-icons text-primary mr-4 mt-1"
-                        >account_balance</span
+
+                    {/* Global error */}
+                    {globalError ? (
+                        <div
+                            className="rounded-lg border border-red-500 bg-red-50 p-3 text-red-700"
+                            role="alert"
                         >
-                        <div>
-                            <p
-                                className="font-medium text-text-light dark:text-text-dark"
-                            >
-                                Bank of America
-                            </p>
-                            <p
-                                className="text-sm text-subtext-light dark:text-subtext-dark"
-                            >
-                                Checking Account
-                            </p>
-                            <p
-                                className="text-sm text-subtext-light dark:text-subtext-dark"
-                            >
-                                **** **** **** 1234
-                            </p>
+                            {globalError}
                         </div>
-                    </div>
-                </div>
-            </div>
-            <div>
-                <h3
-                    className="text-lg font-semibold text-text-light dark:text-text-dark mb-4"
-                >
-                    Last 3 Months Salary
-                </h3>
-                <div
-                    className="border border-border-light dark:border-border-dark rounded-lg overflow-hidden"
-                >
-                    <table
-                        className="min-w-full divide-y divide-border-light dark:divide-border-dark"
-                    >
-                        <thead className="bg-background-light dark:bg-background-dark">
-                            <tr>
-                                <th
-                                    className="px-6 py-3 text-left text-xs font-medium text-subtext-light dark:text-subtext-dark uppercase tracking-wider"
-                                    scope="col"
-                                >
-                                    Month
-                                </th>
-                                <th
-                                    className="px-6 py-3 text-left text-xs font-medium text-subtext-light dark:text-subtext-dark uppercase tracking-wider"
-                                    scope="col"
-                                >
-                                    Pay Date
-                                </th>
-                                <th
-                                    className="px-6 py-3 text-left text-xs font-medium text-subtext-light dark:text-subtext-dark uppercase tracking-wider"
-                                    scope="col"
-                                >
-                                    Net Pay
-                                </th>
-                                <th className="relative px-6 py-3" scope="col">
-                                    <span className="sr-only">Download</span>
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody
-                            className="bg-surface-light dark:bg-surface-dark divide-y divide-border-light dark:divide-border-dark"
+                    ) : null}
+
+                    {/* Actions */}
+                    <div className="flex items-center justify-end gap-2 pt-2">
+                        <Button
+                            type="button"
+                            variant="secondary"
+                            disabled={!editForm}
+                            onClick={handleCancel}
                         >
-                            <tr>
-                                <td
-                                    className="px-6 py-4 whitespace-nowrap text-sm font-medium text-text-light dark:text-text-dark"
-                                >
-                                    November 2023
-                                </td>
-                                <td
-                                    className="px-6 py-4 whitespace-nowrap text-sm text-subtext-light dark:text-subtext-dark"
-                                >
-                                    Nov 20, 2023
-                                </td>
-                                <td
-                                    className="px-6 py-4 whitespace-nowrap text-sm text-subtext-light dark:text-subtext-dark"
-                                >
-                                    $5,000.00
-                                </td>
-                                <td
-                                    className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium"
-                                >
-                                    <a className="text-primary hover:text-primary/80" href="#"
-                                    ><span className="material-icons align-middle"
-                                    >download</span
-                                        ></a
-                                    >
-                                </td>
-                            </tr>
-                            <tr>
-                                <td
-                                    className="px-6 py-4 whitespace-nowrap text-sm font-medium text-text-light dark:text-text-dark"
-                                >
-                                    October 2023
-                                </td>
-                                <td
-                                    className="px-6 py-4 whitespace-nowrap text-sm text-subtext-light dark:text-subtext-dark"
-                                >
-                                    Oct 20, 2023
-                                </td>
-                                <td
-                                    className="px-6 py-4 whitespace-nowrap text-sm text-subtext-light dark:text-subtext-dark"
-                                >
-                                    $5,000.00
-                                </td>
-                                <td
-                                    className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium"
-                                >
-                                    <a className="text-primary hover:text-primary/80" href="#"
-                                    ><span className="material-icons align-middle"
-                                    >download</span
-                                        ></a
-                                    >
-                                </td>
-                            </tr>
-                            <tr>
-                                <td
-                                    className="px-6 py-4 whitespace-nowrap text-sm font-medium text-text-light dark:text-text-dark"
-                                >
-                                    September 2023
-                                </td>
-                                <td
-                                    className="px-6 py-4 whitespace-nowrap text-sm text-subtext-light dark:text-subtext-dark"
-                                >
-                                    Sep 20, 2023
-                                </td>
-                                <td
-                                    className="px-6 py-4 whitespace-nowrap text-sm text-subtext-light dark:text-subtext-dark"
-                                >
-                                    $5,000.00
-                                </td>
-                                <td
-                                    className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium"
-                                >
-                                    <a className="text-primary hover:text-primary/80" href="#"
-                                    ><span className="material-icons align-middle"
-                                    >download</span
-                                        ></a
-                                    >
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+                            Cancel
+                        </Button>
+                        <Button
+                            type="submit"
+                            className="bg-primary hover:bg-indigo-700"
+                            disabled={!editForm || isSubmitting || loading}
+                        >
+                            {isSubmitting || loading ? "Submit..." : "Submit"}
+                        </Button>
+                    </div>
+                </form>
+            </Form>
+
+            <SuccessDialog
+                open={open}
+                onOpenChange={setOpen}
+                title="Payroll Info Saved"
+                description="Payroll Info details have been saved successfully."
+            />
         </div>
     );
-};
-
-export default Payroll;
+}

@@ -120,7 +120,7 @@ export default function Home() {
       case 'passport':
         return <Passport employee_id={employee.id} passport={employee.passport} />;
       case 'payroll':
-        return <Payroll payload={employee} />;
+        return <Payroll employee_id={employee.id} payroll={employee.payroll} />;
       case 'performance':
         return <Performance payload={employee} />;
 

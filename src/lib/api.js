@@ -127,6 +127,12 @@ export const storeEmployee = async (payload) => {
     return true;
 };
 
+export const storePayroll = async (payload) => {
+    const user = await getUser();
+    await axios.post(`${API_BASE}/payroll`, { ...payload, company_id: user?.company_id || 0 });
+    return true;
+};
+
 export const updateEmployee = async (payload, id = 0) => {
     await axios.post(`${API_BASE}/employee-update-new/${id}`, payload);
     return true;
@@ -361,6 +367,7 @@ api.interceptors.request.use((config) => {
 
 
 export const parseApiError = (error) => {
+    console.log("🚀 ~ parseApiError ~ error:", error)
     if (error.response) {
 
         const status = error.response.status;
