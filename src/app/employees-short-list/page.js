@@ -42,6 +42,7 @@ import RFID from '@/components/RFID';
 import Login from '@/components/Login';
 import Settings from '@/components/Settings';
 import SETTINGRFIDLOGIN from '@/components/SETTINGRFIDLOGIN';
+import BANKPAYROLL from '@/components/BANKPAYROLL';
 
 // -----------------------------------------------------------
 // 1. Custom Debounce Hook
@@ -75,7 +76,6 @@ const TABS = [
   { id: 'bank', name: 'Bank', icon: MapPin },
   { id: 'documents', name: 'Documents', icon: FileText },
   { id: 'settings', name: 'Settings', icon: MapPin },
-  { id: 'payroll', name: 'Payroll', icon: Briefcase },
   // { id: 'performance', name: 'Performance', icon: Briefcase },
 ];
 
@@ -142,7 +142,7 @@ export default function Home() {
         );
       case 'bank':
         return (
-          <Bank employee_id={id} bank={bank} />
+          <BANKPAYROLL employee_id={id} bank={bank} payroll={payroll} />
         );
       case 'rfid':
         return <RFID employee_id={employee_id} />;
@@ -157,8 +157,6 @@ export default function Home() {
             reporting_manager_id={reporting_manager_id} s
             tatus={status} />
         );
-      case 'payroll':
-        return <Payroll employee_id={id} payroll={payroll} />;
       case 'documents':
         return <Document employee_id={id} />;
       // case 'performance':

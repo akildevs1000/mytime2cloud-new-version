@@ -164,18 +164,17 @@ export default function Payroll({ employee_id, payroll }) {
                     </div>
 
                     {/* Earnings Table */}
-                    <div className="overflow-hidden rounded-lg border">
-                        <div className="flex items-center justify-between bg-gray-50 p-3">
+                    <div className="overflow-hidden rounded-lg border mx-4">
+                        <div className="flex items-center justify-between bg-gray-50 px-3">
                             <h4 className="text-sm font-medium">Particulars</h4>
                             <Button
                                 type="button"
                                 variant="ghost"
                                 disabled={!editForm}
                                 onClick={() => append({ label: "Add Item", value: 100 })}
-                                className="inline-flex items-center gap-1 disabled:opacity-50"
+                                className="inline-flex disabled:opacity-50"
                             >
-                                <span className="material-icons text-sm">add_circle</span>
-                                Add
+                                <span className="material-icons text-sm text-primary">add_circle</span>
                             </Button>
                         </div>
 
