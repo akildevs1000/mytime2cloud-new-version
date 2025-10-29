@@ -1,16 +1,13 @@
 "use client";
 
-
 // import Performance from '@/components/Performance';
 import EmergencyContact from '@/components/EmergencyContact';
 import Profile from '@/components/Profile';
-import Payroll from '@/components/Payroll';
 import Address from '@/components/Address';
 import Document from '@/components/Document';
 
 import React, { useState, useEffect, useCallback } from 'react';
-import { Briefcase, User, MapPin, FileText } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import { User, MapPin, FileText } from 'lucide-react';
 import Link from 'next/link';
 
 // NOTE: For live execution, this external API might require authentication headers (like an API Key or Authorization token) not provided here.
@@ -31,16 +28,11 @@ import {
 import { Button } from '@/components/ui/button';
 
 
-import axios from 'axios'; // Ensure you import axios at the top of your file
 import { getBranches, getEmployees } from '@/lib/api';
 import { EmployeeExtras } from '@/components/Employees/Extras';
 import { Input } from '@/components/ui/input';
 import VisaPassportEmirate from '@/components/VisaPassportEmirate';
 import Qualification from '@/components/Qualification';
-import Bank from '@/components/Bank';
-import RFID from '@/components/RFID';
-import Login from '@/components/Login';
-import Settings from '@/components/Settings';
 import SETTINGRFIDLOGIN from '@/components/SETTINGRFIDLOGIN';
 import BANKPAYROLL from '@/components/BANKPAYROLL';
 
@@ -93,7 +85,7 @@ export default function Home() {
     let {
       id, phone_relative_number, relation, local_address, local_city, local_country, home_address, home_tel, home_mobile, home_fax, home_city, home_state, home_country,
 
-      employee_id, rfid_card_number, rfid_card_password, leave_group_id, reporting_manager_id, status,
+      rfid_card_number, rfid_card_password, leave_group_id, reporting_manager_id, status,
 
       // relations
       visa, emirate, passport,
@@ -144,8 +136,6 @@ export default function Home() {
         return (
           <BANKPAYROLL employee_id={id} bank={bank} payroll={payroll} />
         );
-      case 'rfid':
-        return <RFID employee_id={employee_id} />;
       case 'settings':
         return (
           <SETTINGRFIDLOGIN
