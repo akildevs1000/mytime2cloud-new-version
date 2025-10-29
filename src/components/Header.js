@@ -35,7 +35,7 @@ export default function Header() {
     if (pathname == "/login") return;
 
     return (
-        <header className="flex items-center justify-between p-4 shadow-sm bg-gray-100 dark:bg-gray-800">
+        <header className="flex items-center justify-between p-4 shadow-sm bg-white dark:bg-gray-800">
             <div className="flex items-center space-x-4">
                 <button className="text-gray-600 dark:text-gray-300">
                     <span className="material-icons">menu</span>

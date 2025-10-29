@@ -35,14 +35,13 @@ import axios from 'axios'; // Ensure you import axios at the top of your file
 import { getBranches, getEmployees } from '@/lib/api';
 import { EmployeeExtras } from '@/components/Employees/Extras';
 import { Input } from '@/components/ui/input';
-import Visa from '@/components/Visa';
-import Emirate from '@/components/Emirate';
-import Passport from '@/components/Passport';
+import VisaPassportEmirate from '@/components/VisaPassportEmirate';
 import Qualification from '@/components/Qualification';
 import Bank from '@/components/Bank';
 import RFID from '@/components/RFID';
 import Login from '@/components/Login';
 import Settings from '@/components/Settings';
+import SETTINGRFIDLOGIN from '@/components/SETTINGRFIDLOGIN';
 
 // -----------------------------------------------------------
 // 1. Custom Debounce Hook
@@ -72,12 +71,8 @@ const TABS = [
   { id: 'emergency', name: 'Emergency', icon: FileText },
   { id: 'address', name: 'Address', icon: MapPin },
   { id: 'visa', name: 'Visa', icon: MapPin },
-  { id: 'passport', name: 'Passport', icon: MapPin },
-  { id: 'emirate', name: 'Emirate', icon: MapPin },
   { id: 'qualification', name: 'Qualification', icon: MapPin },
   { id: 'bank', name: 'Bank', icon: MapPin },
-  { id: 'rfid', name: 'RFID', icon: MapPin },
-  { id: 'login', name: 'Login', icon: MapPin },
   { id: 'settings', name: 'Settings', icon: MapPin },
   { id: 'documents', name: 'Documents', icon: FileText },
   { id: 'payroll', name: 'Payroll', icon: Briefcase },
@@ -104,21 +99,15 @@ export default function Home() {
       case 'address':
         return <Address payload={employee} />;
       case 'visa':
-        return <Visa employee_id={employee.id} visa={employee.visa} />;
-      case 'emirate':
-        return <Emirate employee_id={employee.id} emirate={employee.emirate} />;
+        return <VisaPassportEmirate employee_id={employee.id} visa={employee.visa} emirate={employee.emirate} passport={employee.passport} />;
       case 'qualification':
         return <Qualification employee_id={employee.id} qualification={employee.qualification} />;
       case 'bank':
         return <Bank employee_id={employee.id} bank={employee.bank} />;
       case 'rfid':
-        return <RFID employee_id={employee.employee_id} rfid_card_number={employee.rfid_card_number} rfid_card_password={employee.rfid_card_password} />;
-      case 'login':
-        return <Login employee_id={employee.id} user={employee.user} />;
+        return <RFID employee_id={employee.employee_id}  />;
       case 'settings':
-        return <Settings employee_id={employee.employee_id} leave_group_id={employee.leave_group_id} reporting_manager_id={employee.reporting_manager_id} status={employee.status} />;
-      case 'passport':
-        return <Passport employee_id={employee.id} passport={employee.passport} />;
+        return <SETTINGRFIDLOGIN employee_id={employee.id} user={employee.user} rfid_card_number={employee.rfid_card_number} rfid_card_password={employee.rfid_card_password} leave_group_id={employee.leave_group_id} reporting_manager_id={employee.reporting_manager_id} status={employee.status} />;
       case 'payroll':
         return <Payroll employee_id={employee.id} payroll={employee.payroll} />;
       case 'performance':
@@ -409,11 +398,11 @@ export default function Home() {
               />
               <div>
                 <h3 className="text-xl font-semibold">{selectedEmployee?.full_name || "---"}</h3>
-                 <div
+                <div
                   className="mt-2 flex items-center space-x-2 text-sm text-subtext-light dark:text-subtext-dark"
                 >
                   <span className="material-icons text-base">domain</span>
-                  <span>Dept: {selectedEmployee?.department?.name ||  "---"}</span>
+                  <span>Dept: {selectedEmployee?.department?.name || "---"}</span>
                 </div>
                 <div
                   className="mt-2 flex items-center space-x-2 text-sm text-subtext-light dark:text-subtext-dark"

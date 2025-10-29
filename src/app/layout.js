@@ -21,7 +21,7 @@ export default function RootLayout({ children }) {
         />
       </head>
       <body
-        className="font-display bg-background-light dark:bg-background-dark text-text-light dark:text-text-dark"
+        className="font-display bg-gray-100 text-text-light dark:text-text-dark"
       >
         <Header />
         <div className="flex h-screen">

@@ -27,7 +27,7 @@ export default function Payroll({ employee_id, payroll }) {
 
     const form = useForm({
         defaultValues: {
-            effective_date: payroll.effective_date || null,  // Date or string okay
+            effective_date: payroll?.effective_date || null,  // Date or string okay
             basic_salary: payroll.basic_salary ?? "",
             earnings: payroll.earnings.map((e) => ({
                 label: e.label ?? "",
