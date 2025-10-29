@@ -1,22 +1,9 @@
 "use client";
 
 import React, { useState, useEffect, useCallback } from 'react';
-import { Search, Plus, MoreVertical, QrCode, Fingerprint, ChevronLeft, ChevronRight, Loader2, RefreshCw, Download, Upload, Pencil, Edit, Trash } from 'lucide-react';
+import { Search, Plus, MoreVertical, QrCode, Fingerprint, ChevronLeft, ChevronRight, Loader2, RefreshCw, Pencil, Trash, Palmtree, Hand, Lock, ScanFace } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-
-import {
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
-} from "@/components/ui/popover";
-import {
-    Command,
-    CommandEmpty,
-    CommandGroup,
-    CommandInput,
-    CommandItem,
-} from "@/components/ui/command";
 
 import {
     DropdownMenu,
@@ -29,7 +16,6 @@ import {
 
 import axios from 'axios'; // Ensure you import axios at the top of your file
 import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
 import { getEmployees, removeEmployee } from '@/lib/api';
 import { EmployeeExtras } from '@/components/Employees/Extras';
 import BranchSelect from '@/components/ui/BranchSelect';
@@ -182,6 +168,24 @@ export default function EmployeeDataTable() {
         const designationTitle = employee.designation?.title || employee.last_name; // Using last_name as a fallback title
         const employeeEmail = employee.user?.email || 'N/A';
 
+        let { rfid_card_number, finger_prints, rfid_card_password, palms, profile_picture } = employee;
+
+        const isCardNumberSet =
+            rfid_card_number !== "" &&
+            rfid_card_number !== "0" &&
+            rfid_card_number !== null;
+
+        const isFingerPrint = finger_prints && finger_prints.length > 0;
+
+        const isPalms = palms && palms.length > 0;
+
+        const isPasswordSet =
+            rfid_card_password !== "" &&
+            rfid_card_password !== "FFFFFFFF" &&
+            rfid_card_password !== null;
+
+        const isFace = profile_picture;
+
         return (
             <tr key={employee.id} className="border-b border-gray-200 hover:bg-indigo-50 transition-colors"
             >
@@ -236,8 +240,28 @@ export default function EmployeeDataTable() {
                 {/* Options/Security */}
                 <td onClick={() => handleRowClick(employee.id)} className="p-4 whitespace-nowrap">
                     <div className="flex items-center space-x-2 text-gray-500">
-                        <QrCode className="w-5 h-5 cursor-pointer hover:text-indigo-600 transition-colors" title="QR Code Access" />
-                        <Fingerprint className="w-5 h-5 cursor-pointer hover:text-indigo-600 transition-colors" title="Fingerprint Setup" />
+                        {
+                            isFace &&
+                            <ScanFace className="w-5 h-5 cursor-pointer hover:text-indigo-600 transition-colors" title="QR Code Access" />
+                        }
+                        {
+                            isCardNumberSet &&
+                            <QrCode className="w-5 h-5 cursor-pointer hover:text-indigo-600 transition-colors" title="QR Code Access" />
+                        }
+                        {
+                            isFingerPrint &&
+                            <Fingerprint className="w-5 h-5 cursor-pointer hover:text-indigo-600 transition-colors" title="Fingerprint Setup" />
+                        }
+                        {
+                            isPalms &&
+                            <Hand className="w-5 h-5 cursor-pointer hover:text-indigo-600 transition-colors" title="Fingerprint Setup" />
+                        }
+                        {
+                            isPasswordSet &&
+                            <Lock className="w-5 h-5 cursor-pointer hover:text-indigo-600 transition-colors" title="Fingerprint Setup" />
+                        }
+
+
                     </div>
                 </td>
 
