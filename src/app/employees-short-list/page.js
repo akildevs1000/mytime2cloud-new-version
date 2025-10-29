@@ -76,7 +76,7 @@ const TABS = [
   { id: 'settings', name: 'Settings', icon: MapPin },
   { id: 'documents', name: 'Documents', icon: FileText },
   { id: 'payroll', name: 'Payroll', icon: Briefcase },
-  { id: 'performance', name: 'Performance', icon: Briefcase },
+  // { id: 'performance', name: 'Performance', icon: Briefcase },
 ];
 
 
@@ -90,7 +90,18 @@ export default function Home() {
   const renderTabContent = (employee) => {
     if (!employee) return;
 
-    let { id, phone_relative_number, relation, local_address, local_city, local_country,home_address,home_tel,home_mobile,home_fax,home_city,home_state,home_country } = employee;
+    let { 
+      id, phone_relative_number, relation, local_address, local_city, local_country, home_address, home_tel, home_mobile, home_fax, home_city, home_state, home_country,
+
+      employee_id,rfid_card_number,rfid_card_password,leave_group_id,reporting_manager_id,status,
+
+      // relations
+      visa, emirate, passport,
+      qualification, bank,
+      user,
+      payroll
+
+    } = employee;
 
     switch (activeTab) {
       case 'profile':
@@ -102,19 +113,19 @@ export default function Home() {
       case 'address':
         return <Address id={id} home_address={home_address} home_tel={home_tel} home_mobile={home_mobile} home_fax={home_fax} home_city={home_city} home_state={home_state} home_country={home_country} />;
       case 'visa':
-        return <VisaPassportEmirate employee_id={id} visa={employee.visa} emirate={employee.emirate} passport={employee.passport} />;
+        return <VisaPassportEmirate employee_id={id} visa={visa} emirate={emirate} passport={passport} />;
       case 'qualification':
-        return <Qualification employee_id={id} qualification={employee.qualification} />;
+        return <Qualification employee_id={id} qualification={qualification} />;
       case 'bank':
-        return <Bank employee_id={id} bank={employee.bank} />;
+        return <Bank employee_id={id} bank={bank} />;
       case 'rfid':
-        return <RFID employee_id={employee.employee_id} />;
+        return <RFID employee_id={employee_id} />;
       case 'settings':
-        return <SETTINGRFIDLOGIN employee_id={id} user={employee.user} rfid_card_number={employee.rfid_card_number} rfid_card_password={employee.rfid_card_password} leave_group_id={employee.leave_group_id} reporting_manager_id={employee.reporting_manager_id} status={employee.status} />;
+        return <SETTINGRFIDLOGIN employee_id={id} user={user} rfid_card_number={rfid_card_number} rfid_card_password={rfid_card_password} leave_group_id={leave_group_id} reporting_manager_id={reporting_manager_id} status={status} />;
       case 'payroll':
-        return <Payroll employee_id={id} payroll={employee.payroll} />;
-      case 'performance':
-        return <Performance payload={employee} />;
+        return <Payroll employee_id={id} payroll={payroll} />;
+      // case 'performance':
+      //   return <Performance payload={employee} />;
 
       case 'documents':
         return <Document employee_id={id} />;
@@ -123,9 +134,6 @@ export default function Home() {
         return null;
     }
   };
-
-
-
 
   const [employees, setEmployees] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -143,7 +151,6 @@ export default function Home() {
   const [branches, setBranches] = useState([]);
 
   const [selectedEmployee, setSelectedEmployee] = useState(null);
-
 
   const debouncedSearchQuery = useDebounce(searchQuery, 500);
 

@@ -189,8 +189,8 @@ const Emirate = ({ employee_id, emirate }) => {
                 <SuccessDialog
                     open={open}
                     onOpenChange={setOpen}
-                    title="Contact Saved"
-                    description="Contact details have been saved successfully."
+                    title="Emirate Saved"
+                    description="Emirate details have been saved successfully."
                 />
             </div>
 
