@@ -16,7 +16,7 @@ import {
 import { useRouter } from "next/navigation";
 import { Book } from "lucide-react";
 import { parseApiError, updatePassport } from "@/lib/api";
-import DatePicker from "./ui/DatePicker";
+import DatePicker from "@/components/ui/DatePicker";
 
 const Passport = ({ employee_id, passport }) => {
 

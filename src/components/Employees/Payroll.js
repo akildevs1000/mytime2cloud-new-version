@@ -17,8 +17,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { parseApiError, storePayroll } from "@/lib/api";
-import DatePicker from "./ui/DatePicker";
-import { SuccessDialog } from "./SuccessDialog";
+import DatePicker from "@/components/ui/DatePicker";
+import { SuccessDialog } from "@/components/SuccessDialog";
 
 
 export default function Payroll({ employee_id, payroll }) {

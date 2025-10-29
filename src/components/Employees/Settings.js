@@ -4,7 +4,6 @@ import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { SuccessDialog } from "@/components/SuccessDialog";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import {
     Form,
     FormControl,
@@ -14,11 +13,10 @@ import {
     FormMessage,
 } from "@/components/ui/form";
 import { useRouter } from "next/navigation";
-import { LogIn, Settings2 } from "lucide-react";
+import { Settings2 } from "lucide-react";
 import { updateSettings, getLeaveManagers, getLeaveGroups, parseApiError } from "@/lib/api";
-import { Toggle } from "./ui/toggle";
-import { Switch } from "./ui/switch";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
+import { Switch } from "@/components/ui/switch";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 const Settings = ({ employee_id, leave_group_id, reporting_manager_id, status }) => {
     const router = useRouter();

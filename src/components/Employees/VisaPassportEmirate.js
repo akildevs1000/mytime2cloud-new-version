@@ -3,8 +3,8 @@
 import React, { useState } from 'react';
 import { MapPin } from 'lucide-react';
 
-import Visa from '@/components/Visa';
-import Emirate from '@/components/Emirate';
+import Visa from '@/components/Employees/Visa';
+import Emirate from '@/components/Employees/Emirate';
 import Passport from './Passport';
 
 // Data structure for the tabs

@@ -14,31 +14,23 @@ import {
     FormMessage,
 } from "@/components/ui/form";
 
-
 import { useRouter } from "next/navigation";
-import {  Plane } from "lucide-react";
-import { parseApiError, updateVisa } from "@/lib/api";
-import DatePicker from "./ui/DatePicker";
+import { Book } from "lucide-react";
+import { parseApiError, updateQualification } from "@/lib/api";
+import DatePicker from "@/components/ui/DatePicker";
 
-const Visa = ({ employee_id, visa }) => {
+const Qualification = ({ employee_id, qualification }) => {
 
-    console.log("🚀 ~ Visa ~ employee_id, visa:", employee_id, visa)
     const router = useRouter();
     const [open, setOpen] = useState(false);
     const [globalError, setGlobalError] = useState(null);
 
-
     const form = useForm({
         defaultValues: {
-            visa_no: visa?.visa_no || "",
-            place_of_issues: visa?.place_of_issues || "",
-            country: visa?.country || "",
-            issue_date: visa?.issue_date || "",
-            expiry_date: visa?.expiry_date || "",
-            labour_no: visa?.labour_no || "",
-            labour_issue_date: visa?.labour_issue_date || "",
-            labour_expiry_date: visa?.labour_expiry_date || "",
-
+            certificate: qualification?.certificate || "",
+            collage: qualification?.collage || "",
+            start: qualification?.start || "",
+            end: qualification?.end || "",
         },
     });
 
@@ -53,20 +45,16 @@ const Visa = ({ employee_id, visa }) => {
         setGlobalError(null);
         try {
             const finalPayload = {
-                visa_no: data?.visa_no || "",
-                place_of_issues: data?.place_of_issues || "",
-                country: data?.country || "",
-                issue_date: data?.issue_date || "",
-                expiry_date: data?.expiry_date || "",
-                labour_no: data?.labour_no || "",
-                labour_issue_date: data?.labour_issue_date || "",
-                labour_expiry_date: data?.labour_expiry_date || "",
+                certificate: data?.certificate || "",
+                collage: data?.collage || "",
+                start: data?.start || "",
+                end: data?.end || "",
 
                 employee_id: employee_id || "",
 
             };
 
-            await updateVisa(finalPayload);
+            await updateQualification(finalPayload);
 
             setOpen(true);
 
@@ -86,20 +74,20 @@ const Visa = ({ employee_id, visa }) => {
                 <Form {...form}>
                     <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
                         <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-6 flex items-center">
-                            <Plane className="mr-3 h-6 w-6 text-primary" />
-                            Visa Information
+                            <Book className="mr-3 h-6 w-6 text-primary" />
+                            Qualification Information
                         </h2>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
                             <FormField
                                 control={form.control}
-                                name="visa_no"
+                                name="certificate"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Visa</FormLabel>
+                                        <FormLabel>Certificate</FormLabel>
                                         <FormControl>
-                                            <Input placeholder="Enter Visa Number" {...field} />
+                                            <Input placeholder="Enter Certificate" {...field} />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
@@ -108,12 +96,12 @@ const Visa = ({ employee_id, visa }) => {
 
                             <FormField
                                 control={form.control}
-                                name="place_of_issues"
+                                name="collage"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Place of Issue</FormLabel>
+                                        <FormLabel>College</FormLabel>
                                         <FormControl>
-                                            <Input placeholder="Enter Place of Issue" {...field} />
+                                            <Input placeholder="Enter College" {...field} />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
@@ -122,24 +110,10 @@ const Visa = ({ employee_id, visa }) => {
 
                             <FormField
                                 control={form.control}
-                                name="country"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Country</FormLabel>
-                                        <FormControl>
-                                            <Input placeholder="Enter Country" {...field} />
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-
-                            <FormField
-                                control={form.control}
-                                name="issue_date"
+                                name="start"
                                 render={({ field }) => (
                                     <FormItem className="flex flex-col">
-                                        <FormLabel>Issue Date</FormLabel>
+                                        <FormLabel>Start Date</FormLabel>
                                         <DatePicker
                                             value={field.value}
                                             onChange={(date) => field.onChange(date)}
@@ -152,59 +126,10 @@ const Visa = ({ employee_id, visa }) => {
 
                             <FormField
                                 control={form.control}
-                                name="expiry_date"
+                                name="end"
                                 render={({ field }) => (
                                     <FormItem className="flex flex-col">
-                                        <FormLabel>Expiry Date</FormLabel>
-                                        <DatePicker
-                                            value={field.value}
-                                            onChange={(date) => field.onChange(date)}
-                                            placeholder="Pick a date"
-                                        />
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-
-
-                            <FormField
-                                control={form.control}
-                                name="labour_no"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Labour No</FormLabel>
-                                        <FormControl>
-                                            <Input placeholder="Enter Labour No" {...field} />
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-
-
-
-                            <FormField
-                                control={form.control}
-                                name="labour_issue_date"
-                                render={({ field }) => (
-                                    <FormItem className="flex flex-col">
-                                        <FormLabel>Labour Issue Date</FormLabel>
-                                        <DatePicker
-                                            value={field.value}
-                                            onChange={(date) => field.onChange(date)}
-                                            placeholder="Pick a date"
-                                        />
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-
-                            <FormField
-                                control={form.control}
-                                name="labour_expiry_date"
-                                render={({ field }) => (
-                                    <FormItem className="flex flex-col">
-                                        <FormLabel>Labour Expiry Date</FormLabel>
+                                        <FormLabel>End Date</FormLabel>
                                         <DatePicker
                                             value={field.value}
                                             onChange={(date) => field.onChange(date)}
@@ -245,8 +170,8 @@ const Visa = ({ employee_id, visa }) => {
                 <SuccessDialog
                     open={open}
                     onOpenChange={setOpen}
-                    title="Visa Saved"
-                    description="Visa details have been saved successfully."
+                    title="Qualification Saved"
+                    description="Qualification details have been saved successfully."
                 />
             </div>
 
@@ -254,4 +179,4 @@ const Visa = ({ employee_id, visa }) => {
     );
 };
 
-export default Visa;
+export default Qualification;

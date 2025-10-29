@@ -15,22 +15,24 @@ import {
 } from "@/components/ui/form";
 
 import { useRouter } from "next/navigation";
-import { Book } from "lucide-react";
-import { parseApiError, updateQualification } from "@/lib/api";
-import DatePicker from "./ui/DatePicker";
+import { IdCard } from "lucide-react";
+import { parseApiError, updateEmirate } from "@/lib/api";
+import DatePicker from "@/components/ui/DatePicker";
 
-const Qualification = ({ employee_id, qualification }) => {
+const Emirate = ({ employee_id, emirate }) => {
 
+    console.log("🚀 ~ emirate ~ employee_id, emirate:", employee_id, emirate)
     const router = useRouter();
     const [open, setOpen] = useState(false);
     const [globalError, setGlobalError] = useState(null);
 
     const form = useForm({
         defaultValues: {
-            certificate: qualification?.certificate || "",
-            collage: qualification?.collage || "",
-            start: qualification?.start || "",
-            end: qualification?.end || "",
+            emirate_id: emirate?.emirate_id || "",
+            nationality: emirate?.nationality || "",
+            issue: emirate?.issue || "",
+            expiry: emirate?.expiry || "",
+            date_of_birth: emirate?.date_of_birth || "",
         },
     });
 
@@ -45,16 +47,17 @@ const Qualification = ({ employee_id, qualification }) => {
         setGlobalError(null);
         try {
             const finalPayload = {
-                certificate: data?.certificate || "",
-                collage: data?.collage || "",
-                start: data?.start || "",
-                end: data?.end || "",
+                emirate_id: data?.emirate_id || "",
+                nationality: data?.nationality || "",
+                issue: data?.issue || "",
+                expiry: data?.expiry || "",
+                date_of_birth: data?.date_of_birth || "",
 
                 employee_id: employee_id || "",
 
             };
 
-            await updateQualification(finalPayload);
+            await updateEmirate(finalPayload);
 
             setOpen(true);
 
@@ -74,20 +77,20 @@ const Qualification = ({ employee_id, qualification }) => {
                 <Form {...form}>
                     <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
                         <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-6 flex items-center">
-                            <Book className="mr-3 h-6 w-6 text-primary" />
-                            Qualification Information
+                            <IdCard className="mr-3 h-6 w-6 text-primary" />
+                            Emirate Information
                         </h2>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
                             <FormField
                                 control={form.control}
-                                name="certificate"
+                                name="emirate_id"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Certificate</FormLabel>
+                                        <FormLabel>Emirates Id</FormLabel>
                                         <FormControl>
-                                            <Input placeholder="Enter Certificate" {...field} />
+                                            <Input placeholder="Enter Emirates Id" {...field} />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
@@ -96,12 +99,12 @@ const Qualification = ({ employee_id, qualification }) => {
 
                             <FormField
                                 control={form.control}
-                                name="collage"
+                                name="nationality"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>College</FormLabel>
+                                        <FormLabel>Nationality</FormLabel>
                                         <FormControl>
-                                            <Input placeholder="Enter College" {...field} />
+                                            <Input placeholder="Enter Nationality" {...field} />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
@@ -110,10 +113,10 @@ const Qualification = ({ employee_id, qualification }) => {
 
                             <FormField
                                 control={form.control}
-                                name="start"
+                                name="issue"
                                 render={({ field }) => (
                                     <FormItem className="flex flex-col">
-                                        <FormLabel>Start Date</FormLabel>
+                                        <FormLabel>Issue Date</FormLabel>
                                         <DatePicker
                                             value={field.value}
                                             onChange={(date) => field.onChange(date)}
@@ -126,10 +129,26 @@ const Qualification = ({ employee_id, qualification }) => {
 
                             <FormField
                                 control={form.control}
-                                name="end"
+                                name="expiry"
                                 render={({ field }) => (
                                     <FormItem className="flex flex-col">
-                                        <FormLabel>End Date</FormLabel>
+                                        <FormLabel>Expiry Date</FormLabel>
+                                        <DatePicker
+                                            value={field.value}
+                                            onChange={(date) => field.onChange(date)}
+                                            placeholder="Pick a date"
+                                        />
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+
+                            <FormField
+                                control={form.control}
+                                name="date_of_birth"
+                                render={({ field }) => (
+                                    <FormItem className="flex flex-col">
+                                        <FormLabel>Date of Birth</FormLabel>
                                         <DatePicker
                                             value={field.value}
                                             onChange={(date) => field.onChange(date)}
@@ -170,8 +189,8 @@ const Qualification = ({ employee_id, qualification }) => {
                 <SuccessDialog
                     open={open}
                     onOpenChange={setOpen}
-                    title="Qualification Saved"
-                    description="Qualification details have been saved successfully."
+                    title="Emirate Saved"
+                    description="Emirate details have been saved successfully."
                 />
             </div>
 
@@ -179,4 +198,4 @@ const Qualification = ({ employee_id, qualification }) => {
     );
 };
 
-export default Qualification;
+export default Emirate;

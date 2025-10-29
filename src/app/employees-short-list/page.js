@@ -1,10 +1,15 @@
 "use client";
 
 // import Performance from '@/components/Performance';
-import EmergencyContact from '@/components/EmergencyContact';
-import Profile from '@/components/Profile';
-import Address from '@/components/Address';
-import Document from '@/components/Document';
+import EmergencyContact from '@/components/Employees/EmergencyContact';
+import Profile from '@/components/Employees/Profile';
+import Address from '@/components/Employees/Address';
+import Document from '@/components/Employees/Document';
+import VisaPassportEmirate from '@/components/Employees/VisaPassportEmirate';
+import Qualification from '@/components/Employees/Qualification';
+import SETTINGRFIDLOGIN from '@/components/Employees/SETTINGRFIDLOGIN';
+import BANKPAYROLL from '@/components/Employees/BANKPAYROLL';
+
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { User, MapPin, FileText } from 'lucide-react';
@@ -31,10 +36,6 @@ import { Button } from '@/components/ui/button';
 import { getBranches, getEmployees } from '@/lib/api';
 import { EmployeeExtras } from '@/components/Employees/Extras';
 import { Input } from '@/components/ui/input';
-import VisaPassportEmirate from '@/components/VisaPassportEmirate';
-import Qualification from '@/components/Qualification';
-import SETTINGRFIDLOGIN from '@/components/SETTINGRFIDLOGIN';
-import BANKPAYROLL from '@/components/BANKPAYROLL';
 
 // -----------------------------------------------------------
 // 1. Custom Debounce Hook

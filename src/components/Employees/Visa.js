@@ -14,25 +14,31 @@ import {
     FormMessage,
 } from "@/components/ui/form";
 
+
 import { useRouter } from "next/navigation";
-import { IdCard } from "lucide-react";
-import { parseApiError, updateEmirate } from "@/lib/api";
-import DatePicker from "./ui/DatePicker";
+import {  Plane } from "lucide-react";
+import { parseApiError, updateVisa } from "@/lib/api";
+import DatePicker from "@/components/ui/DatePicker";
 
-const Emirate = ({ employee_id, emirate }) => {
+const Visa = ({ employee_id, visa }) => {
 
-    console.log("🚀 ~ emirate ~ employee_id, emirate:", employee_id, emirate)
+    console.log("🚀 ~ Visa ~ employee_id, visa:", employee_id, visa)
     const router = useRouter();
     const [open, setOpen] = useState(false);
     const [globalError, setGlobalError] = useState(null);
 
+
     const form = useForm({
         defaultValues: {
-            emirate_id: emirate?.emirate_id || "",
-            nationality: emirate?.nationality || "",
-            issue: emirate?.issue || "",
-            expiry: emirate?.expiry || "",
-            date_of_birth: emirate?.date_of_birth || "",
+            visa_no: visa?.visa_no || "",
+            place_of_issues: visa?.place_of_issues || "",
+            country: visa?.country || "",
+            issue_date: visa?.issue_date || "",
+            expiry_date: visa?.expiry_date || "",
+            labour_no: visa?.labour_no || "",
+            labour_issue_date: visa?.labour_issue_date || "",
+            labour_expiry_date: visa?.labour_expiry_date || "",
+
         },
     });
 
@@ -47,17 +53,20 @@ const Emirate = ({ employee_id, emirate }) => {
         setGlobalError(null);
         try {
             const finalPayload = {
-                emirate_id: data?.emirate_id || "",
-                nationality: data?.nationality || "",
-                issue: data?.issue || "",
-                expiry: data?.expiry || "",
-                date_of_birth: data?.date_of_birth || "",
+                visa_no: data?.visa_no || "",
+                place_of_issues: data?.place_of_issues || "",
+                country: data?.country || "",
+                issue_date: data?.issue_date || "",
+                expiry_date: data?.expiry_date || "",
+                labour_no: data?.labour_no || "",
+                labour_issue_date: data?.labour_issue_date || "",
+                labour_expiry_date: data?.labour_expiry_date || "",
 
                 employee_id: employee_id || "",
 
             };
 
-            await updateEmirate(finalPayload);
+            await updateVisa(finalPayload);
 
             setOpen(true);
 
@@ -77,20 +86,20 @@ const Emirate = ({ employee_id, emirate }) => {
                 <Form {...form}>
                     <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
                         <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-6 flex items-center">
-                            <IdCard className="mr-3 h-6 w-6 text-primary" />
-                            Emirate Information
+                            <Plane className="mr-3 h-6 w-6 text-primary" />
+                            Visa Information
                         </h2>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
                             <FormField
                                 control={form.control}
-                                name="emirate_id"
+                                name="visa_no"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Emirates Id</FormLabel>
+                                        <FormLabel>Visa</FormLabel>
                                         <FormControl>
-                                            <Input placeholder="Enter Emirates Id" {...field} />
+                                            <Input placeholder="Enter Visa Number" {...field} />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
@@ -99,12 +108,12 @@ const Emirate = ({ employee_id, emirate }) => {
 
                             <FormField
                                 control={form.control}
-                                name="nationality"
+                                name="place_of_issues"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Nationality</FormLabel>
+                                        <FormLabel>Place of Issue</FormLabel>
                                         <FormControl>
-                                            <Input placeholder="Enter Nationality" {...field} />
+                                            <Input placeholder="Enter Place of Issue" {...field} />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
@@ -113,7 +122,21 @@ const Emirate = ({ employee_id, emirate }) => {
 
                             <FormField
                                 control={form.control}
-                                name="issue"
+                                name="country"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Country</FormLabel>
+                                        <FormControl>
+                                            <Input placeholder="Enter Country" {...field} />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+
+                            <FormField
+                                control={form.control}
+                                name="issue_date"
                                 render={({ field }) => (
                                     <FormItem className="flex flex-col">
                                         <FormLabel>Issue Date</FormLabel>
@@ -129,7 +152,7 @@ const Emirate = ({ employee_id, emirate }) => {
 
                             <FormField
                                 control={form.control}
-                                name="expiry"
+                                name="expiry_date"
                                 render={({ field }) => (
                                     <FormItem className="flex flex-col">
                                         <FormLabel>Expiry Date</FormLabel>
@@ -143,12 +166,45 @@ const Emirate = ({ employee_id, emirate }) => {
                                 )}
                             />
 
+
                             <FormField
                                 control={form.control}
-                                name="date_of_birth"
+                                name="labour_no"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Labour No</FormLabel>
+                                        <FormControl>
+                                            <Input placeholder="Enter Labour No" {...field} />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+
+
+
+                            <FormField
+                                control={form.control}
+                                name="labour_issue_date"
                                 render={({ field }) => (
                                     <FormItem className="flex flex-col">
-                                        <FormLabel>Date of Birth</FormLabel>
+                                        <FormLabel>Labour Issue Date</FormLabel>
+                                        <DatePicker
+                                            value={field.value}
+                                            onChange={(date) => field.onChange(date)}
+                                            placeholder="Pick a date"
+                                        />
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+
+                            <FormField
+                                control={form.control}
+                                name="labour_expiry_date"
+                                render={({ field }) => (
+                                    <FormItem className="flex flex-col">
+                                        <FormLabel>Labour Expiry Date</FormLabel>
                                         <DatePicker
                                             value={field.value}
                                             onChange={(date) => field.onChange(date)}
@@ -189,8 +245,8 @@ const Emirate = ({ employee_id, emirate }) => {
                 <SuccessDialog
                     open={open}
                     onOpenChange={setOpen}
-                    title="Emirate Saved"
-                    description="Emirate details have been saved successfully."
+                    title="Visa Saved"
+                    description="Visa details have been saved successfully."
                 />
             </div>
 
@@ -198,4 +254,4 @@ const Emirate = ({ employee_id, emirate }) => {
     );
 };
 
-export default Emirate;
+export default Visa;
