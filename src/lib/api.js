@@ -1,5 +1,21 @@
 import axios from "axios";
 
+// usage example in page/component
+// useEffect(() => {
+
+//         const fetchCompanyInfo = async () => {
+//             try {
+//                 let res = await getCompanyInfo()
+//                 console.log("🚀 ~ fetchCompanyInfo ~ res:", res)
+//             } catch (error) {
+//                 console.log(parseApiError(error));
+//             }
+//         }
+
+//         fetchCompanyInfo();
+
+//     }, []);
+
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'https://backend.mytime2cloud.com/api';
 
 
@@ -365,7 +381,7 @@ export const getCompanyInfo = async (params = {}) => {
     const user = await getUser();
 
     const { data } = await axios.get(`${API_BASE}/company-short-info/${user?.company_id || 0}`);
-    
+
     return data;
 };
 
