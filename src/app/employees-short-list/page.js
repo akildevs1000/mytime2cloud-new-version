@@ -88,33 +88,36 @@ export default function Home() {
 
   // Placeholder content based on the active tab
   const renderTabContent = (employee) => {
+    if (!employee) return;
+
+    let { id, phone_relative_number, relation, local_address, local_city, local_country } = employee;
 
     switch (activeTab) {
       case 'profile':
         return <Profile payload={employee} />;
       case 'emergency':
         return (
-          <EmergencyContact payload={employee} />
+          <EmergencyContact id={id} phone_relative_number={phone_relative_number} relation={relation} local_address={local_address} local_city={local_city} local_country={local_country} />
         );
       case 'address':
         return <Address payload={employee} />;
       case 'visa':
-        return <VisaPassportEmirate employee_id={employee.id} visa={employee.visa} emirate={employee.emirate} passport={employee.passport} />;
+        return <VisaPassportEmirate employee_id={id} visa={employee.visa} emirate={employee.emirate} passport={employee.passport} />;
       case 'qualification':
-        return <Qualification employee_id={employee.id} qualification={employee.qualification} />;
+        return <Qualification employee_id={id} qualification={employee.qualification} />;
       case 'bank':
-        return <Bank employee_id={employee.id} bank={employee.bank} />;
+        return <Bank employee_id={id} bank={employee.bank} />;
       case 'rfid':
-        return <RFID employee_id={employee.employee_id}  />;
+        return <RFID employee_id={employee.employee_id} />;
       case 'settings':
-        return <SETTINGRFIDLOGIN employee_id={employee.id} user={employee.user} rfid_card_number={employee.rfid_card_number} rfid_card_password={employee.rfid_card_password} leave_group_id={employee.leave_group_id} reporting_manager_id={employee.reporting_manager_id} status={employee.status} />;
+        return <SETTINGRFIDLOGIN employee_id={id} user={employee.user} rfid_card_number={employee.rfid_card_number} rfid_card_password={employee.rfid_card_password} leave_group_id={employee.leave_group_id} reporting_manager_id={employee.reporting_manager_id} status={employee.status} />;
       case 'payroll':
-        return <Payroll employee_id={employee.id} payroll={employee.payroll} />;
+        return <Payroll employee_id={id} payroll={employee.payroll} />;
       case 'performance':
         return <Performance payload={employee} />;
 
       case 'documents':
-        return <Document employee_id={employee.id} />;
+        return <Document employee_id={id} />;
 
       default:
         return null;
@@ -200,8 +203,6 @@ export default function Home() {
   const fetchEmployees = useCallback(async (page, perPage) => {
     setIsLoading(true);
     setError(null);
-
-
 
     try {
       const params = {

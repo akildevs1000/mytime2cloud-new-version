@@ -17,19 +17,20 @@ import { useRouter } from "next/navigation";
 import { Phone, PhoneCall, Users } from "lucide-react";
 import { parseApiError, updateEmergencyContact } from "@/lib/api";
 
-const EmergencyContact = ({ payload }) => {
+const EmergencyContact = ({ id, phone_relative_number, relation, local_address, local_city, local_country }) => {
+
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [globalError, setGlobalError] = useState(null);
 
   const form = useForm({
     defaultValues: {
-      id: payload?.id || "",
-      phone_relative_number: payload?.phone_relative_number || "",
-      relation: payload?.relation || "",
-      local_address: payload?.local_address || "",
-      local_city: payload?.local_city || "",
-      local_country: payload?.local_country || "",
+      id: id,
+      phone_relative_number: phone_relative_number || "",
+      relation: relation || "",
+      local_address: local_address || "",
+      local_city: local_city || "",
+      local_country: local_country || "",
     },
   });
 
@@ -180,7 +181,7 @@ const EmergencyContact = ({ payload }) => {
         <SuccessDialog
           open={open}
           onOpenChange={setOpen}
-          title="Contact Saved"
+          title="Emergency Contact Saved"
           description="Contact details have been saved successfully."
         />
       </div>
