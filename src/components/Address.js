@@ -17,20 +17,20 @@ import { useRouter } from "next/navigation";
 import { Phone, MapPin, Mail, Globe, Home, Map, LocationEdit } from "lucide-react";
 import { parseApiError, updateAddress } from "@/lib/api";
 
-const EmergencyContact = ({ payload }) => {
+const EmergencyContact = ({ id, home_address,home_tel,home_mobile,home_fax,home_city,home_state,home_country }) => {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [globalError, setGlobalError] = useState(null);
 
   const form = useForm({
     defaultValues: {
-      home_address: payload?.home_address || "",
-      home_tel: payload?.home_tel || "",
-      home_mobile: payload?.home_mobile || "",
-      home_fax: payload?.home_fax || "",
-      home_city: payload?.home_city || "",
-      home_state: payload?.home_state || "",
-      home_country: payload?.home_country || "",
+      home_address: home_address || "",
+      home_tel: home_tel || "",
+      home_mobile: home_mobile || "",
+      home_fax: home_fax || "",
+      home_city: home_city || "",
+      home_state: home_state || "",
+      home_country: home_country || "",
     },
   });
 
@@ -52,7 +52,7 @@ const EmergencyContact = ({ payload }) => {
         home_country: data.home_country,
       };
 
-      await updateAddress(finalPayload, payload.id);
+      await updateAddress(finalPayload, id);
 
       setOpen(true);
 
@@ -217,8 +217,8 @@ const EmergencyContact = ({ payload }) => {
         <SuccessDialog
           open={open}
           onOpenChange={setOpen}
-          title="Contact Saved"
-          description="Your emergency contact details have been saved successfully."
+          title="Address Saved"
+          description="Your address details have been saved successfully."
         />
       </div>
     </div>

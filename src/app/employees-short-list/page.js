@@ -90,7 +90,7 @@ export default function Home() {
   const renderTabContent = (employee) => {
     if (!employee) return;
 
-    let { id, phone_relative_number, relation, local_address, local_city, local_country } = employee;
+    let { id, phone_relative_number, relation, local_address, local_city, local_country,home_address,home_tel,home_mobile,home_fax,home_city,home_state,home_country } = employee;
 
     switch (activeTab) {
       case 'profile':
@@ -100,7 +100,7 @@ export default function Home() {
           <EmergencyContact id={id} phone_relative_number={phone_relative_number} relation={relation} local_address={local_address} local_city={local_city} local_country={local_country} />
         );
       case 'address':
-        return <Address payload={employee} />;
+        return <Address id={id} home_address={home_address} home_tel={home_tel} home_mobile={home_mobile} home_fax={home_fax} home_city={home_city} home_state={home_state} home_country={home_country} />;
       case 'visa':
         return <VisaPassportEmirate employee_id={id} visa={employee.visa} emirate={employee.emirate} passport={employee.passport} />;
       case 'qualification':
