@@ -18,7 +18,7 @@ import { updateSettings, getLeaveManagers, getLeaveGroups, parseApiError } from 
 import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
-const Settings = ({ employee_id, leave_group_id, reporting_manager_id, status }) => {
+const Settings = ({ employee_id, leave_group_id, reporting_manager_id, status, web_login_access, mobile_app_login_access, tracking_status, user_id }) => {
     const router = useRouter();
     const [open, setOpen] = useState(false);
     const [globalError, setGlobalError] = useState(null);
@@ -30,6 +30,11 @@ const Settings = ({ employee_id, leave_group_id, reporting_manager_id, status })
             leave_group_id: leave_group_id || "",
             reporting_manager_id: reporting_manager_id || "",
             status: status || "",
+
+            web_login_access: web_login_access || "",
+            mobile_app_login_access: mobile_app_login_access || "",
+            tracking_status: tracking_status || "",
+            user_id: user_id || "",
         },
     });
 
@@ -65,11 +70,17 @@ const Settings = ({ employee_id, leave_group_id, reporting_manager_id, status })
         setGlobalError(null);
         try {
             const finalPayload = {
+
                 leave_group_id: data.leave_group_id,
                 reporting_manager_id: data.reporting_manager_id,
                 status: data.status,
 
                 employee_id: employee_id || "",
+
+                web_login_access: data.web_login_access || "",
+                mobile_app_login_access: data.mobile_app_login_access || "",
+                tracking_status: data.tracking_status || "",
+                user_id: data.user_id || "",
             };
 
             await updateSettings(finalPayload);
@@ -97,8 +108,6 @@ const Settings = ({ employee_id, leave_group_id, reporting_manager_id, status })
                         </h2>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-
-
                             <FormField
                                 control={form.control}
                                 name="reporting_manager_id"
@@ -154,9 +163,9 @@ const Settings = ({ employee_id, leave_group_id, reporting_manager_id, status })
                                     </FormItem>
                                 )}
                             />
+                        </div>
 
-
-                            {/* Employee Status */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <FormField
                                 control={form.control}
                                 name="status"
@@ -174,6 +183,64 @@ const Settings = ({ employee_id, leave_group_id, reporting_manager_id, status })
                                 )}
                             />
                         </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <FormField
+                                control={form.control}
+                                name="web_login_access"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Web Login Access</FormLabel>
+                                        <FormControl>
+                                            <Switch
+                                                checked={field.value === 1}
+                                                onCheckedChange={(checked) => field.onChange(checked ? 1 : 0)}
+                                            />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <FormField
+                                control={form.control}
+                                name="mobile_app_login_access"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Mobile Login Access</FormLabel>
+                                        <FormControl>
+                                            <Switch
+                                                checked={field.value === 1}
+                                                onCheckedChange={(checked) => field.onChange(checked ? 1 : 0)}
+                                            />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <FormField
+                                control={form.control}
+                                name="tracking_status"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Tracking Status</FormLabel>
+                                        <FormControl>
+                                            <Switch
+                                                checked={field.value === 1}
+                                                onCheckedChange={(checked) => field.onChange(checked ? 1 : 0)}
+                                            />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                        </div>
+
 
                         {globalError && (
                             <div

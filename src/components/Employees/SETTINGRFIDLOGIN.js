@@ -22,7 +22,20 @@ export default function SETTINGRFIDLOGIN({ employee_id, user, rfid_card_number, 
     const renderTabContent = () => {
         switch (activeTab) {
             case 'settings':
-                return <Settings employee_id={employee_id} leave_group_id={leave_group_id} reporting_manager_id={reporting_manager_id} status={status} />;
+                return (
+                    <Settings
+                        employee_id={employee_id}
+                        leave_group_id={leave_group_id}
+                        reporting_manager_id={reporting_manager_id}
+                        status={status}
+
+                        web_login_access={user.web_login_access}
+                        mobile_app_login_access={user.mobile_app_login_access}
+                        tracking_status={user.tracking_status}
+
+                        user_id={user.id}
+                    />
+                );
             case 'login':
                 return <Login employee_id={employee_id} user={user} />;
             case 'rfid':
