@@ -361,6 +361,14 @@ export const getAttendanceReports = async (payload = {}) => {
     return data;
 };
 
+export const getCompanyInfo = async (params = {}) => {
+    const user = await getUser();
+
+    const { data } = await axios.get(`${API_BASE}/company-short-info/${user?.company_id || 0}`);
+    
+    return data;
+};
+
 
 export const api = axios.create({
     baseURL: API_BASE,

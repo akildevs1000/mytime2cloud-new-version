@@ -1,13 +1,16 @@
 'use client'; // This directive must be at the very top
 
 import Link from "next/link";
-import { usePathname,useRouter  } from "next/navigation";
-import { useEffect } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover';
+import { getCompanyInfo, parseApiError } from "@/lib/api";
 
 export default function Header() {
 
     const router = useRouter();
+
+    const [company, setCompany] = useState(null);
 
     useEffect(() => {
         const token = localStorage.getItem("token");
@@ -16,6 +19,21 @@ export default function Header() {
             router.push("/login");
             return;
         }
+    }, []);
+
+    useEffect(() => {
+
+        const fetchCompanyInfo = async () => {
+            try {
+                let res = await getCompanyInfo()
+                console.log("🚀 ~ fetchCompanyInfo ~ res:", res)
+            } catch (error) {
+                console.log(parseApiError(error));
+            }
+        }
+
+        fetchCompanyInfo();
+
     }, []);
 
     const pathname = usePathname();
@@ -33,6 +51,8 @@ export default function Header() {
     ];
 
     if (pathname == "/login") return;
+
+    // if (!company) return;
 
     return (
         <header className="flex items-center justify-between p-4 shadow-sm bg-white dark:bg-gray-800">
@@ -76,8 +96,12 @@ export default function Header() {
                 </div>
                 <Popover>
                     <PopoverTrigger asChild>
-                        <button className="w-10 h-10 rounded-full overflow-hidden border-2 border-purple-400 focus:outline-none">
-                            <img alt="User profile" className="w-full h-full object-cover" src="https://backend.mytime2cloud.com/upload/1752909672.png" />
+                        <button className="w-10 h-10 rounded-full overflow-hidden   focus:outline-none">
+                            <img
+                                alt="User profile"
+                                className="w-full h-full object-cover"
+                                src={company?.logo || 'default.png'}
+                            />
                         </button>
                     </PopoverTrigger>
                     <PopoverContent className="w-40 p-2">
