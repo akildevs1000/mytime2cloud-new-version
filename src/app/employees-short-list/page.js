@@ -1,7 +1,7 @@
 "use client";
 
 
-import Performance from '@/components/Performance';
+// import Performance from '@/components/Performance';
 import EmergencyContact from '@/components/EmergencyContact';
 import Profile from '@/components/Profile';
 import Payroll from '@/components/Payroll';
@@ -90,10 +90,10 @@ export default function Home() {
   const renderTabContent = (employee) => {
     if (!employee) return;
 
-    let { 
+    let {
       id, phone_relative_number, relation, local_address, local_city, local_country, home_address, home_tel, home_mobile, home_fax, home_city, home_state, home_country,
 
-      employee_id,rfid_card_number,rfid_card_password,leave_group_id,reporting_manager_id,status,
+      employee_id, rfid_card_number, rfid_card_password, leave_group_id, reporting_manager_id, status,
 
       // relations
       visa, emirate, passport,
@@ -108,28 +108,61 @@ export default function Home() {
         return <Profile payload={employee} />;
       case 'emergency':
         return (
-          <EmergencyContact id={id} phone_relative_number={phone_relative_number} relation={relation} local_address={local_address} local_city={local_city} local_country={local_country} />
+          <EmergencyContact
+            id={id}
+            phone_relative_number={phone_relative_number}
+            relation={relation}
+            local_address={local_address}
+            local_city={local_city}
+            local_country={local_country} />
         );
       case 'address':
-        return <Address id={id} home_address={home_address} home_tel={home_tel} home_mobile={home_mobile} home_fax={home_fax} home_city={home_city} home_state={home_state} home_country={home_country} />;
+        return (
+          <Address
+            id={id}
+            home_address={home_address}
+            home_tel={home_tel}
+            home_mobile={home_mobile}
+            home_fax={home_fax}
+            home_city={home_city}
+            home_state={home_state}
+            home_country={home_country}
+          />);
       case 'visa':
-        return <VisaPassportEmirate employee_id={id} visa={visa} emirate={emirate} passport={passport} />;
+        return (
+          <VisaPassportEmirate
+            employee_id={id}
+            visa={visa}
+            emirate={emirate}
+            passport={passport} />
+        );
       case 'qualification':
-        return <Qualification employee_id={id} qualification={qualification} />;
+        return (
+          <Qualification employee_id={id} qualification={qualification} />
+        );
       case 'bank':
-        return <Bank employee_id={id} bank={bank} />;
+        return (
+          <Bank employee_id={id} bank={bank} />
+        );
       case 'rfid':
         return <RFID employee_id={employee_id} />;
       case 'settings':
-        return <SETTINGRFIDLOGIN employee_id={id} user={user} rfid_card_number={rfid_card_number} rfid_card_password={rfid_card_password} leave_group_id={leave_group_id} reporting_manager_id={reporting_manager_id} status={status} />;
+        return (
+          <SETTINGRFIDLOGIN
+            employee_id={id}
+            user={user}
+            rfid_card_number={rfid_card_number}
+            rfid_card_password={rfid_card_password}
+            leave_group_id={leave_group_id}
+            reporting_manager_id={reporting_manager_id} s
+            tatus={status} />
+        );
       case 'payroll':
         return <Payroll employee_id={id} payroll={payroll} />;
-      // case 'performance':
-      //   return <Performance payload={employee} />;
-
       case 'documents':
         return <Document employee_id={id} />;
-
+      // case 'performance':
+      //   return <Performance payload={employee} />;
       default:
         return null;
     }
