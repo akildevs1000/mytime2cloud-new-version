@@ -73,8 +73,8 @@ const TABS = [
   { id: 'visa', name: 'Visa', icon: MapPin },
   { id: 'qualification', name: 'Qualification', icon: MapPin },
   { id: 'bank', name: 'Bank', icon: MapPin },
-  { id: 'settings', name: 'Settings', icon: MapPin },
   { id: 'documents', name: 'Documents', icon: FileText },
+  { id: 'settings', name: 'Settings', icon: MapPin },
   { id: 'payroll', name: 'Payroll', icon: Briefcase },
   // { id: 'performance', name: 'Performance', icon: Briefcase },
 ];
@@ -171,6 +171,8 @@ export default function Home() {
   const [employees, setEmployees] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [globalError, setGlobalError] = useState(null);
+
 
   // Pagination State
   const [currentPage, setCurrentPage] = useState(1);
@@ -233,7 +235,7 @@ export default function Home() {
       try {
         setBranches(await getBranches());
       } catch (error) {
-        console.error("Error fetching branches:", error);
+        setGlobalError(parseApiError(error));
       }
     };
     fetchBranches();
@@ -268,20 +270,8 @@ export default function Home() {
         throw new Error('Invalid data structure received from API.');
       }
 
-    } catch (err) {
-      // Axios error handling is robust:
-      // - HTTP errors (non-2xx) are caught here.
-      // - Network errors are caught here.
-      // - The custom 'Invalid data structure' error is caught here.
-      if (axios.isAxiosError(err) && err.response) {
-        // Server responded with a status code outside of 2xx
-        console.error(`Employee Page: HTTP error! status: ${err.response.status}`);
-        setError(`Failed to fetch data: ${err.response.statusText}`);
-      } else {
-        // A non-Axios error or a network/request error (e.g., the custom error)
-        console.error(`Employee Page: `, err.message);
-        setError(err.message || 'An unknown error occurred.');
-      }
+    } catch (error) {
+      setGlobalError(parseApiError(error));
       setIsLoading(false); // Make sure loading state is turned off on error
     }
   }, [perPage, selectedBranch, searchTerm]);
@@ -458,6 +448,15 @@ export default function Home() {
                   <span>{selectedEmployee?.phone_number || "---"}</span>
                 </div>
               </div>
+
+              {globalError && (
+                <div
+                  className="mb-4 p-3 border border-red-500 bg-red-50 text-red-700 rounded-lg"
+                  role="alert"
+                >
+                  {globalError}
+                </div>
+              )}
             </div>
             <div className="mt-6">
               <div className="border-b border-border-light dark:border-border-dark">

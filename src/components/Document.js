@@ -174,6 +174,7 @@ const Document = ({ employee_id }) => {
                                     <td className="whitespace-nowrap px-6 py-4 text-sm text-subtext-light dark:text-subtext-dark">
                                         <a
                                             title="Download Attachment"
+                                            target="_blank"
                                             href={getEmployeeDocumentDonwloadLink(e.employee_id, e.attachment)}
                                             className="inline-flex items-center text-violet-600 hover:text-violet-800"
                                         >

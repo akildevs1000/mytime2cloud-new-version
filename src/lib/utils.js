@@ -17,8 +17,11 @@ export function convertFileToBase64(file) {
 
 
 export function getEmployeeDocumentDonwloadLink(pic, file_name) {
+  const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'https://backend.mytime2cloud.com/api';
+
+  console.log("🚀 ~ getEmployeeDocumentDonwloadLink ~ pic, file_name:", pic, file_name)
   return (
-    `https://mytime2cloud-backend.test/api/download-emp-documents/${pic}/${file_name}`
+    `${API_BASE}/download-emp-documents/${pic}/${file_name}`
   );
 }
 

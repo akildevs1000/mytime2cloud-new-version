@@ -28,11 +28,13 @@ export default function Payroll({ employee_id, payroll }) {
     const form = useForm({
         defaultValues: {
             effective_date: payroll?.effective_date || null,  // Date or string okay
-            basic_salary: payroll.basic_salary ?? "",
-            earnings: payroll.earnings.map((e) => ({
+            basic_salary: payroll?.basic_salary ?? "",
+            // Corrected line: Use optional chaining on payroll and payroll.earnings,
+            // then provide an empty array as a fallback if payroll.earnings is null/undefined.
+            earnings: payroll?.earnings?.map((e) => ({
                 label: e.label ?? "",
                 value: e.value ?? "",
-            })),
+            })) ?? [], // Use an empty array if payroll.earnings is null or undefined
         },
     });
 
@@ -56,17 +58,23 @@ export default function Payroll({ employee_id, payroll }) {
     const [loading, setLoading] = useState(false);
     const [globalError, setGlobalError] = useState("");
 
-    // If employeeObject changes, reset form (keeps edit mode state)
     useEffect(() => {
+        const initialEarnings = payroll?.earnings?.map((e) => ({
+            label: e.label ?? "",
+            value: e.value ?? "",
+        })) ?? [];
+
         reset({
-            effective_date: payroll.effective_date || null,  // Date or string okay
-            basic_salary: payroll.basic_salary ?? "",
-            earnings: payroll.earnings.map((e) => ({
-                label: e.label ?? "",
-                value: e.value ?? "",
-            })),
+            effective_date: payroll?.effective_date || null,
+            basic_salary: payroll?.basic_salary ?? "",
+            earnings: initialEarnings, // Use the prepared initial data
         });
-    }, [reset]);
+
+        if (initialEarnings.length == 0) {
+            append({ label: "Add Item", value: 100 });
+        }
+
+    }, [reset, payroll, append]);
 
     // Compute net salary like your Vue computed
     const net_salary = useMemo(() => {
