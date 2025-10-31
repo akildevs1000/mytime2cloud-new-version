@@ -143,6 +143,11 @@ export const storeEmployee = async (payload) => {
     return true;
 };
 
+export const updateProfilePicture = async (payload) => {
+    await axios.post(`${API_BASE}/employee-update-profile-picture`, payload);
+    return true;
+};
+
 export const storeShift = async (payload) => {
     const user = await getUser();
     let { data } = await axios.post(`${API_BASE}/shift`, { ...payload, company_id: user?.company_id || 0 });

@@ -1,18 +1,9 @@
 "use client";
 
-// import Performance from '@/components/Performance';
-import EmergencyContact from '@/components/Employees/EmergencyContact';
-import Profile from '@/components/Employees/Profile';
-import Address from '@/components/Employees/Address';
-import Document from '@/components/Employees/Document';
-import VisaPassportEmirate from '@/components/Employees/VisaPassportEmirate';
-import Qualification from '@/components/Employees/Qualification';
-import SETTINGRFIDLOGIN from '@/components/Employees/SETTINGRFIDLOGIN';
-import BANKPAYROLL from '@/components/Employees/BANKPAYROLL';
-
+import useImageUpload from "@/hooks/useImageUpload";
 
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { User, MapPin, FileText, Upload, Save } from 'lucide-react';
+import { Save } from 'lucide-react';
 import Link from 'next/link';
 
 // NOTE: For live execution, this external API might require authentication headers (like an API Key or Authorization token) not provided here.
@@ -33,130 +24,19 @@ import {
 import { Button } from '@/components/ui/button';
 
 
-import { getBranches, getEmployees } from '@/lib/api';
+import { getBranches, getEmployees, updateProfilePicture } from '@/lib/api';
 import { EmployeeExtras } from '@/components/Employees/Extras';
 import { Input } from '@/components/ui/input';
 import { convertFileToBase64 } from '@/lib/utils';
+import EmployeeTabs from "@/components/Employees/EmployeeTabs";
+import { useRouter } from "next/navigation";
 
-// -----------------------------------------------------------
-// 1. Custom Debounce Hook
-// -----------------------------------------------------------
-const useDebounce = (value, delay) => {
-  const [debouncedValue, setDebouncedValue] = useState(value);
+export default function EmployeeShortList() {
 
-  useEffect(() => {
-    // Set up a timer to update the debounced value after the delay
-    const handler = setTimeout(() => {
-      setDebouncedValue(value);
-    }, delay);
+  const router = useRouter();
 
-    // Cleanup function: clears the previous timer if the value changes
-    return () => {
-      clearTimeout(handler);
-    };
-  }, [value, delay]); // Re-run effect if value or delay changes
-
-  return debouncedValue;
-};
-
-
-// Data structure for the tabs
-const TABS = [
-  { id: 'profile', name: 'Profile', icon: User },
-  { id: 'emergency', name: 'Emergency', icon: FileText },
-  { id: 'address', name: 'Address', icon: MapPin },
-  { id: 'visa', name: 'Visa', icon: MapPin },
-  { id: 'qualification', name: 'Qualification', icon: MapPin },
-  { id: 'bank', name: 'Bank', icon: MapPin },
-  { id: 'documents', name: 'Documents', icon: FileText },
-  { id: 'settings', name: 'Settings', icon: MapPin },
-  // { id: 'performance', name: 'Performance', icon: Briefcase },
-];
-
-
-export default function Home() {
 
   const [searchTerm, setSearchTerm] = useState("");
-
-  const [activeTab, setActiveTab] = useState('profile');
-
-  // Placeholder content based on the active tab
-  const renderTabContent = (employee) => {
-    if (!employee) return;
-
-    let {
-      id, phone_relative_number, relation, local_address, local_city, local_country, home_address, home_tel, home_mobile, home_fax, home_city, home_state, home_country,
-
-      rfid_card_number, rfid_card_password, leave_group_id, reporting_manager_id, status,
-
-      // relations
-      visa, emirate, passport,
-      qualification, bank,
-      user,
-      payroll
-
-    } = employee;
-
-    switch (activeTab) {
-      case 'profile':
-        return <Profile payload={employee} />;
-      case 'emergency':
-        return (
-          <EmergencyContact
-            id={id}
-            phone_relative_number={phone_relative_number}
-            relation={relation}
-            local_address={local_address}
-            local_city={local_city}
-            local_country={local_country} />
-        );
-      case 'address':
-        return (
-          <Address
-            id={id}
-            home_address={home_address}
-            home_tel={home_tel}
-            home_mobile={home_mobile}
-            home_fax={home_fax}
-            home_city={home_city}
-            home_state={home_state}
-            home_country={home_country}
-          />);
-      case 'visa':
-        return (
-          <VisaPassportEmirate
-            employee_id={id}
-            visa={visa}
-            emirate={emirate}
-            passport={passport} />
-        );
-      case 'qualification':
-        return (
-          <Qualification employee_id={id} qualification={qualification} />
-        );
-      case 'bank':
-        return (
-          <BANKPAYROLL employee_id={id} bank={bank} payroll={payroll} />
-        );
-      case 'settings':
-        return (
-          <SETTINGRFIDLOGIN
-            employee_id={id}
-            user={user}
-            rfid_card_number={rfid_card_number}
-            rfid_card_password={rfid_card_password}
-            leave_group_id={leave_group_id}
-            reporting_manager_id={reporting_manager_id} s
-            tatus={status} />
-        );
-      case 'documents':
-        return <Document employee_id={id} />;
-      // case 'performance':
-      //   return <Performance payload={employee} />;
-      default:
-        return null;
-    }
-  };
 
   const [employees, setEmployees] = useState([]);
   const [error, setError] = useState(null);
@@ -167,41 +47,64 @@ export default function Home() {
   const [perPage, setPerPage] = useState(10); // Default to 10 for a cleaner table, even if the API suggests 100
   const [totalPages, setTotalPages] = useState(1);
   const [totalEmployees, setTotalEmployees] = useState(0);
-  const [searchQuery, setSearchQuery] = useState('');
 
   const [selectedBranch, setSelectedBranch] = useState(null);
   const [open, setOpen] = useState(false);
   const [branches, setBranches] = useState([]);
 
   const [selectedEmployee, setSelectedEmployee] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
 
-  const debouncedSearchQuery = useDebounce(searchQuery, 500);
 
-  const handleSearchChange = useCallback((event) => {
-    const newQuery = event.target.value;
 
-    // 1. Check if the input is cleared
-    if (newQuery === "") {
-      // 2. Reset to null instead of an empty string
-      setSearchQuery(null);
-    } else {
-      // 3. Otherwise, set the new string value
-      setSearchQuery(newQuery);
-    }
-  }, []);
 
-  // Effect to trigger the actual search/API call when the DEBOUNCED value changes.
-  useEffect(() => {
-    // This log will only run 500ms after the user stops typing
-    if (debouncedSearchQuery !== '') {
-      console.log('API call or Data Filtering triggered for:', debouncedSearchQuery);
-      // Example: api.fetchData(debouncedSearchQuery);
-    } else if (debouncedSearchQuery === '') {
-      console.log('Search query cleared. Resetting results.');
+  const { FileInput, handleUploadClick, imageError } = useImageUpload({
+    onChange: (base64) => {
+      setSelectedEmployee((prev) => ({
+        ...prev,
+        profile_picture: base64,
+      }));
+      setImagePreview(base64)
     }
 
-  }, [debouncedSearchQuery]);
 
+
+  });
+
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState("");
+
+  // 👇 this runs when user clicks the Save icon
+  const handleSaveClick = async () => {
+    try {
+      setLoading(true);
+      setSuccess("");
+
+      let payload = {
+        id: selectedEmployee.id,
+        profile_image_base64: selectedEmployee.profile_picture,
+      };
+
+      await updateProfilePicture(payload);
+
+      await new Promise(resolve => setTimeout(resolve, 2000));
+
+      setSuccess("Profile picture updated successfully!");
+
+      fetchEmployees(currentPage, perPage);
+    } catch (err) {
+      console.error(err);
+      setSuccess("Error updating profile picture");
+    } finally {
+      setLoading(false);
+      await new Promise(resolve => setTimeout(resolve, 2000));
+
+      setImagePreview(null)
+
+      setSuccess("");
+
+    }
+  };
 
   const handleSelectBranch = (currentValue) => {
     if (currentValue === "Select All") {
@@ -271,8 +174,6 @@ export default function Home() {
     setSelectedEmployee(employee);
   }
 
-  const fileInputRef = useRef(null);
-  const handleUploadClick = () => fileInputRef.current.click();
 
   const handleFileChange = async (event) => {
     const file = event.target.files[0];
@@ -436,19 +337,24 @@ export default function Home() {
               <div>
                 <img
                   onClick={handleUploadClick}
-                  alt="avatar of jane cooper"
-                  className="w-20 h-20 rounded-full"
-                  src={selectedEmployee?.profile_picture || `https://placehold.co/40x40/6946dd/ffffff?text=${selectedEmployee?.full_name?.charAt(0)}`}
-                  onError={(e) => { e.target.onerror = null; e.target.src = `https://placehold.co/40x40/6946dd/ffffff?text=${selectedEmployee?.full_name?.charAt(0)}`; }}
+                  alt="avatar"
+                  className="w-20 h-20 rounded-full cursor-pointer"
+                  src={
+                    selectedEmployee?.profile_picture ||
+                    `https://placehold.co/40x40/6946dd/ffffff?text=${selectedEmployee?.full_name?.charAt(0)}`
+                  }
+                  onError={(e) => {
+                    e.target.onerror = null;
+                    e.target.src = `https://placehold.co/40x40/6946dd/ffffff?text=${selectedEmployee?.full_name?.charAt(0)}`;
+                  }}
                 />
-                <input
-                  type="file"
-                  ref={fileInputRef}
-                  onChange={handleFileChange}
-                  accept=".jpg, .jpeg, .png"
-                  className="hidden"
-                />
-                <Save className='text-primary mx-auto mt-2' />
+                {imagePreview && <Save
+                  className={`text-primary mx-auto mt-2 cursor-pointer ${loading ? "opacity-50 pointer-events-none" : ""
+                    }`}
+                  onClick={handleSaveClick}
+                />}
+                <FileInput />
+
               </div>
               <div>
                 <h3 className="text-xl font-semibold">{selectedEmployee?.full_name || "---"}</h3>
@@ -481,35 +387,9 @@ export default function Home() {
                 </div>
               )}
             </div>
-            <div className="mt-6">
-              <div className="border-b border-border-light dark:border-border-dark">
-                <nav aria-label="Tabs" className="-mb-px flex space-x-4 sm:space-x-8 overflow-x-auto">
-                  {TABS.map((tab) => {
-                    const isCurrent = activeTab === tab.id;
-                    const Icon = tab.icon;
+            {imageError && <p className="text-red-500 text-sm mt-1">{imageError}</p>}
 
-                    const classes = isCurrent
-                      ? 'border-primary text-primary'
-                      : 'border-transparent text-subtext-light dark:text-subtext-dark hover:text-text-light dark:hover:text-text-dark hover:border-border-light dark:hover:border-border-dark';
-
-                    return (
-                      <button
-                        key={tab.id}
-                        onClick={() => setActiveTab(tab.id)}
-                        className={`${classes} whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm transition-colors duration-200 flex items-center gap-2 focus:outline-none`}
-                      >
-                        {tab.name}
-                      </button>
-                    );
-                  })}
-                </nav>
-              </div>
-
-              {/* Tab Content Area */}
-              <div className="min-h-[250px]">
-                {renderTabContent(selectedEmployee)}
-              </div>
-            </div>
+            <EmployeeTabs selectedEmployee={selectedEmployee} />
           </div>
         </div>
 
