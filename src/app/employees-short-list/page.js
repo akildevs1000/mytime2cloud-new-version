@@ -11,8 +11,8 @@ import SETTINGRFIDLOGIN from '@/components/Employees/SETTINGRFIDLOGIN';
 import BANKPAYROLL from '@/components/Employees/BANKPAYROLL';
 
 
-import React, { useState, useEffect, useCallback } from 'react';
-import { User, MapPin, FileText } from 'lucide-react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { User, MapPin, FileText, Upload, Save } from 'lucide-react';
 import Link from 'next/link';
 
 // NOTE: For live execution, this external API might require authentication headers (like an API Key or Authorization token) not provided here.
@@ -36,6 +36,7 @@ import { Button } from '@/components/ui/button';
 import { getBranches, getEmployees } from '@/lib/api';
 import { EmployeeExtras } from '@/components/Employees/Extras';
 import { Input } from '@/components/ui/input';
+import { convertFileToBase64 } from '@/lib/utils';
 
 // -----------------------------------------------------------
 // 1. Custom Debounce Hook
@@ -158,10 +159,8 @@ export default function Home() {
   };
 
   const [employees, setEmployees] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const [globalError, setGlobalError] = useState(null);
-
 
   // Pagination State
   const [currentPage, setCurrentPage] = useState(1);
@@ -232,7 +231,6 @@ export default function Home() {
 
 
   const fetchEmployees = useCallback(async (page, perPage) => {
-    setIsLoading(true);
     setError(null);
 
     try {
@@ -252,7 +250,6 @@ export default function Home() {
         setTotalPages(result.last_page || 1);
         setTotalEmployees(result.total || 0);
         setSelectedEmployee(result.data[0] || null); // Select the first employee by default
-        setIsLoading(false);
         return; // Success, exit
       } else {
         // If the API returned a 2xx status but the data structure is wrong
@@ -261,7 +258,6 @@ export default function Home() {
 
     } catch (error) {
       setGlobalError(parseApiError(error));
-      setIsLoading(false); // Make sure loading state is turned off on error
     }
   }, [perPage, selectedBranch, searchTerm]);
 
@@ -275,6 +271,34 @@ export default function Home() {
     setSelectedEmployee(employee);
   }
 
+  const fileInputRef = useRef(null);
+  const handleUploadClick = () => fileInputRef.current.click();
+
+  const handleFileChange = async (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      // Basic file validation
+      if (file.size > 2 * 1024 * 1024) { // 2MB limit
+        setGlobalError("File size exceeds 2MB limit.");
+        return;
+      }
+      if (!['image/jpeg', 'image/png'].includes(file.type)) {
+        setGlobalError("Only JPG and PNG formats are supported.");
+        return;
+      }
+
+      try {
+        const base64String = await convertFileToBase64(file);
+        setSelectedEmployee(prev => ({
+          ...prev,
+          profile_picture: base64String
+        }));
+
+      } catch (error) {
+        setGlobalError("Error converting file to Base64.");
+      }
+    }
+  };
 
   const renderEmployeeRow = (employee) => {
     return (
@@ -299,7 +323,6 @@ export default function Home() {
       </li>
     );
   };
-
 
   return (
     <>
@@ -410,12 +433,23 @@ export default function Home() {
             <div
               className="flex items-center space-x-6 pb-6 border-b border-border-light dark:border-border-dark"
             >
-              <img
-                alt="avatar of jane cooper"
-                className="w-20 h-20 rounded-full"
-                src={selectedEmployee?.profile_picture || `https://placehold.co/40x40/6946dd/ffffff?text=${selectedEmployee?.full_name?.charAt(0)}`}
-                onError={(e) => { e.target.onerror = null; e.target.src = `https://placehold.co/40x40/6946dd/ffffff?text=${selectedEmployee?.full_name?.charAt(0)}`; }}
-              />
+              <div>
+                <img
+                  onClick={handleUploadClick}
+                  alt="avatar of jane cooper"
+                  className="w-20 h-20 rounded-full"
+                  src={selectedEmployee?.profile_picture || `https://placehold.co/40x40/6946dd/ffffff?text=${selectedEmployee?.full_name?.charAt(0)}`}
+                  onError={(e) => { e.target.onerror = null; e.target.src = `https://placehold.co/40x40/6946dd/ffffff?text=${selectedEmployee?.full_name?.charAt(0)}`; }}
+                />
+                <input
+                  type="file"
+                  ref={fileInputRef}
+                  onChange={handleFileChange}
+                  accept=".jpg, .jpeg, .png"
+                  className="hidden"
+                />
+                <Save className='text-primary mx-auto mt-2' />
+              </div>
               <div>
                 <h3 className="text-xl font-semibold">{selectedEmployee?.full_name || "---"}</h3>
                 <div
