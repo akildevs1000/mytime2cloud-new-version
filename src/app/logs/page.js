@@ -8,12 +8,6 @@ import { Input } from '@/components/ui/input';
 import { getDeviceLogs, parseApiError, removeEmployee } from '@/lib/api';
 import BranchSelect from '@/components/ui/BranchSelect';
 import DeviceSelect from '@/components/ui/DeviceSelect';
-import { Button } from '@/components/ui/button';
-import DepartmentSelect from '@/components/ui/DepartmentSelect';
-import EmployeeMultiSelect from '@/components/ui/EmployeeMultiSelect';
-import StaticDropDown from '@/components/ui/StaticDropDown';
-import DateRangeSelect from "@/components/ui/DateRange";
-
 
 const useDebounce = (value, delay) => {
     const [debouncedValue, setDebouncedValue] = useState(value);
@@ -45,13 +39,27 @@ export default function EmployeeDataTable() {
     const [perPage, setPerPage] = useState(10); // Default to 10 for a cleaner table, even if the API suggests 100
     const [totalPages, setTotalPages] = useState(1);
     const [totalEmployees, setTotalEmployees] = useState(0);
+    const [searchQuery, setSearchQuery] = useState('');
+    const [searchTerm, setSearchTerm] = useState('');
 
     const [selectedBranch, setSelectedBranch] = useState(null);
-    const [selectedDepartmentId, setSelectedDepartment] = useState(null);
-    const [employeeIds, setEmployeeIds] = useState([]);
+    const [selectedDevice, setSelectedDevice] = useState(null);
 
-    const [from, setFrom] = useState(null);
-    const [to, setTo] = useState(null);
+
+    const debouncedSearchQuery = useDebounce(searchQuery, 500);
+
+
+    // Effect to trigger the actual search/API call when the DEBOUNCED value changes.
+    useEffect(() => {
+        // This log will only run 500ms after the user stops typing
+        if (debouncedSearchQuery !== '') {
+            console.log('API call or Data Filtering triggered for:', debouncedSearchQuery);
+            // Example: api.fetchData(debouncedSearchQuery);
+        } else if (debouncedSearchQuery === '') {
+            console.log('Search query cleared. Resetting results.');
+        }
+
+    }, [debouncedSearchQuery]);
 
 
     const fetchEmployees = useCallback(async (page, perPage) => {
@@ -64,8 +72,8 @@ export default function EmployeeDataTable() {
                 per_page: perPage,
                 sortDesc: 'false',
                 branch_id: selectedBranch,
-                department_id: selectedDepartmentId,
-                employee_ids: employeeIds,
+                device: selectedDevice,
+                UserID: searchTerm || null, // Only include search if it's not empty
             };
             const result = await getDeviceLogs(params);
 
@@ -87,7 +95,7 @@ export default function EmployeeDataTable() {
 
             setIsLoading(false); // Make sure loading state is turned off on error
         }
-    }, [perPage]);
+    }, [perPage, selectedDevice, searchTerm]);
 
     const router = useRouter();
 
@@ -221,13 +229,13 @@ export default function EmployeeDataTable() {
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6  sm:space-y-0">
                 <h1 className="text-2xl font-extrabold text-gray-900 flex items-center">
                     {/* <User className="w-7 h-7 mr-3 text-indigo-600" /> */}
-                    Attendance Report
+                    Device Logs
                 </h1>
                 <div className="flex flex-wrap items-center space-x-3 space-y-2 sm:space-y-0">
 
                     {/* Branch Filter Dropdown */}
-
-                    <div className="flex flex-col">
+                    <div className="relative">
+                        {selectedBranch}
                         <BranchSelect
                             selectedBranchId={selectedBranch}
                             onSelect={(id) => { setSelectedBranch(id); }}
@@ -235,54 +243,35 @@ export default function EmployeeDataTable() {
                     </div>
 
                     <div className="flex flex-col">
-                        <DepartmentSelect
+                        <DeviceSelect
                             selectedBranchId={selectedBranch}
-                            value={selectedDepartmentId}
-                            onChange={(device_id) => { setSelectedDepartment(device_id); }}
-                        />
-                    </div>
-
-                    <div className="flex flex-col">
-                        <EmployeeMultiSelect
-                            selectedBranchId={selectedBranch}
-                            selectedDepartmentId={selectedDepartmentId}
-                            value={employeeIds}
-                            onChange={(ids) => { setEmployeeIds(ids); }}
-                        />
-                    </div>
-
-                    <div className="flex flex-col">
-                        <StaticDropDown
-                            placeholder={'Select Report Template'}
-                            items={
-                                [
-                                    { id: `Monthly Report Format A`, name: `Monthly Report Format A` },
-                                    { id: `Monthly Report Format B`, name: `Monthly Report Format B` },
-                                    { id: `Daily`, name: `Daily` },
-                                ]}
-
+                            value={selectedDevice}
+                            onChange={(device_id) => { setSelectedDevice(device_id); setCurrentPage(1); }}
                         />
                     </div>
 
 
-                    <div className="flex flex-col">
-                        <DateRangeSelect
-                            value={{ from, to }}
-                            onRangeChange={({ from, to }) => {
-                                setFrom(from);
-                                setTo(to);
-                            }
-
-                            } />
+                    {/* Search Input */}
+                    <div className="relative">
+                        <Input
+                            className="pl-10 bg-white h-9 w-full" // Increased left padding (pl-10) for the icon
+                            placeholder="Search by Employee ID"
+                            type="text"
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                        />
+                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
                     </div>
-
-
 
                     {/* Refresh Button */}
-                    <button onClick={handleRefresh} className="bg-primary text-white px-4 py-1 rounded-lg font-semibold shadow-md hover:bg-indigo-700 transition-all flex items-center space-x-2 whitespace-nowrap">
-                        <RefreshCw className={`w-4 h-4 mr-1 ${isLoading ? 'animate-spin' : ''}`} /> Submit
+                    <button
+                        onClick={handleRefresh}
+                        disabled={isLoading}
+                        className="p-2 bg-white border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors disabled:opacity-50"
+                        title="Refresh Data"
+                    >
+                        <RefreshCw className={`w-4 h-4  ${isLoading ? 'animate-spin' : ''}`} />
                     </button>
-
 
                     {/* <EmployeeExtras data={employees} onUploadSuccess={fetchEmployees} /> */}
                 </div>

@@ -14,18 +14,42 @@ import {
   CommandInput,
   CommandItem,
 } from "@/components/ui/command";
+import { getDeviceList } from "@/lib/api";
 
-export default function StaticDropDown({ items, value, onChange,placeholder="Select Item" }) {
+export default function DeviceSelect({
+  selectedBranchId = 0,
+  value,
+  onChange,
+}) {
+  const [devices, setDevices] = useState([]);
   const [deviceOpen, setDeviceOpen] = useState(false);
 
+  const fetchDevices = async () => {
+    console.log("🚀 ~ DeviceSelect ~ selectedBranchId:", selectedBranchId);
+    try {
+      const list = await getDeviceList(selectedBranchId);
+      setDevices(list);
+    } catch (error) {
+      console.error("Error fetching devices:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchDevices();
+  }, [selectedBranchId]);
+
   const handleSelect = (currentValue) => {
-    const selectedItem = items.find((d) => d.name === currentValue);
-    onChange(selectedItem?.id || null);
+    if (currentValue === "Select All") {
+      onChange(null);
+    } else {
+      const selectedItem = devices.find((d) => d.name === currentValue);
+      onChange(selectedItem?.device_id || null);
+    }
     setDeviceOpen(false);
   };
 
   const selectedDeviceName =
-    items.find((b) => b.id === value)?.name || placeholder;
+    devices.find((b) => b.device_id === value)?.name || "Select Device";
 
   return (
     <Popover open={deviceOpen} onOpenChange={setDeviceOpen}>
@@ -48,9 +72,16 @@ export default function StaticDropDown({ items, value, onChange,placeholder="Sel
           <CommandInput placeholder="Search device..." />
           <CommandEmpty>No employee found.</CommandEmpty>
           <CommandGroup>
-            {items.map((device) => (
+            <CommandItem
+              className="text-gray-600"
+              value="Select All"
+              onSelect={handleSelect}
+            >
+              Select All
+            </CommandItem>
+            {devices.map((device) => (
               <CommandItem
-                key={device.id}
+                key={device.device_id}
                 value={device.name}
                 className="text-gray-600"
                 onSelect={handleSelect}

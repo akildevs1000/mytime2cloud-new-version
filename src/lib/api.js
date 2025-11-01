@@ -60,6 +60,18 @@ export const getScheduleEmployees = async (params = {}) => {
     return data;
 };
 
+export const getDeviceLogs = async (params = {}) => {
+    const user = await getUser();
+
+    const { data } = await axios.get(`${API_BASE}/attendance_logs`, {
+        params: {
+            ...params,
+            company_id: user?.company_id || 0,
+        },
+    });
+    return data;
+};
+
 export const getEmployees = async (params = {}) => {
     const user = await getUser();
 

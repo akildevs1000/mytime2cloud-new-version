@@ -145,14 +145,14 @@ export default function EmployeeMultiSelect({
 
   return (
     <Popover open={employeeOpen} onOpenChange={setEmployeeOpen}>
-      <PopoverTrigger asChild>
+      <PopoverTrigger asChild className="flex justify-between">
         <Button
           ref={triggerRef}
           variant="outline"
           role="combobox"
           aria-expanded={employeeOpen}
           // The height property is crucial here to ensure a consistent look
-          className="w-full justify-between text-gray-500 border border-gray-300 rounded-lg bg-white hover:bg-gray-100 **h-10** flex-wrap items-center p-2 overflow-hidden"
+          className="border border-gray-300"
         >
           {/* Use the new function to render content */}
           {getDisplayContent()}

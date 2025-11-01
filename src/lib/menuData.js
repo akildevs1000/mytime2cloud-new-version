@@ -1,3 +1,4 @@
+
 // menuData.js
 export const leftNavLinks = {
   '/': [ // Corresponds to the DASHBOARD top link
@@ -11,10 +12,35 @@ export const leftNavLinks = {
     { href: "/employees/departments", icon: "apartment", label: "Departments" },
     // Add other employee-related links
   ],
-  '/attendance': [ // Corresponds to the ATTENDANCE top link
+
+
+
+
+
+  '/attendance': [
+    { href: "shift", icon: "event", label: "Shift" },
     { href: "schedule", icon: "schedule", label: "Schedule" },
-    { href: "#", icon: "event_note", label: "Leave Requests" },
-    // Add other attendance-related links
+    { href: "attendance", icon: "event_note", label: "Leave Requests" },
+
+    { href: "logs", icon: "history", label: "Device Logs" },
+    
   ],
-  // ... continue for other top-level links like '/payroll', '/reports', etc.
+  '/shift': [
+    { href: "shift", icon: "event", label: "Shift" },
+    { href: "schedule", icon: "schedule", label: "Schedule" },
+    { href: "attendance", icon: "event_note", label: "Leave Requests" },
+
+    { href: "logs", icon: "history", label: "Device Logs" },
+    
+  ],
+  '/schedule': [
+    { href: "shift", icon: "event", label: "Shift" },
+    { href: "schedule", icon: "schedule", label: "Schedule" },
+    { href: "attendance", icon: "event_note", label: "Leave Requests" },
+
+    { href: "logs", icon: "history", label: "Device Logs" },
+    
+
+
+  ],
 };
