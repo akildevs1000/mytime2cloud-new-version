@@ -12,7 +12,7 @@ export const leftNavLinks = {
     // Add other employee-related links
   ],
   '/attendance': [ // Corresponds to the ATTENDANCE top link
-    { href: "#", icon: "event_available", label: "Time Logs" },
+    { href: "schedule", icon: "schedule", label: "Schedule" },
     { href: "#", icon: "event_note", label: "Leave Requests" },
     // Add other attendance-related links
   ],

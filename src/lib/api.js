@@ -48,6 +48,18 @@ export const getDepartments = async (branch_id = null) => {
 };
 
 // companyId will be passed dynamically
+export const getScheduleEmployees = async (params = {}) => {
+    const user = await getUser();
+
+    const { data } = await axios.get(`${API_BASE}/employees_with_schedule_count`, {
+        params: {
+            ...params,
+            company_id: user?.company_id || 0,
+        },
+    });
+    return data;
+};
+
 export const getEmployees = async (params = {}) => {
     const user = await getUser();
 
@@ -66,6 +78,17 @@ export const getShifts = async (params = {}) => {
     const { data } = await axios.get(`${API_BASE}/shift`, {
         params: {
             ...params,
+            company_id: user?.company_id || 0,
+        },
+    });
+    return data;
+};
+
+export const getShiftDropDownList = async (branch_id = null) => {
+    const user = await getUser();
+    const { data } = await axios.get(`${API_BASE}/shift_dropdownlist`, {
+        params: {
+            branch_id: branch_id,
             company_id: user?.company_id || 0,
         },
     });
@@ -152,6 +175,12 @@ export const storeShift = async (payload) => {
     const user = await getUser();
     let { data } = await axios.post(`${API_BASE}/shift`, { ...payload, company_id: user?.company_id || 0 });
     return data;
+};
+
+export const storeSchedule = async (payload) => {
+    const user = await getUser();
+    await axios.post(`${API_BASE}/schedule_employees`, { ...payload, company_id: user?.company_id || 0 });
+    return true;
 };
 
 export const storePayroll = async (payload) => {
@@ -302,11 +331,12 @@ export const uploadEmployee = async (payload) => {
 
 
 // companyId will be passed dynamically
-export const getEmployeeList = async (branch_id = 0) => {
+export const getEmployeeList = async (branch_id = 0, department_id = 0) => {
     const user = await getUser();
     const { data } = await axios.get(`${API_BASE}/scheduled_employees_with_type`, {
         params: {
             branch_id: branch_id,
+            department_id: department_id,
             company_id: user?.company_id || 0,
         },
     });

@@ -397,6 +397,7 @@ const EmployeeProfileForm = () => {
                                                             <FormLabel>Branch</FormLabel>
 
                                                             <BranchSelect
+                                                                selectedBranchId={field.value}
                                                                 onSelect={(id) => { setValue("branch_id", id); }}
                                                             />
 
