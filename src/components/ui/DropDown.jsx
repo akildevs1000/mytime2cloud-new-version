@@ -45,7 +45,7 @@ export default function DeviceSelect({
   };
 
   const selectedDeviceName =
-    devices.find((b) => b.id === value)?.name || "Select Employee";
+    devices.find((b) => b.id === value)?.name || "Select Item";
 
   return (
     <Popover open={deviceOpen} onOpenChange={setDeviceOpen}>

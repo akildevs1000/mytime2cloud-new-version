@@ -148,7 +148,7 @@ const EmployeeProfileForm = () => {
                     className=" sm:p-6 lg:p-8 grid grid-cols-1 lg:grid-cols-1 gap-8 items-start"
                 >
                     <div
-                        className="lg:col-span-3 bg-card-light dark:bg-card-dark p-6 rounded-2xl border border-border-light dark:border-border-dark shadow-sm"
+                        className="lg:col-span-3 bg-white p-6 rounded-2xl border border-border-light dark:border-border-dark shadow-sm"
                     >
                         <header className="flex justify-between items-center mb-8">
                             <h1 className="text-xl font-bold text-text-strong-light dark:text-text-strong-dark">

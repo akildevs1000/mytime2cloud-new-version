@@ -15,28 +15,32 @@ import {
   CommandItem,
 } from "@/components/ui/command";
 
-export default function StaticDropDown({ items, value, onChange,placeholder="Select Item" }) {
-  const [deviceOpen, setDeviceOpen] = useState(false);
+export default function DropDown({
+  items,
+  value,
+  onChange,
+  placeholder = "Select Item",
+}) {
+  const [itemOpen, setItemOpen] = useState(false);
 
   const handleSelect = (currentValue) => {
     const selectedItem = items.find((d) => d.name === currentValue);
     onChange(selectedItem?.id || null);
-    setDeviceOpen(false);
+    setItemOpen(false);
   };
 
-  const selectedDeviceName =
-    items.find((b) => b.id === value)?.name || placeholder;
+  const itemName = items.find((b) => b.id === value)?.name || placeholder;
 
   return (
-    <Popover open={deviceOpen} onOpenChange={setDeviceOpen}>
+    <Popover open={itemOpen} onOpenChange={setItemOpen}>
       <PopoverTrigger asChild>
         <Button
           variant="outline"
           role="combobox"
-          aria-expanded={deviceOpen}
+          aria-expanded={itemOpen}
           className="w-full justify-between text-gray-500 border border-gray-300 rounded-lg bg-white hover:bg-gray-100"
         >
-          {selectedDeviceName}
+          {itemName}
           <span className="material-icons text-gray-400 ml-2 text-base">
             expand_more
           </span>
@@ -45,17 +49,17 @@ export default function StaticDropDown({ items, value, onChange,placeholder="Sel
 
       <PopoverContent className="w-[300px] max-w-full p-0">
         <Command>
-          <CommandInput placeholder="Search device..." />
-          <CommandEmpty>No employee found.</CommandEmpty>
+          <CommandInput placeholder="Search item..." />
+          <CommandEmpty>No item found.</CommandEmpty>
           <CommandGroup>
-            {items.map((device) => (
+            {items.map((item) => (
               <CommandItem
-                key={device.id}
-                value={device.name}
+                key={item.id}
+                value={item.name}
                 className="text-gray-600"
                 onSelect={handleSelect}
               >
-                {device.name}
+                {item.name}
               </CommandItem>
             ))}
           </CommandGroup>

@@ -12,7 +12,7 @@ import { Label } from "@/components/ui/label";
 import DepartmentSelect from "@/components/ui/DepartmentSelect";
 import EmployeeMultiSelect from "@/components/ui/EmployeeMultiSelect";
 import DateRangeSelect from "@/components/ui/DateRange";
-import StaticDropDown from "@/components/ui/StaticDropDown";
+import DropDown from "@/components/ui/DropDown";
 import ShiftSelect from "@/components/ui/ShiftSelect";
 
 const EmployeeProfileForm = () => {
@@ -123,7 +123,7 @@ const EmployeeProfileForm = () => {
 
                                             <div className="flex flex-col">
                                                 <label className="font-medium mb-1">Scheduled/ UnScheduled</label>
-                                                <StaticDropDown
+                                                <DropDown
                                                     value={filterEmployeesByScheduleType}
                                                     items={
                                                         [

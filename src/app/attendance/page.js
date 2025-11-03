@@ -1,50 +1,33 @@
 "use client";
 
 import React, { useState, useEffect, useCallback } from 'react';
-import { Search, Plus, MoreVertical, QrCode, Fingerprint, ChevronLeft, ChevronRight, Loader2, RefreshCw, Pencil, Trash, Palmtree, Hand, Lock, ScanFace } from 'lucide-react';
+import { RefreshCw } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
-import { Input } from '@/components/ui/input';
-import { getDeviceLogs, parseApiError, removeEmployee } from '@/lib/api';
+import { getDeviceLogs, getStatuses, parseApiError } from '@/lib/api';
 import BranchSelect from '@/components/ui/BranchSelect';
-import DeviceSelect from '@/components/ui/DeviceSelect';
-import { Button } from '@/components/ui/button';
+
 import DepartmentSelect from '@/components/ui/DepartmentSelect';
 import EmployeeMultiSelect from '@/components/ui/EmployeeMultiSelect';
-import StaticDropDown from '@/components/ui/StaticDropDown';
+import DropDown from '@/components/ui/DropDown';
 import DateRangeSelect from "@/components/ui/DateRange";
+import Pagination from '@/lib/Pagination';
+import { EmployeeExtras } from '@/components/Employees/Extras';
+import DataTable from '@/components/ui/DataTable';
+import Columns from "./columns"; // 👈 import here
 
 
-const useDebounce = (value, delay) => {
-    const [debouncedValue, setDebouncedValue] = useState(value);
 
-    useEffect(() => {
-        // Set up a timer to update the debounced value after the delay
-        const handler = setTimeout(() => {
-            setDebouncedValue(value);
-        }, delay);
+export default function AttendanceTable() {
 
-        // Cleanup function: clears the previous timer if the value changes
-        return () => {
-            clearTimeout(handler);
-        };
-    }, [value, delay]); // Re-run effect if value or delay changes
-
-    return debouncedValue;
-};
-
-
-export default function EmployeeDataTable() {
-
-    const [employees, setEmployees] = useState([]);
+    const [employees, setAttendance] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
 
     // Pagination State
     const [currentPage, setCurrentPage] = useState(1);
-    const [perPage, setPerPage] = useState(10); // Default to 10 for a cleaner table, even if the API suggests 100
-    const [totalPages, setTotalPages] = useState(1);
-    const [totalEmployees, setTotalEmployees] = useState(0);
+    const [perPage, setPerPage] = useState(25);
+    const [total, setTotalAttendance] = useState(0);
 
     const [selectedBranch, setSelectedBranch] = useState(null);
     const [selectedDepartmentId, setSelectedDepartment] = useState(null);
@@ -53,8 +36,9 @@ export default function EmployeeDataTable() {
     const [from, setFrom] = useState(null);
     const [to, setTo] = useState(null);
 
+    const [statusses, setStatusses] = useState([]);
 
-    const fetchEmployees = useCallback(async (page, perPage) => {
+    const fetchRecords = useCallback(async (page, perPage) => {
         setIsLoading(true);
         setError(null);
 
@@ -71,10 +55,9 @@ export default function EmployeeDataTable() {
 
             // Check if result has expected structure before setting state
             if (result && Array.isArray(result.data)) {
-                setEmployees(result.data);
+                setAttendance(result.data);
                 setCurrentPage(result.current_page || 1);
-                setTotalPages(result.last_page || 1);
-                setTotalEmployees(result.total || 0);
+                setTotalAttendance(result.total || 0);
                 setIsLoading(false);
                 return; // Success, exit
             } else {
@@ -84,7 +67,6 @@ export default function EmployeeDataTable() {
 
         } catch (error) {
             setError(parseApiError(error))
-
             setIsLoading(false); // Make sure loading state is turned off on error
         }
     }, [perPage]);
@@ -92,249 +74,122 @@ export default function EmployeeDataTable() {
     const router = useRouter();
 
 
-    useEffect(() => {
-        fetchEmployees(currentPage, perPage);
-    }, [currentPage, perPage, fetchEmployees]); // Re-fetch when page or perPage changes
-
-    const handlePageChange = (newPage) => {
-        if (newPage >= 1 && newPage <= totalPages) {
-            setCurrentPage(newPage);
+    const fetchStatuses = async () => {
+        try {
+            setIsLoading(true);
+            let result = await getStatuses();
+            console.log(result);
+            setStatusses(result);
+            setIsLoading(false);
+        } catch (error) {
+            setError(parseApiError(error));
+            setIsLoading(false);
         }
     };
 
+    useEffect(() => {
+        fetchStatuses();
+    }, []);
+
+    useEffect(() => {
+        fetchRecords(currentPage, perPage);
+    }, [currentPage, perPage, fetchRecords]); // Re-fetch when page or perPage changes
+
     const handleRefresh = () => {
-        fetchEmployees(currentPage, perPage);
+        fetchRecords(currentPage, perPage);
     }
-
-
-
-    const handleRowClick = () => {
-        router.push('/schedule/short-list');
-    }
-
-    const renderEmployeeRow = ({ employee, ...log }) => {
-
-        // Fallback for nested objects that might be empty ({}) in the API sample
-        const branchName = employee.branch?.branch_name || 'N/A';
-        const departmentName = employee.department?.name || 'N/A';
-        const designationTitle = employee.designation?.title || employee.last_name; // Using last_name as a fallback title
-        let type = log?.log_type == 'Out' ? 'red' : log?.log_type == 'In' ? 'green' : 'gray';
-
-        return (
-            <tr key={employee.id} className="border-b border-gray-200 hover:bg-indigo-50 transition-colors"
-            >
-                {/* Name & Designation */}
-                <td onClick={() => handleRowClick(employee.id)} className="p-4 whitespace-nowrap">
-                    <div className="flex items-center space-x-3">
-                        <img
-                            alt={employee.full_name}
-                            className="w-10 h-10 rounded-full object-cover shadow-sm"
-                            src={employee.profile_picture || `https://placehold.co/40x40/6946dd/ffffff?text=${employee.full_name.charAt(0)}`}
-                            onError={(e) => { e.target.onerror = null; e.target.src = `https://placehold.co/40x40/6946dd/ffffff?text=${employee.full_name.charAt(0)}`; }}
-                        />
-                        <div>
-                            <p className="font-medium text-gray-800">{employee.full_name}</p>
-                            <p className="text-sm text-gray-500">{designationTitle}</p>
-                        </div>
-                    </div>
-                </td>
-
-                {/* Emp Id / Device Id */}
-                <td onClick={() => handleRowClick(employee.id)} className="p-4 whitespace-nowrap">
-                    <p className="text-gray-800">{employee.employee_id || '—'}</p>
-                    <p className="text-sm text-gray-500">Device ID: {employee.system_user_id || '—'}</p>
-                </td>
-
-                {/* Branch */}
-                <td onClick={() => handleRowClick(employee.id)} className="p-4 whitespace-nowrap">
-                    <p className="text-gray-800">{branchName}</p>
-                </td>
-
-                {/* Department */}
-                <td onClick={() => handleRowClick(employee.id)} className="p-4 whitespace-nowrap text-gray-800">{departmentName}</td>
-                <td onClick={() => handleRowClick(employee.id)} className="p-4 whitespace-nowrap text-gray-800">{log?.time} {log?.date}</td>
-                <td onClick={() => handleRowClick(employee.id)} className="p-4 whitespace-nowrap text-gray-800">{log?.device?.name}</td>
-                <td onClick={() => handleRowClick(employee.id)} className={`p-4 whitespace-nowrap text-${type}-800`}>{log?.log_type}</td>
-                <td onClick={() => handleRowClick(employee.id)} className="p-4 whitespace-nowrap text-gray-800">{log?.device?.location}</td>
-
-
-            </tr>
-        );
-    };
-
-    /**
-     * Renders the pagination controls.
-     */
-    const renderPagination = () => {
-        const start = (currentPage - 1) * perPage + 1;
-        // Ensure 'end' does not exceed the total number of employees
-        const end = Math.min(currentPage * perPage, totalEmployees);
-
-        return (
-            <div className="flex justify-between items-center px-4 py-3 bg-white border-t border-gray-200 rounded-b-lg flex-col sm:flex-row space-y-3 sm:space-y-0">
-                <p className="text-sm text-gray-600">
-                    Showing <span className="font-semibold">{start}</span> to <span className="font-semibold">{end}</span> of <span className="font-semibold">{totalEmployees}</span> results
-                </p>
-                <div className="flex space-x-2">
-                    {/* Previous Button */}
-                    <button
-                        onClick={() => handlePageChange(currentPage - 1)}
-                        disabled={currentPage === 1 || isLoading}
-                        className="p-2 border border-gray-300 rounded-md text-sm text-gray-600 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center"
-                    >
-                        <ChevronLeft className="w-4 h-4 mr-1" />
-                        Previous
-                    </button>
-
-                    {/* Current Page Indicator (Simplified) */}
-                    <span className="p-2 px-4 border border-indigo-600 bg-primary text-white rounded-md text-sm font-semibold flex items-center">
-                        {currentPage} / {totalPages}
-                    </span>
-
-                    {/* Next Button */}
-                    <button
-                        onClick={() => handlePageChange(currentPage + 1)}
-                        disabled={currentPage === totalPages || isLoading}
-                        className="p-2 border border-gray-300 rounded-md text-sm text-gray-600 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center"
-                    >
-                        Next
-                        <ChevronRight className="w-4 h-4 ml-1" />
-                    </button>
-
-                    {/* Per Page Selector */}
-                    <select
-                        value={perPage}
-                        onChange={(e) => setPerPage(Number(e.target.value))}
-                        className="ml-4 p-2 border border-gray-300 rounded-md text-sm text-gray-700 bg-white focus:ring-indigo-500 focus:border-indigo-500"
-                    >
-                        <option value={10}>10 / page</option>
-                        <option value={25}>25 / page</option>
-                        <option value={50}>50 / page</option>
-                    </select>
-                </div>
-            </div>
-        );
-    };
 
     return (
         <>
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6  sm:space-y-0">
+            <div className="flex flex-wrap items-center space-x-3 space-y-2 mb-6 sm:space-y-0">
                 <h1 className="text-2xl font-extrabold text-gray-900 flex items-center">
                     {/* <User className="w-7 h-7 mr-3 text-indigo-600" /> */}
                     Attendance Report
                 </h1>
-                <div className="flex flex-wrap items-center space-x-3 space-y-2 sm:space-y-0">
 
-                    {/* Branch Filter Dropdown */}
-
-                    <div className="flex flex-col">
-                        <BranchSelect
-                            selectedBranchId={selectedBranch}
-                            onSelect={(id) => { setSelectedBranch(id); }}
-                        />
-                    </div>
-
-                    <div className="flex flex-col">
-                        <DepartmentSelect
-                            selectedBranchId={selectedBranch}
-                            value={selectedDepartmentId}
-                            onChange={(device_id) => { setSelectedDepartment(device_id); }}
-                        />
-                    </div>
-
-                    <div className="flex flex-col">
-                        <EmployeeMultiSelect
-                            selectedBranchId={selectedBranch}
-                            selectedDepartmentId={selectedDepartmentId}
-                            value={employeeIds}
-                            onChange={(ids) => { setEmployeeIds(ids); }}
-                        />
-                    </div>
-
-                    <div className="flex flex-col">
-                        <StaticDropDown
-                            placeholder={'Select Report Template'}
-                            items={
-                                [
-                                    { id: `Monthly Report Format A`, name: `Monthly Report Format A` },
-                                    { id: `Monthly Report Format B`, name: `Monthly Report Format B` },
-                                    { id: `Daily`, name: `Daily` },
-                                ]}
-
-                        />
-                    </div>
-
-
-                    <div className="flex flex-col">
-                        <DateRangeSelect
-                            value={{ from, to }}
-                            onRangeChange={({ from, to }) => {
-                                setFrom(from);
-                                setTo(to);
-                            }
-
-                            } />
-                    </div>
-
-
-
-                    {/* Refresh Button */}
-                    <button onClick={handleRefresh} className="bg-primary text-white px-4 py-1 rounded-lg font-semibold shadow-md hover:bg-indigo-700 transition-all flex items-center space-x-2 whitespace-nowrap">
-                        <RefreshCw className={`w-4 h-4 mr-1 ${isLoading ? 'animate-spin' : ''}`} /> Submit
-                    </button>
-
-
-                    {/* <EmployeeExtras data={employees} onUploadSuccess={fetchEmployees} /> */}
-                </div>
-            </div>
-
-            <div className="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-200">
-                <div className="overflow-x-auto">
-                    <table className="w-full text-left table-auto">
-                        <thead className="bg-gray-50 border-b border-gray-200">
-                            <tr>
-                                <th className="p-4 font-semibold text-xs text-gray-600 uppercase tracking-wider min-w-[150px]">Name</th>
-                                <th className="p-4 font-semibold text-xs text-gray-600 uppercase tracking-wider min-w-[150px]">Emp Id / Device Id</th>
-                                <th className="p-4 font-semibold text-xs text-gray-600 uppercase tracking-wider min-w-[150px]">Branch</th>
-                                <th className="p-4 font-semibold text-xs text-gray-600 uppercase tracking-wider min-w-[150px]">Department</th>
-                                <th className="p-4 font-semibold text-xs text-gray-600 uppercase tracking-wider min-w-[150px]">Date</th>
-                                <th className="p-4 font-semibold text-xs text-gray-600 uppercase tracking-wider min-w-[150px]">Device</th>
-                                <th className="p-4 font-semibold text-xs text-gray-600 uppercase tracking-wider min-w-[120px]">In/Out</th>
-                                <th className="p-4 font-semibold text-xs text-gray-600 uppercase tracking-wider min-w-[120px]">Location</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {isLoading ? (
-                                <tr>
-                                    <td colSpan="9" className="p-12 text-center text-primary font-medium">
-                                        <Loader2 className="w-8 h-8 mx-auto mb-2 animate-spin" />
-                                        Loading employee data...
-                                    </td>
-                                </tr>
-                            ) : error ? (
-                                <tr>
-                                    <td colSpan="9" className="p-12 text-center text-red-600 font-medium bg-red-50">
-                                        <p>Error: {error}</p>
-                                        <p className='mt-2 text-sm text-red-500'>Please check the console for details or refresh the page.</p>
-                                    </td>
-                                </tr>
-                            ) : employees.length === 0 ? (
-                                <tr>
-                                    <td colSpan="9" className="p-12 text-center text-gray-500 font-medium">
-                                        No employees found for the current filter/page.
-                                    </td>
-                                </tr>
-                            ) : (
-                                // Render rows dynamically
-                                employees.map(renderEmployeeRow)
-                            )}
-                        </tbody>
-                    </table>
+                <div className="flex flex-col">
+                    <DropDown
+                        placeholder={'Select Report Template'}
+                        items={statusses}
+                    />
                 </div>
 
-                {/* Pagination Footer */}
-                {!isLoading && employees.length > 0 && renderPagination()}
+
+                <div className="flex flex-col">
+                    <BranchSelect
+                        selectedBranchId={selectedBranch}
+                        onSelect={(id) => { setSelectedBranch(id); }}
+                    />
+                </div>
+
+                <div className="flex flex-col">
+                    <DepartmentSelect
+                        selectedBranchId={selectedBranch}
+                        value={selectedDepartmentId}
+                        onChange={(device_id) => { setSelectedDepartment(device_id); }}
+                    />
+                </div>
+
+                <div className="flex flex-col">
+                    <EmployeeMultiSelect
+                        selectedBranchId={selectedBranch}
+                        selectedDepartmentId={selectedDepartmentId}
+                        value={employeeIds}
+                        onChange={(ids) => { setEmployeeIds(ids); }}
+                    />
+                </div>
+
+                <div className="flex flex-col">
+                    <DropDown
+                        placeholder={'Select Report Template'}
+                        items={
+                            [
+                                { id: `Monthly Report Format A`, name: `Monthly Report Format A` },
+                                { id: `Monthly Report Format B`, name: `Monthly Report Format B` },
+                                { id: `Daily`, name: `Daily` },
+                            ]}
+                    />
+                </div>
+
+                <div className="flex flex-col">
+                    <DateRangeSelect
+                        value={{ from, to }}
+                        onRangeChange={({ from, to }) => {
+                            setFrom(from);
+                            setTo(to);
+                        }
+
+                        } />
+                </div>
+
+                {/* Refresh Button */}
+                <button onClick={handleRefresh} className="bg-primary text-white px-4 py-1 rounded-lg font-semibold shadow-md hover:bg-indigo-700 transition-all flex items-center space-x-2 whitespace-nowrap">
+                    <RefreshCw className={`w-4 h-4 mr-1 ${isLoading ? 'animate-spin' : ''}`} /> Submit
+                </button>
+
+                {/* <EmployeeExtras data={employees} onUploadSuccess={fetchRecords} /> */}
             </div>
+
+            <DataTable
+                columns={Columns}
+                data={employees}
+                isLoading={isLoading}
+                error={error}
+                onRowClick={(item) => console.log("Clicked:", item)}
+                pagination={
+                    <Pagination
+                        page={currentPage}
+                        perPage={perPage}
+                        total={total}
+                        onPageChange={setCurrentPage}
+                        onPerPageChange={(n) => {
+                            setPerPage(n);
+                            setCurrentPage(1);
+                        }}
+                        pageSizeOptions={[10, 25, 50]}
+                    />
+                }
+            />
         </>
     );
 }

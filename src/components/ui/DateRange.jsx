@@ -1,35 +1,38 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import { format } from "date-fns"
-import { Calendar as CalendarIcon, Check, X } from "lucide-react"
+import { format } from "date-fns";
+import { Calendar as CalendarIcon, Check, X } from "lucide-react";
 
 // Assuming your shadcn/ui components are correctly imported:
-import { cn } from "@/lib/utils" 
-import { Button } from "@/components/ui/button"
-import { Calendar } from "@/components/ui/calendar"
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { useState } from "react";
 
 export default function DateRangeSelect({ className }) {
   // 1. Main state for the selected range (displayed in the button)
-  const [date, setDate] = React.useState({
-    from: new Date(2025, 0, 20), // Month is 0-indexed (January)
-    to: new Date(2025, 1, 9),    // Month is 0-indexed (February)
+  const [date, setDate] = useState({
+    from: new Date(new Date().getFullYear(), new Date().getMonth(), 1), // First day of current month
+    to: new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0), // Last day of current month
   });
 
   // 2. Draft state for the range selection happening *inside* the calendar
   // It is initialized with the current committed date.
-  const [draftDate, setDraftDate] = React.useState(date);
+  const [draftDate, setDraftDate] = useState(date);
 
   // 3. State to control the Popover's open/close status
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
 
   // --- Handlers ---
 
   const handleOpenChange = (newOpen) => {
     setOpen(newOpen);
-    // If the Popover is closing without an explicit action, revert draft date 
+    // If the Popover is closing without an explicit action, revert draft date
     // to the last committed date to ensure canceled changes are discarded.
     if (!newOpen) {
       setDraftDate(date);
@@ -38,12 +41,12 @@ export default function DateRangeSelect({ className }) {
 
   const handleApply = () => {
     setDate(draftDate); // Commit the draft selection to the main state
-    setOpen(false);   // Close the popover
+    setOpen(false); // Close the popover
   };
 
   const handleCancel = () => {
     setDraftDate(date); // Revert the draft back to the last committed date
-    setOpen(false);   // Close the popover
+    setOpen(false); // Close the popover
   };
 
   // --- Rendering ---
@@ -60,7 +63,7 @@ export default function DateRangeSelect({ className }) {
               !date && "text-muted-foreground"
             )}
           >
-            <CalendarIcon className="mr-2 h-4 w-4" />
+            <CalendarIcon className="h-4 w-4" />
             {/* Display the committed date range or a placeholder */}
             {date?.from ? (
               date.to ? (
@@ -76,10 +79,10 @@ export default function DateRangeSelect({ className }) {
             )}
           </Button>
         </PopoverTrigger>
-        <PopoverContent 
-            className="w-auto p-0" 
-            align="start" // Ensures the popover's left edge aligns with the button's left edge
-            side="bottom" // Ensures the popover opens below the button
+        <PopoverContent
+          className="w-auto p-0"
+          align="start" // Ensures the popover's left edge aligns with the button's left edge
+          side="bottom" // Ensures the popover opens below the button
         >
           {/* Calendar Component */}
           <Calendar
@@ -90,7 +93,7 @@ export default function DateRangeSelect({ className }) {
             onSelect={setDraftDate} // Update the draft state on day selection
             numberOfMonths={2} // Show two months for easier range selection
           />
-          
+
           {/* Action Buttons Container */}
           <div className="flex justify-end space-x-2 border-t p-2">
             <Button

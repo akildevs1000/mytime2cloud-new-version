@@ -168,8 +168,8 @@ export default function Home() {
   };
 
   const router = useRouter();
-  const handleGoBack = () => router.push(`/attendance`);
-  const handleCancel = () => router.push(`/attendance`);
+  const handleGoBack = () => router.push(`/shift`);
+  const handleCancel = () => router.push(`/shift`);
 
   const [open, setOpen] = useState(false);
   const [globalError, setGlobalError] = useState(null);
@@ -230,7 +230,7 @@ export default function Home() {
             className="p-4 border-b border-border-light dark:border-border-dark flex justify-between items-center"
           >
             <h2 className="text-lg font-semibold">Shifts</h2>
-            <Link href="/attendance/create">
+            <Link href="/shift/create">
               <button className="p-2 rounded-lg bg-primary text-white">
                 <span className="material-icons">add</span>
               </button>
@@ -281,325 +281,325 @@ export default function Home() {
                 </Button>
               </div>
             </header>
-          <div
-                className="lg:col-span-3 bg-card-light dark:bg-card-dark p-6 rounded-2xl border border-border-light dark:border-border-dark shadow-sm"
-              >
-                <header className="flex justify-between items-center mb-8">
-                  <h1 className="text-xl font-bold text-text-strong-light dark:text-text-strong-dark">
-                    Shift &amp; Schedule Management
-                  </h1>
+            <div
+              className="lg:col-span-3 bg-white p-6 rounded-2xl border border-border-light dark:border-border-dark shadow-sm"
+            >
+              <header className="flex justify-between items-center mb-8">
+                <h1 className="text-xl font-bold text-text-strong-light dark:text-text-strong-dark">
+                  Shift &amp; Schedule Management
+                </h1>
 
-                  <div className="flex items-center space-x-3">
-                    <Switch id="auto-shift" />
-                    <Label
-                      htmlFor="auto-shift"
-                      className="text-sm font-medium text-text-light dark:text-text-dark"
-                    >
-                      Auto Shift
-                    </Label>
-                  </div>
-                </header>
-                <div className="space-y-8">
-                  <div
-                    className="border-b border-border-light dark:border-border-dark pb-8"
+                <div className="flex items-center space-x-3">
+                  <Switch id="auto-shift" />
+                  <Label
+                    htmlFor="auto-shift"
+                    className="text-sm font-medium text-text-light dark:text-text-dark"
                   >
-                    <h3
-                      className="text-base font-semibold text-text-strong-light dark:text-text-strong-dark mb-4"
-                    >
-                      Shift Details
-                    </h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    Auto Shift
+                  </Label>
+                </div>
+              </header>
+              <div className="space-y-8">
+                <div
+                  className="border-b border-border-light dark:border-border-dark pb-8"
+                >
+                  <h3
+                    className="text-base font-semibold text-text-strong-light dark:text-text-strong-dark mb-4"
+                  >
+                    Shift Details
+                  </h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                      <Label
+                        className="block text-xs font-medium text-text-light dark:text-text-dark mb-1.5"
+                        htmlFor="type-of-schedule"
+                      >Type of Schedule*</Label>
+                      <Select onValueChange={(value) => handleChange("shift_type_id", Number(value))}>
+                        <SelectTrigger
+                          id="type-of-schedule"
+                          className="w-full rounded-lg text-sm"
+                        >
+                          <SelectValue placeholder="Select type" />
+                        </SelectTrigger>
+
+                        <SelectContent>
+                          <SelectItem value="1">Flexible</SelectItem>
+                          <SelectItem value="6">Single</SelectItem>
+                          <SelectItem value="2">Multi</SelectItem>
+                          <SelectItem value="4">Night</SelectItem>
+                          <SelectItem value="5">Dual</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div>
+                      <Label
+                        className="block text-xs font-medium text-text-light dark:text-text-dark mb-1.5"
+                        htmlFor="name-of-schedule"
+                      >Name of Schedule*</Label>
+                      <Input
+                        className="w-full rounded-lg border-border-light dark:border-border-dark bg-background-light dark:bg-gray-800/50 text-text-strong-light dark:text-text-strong-dark focus:ring-2 focus:ring-[var(--primary)] focus:border-[var(--primary)] text-sm transition-all"
+                        id="name-of-schedule"
+                        type="text"
+                        value={schedule.name}
+                        onChange={(e) => handleChange("name", e.target.value)} // ✅ fixed
+                      />
+                    </div>
+                  </div>
+                </div>
+                {
+                  schedule.shift_type_id === 4 || schedule.shift_type_id === 6 ?
+                    (
+                      <div
+                        className="border-b border-border-light dark:border-border-dark pb-8"
+                      >
+                        <h3
+                          className="text-base font-semibold text-text-strong-light dark:text-text-strong-dark mb-4"
+                        >
+                          Time Configuration
+                        </h3>
+                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-6">
+                          <div>
+                            <Label
+                              className="block text-xs font-medium text-text-light dark:text-text-dark mb-1.5"
+                              htmlFor="on-duty-time"
+                            >On Duty Time</Label
+                            >
+                            <div className="relative">
+
+                              <TimePicker
+                                value={schedule.on_duty_time}
+                                onChange={(val) => handleChange("on_duty_time", val)}
+                              />
+
+
+                            </div>
+                          </div>
+                          <div>
+                            <Label
+                              className="block text-xs font-medium text-text-light dark:text-text-dark mb-1.5"
+                              htmlFor="off-duty-time"
+                            >Off Duty Time</Label
+                            >
+                            <div className="relative">
+                              <TimePicker
+                                value={schedule.off_duty_time}
+                                onChange={(val) => handleChange("off_duty_time", val)}
+                              />
+                            </div>
+                          </div>
+                          <div>
+                            <Label
+                              className="block text-xs font-medium text-text-light dark:text-text-dark mb-1.5"
+                              htmlFor="min-working-hrs"
+                            >Min working hrs</Label
+                            >
+                            <div className="relative">
+                              <TimePicker
+                                value={schedule.working_hours}
+                                onChange={(val) => handleChange("working_hours", val)}
+                              />
+                            </div>
+                          </div>
+                          <div>
+                            <Label
+                              className="block text-xs font-medium text-text-light dark:text-text-dark mb-1.5"
+                              htmlFor="ot-start"
+                            >OT start after</Label
+                            >
+                            <div className="relative">
+                              <TimePicker
+                                value={schedule.overtime_interval}
+                                onChange={(val) => handleChange("overtime_interval", val)}
+                              />
+                            </div>
+                          </div>
+                          <div>
+                            <Label
+                              className="block text-xs font-medium text-text-light dark:text-text-dark mb-1.5"
+                              htmlFor="beginning-in"
+                            >Beginning In</Label
+                            >
+                            <div className="relative">
+                              <TimePicker
+                                value={schedule.beginning_in}
+                                onChange={(val) => handleChange("beginning_in", val)}
+                              />
+                            </div>
+                          </div>
+                          <div>
+                            <Label
+                              className="block text-xs font-medium text-text-light dark:text-text-dark mb-1.5"
+                              htmlFor="beginning-out"
+                            >Beginning Out</Label
+                            >
+                            <div className="relative">
+                              <TimePicker
+                                value={schedule.beginning_out}
+                                onChange={(val) => handleChange("beginning_out", val)}
+                              />
+                            </div>
+                          </div>
+                          <div>
+                            <Label
+                              className="block text-xs font-medium text-text-light dark:text-text-dark mb-1.5"
+                              htmlFor="ending-in"
+                            >Ending In</Label
+                            >
+                            <div className="relative">
+                              <TimePicker
+                                value={schedule.ending_in}
+                                onChange={(val) => handleChange("ending_in", val)}
+                              />
+                            </div>
+                          </div>
+                          <div>
+                            <Label
+                              className="block text-xs font-medium text-text-light dark:text-text-dark mb-1.5"
+                              htmlFor="ending-out"
+                            >Ending Out</Label
+                            >
+                            <div className="relative">
+                              <TimePicker
+                                value={schedule.ending_out}
+                                onChange={(val) => handleChange("ending_out", val)}
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    )
+                    : null
+                }
+
+
+                <div
+                  className="border-b border-border-light dark:border-border-dark pb-8"
+                >
+                  <h3
+                    className="text-base font-semibold text-text-strong-light dark:text-text-strong-dark mb-4"
+                  >
+                    Half Day Configuration
+                  </h3>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-x-6 gap-y-4">
+                    <div className="md:col-span-1">
+                      <Label
+                        className="block text-xs font-medium text-text-light dark:text-text-dark mb-1.5"
+                        htmlFor="half-day-weekdays"
+                      >Half Day Setting</Label
+                      >
+
+                      <Select defaultValue="Not Applicable" onValueChange={(value) => handleChange("halfday", value)}>
+                        <SelectTrigger
+                          id="half-day-weekdays"
+                          className="w-full rounded-lg text-sm"
+                        >
+                          <SelectValue placeholder="Select day" />
+                        </SelectTrigger>
+
+                        <SelectContent>
+                          <SelectItem value="Not Applicable">Not Applicable</SelectItem>
+                          <SelectItem value="monday">Monday</SelectItem>
+                          <SelectItem value="tuesday">Tuesday</SelectItem>
+                          <SelectItem value="wednesday">Wednesday</SelectItem>
+                          <SelectItem value="thursday">Thursday</SelectItem>
+                          <SelectItem value="friday">Friday</SelectItem>
+                          <SelectItem value="saturday">Saturday</SelectItem>
+                          <SelectItem value="sunday">Sunday</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="md:col-span-2 grid grid-cols-2 gap-6">
                       <div>
                         <Label
                           className="block text-xs font-medium text-text-light dark:text-text-dark mb-1.5"
-                          htmlFor="type-of-schedule"
-                        >Type of Schedule*</Label>
-                        <Select onValueChange={(value) => handleChange("shift_type_id", Number(value))}>
-                          <SelectTrigger
-                            id="type-of-schedule"
-                            className="w-full rounded-lg text-sm"
-                          >
-                            <SelectValue placeholder="Select type" />
-                          </SelectTrigger>
-
-                          <SelectContent>
-                            <SelectItem value="1">Flexible</SelectItem>
-                            <SelectItem value="6">Single</SelectItem>
-                            <SelectItem value="2">Multi</SelectItem>
-                            <SelectItem value="4">Night</SelectItem>
-                            <SelectItem value="5">Dual</SelectItem>
-                          </SelectContent>
-                        </Select>
+                          htmlFor="half-day-in-time"
+                        >In Time</Label
+                        >
+                        <div className="relative">
+                          <TimePicker
+                            value={schedule.halfday_in_time}
+                            onChange={(val) => handleChange("halfday_in_time", val)}
+                          />
+                        </div>
                       </div>
                       <div>
                         <Label
                           className="block text-xs font-medium text-text-light dark:text-text-dark mb-1.5"
-                          htmlFor="name-of-schedule"
-                        >Name of Schedule*</Label>
+                          htmlFor="half-day-out-time"
+                        >Out Time</Label
+                        >
+                        <div className="relative">
+                          <TimePicker
+                            value={schedule.halfday_out_time}
+                            onChange={(val) => handleChange("halfday_out_time", val)}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  className="border-b border-border-light dark:border-border-dark pb-8"
+                >
+                  <h3
+                    className="text-base font-semibold text-text-strong-light dark:text-text-strong-dark mb-4"
+                  >
+                    Working Days Status
+                  </h3>
+                  <div className="">
+                    <DaysSelector schedule={schedule} setSchedule={setSchedule} />
+                  </div>
+                </div>
+                <div
+                  className="border-b border-border-light dark:border-border-dark pb-8"
+                >
+                  <h3
+                    className="text-base font-semibold text-text-strong-light dark:text-text-strong-dark mb-4"
+                  >
+                    Grace Period &amp; Overtime
+                  </h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                      <Label
+                        className="block text-xs font-medium text-text-light dark:text-text-dark mb-1.5"
+                        htmlFor="grace-period-cin"
+                      >Grace Period for Check-in (CIN)</Label
+                      >
+                      <div className="relative">
                         <Input
-                          className="w-full rounded-lg border-border-light dark:border-border-dark bg-background-light dark:bg-gray-800/50 text-text-strong-light dark:text-text-strong-dark focus:ring-2 focus:ring-[var(--primary)] focus:border-[var(--primary)] text-sm transition-all"
-                          id="name-of-schedule"
-                          type="text"
-                          value={schedule.name}
-                          onChange={(e) => handleChange("name", e.target.value)} // ✅ fixed
+                          className="w-full rounded-lg border-border-light dark:border-border-dark bg-background-light dark:bg-gray-800/50 text-text-strong-light dark:text-text-strong-dark focus:ring-2 focus:ring-[var(--primary)] focus:border-[var(--primary)] pr-16 text-sm transition-all"
+                          id="grace-period-cin"
+                          type="number"
+                          value={schedule.late_time}
+                          onChange={(e) => handleChange("late_time", e.target.value)} // ✅ fixed
                         />
+                        <span
+                          className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-sm text-text-light dark:text-text-dark"
+                        >minutes</span>
                       </div>
                     </div>
-                  </div>
-                  {
-                    schedule.shift_type_id === 4 || schedule.shift_type_id === 6 ?
-                      (
-                        <div
-                          className="border-b border-border-light dark:border-border-dark pb-8"
+                    <div>
+                      <Label
+                        className="block text-xs font-medium text-text-light dark:text-text-dark mb-1.5"
+                        htmlFor="grace-period-cout"
+                      >Grace Period for Check-out (COUT)</Label
+                      >
+                      <div className="relative">
+                        <Input
+                          className="w-full rounded-lg border-border-light dark:border-border-dark bg-background-light dark:bg-gray-800/50 text-text-strong-light dark:text-text-strong-dark focus:ring-2 focus:ring-[var(--primary)] focus:border-[var(--primary)] pr-16 text-sm transition-all"
+                          id="grace-period-cout"
+                          type="number"
+                          value={schedule.early_time}
+                          onChange={(e) => handleChange("early_time", e.target.value)}
+                        />
+                        <span
+                          className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-sm text-text-light dark:text-text-dark"
+                        >minutes</span
                         >
-                          <h3
-                            className="text-base font-semibold text-text-strong-light dark:text-text-strong-dark mb-4"
-                          >
-                            Time Configuration
-                          </h3>
-                          <div className="grid grid-cols-2 sm:grid-cols-4 gap-6">
-                            <div>
-                              <Label
-                                className="block text-xs font-medium text-text-light dark:text-text-dark mb-1.5"
-                                htmlFor="on-duty-time"
-                              >On Duty Time</Label
-                              >
-                              <div className="relative">
-
-                                <TimePicker
-                                  value={schedule.on_duty_time}
-                                  onChange={(val) => handleChange("on_duty_time", val)}
-                                />
-
-
-                              </div>
-                            </div>
-                            <div>
-                              <Label
-                                className="block text-xs font-medium text-text-light dark:text-text-dark mb-1.5"
-                                htmlFor="off-duty-time"
-                              >Off Duty Time</Label
-                              >
-                              <div className="relative">
-                                <TimePicker
-                                  value={schedule.off_duty_time}
-                                  onChange={(val) => handleChange("off_duty_time", val)}
-                                />
-                              </div>
-                            </div>
-                            <div>
-                              <Label
-                                className="block text-xs font-medium text-text-light dark:text-text-dark mb-1.5"
-                                htmlFor="min-working-hrs"
-                              >Min working hrs</Label
-                              >
-                              <div className="relative">
-                                <TimePicker
-                                  value={schedule.working_hours}
-                                  onChange={(val) => handleChange("working_hours", val)}
-                                />
-                              </div>
-                            </div>
-                            <div>
-                              <Label
-                                className="block text-xs font-medium text-text-light dark:text-text-dark mb-1.5"
-                                htmlFor="ot-start"
-                              >OT start after</Label
-                              >
-                              <div className="relative">
-                                <TimePicker
-                                  value={schedule.overtime_interval}
-                                  onChange={(val) => handleChange("overtime_interval", val)}
-                                />
-                              </div>
-                            </div>
-                            <div>
-                              <Label
-                                className="block text-xs font-medium text-text-light dark:text-text-dark mb-1.5"
-                                htmlFor="beginning-in"
-                              >Beginning In</Label
-                              >
-                              <div className="relative">
-                                <TimePicker
-                                  value={schedule.beginning_in}
-                                  onChange={(val) => handleChange("beginning_in", val)}
-                                />
-                              </div>
-                            </div>
-                            <div>
-                              <Label
-                                className="block text-xs font-medium text-text-light dark:text-text-dark mb-1.5"
-                                htmlFor="beginning-out"
-                              >Beginning Out</Label
-                              >
-                              <div className="relative">
-                                <TimePicker
-                                  value={schedule.beginning_out}
-                                  onChange={(val) => handleChange("beginning_out", val)}
-                                />
-                              </div>
-                            </div>
-                            <div>
-                              <Label
-                                className="block text-xs font-medium text-text-light dark:text-text-dark mb-1.5"
-                                htmlFor="ending-in"
-                              >Ending In</Label
-                              >
-                              <div className="relative">
-                                <TimePicker
-                                  value={schedule.ending_in}
-                                  onChange={(val) => handleChange("ending_in", val)}
-                                />
-                              </div>
-                            </div>
-                            <div>
-                              <Label
-                                className="block text-xs font-medium text-text-light dark:text-text-dark mb-1.5"
-                                htmlFor="ending-out"
-                              >Ending Out</Label
-                              >
-                              <div className="relative">
-                                <TimePicker
-                                  value={schedule.ending_out}
-                                  onChange={(val) => handleChange("ending_out", val)}
-                                />
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      )
-                      : null
-                  }
-
-
-                  <div
-                    className="border-b border-border-light dark:border-border-dark pb-8"
-                  >
-                    <h3
-                      className="text-base font-semibold text-text-strong-light dark:text-text-strong-dark mb-4"
-                    >
-                      Half Day Configuration
-                    </h3>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-x-6 gap-y-4">
-                      <div className="md:col-span-1">
-                        <Label
-                          className="block text-xs font-medium text-text-light dark:text-text-dark mb-1.5"
-                          htmlFor="half-day-weekdays"
-                        >Half Day Setting</Label
-                        >
-
-                        <Select defaultValue="Not Applicable" onValueChange={(value) => handleChange("halfday", value)}>
-                          <SelectTrigger
-                            id="half-day-weekdays"
-                            className="w-full rounded-lg text-sm"
-                          >
-                            <SelectValue placeholder="Select day" />
-                          </SelectTrigger>
-
-                          <SelectContent>
-                            <SelectItem value="Not Applicable">Not Applicable</SelectItem>
-                            <SelectItem value="monday">Monday</SelectItem>
-                            <SelectItem value="tuesday">Tuesday</SelectItem>
-                            <SelectItem value="wednesday">Wednesday</SelectItem>
-                            <SelectItem value="thursday">Thursday</SelectItem>
-                            <SelectItem value="friday">Friday</SelectItem>
-                            <SelectItem value="saturday">Saturday</SelectItem>
-                            <SelectItem value="sunday">Sunday</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-                      <div className="md:col-span-2 grid grid-cols-2 gap-6">
-                        <div>
-                          <Label
-                            className="block text-xs font-medium text-text-light dark:text-text-dark mb-1.5"
-                            htmlFor="half-day-in-time"
-                          >In Time</Label
-                          >
-                          <div className="relative">
-                            <TimePicker
-                              value={schedule.halfday_in_time}
-                              onChange={(val) => handleChange("halfday_in_time", val)}
-                            />
-                          </div>
-                        </div>
-                        <div>
-                          <Label
-                            className="block text-xs font-medium text-text-light dark:text-text-dark mb-1.5"
-                            htmlFor="half-day-out-time"
-                          >Out Time</Label
-                          >
-                          <div className="relative">
-                            <TimePicker
-                              value={schedule.halfday_out_time}
-                              onChange={(val) => handleChange("halfday_out_time", val)}
-                            />
-                          </div>
-                        </div>
                       </div>
                     </div>
-                  </div>
-                  <div
-                    className="border-b border-border-light dark:border-border-dark pb-8"
-                  >
-                    <h3
-                      className="text-base font-semibold text-text-strong-light dark:text-text-strong-dark mb-4"
-                    >
-                      Working Days Status
-                    </h3>
-                    <div className="">
-                      <DaysSelector schedule={schedule} setSchedule={setSchedule} />
-                    </div>
-                  </div>
-                  <div
-                    className="border-b border-border-light dark:border-border-dark pb-8"
-                  >
-                    <h3
-                      className="text-base font-semibold text-text-strong-light dark:text-text-strong-dark mb-4"
-                    >
-                      Grace Period &amp; Overtime
-                    </h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <div>
-                        <Label
-                          className="block text-xs font-medium text-text-light dark:text-text-dark mb-1.5"
-                          htmlFor="grace-period-cin"
-                        >Grace Period for Check-in (CIN)</Label
-                        >
-                        <div className="relative">
-                          <Input
-                            className="w-full rounded-lg border-border-light dark:border-border-dark bg-background-light dark:bg-gray-800/50 text-text-strong-light dark:text-text-strong-dark focus:ring-2 focus:ring-[var(--primary)] focus:border-[var(--primary)] pr-16 text-sm transition-all"
-                            id="grace-period-cin"
-                            type="number"
-                            value={schedule.late_time}
-                            onChange={(e) => handleChange("late_time", e.target.value)} // ✅ fixed
-                          />
-                          <span
-                            className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-sm text-text-light dark:text-text-dark"
-                          >minutes</span>
-                        </div>
-                      </div>
-                      <div>
-                        <Label
-                          className="block text-xs font-medium text-text-light dark:text-text-dark mb-1.5"
-                          htmlFor="grace-period-cout"
-                        >Grace Period for Check-out (COUT)</Label
-                        >
-                        <div className="relative">
-                          <Input
-                            className="w-full rounded-lg border-border-light dark:border-border-dark bg-background-light dark:bg-gray-800/50 text-text-strong-light dark:text-text-strong-dark focus:ring-2 focus:ring-[var(--primary)] focus:border-[var(--primary)] pr-16 text-sm transition-all"
-                            id="grace-period-cout"
-                            type="number"
-                            value={schedule.early_time}
-                            onChange={(e) => handleChange("early_time", e.target.value)}
-                          />
-                          <span
-                            className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-sm text-text-light dark:text-text-dark"
-                          >minutes</span
-                          >
-                        </div>
-                      </div>
-                      <div className="md:col-span-2 space-y-4">
-                        {/* <div>
+                    <div className="md:col-span-2 space-y-4">
+                      {/* <div>
                                             <Label
                                                 className="block text-xs font-medium text-text-light dark:text-text-dark mb-1.5"
                                                 htmlFor="overtime-threshold"
@@ -618,117 +618,117 @@ export default function Home() {
                                                 >
                                             </div>
                                         </div> */}
-                        <div>
-                          <Label
-                            className="block text-xs font-medium text-text-light dark:text-text-dark mb-1.5"
-                          >Apply Overtime to</Label
-                          >
-                          <div className="flex items-center space-x-6">
-                            <div className="flex items-center mt-5">
-                              <RadioGroup
-                                value={schedule.overtime_type} // 👈 controlled value
-                                onValueChange={(value) => handleChange("overtime_type", value)} // 👈 gets selected option
-                                className="flex flex-row items-center gap-6"
-                              >
-                                <div className="flex items-center space-x-2">
-                                  <RadioGroupItem value="None" id="None" />
-                                  <Label htmlFor="None">None</Label>
-                                </div>
+                      <div>
+                        <Label
+                          className="block text-xs font-medium text-text-light dark:text-text-dark mb-1.5"
+                        >Apply Overtime to</Label
+                        >
+                        <div className="flex items-center space-x-6">
+                          <div className="flex items-center mt-5">
+                            <RadioGroup
+                              value={schedule.overtime_type} // 👈 controlled value
+                              onValueChange={(value) => handleChange("overtime_type", value)} // 👈 gets selected option
+                              className="flex flex-row items-center gap-6"
+                            >
+                              <div className="flex items-center space-x-2">
+                                <RadioGroupItem value="None" id="None" />
+                                <Label htmlFor="None">None</Label>
+                              </div>
 
-                                <div className="flex items-center space-x-2">
-                                  <RadioGroupItem value="Both" id="Both" />
-                                  <Label htmlFor="Both">Both</Label>
-                                </div>
+                              <div className="flex items-center space-x-2">
+                                <RadioGroupItem value="Both" id="Both" />
+                                <Label htmlFor="Both">Both</Label>
+                              </div>
 
-                                <div className="flex items-center space-x-2">
-                                  <RadioGroupItem value="Before Duty" id="BeforeDuty" />
-                                  <Label htmlFor="BeforeDuty">Before Duty</Label>
-                                </div>
+                              <div className="flex items-center space-x-2">
+                                <RadioGroupItem value="Before Duty" id="BeforeDuty" />
+                                <Label htmlFor="BeforeDuty">Before Duty</Label>
+                              </div>
 
-                                <div className="flex items-center space-x-2">
-                                  <RadioGroupItem value="After Duty" id="AfterDuty" />
-                                  <Label htmlFor="AfterDuty">After Duty</Label>
-                                </div>
-                              </RadioGroup>
-                            </div>
+                              <div className="flex items-center space-x-2">
+                                <RadioGroupItem value="After Duty" id="AfterDuty" />
+                                <Label htmlFor="AfterDuty">After Duty</Label>
+                              </div>
+                            </RadioGroup>
                           </div>
                         </div>
                       </div>
                     </div>
                   </div>
-                  <div className="">
-                    <h3
-                      className="text-base font-semibold text-text-strong-light dark:text-text-strong-dark mb-4"
-                    >
-                      Conditional Rules
-                    </h3>
-                    <div className="space-y-4">
-                      <div className="flex items-center justify-between gap-4">
-                        <Label
-                          className="flex-grow text-sm text-text-strong-light dark:text-text-strong-dark whitespace-nowrap"
-                          htmlFor="absent-for-in-threshold"
-                        >Mark as Absent for In after</Label
-                        >
-                        <div className="relative w-48">
-                          <TimePicker
-                            value={schedule.absent_min_in}
-                            onChange={(val) => handleChange("absent_min_in", val)}
-                          />
-                        </div>
-                        <div className="relative">
-                          <Switch id="late-exceeds-absent" />
-                        </div>
+                </div>
+                <div className="">
+                  <h3
+                    className="text-base font-semibold text-text-strong-light dark:text-text-strong-dark mb-4"
+                  >
+                    Conditional Rules
+                  </h3>
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between gap-4">
+                      <Label
+                        className="flex-grow text-sm text-text-strong-light dark:text-text-strong-dark whitespace-nowrap"
+                        htmlFor="absent-for-in-threshold"
+                      >Mark as Absent for In after</Label
+                      >
+                      <div className="relative w-48">
+                        <TimePicker
+                          value={schedule.absent_min_in}
+                          onChange={(val) => handleChange("absent_min_in", val)}
+                        />
                       </div>
-                      <div className="flex items-center justify-between gap-4">
-                        <Label
-                          className="flex-grow text-sm text-text-strong-light dark:text-text-strong-dark whitespace-nowrap"
-                          htmlFor="absent-for-out-threshold"
-                        >Mark as Absent for Out before</Label
-                        >
-                        <div className="relative w-48">
-                          <TimePicker
-                            value={schedule.absent_min_out}
-                            onChange={(val) => handleChange("absent_min_out", val)}
-                          />
-                        </div>
-                        <div className="relative">
-                          <Switch id="early-exceeds-absent" />
-                        </div>
+                      <div className="relative">
+                        <Switch id="late-exceeds-absent" />
+                      </div>
+                    </div>
+                    <div className="flex items-center justify-between gap-4">
+                      <Label
+                        className="flex-grow text-sm text-text-strong-light dark:text-text-strong-dark whitespace-nowrap"
+                        htmlFor="absent-for-out-threshold"
+                      >Mark as Absent for Out before</Label
+                      >
+                      <div className="relative w-48">
+                        <TimePicker
+                          value={schedule.absent_min_out}
+                          onChange={(val) => handleChange("absent_min_out", val)}
+                        />
+                      </div>
+                      <div className="relative">
+                        <Switch id="early-exceeds-absent" />
                       </div>
                     </div>
                   </div>
                 </div>
-
-                {globalError && (
-                  <div className="p-3 mt-5 border border-red-500 bg-red-50 text-red-700 rounded-lg" role="alert">
-                    {globalError}
-                  </div>
-                )}
-
-                <div className="mt-5 flex justify-end space-x-4">
-                  <Button
-                    type="button"
-                    variant="secondary"
-                    onClick={handleCancel}
-                  >
-                    CANCEL
-                  </Button>
-                  <Button
-                    type="submit"
-                    className="bg-primary hover:bg-indigo-700"
-                    disabled={isSubmitting}
-                    onClick={onSubmit}
-                  >
-                    {isSubmitting ? "SUBMITTING..." : "SUBMIT"}
-                  </Button>
-                </div>
               </div>
-              <SuccessDialog
-                open={open}
-                onOpenChange={setOpen}
-                title="Shift Saved"
-                description="Your Shift information has been inserted successfully."
-              />
+
+              {globalError && (
+                <div className="p-3 mt-5 border border-red-500 bg-red-50 text-red-700 rounded-lg" role="alert">
+                  {globalError}
+                </div>
+              )}
+
+              <div className="mt-5 flex justify-end space-x-4">
+                <Button
+                  type="button"
+                  variant="secondary"
+                  onClick={handleCancel}
+                >
+                  CANCEL
+                </Button>
+                <Button
+                  type="submit"
+                  className="bg-primary hover:bg-indigo-700"
+                  disabled={isSubmitting}
+                  onClick={onSubmit}
+                >
+                  {isSubmitting ? "SUBMITTING..." : "SUBMIT"}
+                </Button>
+              </div>
+            </div>
+            <SuccessDialog
+              open={open}
+              onOpenChange={setOpen}
+              title="Shift Saved"
+              description="Your Shift information has been inserted successfully."
+            />
           </div>
         </div>
 
