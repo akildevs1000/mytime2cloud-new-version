@@ -63,6 +63,10 @@ export default function AttendanceTable() {
         fetchDevices();
     }, [selectedBranch]);
 
+    useEffect(() => {
+        fetchRecords();
+    }, [currentPage, perPage]);
+
     const fetchRecords = async () => {
         try {
             setIsLoading(true);
