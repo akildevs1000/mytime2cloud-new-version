@@ -14,7 +14,7 @@ import DateRangeSelect from "@/components/ui/DateRange";
 import Pagination from '@/lib/Pagination';
 import { EmployeeExtras } from '@/components/Employees/Extras';
 import DataTable from '@/components/ui/DataTable';
-import Columns from "./columns"; // 👈 import here
+import Columns from "./columns";
 
 
 

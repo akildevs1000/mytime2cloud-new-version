@@ -76,8 +76,6 @@ export default function EmployeeDataTable() {
                     Device Logs
                 </h1>
                 <div className="flex flex-wrap items-center space-x-3 space-y-2 sm:space-y-0">
-
-                    {/* Branch Filter Dropdown */}
                     <div className="relative">
                         {selectedBranch}
                         <BranchSelect

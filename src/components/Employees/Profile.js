@@ -336,7 +336,6 @@ const Profile = ({ payload }) => {
                 </h2>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                  {/* Branch Dropdown (using Popover/Command for combobox) */}
                   <FormField
                     control={form.control}
                     name="branch_id"
