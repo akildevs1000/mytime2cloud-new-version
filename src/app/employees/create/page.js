@@ -560,9 +560,10 @@ const EmployeeProfileForm = () => {
                                 <SuccessDialog
                                     open={open}
                                     onOpenChange={setOpen}
-                                    title="Profile Saved"
-                                    description="Your profile information has been inserted successfully."
+                                    title="Employees Uploaded"
+                                    description="All selected employees were uploaded to the selected devices successfully."
                                 />
+
                             </div>
                         </div>
                     </div>

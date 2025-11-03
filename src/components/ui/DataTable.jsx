@@ -12,10 +12,11 @@ export default function DataTable({
   pagination = null,
 }) {
   return (
-    <div className="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-200">
-      <div className="overflow-x-auto">
+    <div className="bg-white rounded-xl shadow-lg border border-gray-200 min-h-[800px] max-h-[400px] flex flex-col">
+      {/* Table wrapper */}
+      <div className="overflow-x-auto overflow-y-auto flex-1">
         <table className="w-full text-left table-auto">
-          <thead className="bg-gray-50 border-b border-gray-200">
+          <thead className="bg-gray-50 border-b border-gray-200 sticky top-0 z-10">
             <tr>
               {columns.map((col) => (
                 <th
@@ -31,14 +32,20 @@ export default function DataTable({
           <tbody>
             {isLoading ? (
               <tr>
-                <td colSpan={columns.length} className="p-12 text-center text-primary font-medium">
+                <td
+                  colSpan={columns.length}
+                  className="p-12 text-center text-primary font-medium"
+                >
                   <Loader2 className="w-8 h-8 mx-auto mb-2 animate-spin" />
                   Loading data...
                 </td>
               </tr>
             ) : error ? (
               <tr>
-                <td colSpan={columns.length} className="p-12 text-center text-red-600 font-medium bg-red-50">
+                <td
+                  colSpan={columns.length}
+                  className="p-12 text-center text-red-600 font-medium bg-red-50"
+                >
                   <p>Error: {error}</p>
                   <p className="mt-2 text-sm text-red-500">
                     Please check the console or refresh the page.
@@ -47,7 +54,10 @@ export default function DataTable({
               </tr>
             ) : data.length === 0 ? (
               <tr>
-                <td colSpan={columns.length} className="p-12 text-center text-gray-500 font-medium">
+                <td
+                  colSpan={columns.length}
+                  className="p-12 text-center text-gray-500 font-medium"
+                >
                   {emptyMessage}
                 </td>
               </tr>
@@ -59,7 +69,10 @@ export default function DataTable({
                   onClick={() => onRowClick(item)}
                 >
                   {columns.map((col) => (
-                    <td key={col.key} className="p-4 whitespace-nowrap text-gray-800">
+                    <td
+                      key={col.key}
+                      className="p-4 whitespace-nowrap text-gray-800"
+                    >
                       {col.render ? col.render(item) : item[col.key] || "—"}
                     </td>
                   ))}
@@ -70,8 +83,12 @@ export default function DataTable({
         </table>
       </div>
 
-      {/* Pagination Slot */}
-      {pagination}
+      {/* Pagination sticky at bottom */}
+      {pagination && (
+        <div className="">
+          {pagination}
+        </div>
+      )}
     </div>
   );
 }

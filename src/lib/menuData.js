@@ -9,12 +9,10 @@ export const leftNavLinks = {
   '/employees': [ // Corresponds to the EMPLOYEES top link
     { href: "/employees", icon: "people", label: "Employee List" },
     { href: "/employees/add", icon: "person_add", label: "Add Employee" },
+    { href: "/employees/employee_photo_upload", icon: "apartment", label: "Employee Upload" },
     { href: "/employees/departments", icon: "apartment", label: "Departments" },
     // Add other employee-related links
   ],
-
-
-
 
 
   '/attendance': [
@@ -23,6 +21,7 @@ export const leftNavLinks = {
     { href: "attendance", icon: "event_note", label: "Leave Requests" },
 
     { href: "logs", icon: "history", label: "Device Logs" },
+    { href: "access_control_logs", icon: "lock", label: "Access Control Logs" },
     
   ],
   '/shift': [

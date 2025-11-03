@@ -78,6 +78,20 @@ export const getDeviceLogs = async (params = {}) => {
     return data;
 };
 
+export const getAccessControlReport = async (params = {}) => {
+    const user = await getUser();
+
+    const { data } = await axios.get(`${API_BASE}/access_control_report`, {
+        params: {
+            ...params,
+            company_id: user?.company_id || 0,
+        },
+    });
+    return data;
+};
+
+
+
 export const getEmployees = async (params = {}) => {
     const user = await getUser();
 
@@ -181,6 +195,12 @@ export const getTodayLogsCount = async (branch_id = null, department_id = null) 
 export const storeEmployee = async (payload) => {
     const user = await getUser();
     await axios.post(`${API_BASE}/employee-store-new`, { ...payload, company_id: user?.company_id || 0 });
+    return true;
+};
+
+export const postAddPerson = async (payload) => {
+    const user = await getUser();
+    await axios.post(`${API_BASE}/SDK/AddPerson`, { ...payload, company_id: user?.company_id || 0 });
     return true;
 };
 
@@ -381,6 +401,17 @@ export const getDeviceList = async (branch_id = 0) => {
     const { data } = await axios.get(`${API_BASE}/device-list`, {
         params: {
             branch_id: branch_id,
+            company_id: user?.company_id || 0,
+        },
+    });
+    return data;
+};
+
+export const getDevices = async (params = {}) => {
+    const user = await getUser();
+    const { data } = await axios.get(`${API_BASE}/device`, {
+        params: {
+            ...params,
             company_id: user?.company_id || 0,
         },
     });
