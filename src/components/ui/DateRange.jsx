@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/popover";
 import { useState } from "react";
 
-export default function DateRangeSelect({ className }) {
+export default function DateRangeSelect({ className,onChange = () => {} }) {
   // 1. Main state for the selected range (displayed in the button)
   const [date, setDate] = useState({
     from: new Date(new Date().getFullYear(), new Date().getMonth(), 1), // First day of current month
@@ -42,6 +42,8 @@ export default function DateRangeSelect({ className }) {
   const handleApply = () => {
     setDate(draftDate); // Commit the draft selection to the main state
     setOpen(false); // Close the popover
+
+    onChange(draftDate); // Notify parent component of the new date range
   };
 
   const handleCancel = () => {

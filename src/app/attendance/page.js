@@ -2,9 +2,8 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { RefreshCw } from 'lucide-react';
-import { useRouter } from 'next/navigation';
 
-import { getDeviceLogs, getStatuses, parseApiError } from '@/lib/api';
+import { getBranches, getDepartments, getDeviceLogs, getScheduledEmployeeList, getStatuses, parseApiError } from '@/lib/api';
 import BranchSelect from '@/components/ui/BranchSelect';
 
 import DepartmentSelect from '@/components/ui/DepartmentSelect';
@@ -15,10 +14,31 @@ import Pagination from '@/lib/Pagination';
 import { EmployeeExtras } from '@/components/Employees/Extras';
 import DataTable from '@/components/ui/DataTable';
 import Columns from "./columns";
+import MultiDropDown from '@/components/ui/MultiDropDown';
 
 
 
 export default function AttendanceTable() {
+
+    // filters
+    const [shiftTypeId, setShiftTypeId] = useState(2);
+    const [selectedStatusIds, setSelectedStatusIds] = useState([]);
+    const [selectedBranch, setSelectedBranch] = useState(null);
+    const [selectedDepartmentId, setSelectedDepartment] = useState(null);
+    const [selectedEmployeeIds, setSelectedEmployeeIds] = useState([]);
+    const [selectedReportTemplate, setSelectedReportTemplate] = useState(null);
+
+
+    const [reportTemplates, setReportTemplates] = useState([
+        { id: `Template1`, name: `Monthly Report Format A` },
+        { id: `Template2`, name: `Monthly Report Format B` },
+        { id: `Template3`, name: `Daily` },
+    ]);
+
+    const [from, setFrom] = useState(null);
+    const [to, setTo] = useState(null);
+
+
 
     const [employees, setAttendance] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
@@ -29,14 +49,7 @@ export default function AttendanceTable() {
     const [perPage, setPerPage] = useState(25);
     const [total, setTotalAttendance] = useState(0);
 
-    const [selectedBranch, setSelectedBranch] = useState(null);
-    const [selectedDepartmentId, setSelectedDepartment] = useState(null);
-    const [employeeIds, setEmployeeIds] = useState([]);
 
-    const [from, setFrom] = useState(null);
-    const [to, setTo] = useState(null);
-
-    const [statusses, setStatusses] = useState([]);
 
     const fetchRecords = useCallback(async (page, perPage) => {
         setIsLoading(true);
@@ -49,7 +62,7 @@ export default function AttendanceTable() {
                 sortDesc: 'false',
                 branch_id: selectedBranch,
                 department_id: selectedDepartmentId,
-                employee_ids: employeeIds,
+                employee_ids: selectedEmployeeIds,
             };
             const result = await getDeviceLogs(params);
 
@@ -71,31 +84,72 @@ export default function AttendanceTable() {
         }
     }, [perPage]);
 
-    const router = useRouter();
+    const [statusses, setStatusses] = useState([]);
+    const [branches, setBranches] = useState([]);
+    const [departments, setDepartments] = useState([]);
+    const [scheduledEmployees, setScheduledEmployees] = useState([]);
+
+
 
 
     const fetchStatuses = async () => {
         try {
-            setIsLoading(true);
-            let result = await getStatuses();
-            console.log(result);
-            setStatusses(result);
-            setIsLoading(false);
+            setStatusses(await getStatuses());
         } catch (error) {
             setError(parseApiError(error));
-            setIsLoading(false);
+        }
+    };
+
+    const fetchBranches = async () => {
+        try {
+            setBranches(await getBranches());
+        } catch (error) {
+            setError(parseApiError(error));
+        }
+    };
+
+    const fetchDepartments = async () => {
+        try {
+            setDepartments(await getDepartments(selectedBranch));
+        } catch (error) {
+            setError(parseApiError(error));
+        }
+    };
+
+    const fetchScheduledEmployees = async () => {
+        try {
+            let result = await getScheduledEmployeeList(selectedBranch, [selectedDepartmentId]);
+
+            setScheduledEmployees(result.map((e) => ({ ...e, name: e.full_name, id: e.system_user_id })));
+        } catch (error) {
+            setError(parseApiError(error));
         }
     };
 
     useEffect(() => {
         fetchStatuses();
+        fetchBranches();
     }, []);
+
+
+    useEffect(() => {
+        fetchDepartments();
+    }, [selectedBranch]);
+
+    useEffect(() => {
+        fetchScheduledEmployees();
+    }, [selectedDepartmentId]);
+
 
     useEffect(() => {
         fetchRecords(currentPage, perPage);
     }, [currentPage, perPage, fetchRecords]); // Re-fetch when page or perPage changes
 
-    const handleRefresh = () => {
+    const handleSubmit = () => {
+
+        console.log(selectedStatusIds, selectedBranch, selectedDepartmentId, selectedEmployeeIds, selectedReportTemplate, from, to);
+
+        return;
         fetchRecords(currentPage, perPage);
     }
 
@@ -108,62 +162,64 @@ export default function AttendanceTable() {
                 </h1>
 
                 <div className="flex flex-col">
-                    <DropDown
-                        placeholder={'Select Report Template'}
+                    <MultiDropDown
+                        placeholder={'Select Status'}
                         items={statusses}
-                    />
-                </div>
-
-
-                <div className="flex flex-col">
-                    <BranchSelect
-                        selectedBranchId={selectedBranch}
-                        onSelect={(id) => { setSelectedBranch(id); }}
+                        value={selectedStatusIds}
+                        onChange={setSelectedStatusIds}
+                        badgesCount={1}
                     />
                 </div>
 
                 <div className="flex flex-col">
-                    <DepartmentSelect
-                        selectedBranchId={selectedBranch}
+                    <DropDown
+                        placeholder={'Select Branch'}
+                        onChange={setSelectedBranch}
+                        value={selectedBranch}
+                        items={branches}
+                    />
+                </div>
+
+                <div className="flex flex-col">
+                    <DropDown
+                        placeholder={'Select Department'}
+                        onChange={setSelectedDepartment}
                         value={selectedDepartmentId}
-                        onChange={(device_id) => { setSelectedDepartment(device_id); }}
+                        items={departments}
                     />
                 </div>
 
                 <div className="flex flex-col">
-                    <EmployeeMultiSelect
-                        selectedBranchId={selectedBranch}
-                        selectedDepartmentId={selectedDepartmentId}
-                        value={employeeIds}
-                        onChange={(ids) => { setEmployeeIds(ids); }}
+                    <MultiDropDown
+                        placeholder={'Select Employees'}
+                        items={scheduledEmployees}
+                        value={selectedEmployeeIds}
+                        onChange={setSelectedEmployeeIds}
+                        badgesCount={1}
                     />
                 </div>
 
                 <div className="flex flex-col">
                     <DropDown
                         placeholder={'Select Report Template'}
-                        items={
-                            [
-                                { id: `Monthly Report Format A`, name: `Monthly Report Format A` },
-                                { id: `Monthly Report Format B`, name: `Monthly Report Format B` },
-                                { id: `Daily`, name: `Daily` },
-                            ]}
+                        onChange={setSelectedReportTemplate}
+                        value={selectedReportTemplate}
+                        items={reportTemplates}
                     />
                 </div>
 
                 <div className="flex flex-col">
                     <DateRangeSelect
                         value={{ from, to }}
-                        onRangeChange={({ from, to }) => {
+                        onChange={({ from, to }) => {
                             setFrom(from);
                             setTo(to);
                         }
-
                         } />
                 </div>
 
                 {/* Refresh Button */}
-                <button onClick={handleRefresh} className="bg-primary text-white px-4 py-1 rounded-lg font-semibold shadow-md hover:bg-indigo-700 transition-all flex items-center space-x-2 whitespace-nowrap">
+                <button onClick={handleSubmit} className="bg-primary text-white px-4 py-1 rounded-lg font-semibold shadow-md hover:bg-indigo-700 transition-all flex items-center space-x-2 whitespace-nowrap">
                     <RefreshCw className={`w-4 h-4 mr-1 ${isLoading ? 'animate-spin' : ''}`} /> Submit
                 </button>
 

@@ -361,6 +361,20 @@ export const getEmployeeList = async (branch_id = 0, department_id = 0) => {
     return data;
 };
 
+export const getScheduledEmployeeList = async (branch_id = null, department_ids = [], shift_type_id = 2) => {
+    const user = await getUser();
+    const { data } = await axios.get(`${API_BASE}/scheduled_employees_with_type`, {
+        params: {
+            per_page: 1000,
+            branch_id: branch_id,
+            department_ids: department_ids,
+            company_id: user?.company_id || 0,
+            shift_type_id: shift_type_id
+        },
+    });
+    return data;
+};
+
 // companyId will be passed dynamically
 export const getDeviceList = async (branch_id = 0) => {
     const user = await getUser();

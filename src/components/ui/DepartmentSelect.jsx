@@ -17,7 +17,7 @@ import {
 import { getDepartments } from "@/lib/api";
 
 export default function DepartmentSelect({
-  selectedBranchId,
+  selectedBranchId = null,
   value,
   onChange,
 }) {
