@@ -4,13 +4,11 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover';
-import { getCompanyInfo, parseApiError } from "@/lib/api";
 
 export default function Header() {
 
     const router = useRouter();
 
-    const [company, setCompany] = useState(null);
 
     useEffect(() => {
         const token = localStorage.getItem("token");
@@ -19,21 +17,6 @@ export default function Header() {
             router.push("/login");
             return;
         }
-    }, []);
-
-    useEffect(() => {
-
-        const fetchCompanyInfo = async () => {
-            try {
-                let res = await getCompanyInfo()
-                console.log("🚀 ~ fetchCompanyInfo ~ res:", res)
-            } catch (error) {
-                console.log(parseApiError(error));
-            }
-        }
-
-        fetchCompanyInfo();
-
     }, []);
 
     const pathname = usePathname();
@@ -100,7 +83,7 @@ export default function Header() {
                             <img
                                 alt="User profile"
                                 className="w-full h-full object-cover"
-                                src={company?.logo || 'default.png'}
+                                src={'default.png'}
                             />
                         </button>
                     </PopoverTrigger>

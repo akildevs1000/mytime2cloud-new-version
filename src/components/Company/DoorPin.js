@@ -10,15 +10,17 @@ import { Input } from "@/components/ui/input";
 
 import { User, ArrowLeft, Upload, Image, Briefcase, Badge, BaggageClaim, Building, Building2, Building2Icon, Info, Settings, DoorOpen } from "lucide-react";
 import { convertFileToBase64 } from "@/lib/utils";
-import { parseApiError, storeEmployee } from "@/lib/api";
+import { parseApiError, setPin, storeEmployee } from "@/lib/api";
 
-const CompanyPassword = () => {
+const CompanyPassword = ({ pin, isLoading }) => {
+
+  if (isLoading) {
+    return <p className="text-sm text-gray-500">Loading company info...</p>;
+  }
 
   // Simple local form state
   const [formData, setFormData] = useState({
-    current_password: "",
-    password: "",
-    password_confirmation: "",
+    pin: pin,
   });
 
   const [errors, setErrors] = useState({});
@@ -42,32 +44,17 @@ const CompanyPassword = () => {
     }));
   };
 
-  const validate = () => {
-    const newErrors = {};
-
-    if (!formData.code || formData.code.trim() === "") {
-      newErrors.code = "Company code is required.";
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
 
   const onSubmit = async (e) => {
     e.preventDefault();
 
     setGlobalError(null);
 
-    if (!validate()) return;
-
     setIsSubmitting(true);
 
     try {
-      const finalPayload = {
-        code: formData.code,
-      };
 
-      await storeEmployee(finalPayload);
+      await setPin(formData);
 
       setOpen(true);
 
@@ -75,7 +62,7 @@ const CompanyPassword = () => {
       await new Promise((resolve) => setTimeout(resolve, 2000));
 
       setOpen(false);
-      router.push(`/employees`);
+      
     } catch (error) {
       setGlobalError(parseApiError(error));
     } finally {
@@ -98,13 +85,13 @@ const CompanyPassword = () => {
                   Door Pin
                 </label>
                 <Input
-                  name="password"
-                  value={formData.current_password}
+                  name="pin"
+                  value={formData.pin}
                   onChange={handleChange}
                 />
               </div>
             </div>
-           
+
           </section>
 
           {globalError && (
@@ -130,8 +117,8 @@ const CompanyPassword = () => {
         <SuccessDialog
           open={open}
           onOpenChange={setOpen}
-          title="Password Change"
-          description="Password Change successfully."
+          title="Pin Change"
+          description="Pin Change successfully."
         />
       </div>
     </div>

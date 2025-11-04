@@ -13,7 +13,9 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { PlusCircle, Trash2, ExternalLink } from "lucide-react";
+import { PlusCircle, Trash2, ExternalLink, Lock, File } from "lucide-react";
+import { getCompanyDocuments, getCompanyId, uploadCompanyDocument } from "@/lib/api";
+import { SuccessDialog } from "../SuccessDialog";
 
 const CompanyDocument = ({ companyId = 43 }) => {
   const [documentsPopup, setDocumentsPopup] = useState(false);
@@ -37,10 +39,14 @@ const CompanyDocument = ({ companyId = 43 }) => {
   const getInfo = async () => {
     try {
       setLoading(true);
-      const { data } = await axios.get("/document", {
-        params: { company_id: companyId },
-      });
-      setDocumentList(data || []);
+
+      let result = await getCompanyDocuments() || [];
+
+      console.log(result);
+
+
+      setDocumentList(result);
+
     } catch (err) {
       console.error(err);
     } finally {
@@ -77,7 +83,7 @@ const CompanyDocument = ({ companyId = 43 }) => {
     );
   };
 
-  const handleFileChange = (index,file) => {
+  const handleFileChange = (index, file) => {
     setDocumentItems((prev) =>
       prev.map((item, i) =>
         i === index ? { ...item, file } : item
@@ -94,18 +100,24 @@ const CompanyDocument = ({ companyId = 43 }) => {
     const payload = new FormData();
 
     documentItems.forEach((item) => {
+      console.log(item);
       payload.append("items[][key]", item.title || "");
       payload.append("items[][value]", item.file || new Blob());
     });
 
-    payload.append("company_id", companyId);
+    let company_id = await getCompanyId();
+
+    console.log(company_id);
+
+    payload.append(`company_id`, company_id);
+
 
     try {
-      const { data } = await axios.post("/document", payload, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+
+      let data = await uploadCompanyDocument(payload);
+
+      console.log(data);
+
 
       if (!data.status) {
         // backend sends {status:false, errors:{...}}
@@ -151,20 +163,20 @@ const CompanyDocument = ({ companyId = 43 }) => {
 
   return (
     <div className="mt-4">
-      {/* Snackbar / toast-style message */}
-      {snackbarOpen && (
-        <div className="mb-3 flex justify-center">
-          <div
-            className="rounded-md bg-emerald-100 text-emerald-800 px-4 py-2 text-sm shadow"
-            onAnimationEnd={() => setSnackbarOpen(false)}
-          >
-            {response}
-          </div>
-        </div>
-      )}
+
+      <SuccessDialog
+        open={snackbarOpen}
+        onOpenChange={setSnackbarOpen}
+        title={response}
+        description={response}
+      />
 
       {/* Add Document button + table */}
-      <div className="flex justify-end mb-3">
+      <div className="flex justify-between mb-3">
+        <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-6 flex items-center">
+          <File className="mr-3 h-6 w-6 text-primary" />
+          Document Information
+        </h2>
         {can("document_create") && (
           <Button
             size="sm"
@@ -177,8 +189,8 @@ const CompanyDocument = ({ companyId = 43 }) => {
       </div>
 
       {can("document_view") && (
-        <div className="overflow-x-auto rounded-lg bg-white dark:bg-slate-900 shadow-sm">
-          <table className="min-w-full border-collapse text-sm">
+        <div className="overflow-hidden rounded-lg bg-white dark:bg-slate-900 shadow-sm">
+          <table className="min-w-full  border-collapse text-sm">
             <thead>
               <tr className="bg-slate-50 dark:bg-slate-800 text-left text-xs font-semibold uppercase tracking-wide text-slate-600 dark:text-slate-300">
                 <th className="border border-slate-200 dark:border-slate-700 px-3 py-2">
@@ -207,10 +219,7 @@ const CompanyDocument = ({ companyId = 43 }) => {
                       target="_blank"
                       rel="noopener noreferrer"
                     >
-                      <Button size="xs" className="bg-primary text-white">
-                        View
-                        <ExternalLink className="ml-1 h-3 w-3" />
-                      </Button>
+                      <ExternalLink className="ml-1 h-5 w-5" />
                     </a>
                   </td>
                   <td className="border border-slate-200 dark:border-slate-800 px-3 py-2">
@@ -302,12 +311,21 @@ const CompanyDocument = ({ companyId = 43 }) => {
                 </div>
 
                 {/* Add / Remove */}
-                <div className="md:col-span-2 flex items-center justify-center md:justify-start mt-1">
+                <div
+                  className="
+    md:col-span-2
+    flex
+    items-end
+    justify-end
+    mt-6
+  "
+                >
                   {documentItems.length - 1 === index ? (
                     <button
                       type="button"
                       onClick={addDocumentInfo}
                       className="inline-flex items-center text-primary hover:text-primary/80"
+                      aria-label="Add document row"
                     >
                       <PlusCircle className="h-6 w-6" />
                     </button>
@@ -316,6 +334,7 @@ const CompanyDocument = ({ companyId = 43 }) => {
                       type="button"
                       onClick={() => removeItem(index)}
                       className="inline-flex items-center text-red-600 hover:text-red-700"
+                      aria-label="Remove document row"
                     >
                       <Trash2 className="h-5 w-5" />
                     </button>

@@ -9,17 +9,20 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
 import { User, ArrowLeft, Upload, Image, Briefcase, Badge, BaggageClaim, Building, Building2, Building2Icon, Info, Settings, Contact } from "lucide-react";
-import { convertFileToBase64 } from "@/lib/utils";
-import { parseApiError, storeEmployee } from "@/lib/api";
+import { parseApiError, updateContact } from "@/lib/api";
 
-const CompanyContact = () => {
+const CompanyContact = ({ contact, isLoading }) => {
+
+  if (isLoading) {
+    return <p className="text-sm text-gray-500">Loading company info...</p>;
+  }
 
   // Simple local form state
   const [formData, setFormData] = useState({
-    name: "",
-    position: "",
-    number: "",
-    whatsapp: "",
+    name: contact?.name || "---",
+    position: contact?.position || "---",
+    number: contact?.number || "---",
+    whatsapp: contact?.whatsapp || "---",
   });
 
   const [errors, setErrors] = useState({});
@@ -44,13 +47,11 @@ const CompanyContact = () => {
   };
 
   const validate = () => {
+
     const newErrors = {};
 
-    if (!formData.code || formData.code.trim() === "") {
-      newErrors.code = "Company code is required.";
-    }
-
     setErrors(newErrors);
+
     return Object.keys(newErrors).length === 0;
   };
 
@@ -65,7 +66,7 @@ const CompanyContact = () => {
 
     try {
 
-      await storeEmployee(formData);
+      await updateContact(formData);
 
       setOpen(true);
 
@@ -73,7 +74,6 @@ const CompanyContact = () => {
       await new Promise((resolve) => setTimeout(resolve, 2000));
 
       setOpen(false);
-      router.push(`/employees`);
     } catch (error) {
       setGlobalError(parseApiError(error));
     } finally {
@@ -158,8 +158,8 @@ const CompanyContact = () => {
         <SuccessDialog
           open={open}
           onOpenChange={setOpen}
-          title="Employees Uploaded"
-          description="All selected employees were uploaded to the selected devices successfully."
+          title="Contact Uploaded"
+          description="Contact updated successfully."
         />
       </div>
     </div>

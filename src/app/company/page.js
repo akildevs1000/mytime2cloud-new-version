@@ -26,35 +26,72 @@ import Admin from "@/components/Company/Admin/Page";
 import AttendanceRating from "@/components/Company/AttendanceRating";
 import DoorPin from "@/components/Company/DoorPin";
 import ChangeLogo from "@/components/Company/ChangeLogo";
-import { getVisitorLink } from "@/lib/api";
+import { getCompanyInfo, getVisitorLink } from "@/lib/api";
 import VisitorAppLink from "@/components/Company/VisitorAppLink";
 
 
 const Company = () => {
-  const router = useRouter();
-  const [imagePreview, setImagePreview] = useState(null);
 
-  const { FileInput, handleUploadClick, imageError } = useImageUpload({
-    onChange: (base64) => {
-      setImagePreview(base64);
-    },
-  });
+  const [isLoading, setIsLoading] = useState(true);
+  const [profileData, setProfileData] = useState(null);
+  const [contactData, setContactData] = useState(null);
+  const [licenseData, setLicenseData] = useState(null);
+  const [pin, setPin] = useState(null);
+
+  useEffect(() => {
+
+    const fetchData = async () => {
+      try {
+        const { data } = await getCompanyInfo();
+
+        if (data.record) {
+
+          let result = data.record;
+
+          let profile = {
+            company_code: result.company_code,
+            name: result.name,
+            email: result.user?.email,
+            member_from: result.member_from,
+            expiry: result.expiry,
+            max_branches: result.max_branches,
+            max_employee: result.max_employee,
+            max_devices: result.max_devices,
+          };
+
+          setProfileData(profile);
+          setContactData(result.contact);
+          setLicenseData(result.trade_license);
+          setPin(result.pin);
+        }
+
+      } catch (error) {
+        console.error("Error fetching company info:", parseApiError(error));
+      }
+    };
+
+    fetchData().finally(() => setIsLoading(false));
+
+  }, []);
+
+
+  const router = useRouter();
 
   const tabs = [
     {
       label: "Info",
       value: "company",
-      component: <Profile />,
+      component: <Profile profile={profileData} isLoading={isLoading} />,
     },
     {
       label: "Contact",
       value: "contact",
-      component: <Contact />,
+      component: <Contact contact={contactData} isLoading={isLoading} />,
     },
     {
       label: "License",
       value: "license",
-      component: <License />,
+      component: <License license={licenseData} isLoading={isLoading} />,
     },
     {
       label: "Documents",
@@ -79,7 +116,7 @@ const Company = () => {
     {
       label: "Door Pin",
       value: "door_pin",
-      component: <DoorPin />,
+      component: <DoorPin pin={pin} isLoading={isLoading} />,
     },
   ];
 

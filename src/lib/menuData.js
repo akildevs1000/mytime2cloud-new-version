@@ -12,6 +12,7 @@ const attendanceMenu = [
 const companyMenu = [
   { href: "company", icon: "event", label: "Company" },
   { href: "device", icon: "event", label: "Device" },
+  { href: "department-tabs", icon: "event", label: "Department" },
 ];
 
 const employeesMenu = [

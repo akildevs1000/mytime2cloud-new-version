@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import { Plus } from 'lucide-react';
+import { Lock, Plus, User, User2Icon, UserCheck, UserLock } from 'lucide-react';
 
 import { getAdmins, parseApiError } from '@/lib/api';
 
@@ -21,7 +21,7 @@ export default function Admin() {
     const [perPage, setPerPage] = useState(25);
     const [total, setTotalAttendance] = useState(0);
 
-  
+
 
     const handleRowClick = async () => {
         console.log(`Row clicked`)
@@ -68,9 +68,10 @@ export default function Admin() {
             <div className="flex flex-wrap items-center justify-between mb-6">
                 {/* Left side: Title + Dropdown */}
                 <div className="flex flex-wrap items-center space-x-3 space-y-2 sm:space-y-0">
-                    <h1 className="text-2xl font-extrabold text-gray-900 flex items-center">
-                        Admins
-                    </h1>
+                    <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-6 flex items-center">
+                        <UserLock className="mr-3 h-6 w-6 text-primary" />
+                        Admin
+                    </h2>
                 </div>
 
                 {/* Right side: Refresh Button */}

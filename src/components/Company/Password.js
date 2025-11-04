@@ -8,9 +8,9 @@ import { SuccessDialog } from "@/components/SuccessDialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
-import { User, ArrowLeft, Upload, Image, Briefcase, Badge, BaggageClaim, Building, Building2, Building2Icon, Info, Settings } from "lucide-react";
+import { User, ArrowLeft, Upload, Image, Briefcase, Badge, BaggageClaim, Building, Building2, Building2Icon, Info, Settings, Lock } from "lucide-react";
 import { convertFileToBase64 } from "@/lib/utils";
-import { parseApiError, storeEmployee } from "@/lib/api";
+import { parseApiError, storeEmployee, updateContact, updatePassword } from "@/lib/api";
 
 const CompanyPassword = () => {
 
@@ -42,40 +42,17 @@ const CompanyPassword = () => {
     }));
   };
 
-  const validate = () => {
-    const newErrors = {};
-
-    if (!formData.code || formData.code.trim() === "") {
-      newErrors.code = "Company code is required.";
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
   const onSubmit = async (e) => {
     e.preventDefault();
-
     setGlobalError(null);
-
-    if (!validate()) return;
-
     setIsSubmitting(true);
 
     try {
-      const finalPayload = {
-        code: formData.code,
-      };
 
-      await storeEmployee(finalPayload);
-
+      await updatePassword(formData);
       setOpen(true);
-
-      // Just to briefly show the success dialog
       await new Promise((resolve) => setTimeout(resolve, 2000));
-
       setOpen(false);
-      router.push(`/employees`);
     } catch (error) {
       setGlobalError(parseApiError(error));
     } finally {
@@ -89,8 +66,8 @@ const CompanyPassword = () => {
         <form onSubmit={onSubmit} className="space-y-8">
           <section>
             <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-6 flex items-center">
-              <Building2Icon className="mr-3 h-6 w-6 text-primary" />
-              Profile Information
+              <Lock className="mr-3 h-6 w-6 text-primary" />
+              Password Information
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-1 gap-6">
               <div className="flex flex-col">
@@ -98,7 +75,7 @@ const CompanyPassword = () => {
                   Current Password
                 </label>
                 <Input
-                  name="password"
+                  name="current_password"
                   value={formData.current_password}
                   onChange={handleChange}
                 />

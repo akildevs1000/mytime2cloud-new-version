@@ -204,7 +204,7 @@ export const getTodayLogsCount = async (branch_id = null, department_id = null) 
 
 export const getLogoOnly = async () => {
     const user = await getUser();
-    const {data} =  await axios.get(`${API_BASE}/get-logo-only/${user?.company_id || 0}`);
+    const { data } = await axios.get(`${API_BASE}/get-logo-only/${user?.company_id || 0}`);
     return data;
 };
 
@@ -217,6 +217,31 @@ export const updateLogoOnly = async (payload) => {
 export const storeEmployee = async (payload) => {
     const user = await getUser();
     await axios.post(`${API_BASE}/employee-store-new`, { ...payload, company_id: user?.company_id || 0 });
+    return true;
+};
+
+export const setPin = async (payload) => {
+    const user = await getUser();
+    await axios.post(`${API_BASE}/set-pin`, { ...payload, company_id: user?.company_id || 0 });
+    return true;
+};
+
+
+export const updateContact = async (payload) => {
+    const user = await getUser();
+    await axios.post(`${API_BASE}/company/${user?.company_id}/update/contact`, payload);
+    return true;
+};
+
+export const updatePassword = async (payload) => {
+    const user = await getUser();
+    await axios.post(`${API_BASE}/company/${user?.company_id}/update/user`, payload);
+    return true;
+};
+
+export const updateLicense = async (payload) => {
+    const user = await getUser();
+    await axios.post(`${API_BASE}/company/${user?.company_id}/trade-license`, payload);
     return true;
 };
 
@@ -373,8 +398,6 @@ export const updateQualification = async (payload) => {
 
     const user = await getUser();
 
-    console.log("Storing employee with payload:", payload, user?.company_id || 0);
-
     await axios.post(`${API_BASE}/employee-update-qualification-new`, { ...payload, company_id: user?.company_id || 0 });
 
     return true;
@@ -389,6 +412,26 @@ export const uploadEmployee = async (payload) => {
     return data;
 };
 
+export const uploadCompanyDocument = async (payload) => {
+
+    let { data } = await axios.post(`${API_BASE}/document`, payload, {
+        headers: { "Content-Type": "multipart/form-data" },
+    });
+
+    return data;
+};
+
+
+// companyId will be passed dynamically
+export const getCompanyDocuments = async () => {
+    const user = await getUser();
+    const { data } = await axios.get(`${API_BASE}/document`, {
+        params: {
+            company_id: user?.company_id || 0,
+        },
+    });
+    return data;
+};
 
 // companyId will be passed dynamically
 export const getEmployeeList = async (branch_id = 0, department_id = 0) => {
@@ -412,6 +455,39 @@ export const getScheduledEmployeeList = async (branch_id = null, department_ids 
             department_ids: department_ids,
             company_id: user?.company_id || 0,
             shift_type_id: shift_type_id
+        },
+    });
+    return data;
+};
+
+export const getDesinations = async (params = {}) => {
+    const user = await getUser();
+    const { data } = await axios.get(`${API_BASE}/designation`, {
+        params: {
+            ...params,
+            company_id: user?.company_id || 0,
+        },
+    });
+    return data;
+};
+
+export const getSubDepartments = async (params = {}) => {
+    const user = await getUser();
+    const { data } = await axios.get(`${API_BASE}/sub-departments`, {
+        params: {
+            ...params,
+            company_id: user?.company_id || 0,
+        },
+    });
+    return data;
+};
+
+export const getSepartmentsForTable = async (params = {}) => {
+    const user = await getUser();
+    const { data } = await axios.get(`${API_BASE}/departments`, {
+        params: {
+            ...params,
+            company_id: user?.company_id || 0,
         },
     });
     return data;
@@ -510,10 +586,10 @@ export const getAttendanceReports = async (payload = {}) => {
     return data;
 };
 
-export const getCompanyInfo = async (params = {}) => {
+export const getCompanyInfo = async () => {
     const user = await getUser();
 
-    const { data } = await axios.get(`${API_BASE}/company-short-info/${user?.company_id || 0}`);
+    const data = await axios.get(`${API_BASE}/company/${user?.company_id || 0}`);
 
     return data;
 };

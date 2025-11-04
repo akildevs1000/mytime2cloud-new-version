@@ -14,47 +14,15 @@ import { parseApiError, getCompanyInfo } from "@/lib/api";
 import { set } from "date-fns";
 import { ca } from "date-fns/locale";
 
-const CompanyContact = () => {
+const CompanyProfile = ({ profile, isLoading }) => {
 
-    const [isLoading, setIsLoading] = useState(true);
+    if (isLoading) {
+        return <p className="text-sm text-gray-500">Loading company info...</p>;
+    }
 
-    // Simple local form state
-    const [formData, setFormData] = useState({
-        company_code: "",
-        name: "",
-        email: "", // from user object
-        member_from: "",
-        expiry: "",
-        max_branches: "",
-        max_employee: "",
-        max_devices: "",
-    });
-
-    useEffect(() => {
-
-        const fetchData = async () => {
-            try {
-                const data = await getCompanyInfo();
-                console.log(data);
-                // Fetch initial data or perform any setup
-                setFormData({
-                    company_code: data.company_code,
-                    name: data.name,
-                    email: data.user?.email,
-                    member_from: data.member_from,
-                    expiry: data.expiry,
-                    max_branches: data.max_branches,
-                    max_employee: data.max_employee,
-                    max_devices: data.max_devices,
-                });
-            } catch (error) {
-                console.error("Error fetching company info:", parseApiError(error));
-            }
-        };
-
-        fetchData().finally(() => setIsLoading(false));
-
-    }, []);
+    if (!profile) {
+        return <p className="text-sm text-gray-500">No company data available.</p>;
+    }
 
     return (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -73,7 +41,7 @@ const CompanyContact = () => {
                                 </label>
                                 <Input className="bg-white"
                                     name="company_code"
-                                    value={formData.company_code}
+                                    value={profile.company_code}
                                     readOnly
                                 />
                             </div>
@@ -83,7 +51,7 @@ const CompanyContact = () => {
                                 </label>
                                 <Input className="bg-white"
                                     name="name"
-                                    value={formData.name}
+                                    value={profile.name}
                                     readOnly
                                 />
                             </div>
@@ -93,7 +61,7 @@ const CompanyContact = () => {
                                 </label>
                                 <Input className="bg-white"
                                     name="email"
-                                    value={formData.email}
+                                    value={profile.email}
                                     readOnly
                                 />
                             </div>
@@ -104,7 +72,7 @@ const CompanyContact = () => {
                                 </label>
                                 <Input className="bg-white"
                                     name="max_branches"
-                                    value={formData.max_branches}
+                                    value={profile.max_branches}
                                     readOnly
                                 />
                             </div>
@@ -114,7 +82,7 @@ const CompanyContact = () => {
                                 </label>
                                 <Input className="bg-white"
                                     name="max_employee"
-                                    value={formData.max_employee}
+                                    value={profile.max_employee}
                                     readOnly
                                 />
                             </div>
@@ -124,7 +92,7 @@ const CompanyContact = () => {
                                 </label>
                                 <Input className="bg-white"
                                     name="max_devices"
-                                    value={formData.max_devices}
+                                    value={profile.max_devices}
                                     readOnly
                                 />
                             </div>
@@ -134,7 +102,7 @@ const CompanyContact = () => {
                                 </label>
                                 <Input className="bg-white"
                                     name="member_from"
-                                    value={formData.member_from}
+                                    value={profile.member_from}
                                     readOnly
                                 />
                             </div>
@@ -144,7 +112,7 @@ const CompanyContact = () => {
                                 </label>
                                 <Input className="bg-white"
                                     name="expiry"
-                                    value={formData.expiry}
+                                    value={profile.expiry}
                                     readOnly
                                 />
                             </div>
@@ -158,4 +126,4 @@ const CompanyContact = () => {
     );
 };
 
-export default CompanyContact;
+export default CompanyProfile;
