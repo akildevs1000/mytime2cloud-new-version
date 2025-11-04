@@ -1,24 +1,19 @@
 "use client";
 
-import React, { useState, useEffect, useCallback } from 'react';
-import { Plus, RefreshCw } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Plus } from 'lucide-react';
 
-import { getBranches, getDeviceList, getDeviceLogs, getDevices, parseApiError } from '@/lib/api';
+import { getBranches, getDevices, parseApiError } from '@/lib/api';
 
 import DropDown from '@/components/ui/DropDown';
-import DateRangeSelect from "@/components/ui/DateRange";
 import Pagination from '@/lib/Pagination';
-import { EmployeeExtras } from '@/components/Employees/Extras';
 import DataTable from '@/components/ui/DataTable';
 import Columns from "./columns";
-
-
 
 export default function AttendanceTable() {
 
     // filters
     const [selectedBranch, setSelectedBranch] = useState(null);
-    const [selectedDeviceId, setSelectedDevice] = useState(null);
 
 
     const [employees, setAttendance] = useState([]);
@@ -31,7 +26,6 @@ export default function AttendanceTable() {
     const [total, setTotalAttendance] = useState(0);
 
     const [branches, setBranches] = useState([]);
-    const [devices, setDevices] = useState([]);
 
     const fetchBranches = async () => {
         try {
@@ -41,7 +35,9 @@ export default function AttendanceTable() {
         }
     };
 
-
+    const handleRowClick = async () => {
+        console.log(`Row clicked`)
+    };
 
 
     useEffect(() => {
@@ -114,11 +110,10 @@ export default function AttendanceTable() {
 
 
             <DataTable
-                columns={Columns}
+                columns={Columns(handleRowClick)}
                 data={employees}
                 isLoading={isLoading}
                 error={error}
-                onRowClick={(item) => console.log("Clicked:", item)}
                 pagination={
                     <Pagination
                         page={currentPage}

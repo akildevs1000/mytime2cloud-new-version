@@ -1,8 +1,8 @@
 import { useState } from "react";
-import { AlarmClock, DoorClosedLockedIcon, DoorOpen, Edit2, Trash2 } from "lucide-react";
+import { AlarmClock, MoreVertical, PenBox, Trash2 } from "lucide-react";
 
 
-export default [
+export default (handleRowClick) => [
   {
     key: "name",
     header: "Name",
@@ -88,7 +88,7 @@ export default [
         title={device.door_close || "—"}
         onClick={() => handleRowClick(device.id)}
       >
-        <img src="/icons/door_close.png"  className="w-7" />
+        <img src="/icons/door_close.png" className="w-7" />
       </span>
     ),
   },
@@ -109,7 +109,7 @@ export default [
       </span>
     ),
   }
-,
+  ,
   {
     key: "alarm",
     header: "Alarm",
@@ -150,35 +150,30 @@ export default [
       const [open, setOpen] = useState(false);
 
       return (
-        <div className="relative ml-5">
+        <div className="relative">
           {/* Three dots button */}
-          <button
-            onClick={() => setOpen(!open)}
-            className="text-gray-600 hover:text-gray-800 px-2 py-1 rounded-full"
-          >
-            &#x22EE; {/* vertical three dots */}
-          </button>
+          <MoreVertical className="text-gray-600 hover:text-gray-800" onClick={() => setOpen(!open)} />
 
           {/* Dropdown menu */}
           {open && (
-            <div className="absolute right-0 mt-2 w-24 bg-white border rounded shadow-lg z-10">
+            <div className="absolute mt-2 w-24 bg-white border rounded shadow-lg z-10">
               <button
                 onClick={() => {
                   editDevice(device.id);
                   setOpen(false);
                 }}
-                className="flex items-center gap-2 w-full text-left px-3 py-2 hover:bg-gray-100 text-blue-600"
+                className="flex items-center gap-2 text-sm w-full text-left px-3 py-2 hover:bg-gray-100 text-gray-600"
               >
-                <Edit2 size={16} /> Edit
+                <PenBox size={14} /> Edit
               </button>
               <button
                 onClick={() => {
                   deleteDevice(device.id);
                   setOpen(false);
                 }}
-                className="flex items-center gap-2 w-full text-left px-3 py-2 hover:bg-gray-100 text-red-600"
+                className="flex items-center gap-2 w-full text-sm text-left px-3 py-2 hover:bg-gray-100 text-gray-600"
               >
-                <Trash2 size={16} /> Delete
+                <Trash2 size={14} /> Delete
               </button>
             </div>
           )}

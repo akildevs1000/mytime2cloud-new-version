@@ -1,9 +1,7 @@
 "use client";
 
-import useImageUpload from "@/hooks/useImageUpload";
 
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { Save } from 'lucide-react';
 import Link from 'next/link';
 
 // NOTE: For live execution, this external API might require authentication headers (like an API Key or Authorization token) not provided here.
@@ -24,10 +22,9 @@ import {
 import { Button } from '@/components/ui/button';
 
 
-import { getBranches, getEmployees, updateProfilePicture } from '@/lib/api';
+import { getBranches, getEmployees } from '@/lib/api';
 import { EmployeeExtras } from '@/components/Employees/Extras';
 import { Input } from '@/components/ui/input';
-import EmployeeTabs from "@/components/Employees/EmployeeTabs";
 import { useRouter } from "next/navigation";
 import EmployeeScheduleEdit from "@/components/Schedule/Edit";
 

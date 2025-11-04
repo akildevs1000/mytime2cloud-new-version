@@ -54,6 +54,17 @@ export const getDepartments = async (branch_id = null) => {
 };
 
 // companyId will be passed dynamically
+export const getCompanyId = async () => {
+    const user = await getUser();
+    return user?.company_id || 0
+};
+
+export const getVisitorLink = async () => {
+    let company_id = await getCompanyId();
+    return `http://localhost:4444/register/visitor/walkin/${company_id}`;
+};
+
+// companyId will be passed dynamically
 export const getScheduleEmployees = async (params = {}) => {
     const user = await getUser();
 
@@ -191,6 +202,17 @@ export const getTodayLogsCount = async (branch_id = null, department_id = null) 
     return data;
 };
 
+export const getLogoOnly = async () => {
+    const user = await getUser();
+    const {data} =  await axios.get(`${API_BASE}/get-logo-only/${user?.company_id || 0}`);
+    return data;
+};
+
+export const updateLogoOnly = async (payload) => {
+    const user = await getUser();
+    await axios.post(`${API_BASE}/update-logo-only`, { ...payload, company_id: user?.company_id || 0 });
+    return true;
+};
 
 export const storeEmployee = async (payload) => {
     const user = await getUser();

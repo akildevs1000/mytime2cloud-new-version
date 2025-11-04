@@ -149,31 +149,6 @@ const Profile = ({ payload }) => {
 
 
   const selectedBranchName = branches.find((b) => b.id === selectedBranchId)?.name || "Select Branch";
-  // 2. Function triggered when a file is selected (on file input change)
-  const handleFileChange = async (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      // Basic file validation
-      if (file.size > 2 * 1024 * 1024) { // 2MB limit
-        setGlobalError("File size exceeds 2MB limit.");
-        return;
-      }
-      if (!['image/jpeg', 'image/png'].includes(file.type)) {
-        setGlobalError("Only JPG and PNG formats are supported.");
-        return;
-      }
-
-      try {
-        const base64String = await convertFileToBase64(file);
-        setImagePreview(base64String); // Set for preview
-        setImageFile(file);           // Store the file object for final payload processing
-      } catch (error) {
-        setGlobalError("Error converting file to Base64.");
-        setImagePreview(null);
-        setImageFile(null);
-      }
-    }
-  };
 
   const onSubmit = async (data) => {
 

@@ -22,7 +22,7 @@ export const leftNavLinks = {
 
     { href: "logs", icon: "history", label: "Device Logs" },
     { href: "access_control_logs", icon: "lock", label: "Access Control Logs" },
-    
+
   ],
   '/shift': [
     { href: "shift", icon: "event", label: "Shift" },
@@ -30,7 +30,7 @@ export const leftNavLinks = {
     { href: "attendance", icon: "event_note", label: "Leave Requests" },
 
     { href: "logs", icon: "history", label: "Device Logs" },
-    
+
   ],
   '/schedule': [
     { href: "shift", icon: "event", label: "Shift" },
@@ -38,8 +38,8 @@ export const leftNavLinks = {
     { href: "attendance", icon: "event_note", label: "Leave Requests" },
 
     { href: "logs", icon: "history", label: "Device Logs" },
-    
-
-
+  ],
+  '/settings': [
+    { href: "company", icon: "domain", label: "Company" },
   ],
 };

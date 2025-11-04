@@ -47,7 +47,7 @@ export default function Header() {
         { name: 'ACCESS CONTROL', href: '/access-control' },
         { name: 'VISITORS', href: '/visitors' },
         { name: 'REPORTS', href: '/reports' },
-        { name: 'SETTINGS', href: '/settings' },
+        { name: 'SETTINGS', href: '/company' },
     ];
 
     if (pathname == "/login") return;

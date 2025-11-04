@@ -21,7 +21,7 @@ export default function DataTable({
               {columns.map((col) => (
                 <th
                   key={col.key}
-                  className="p-4 font-semibold text-xs text-gray-600 uppercase tracking-wider min-w-[150px]"
+                  className="p-4 font-semibold text-xs text-gray-600 uppercase tracking-wider"
                 >
                   {col.header}
                 </th>

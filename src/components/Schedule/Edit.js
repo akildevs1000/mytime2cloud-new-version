@@ -97,54 +97,6 @@ const EmployeeScheduleEdit = () => {
         fetchDepartments();
     }, [selectedBranchId]); // 👈 Depend on selectedBranchId and setValue
 
-    // 2. Function triggered when a file is selected (on file input change)
-    const handleFileChange = async (event) => {
-        const file = event.target.files[0];
-        if (file) {
-            // Basic file validation
-            if (file.size > 2 * 1024 * 1024) { // 2MB limit
-                setGlobalError("File size exceeds 2MB limit.");
-                return;
-            }
-            if (!['image/jpeg', 'image/png'].includes(file.type)) {
-                setGlobalError("Only JPG and PNG formats are supported.");
-                return;
-            }
-
-            try {
-                const base64String = await convertFileToBase64(file);
-                setImagePreview(base64String); // Set for preview
-                setImageFile(file);           // Store the file object for final payload processing
-            } catch (error) {
-                setGlobalError("Error converting file to Base64.");
-                setImagePreview(null);
-                setImageFile(null);
-            }
-        }
-    };
-
-    const onSubmitNew = async (data) => {
-
-        setGlobalError(null);
-
-        let profile_image_base64 = null;
-
-        if (imageFile) {
-            profile_image_base64 = await convertFileToBase64(imageFile);
-        }
-
-        try {
-            await storeEmployee({ ...data, profile_image_base64 });
-            setOpen(true);
-            await new Promise(resolve => setTimeout(resolve, 2000));
-            setOpen(false);
-            router.push(`/employees`);
-
-        } catch (error) {
-            setGlobalError(parseApiError(error));
-        }
-    };
-
     const onSubmit = async (data) => {
 
         setGlobalError(null); // 👈 CRITICAL: Clear previous errors on new submission
@@ -366,9 +318,6 @@ const EmployeeScheduleEdit = () => {
                                                 Over Time
                                             </Label>
                                         </div>
-
-
-
                                     </div>
                                 </section>
 
