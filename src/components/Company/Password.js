@@ -16,7 +16,9 @@ const CompanyPassword = () => {
 
   // Simple local form state
   const [formData, setFormData] = useState({
-    code: "",
+    current_password: "",
+    password: "",
+    password_confirmation: "",
   });
 
   const [errors, setErrors] = useState({});
@@ -90,22 +92,39 @@ const CompanyPassword = () => {
               <Building2Icon className="mr-3 h-6 w-6 text-primary" />
               Profile Information
             </h2>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-1 gap-6">
               <div className="flex flex-col">
                 <label className="mb-1 text-sm font-medium text-gray-700 dark:text-gray-200">
-                  Company Code
+                  Current Password
                 </label>
                 <Input
-                  name="code"
-                  value={formData.code}
+                  name="password"
+                  value={formData.current_password}
                   onChange={handleChange}
                 />
-                {errors.code && (
-                  <span className="mt-1 text-sm text-red-500">
-                    {errors.code}
-                  </span>
-                )}
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-5">
+              <div className="flex flex-col">
+                <label className="mb-1 text-sm font-medium text-gray-700 dark:text-gray-200">
+                  New Password
+                </label>
+                <Input
+                  name="password"
+                  value={formData.password}
+                  onChange={handleChange}
+                />
+              </div>
+              <div className="flex flex-col">
+                <label className="mb-1 text-sm font-medium text-gray-700 dark:text-gray-200">
+                  Confirm New Password
+                </label>
+                <Input
+                  name="password_confirmation"
+                  value={formData.password_confirmation}
+                  onChange={handleChange}
+                />
               </div>
             </div>
           </section>
@@ -133,8 +152,8 @@ const CompanyPassword = () => {
         <SuccessDialog
           open={open}
           onOpenChange={setOpen}
-          title="Employees Uploaded"
-          description="All selected employees were uploaded to the selected devices successfully."
+          title="Password Change"
+          description="Password Change successfully."
         />
       </div>
     </div>

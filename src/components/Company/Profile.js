@@ -71,7 +71,7 @@ const CompanyContact = () => {
                                 <label className="mb-1 text-sm font-medium text-gray-700 dark:text-gray-200">
                                     Company Code
                                 </label>
-                                <Input
+                                <Input className="bg-white"
                                     name="company_code"
                                     value={formData.company_code}
                                     readOnly
@@ -81,7 +81,7 @@ const CompanyContact = () => {
                                 <label className="mb-1 text-sm font-medium text-gray-700 dark:text-gray-200">
                                     Name
                                 </label>
-                                <Input
+                                <Input className="bg-white"
                                     name="name"
                                     value={formData.name}
                                     readOnly
@@ -91,7 +91,7 @@ const CompanyContact = () => {
                                 <label className="mb-1 text-sm font-medium text-gray-700 dark:text-gray-200">
                                     Email
                                 </label>
-                                <Input
+                                <Input className="bg-white"
                                     name="email"
                                     value={formData.email}
                                     readOnly
@@ -102,7 +102,7 @@ const CompanyContact = () => {
                                 <label className="mb-1 text-sm font-medium text-gray-700 dark:text-gray-200">
                                     Max Branches
                                 </label>
-                                <Input
+                                <Input className="bg-white"
                                     name="max_branches"
                                     value={formData.max_branches}
                                     readOnly
@@ -112,7 +112,7 @@ const CompanyContact = () => {
                                 <label className="mb-1 text-sm font-medium text-gray-700 dark:text-gray-200">
                                     Max Employees
                                 </label>
-                                <Input
+                                <Input className="bg-white"
                                     name="max_employee"
                                     value={formData.max_employee}
                                     readOnly
@@ -122,7 +122,7 @@ const CompanyContact = () => {
                                 <label className="mb-1 text-sm font-medium text-gray-700 dark:text-gray-200">
                                     Max Devices
                                 </label>
-                                <Input
+                                <Input className="bg-white"
                                     name="max_devices"
                                     value={formData.max_devices}
                                     readOnly
@@ -132,7 +132,7 @@ const CompanyContact = () => {
                                 <label className="mb-1 text-sm font-medium text-gray-700 dark:text-gray-200">
                                     Memeber From
                                 </label>
-                                <Input
+                                <Input className="bg-white"
                                     name="member_from"
                                     value={formData.member_from}
                                     readOnly
@@ -142,7 +142,7 @@ const CompanyContact = () => {
                                 <label className="mb-1 text-sm font-medium text-gray-700 dark:text-gray-200">
                                     Expiry Date
                                 </label>
-                                <Input
+                                <Input className="bg-white"
                                     name="expiry"
                                     value={formData.expiry}
                                     readOnly

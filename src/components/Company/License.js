@@ -8,15 +8,23 @@ import { SuccessDialog } from "@/components/SuccessDialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
-import { User, ArrowLeft, Upload, Image, Briefcase, Badge, BaggageClaim, Building, Building2, Building2Icon, Info, Settings } from "lucide-react";
+import { User, ArrowLeft, Upload, Image, Briefcase, Badge, BaggageClaim, Building, Building2, Building2Icon, Info, Settings, File } from "lucide-react";
 import { convertFileToBase64 } from "@/lib/utils";
 import { parseApiError, storeEmployee } from "@/lib/api";
+import DropDown from "../ui/DropDown";
+import DatePicker from "../ui/DatePicker";
 
 const CompanyLicense = () => {
 
   // Simple local form state
   const [formData, setFormData] = useState({
-    code: "",
+    license_type: "",
+    license_no: "",
+    emirate: "",
+    manager: "",
+    issue_date: "",
+    expiry_date: "",
+    makeem_no: ""
   });
 
   const [errors, setErrors] = useState({});
@@ -87,25 +95,104 @@ const CompanyLicense = () => {
         <form onSubmit={onSubmit} className="space-y-8">
           <section>
             <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-6 flex items-center">
-              <Building2Icon className="mr-3 h-6 w-6 text-primary" />
-              Profile Information
+              <File className="mr-3 h-6 w-6 text-primary" />
+              License Information
             </h2>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div className="flex flex-col">
                 <label className="mb-1 text-sm font-medium text-gray-700 dark:text-gray-200">
-                  Company Code
+                  License Type
                 </label>
-                <Input
-                  name="code"
-                  value={formData.code}
+                <DropDown
+                  placeholder={'License Type'}
+                  onChange={handleChange}
+                  value={formData.license_type}
+                  items={[
+                    {
+                      id: '',
+                      name: 'Select Type',
+                    },
+                    {
+                      id: 'commercial_licenses',
+                      name: 'Commercial licenses',
+                    },
+                    {
+                      id: 'industrial_license',
+                      name: 'Industrial License',
+                    },
+                    {
+                      id: 'professional_license',
+                      name: 'Professional license',
+                    },
+                  ]}
+                />
+              </div>
+              <div className="flex flex-col">
+                <label className="mb-1 text-sm font-medium text-gray-700 dark:text-gray-200">
+                  License
+                </label>
+                <Input className="bg-white"
+                  name="license_no"
+                  value={formData.license_no}
                   onChange={handleChange}
                 />
-                {errors.code && (
-                  <span className="mt-1 text-sm text-red-500">
-                    {errors.code}
-                  </span>
-                )}
+              </div>
+              <div className="flex flex-col">
+                <label className="mb-1 text-sm font-medium text-gray-700 dark:text-gray-200">
+                  Emirate
+                </label>
+                <Input className="bg-white"
+                  name="emirate"
+                  value={formData.emirate}
+                  onChange={handleChange}
+                />
+              </div>
+              <div className="flex flex-col">
+                <label className="mb-1 text-sm font-medium text-gray-700 dark:text-gray-200">
+                  Manager
+                </label>
+                <Input className="bg-white"
+                  name="manager"
+                  value={formData.manager}
+                  onChange={handleChange}
+                />
+              </div>
+              <div className="flex flex-col">
+                <label className="mb-1 text-sm font-medium text-gray-700 dark:text-gray-200">
+                  Issue Date
+                </label>
+                <DatePicker
+                  value={formData.issue_date}
+                  onChange={(value) =>
+                    handleChange({ target: { name: "issue_date", value } })
+                  }
+                  placeholder="Pick a date"
+                />
+
+              </div>
+              <div className="flex flex-col">
+                <label className="mb-1 text-sm font-medium text-gray-700 dark:text-gray-200">
+                  Expiry Date
+                </label>
+                <DatePicker
+                  value={formData.expiry_date}
+                  onChange={(value) =>
+                    handleChange({ target: { name: "expiry_date", value } })
+                  }
+                  placeholder="Pick a date"
+                />
+
+              </div>
+              <div className="flex flex-col">
+                <label className="mb-1 text-sm font-medium text-gray-700 dark:text-gray-200">
+                  Makeem No
+                </label>
+                <Input className="bg-white"
+                  name="makeem_no"
+                  value={formData.makeem_no}
+                  onChange={handleChange}
+                />
               </div>
             </div>
           </section>

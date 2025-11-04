@@ -1,144 +1,351 @@
 // @ts-nocheck
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
-import { SuccessDialog } from "@/components/SuccessDialog";
 import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import { PlusCircle, Trash2, ExternalLink } from "lucide-react";
 
-import { User, ArrowLeft, Upload, Image, Briefcase, Badge, BaggageClaim, Building, Building2, Building2Icon, Info, Settings } from "lucide-react";
-import { convertFileToBase64 } from "@/lib/utils";
-import { parseApiError, storeEmployee } from "@/lib/api";
-
-const CompanyDocumemt = () => {
-
-  // Simple local form state
-  const [formData, setFormData] = useState({
-    code: "",
-  });
-
+const CompanyDocument = ({ companyId = 43 }) => {
+  const [documentsPopup, setDocumentsPopup] = useState(false);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [response, setResponse] = useState("");
   const [errors, setErrors] = useState({});
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  const [open, setOpen] = useState(false);
-  const [globalError, setGlobalError] = useState(null);
-  const [imagePreview, setImagePreview] = useState(null);
+  const [documentItems, setDocumentItems] = useState([
+    { title: "", file: null },
+  ]);
+  const [documentList, setDocumentList] = useState([]);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
+  // ---- fetch list on mount / companyId change ----
+  useEffect(() => {
+    if (!companyId) return;
+    getInfo();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [companyId]);
 
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-
-    setErrors((prev) => ({
-      ...prev,
-      [name]: undefined,
-    }));
-  };
-
-  const validate = () => {
-    const newErrors = {};
-
-    if (!formData.code || formData.code.trim() === "") {
-      newErrors.code = "Company code is required.";
+  const getInfo = async () => {
+    try {
+      setLoading(true);
+      const { data } = await axios.get("/document", {
+        params: { company_id: companyId },
+      });
+      setDocumentList(data || []);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
     }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
   };
 
-  const onSubmit = async (e) => {
-    e.preventDefault();
+  // simple permission placeholder (since Vue version returned true)
+  const can = (_perm) => true;
 
-    setGlobalError(null);
+  const openDocumentPopup = () => {
+    setDocumentsPopup(true);
+  };
 
-    if (!validate()) return;
+  const closeDocumentPopup = () => {
+    setDocumentsPopup(false);
+    setErrors({});
+    setDocumentItems([{ title: "", file: null }]);
+  };
 
-    setIsSubmitting(true);
+  const addDocumentInfo = () => {
+    setDocumentItems((prev) => [...prev, { title: "", file: null }]);
+  };
+
+  const removeItem = (index) => {
+    setDocumentItems((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  const handleTitleChange = (index, value) => {
+    setDocumentItems((prev) =>
+      prev.map((item, i) =>
+        i === index ? { ...item, title: value } : item
+      )
+    );
+  };
+
+  const handleFileChange = (index,file) => {
+    setDocumentItems((prev) =>
+      prev.map((item, i) =>
+        i === index ? { ...item, file } : item
+      )
+    );
+  };
+
+  const saveDocumentInfo = async () => {
+    if (!documentItems.length) return;
+
+    setLoading(true);
+    setErrors({});
+
+    const payload = new FormData();
+
+    documentItems.forEach((item) => {
+      payload.append("items[][key]", item.title || "");
+      payload.append("items[][value]", item.file || new Blob());
+    });
+
+    payload.append("company_id", companyId);
 
     try {
-      const finalPayload = {
-        code: formData.code,
-      };
+      const { data } = await axios.post("/document", payload, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
 
-      await storeEmployee(finalPayload);
-
-      setOpen(true);
-
-      // Just to briefly show the success dialog
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-
-      setOpen(false);
-      router.push(`/employees`);
-    } catch (error) {
-      setGlobalError(parseApiError(error));
+      if (!data.status) {
+        // backend sends {status:false, errors:{...}}
+        setErrors(data.errors || {});
+      } else {
+        setErrors({});
+        setResponse(data.message || "Documents uploaded successfully.");
+        setSnackbarOpen(true);
+        await getInfo();
+        setDocumentItems([{ title: "", file: null }]);
+        closeDocumentPopup();
+      }
+    } catch (err) {
+      console.error(err);
     } finally {
-      setIsSubmitting(false);
+      setLoading(false);
+    }
+  };
+
+  const deleteDocument = async (id) => {
+    const ok = window.confirm(
+      "Are you sure you wish to delete this document? This action cannot be undone."
+    );
+    if (!ok) return;
+
+    try {
+      setLoading(true);
+      const { data } = await axios.delete(`/document/${id}`);
+      if (!data.status) {
+        setErrors(data.errors || {});
+      } else {
+        setErrors({});
+        setResponse(data.message || "Document deleted successfully.");
+        setSnackbarOpen(true);
+        await getInfo();
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-      <div className="lg:col-span-2 lg:pl-4">
-        <form onSubmit={onSubmit} className="space-y-8">
-          <section>
-            <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-6 flex items-center">
-              <Building2Icon className="mr-3 h-6 w-6 text-primary" />
-              Profile Information
-            </h2>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="flex flex-col">
-                <label className="mb-1 text-sm font-medium text-gray-700 dark:text-gray-200">
-                  Company Code
-                </label>
-                <Input
-                  name="code"
-                  value={formData.code}
-                  onChange={handleChange}
-                />
-                {errors.code && (
-                  <span className="mt-1 text-sm text-red-500">
-                    {errors.code}
-                  </span>
-                )}
-              </div>
-            </div>
-          </section>
-
-          {globalError && (
-            <div
-              className="mb-4 p-3 border border-red-500 bg-red-50 text-red-700 rounded-lg"
-              role="alert"
-            >
-              {globalError}
-            </div>
-          )}
-
-          <div className="flex justify-end space-x-4 pt-4">
-            <Button
-              type="submit"
-              className="bg-primary hover:bg-indigo-700"
-              disabled={isSubmitting}
-            >
-              {isSubmitting ? "SUBMITTING..." : "SUBMIT"}
-            </Button>
+    <div className="mt-4">
+      {/* Snackbar / toast-style message */}
+      {snackbarOpen && (
+        <div className="mb-3 flex justify-center">
+          <div
+            className="rounded-md bg-emerald-100 text-emerald-800 px-4 py-2 text-sm shadow"
+            onAnimationEnd={() => setSnackbarOpen(false)}
+          >
+            {response}
           </div>
-        </form>
+        </div>
+      )}
 
-        <SuccessDialog
-          open={open}
-          onOpenChange={setOpen}
-          title="Employees Uploaded"
-          description="All selected employees were uploaded to the selected devices successfully."
-        />
+      {/* Add Document button + table */}
+      <div className="flex justify-end mb-3">
+        {can("document_create") && (
+          <Button
+            size="sm"
+            className="bg-primary text-white"
+            onClick={openDocumentPopup}
+          >
+            Add Document +
+          </Button>
+        )}
       </div>
+
+      {can("document_view") && (
+        <div className="overflow-x-auto rounded-lg bg-white dark:bg-slate-900 shadow-sm">
+          <table className="min-w-full border-collapse text-sm">
+            <thead>
+              <tr className="bg-slate-50 dark:bg-slate-800 text-left text-xs font-semibold uppercase tracking-wide text-slate-600 dark:text-slate-300">
+                <th className="border border-slate-200 dark:border-slate-700 px-3 py-2">
+                  Title
+                </th>
+                <th className="border border-slate-200 dark:border-slate-700 px-3 py-2">
+                  File
+                </th>
+                <th className="border border-slate-200 dark:border-slate-700 px-3 py-2">
+                  Action
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {documentList.map((d, index) => (
+                <tr
+                  key={index}
+                  className={index % 2 === 0 ? "bg-white dark:bg-slate-900" : "bg-slate-50 dark:bg-slate-950/40"}
+                >
+                  <td className="border border-slate-200 dark:border-slate-800 px-3 py-2">
+                    {d.key}
+                  </td>
+                  <td className="border border-slate-200 dark:border-slate-800 px-3 py-2">
+                    <a
+                      href={d.value}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <Button size="xs" className="bg-primary text-white">
+                        View
+                        <ExternalLink className="ml-1 h-3 w-3" />
+                      </Button>
+                    </a>
+                  </td>
+                  <td className="border border-slate-200 dark:border-slate-800 px-3 py-2">
+                    {can("document_delete") && (
+                      <button
+                        type="button"
+                        onClick={() => deleteDocument(d.id)}
+                        className="inline-flex items-center justify-center rounded-full p-1 hover:bg-red-50 dark:hover:bg-red-900/30"
+                      >
+                        <Trash2 className="h-4 w-4 text-red-600" />
+                      </button>
+                    )}
+                  </td>
+                </tr>
+              ))}
+
+              {documentList.length === 0 && (
+                <tr>
+                  <td
+                    colSpan={3}
+                    className="px-3 py-3 text-sm text-slate-500"
+                  >
+                    0 documents are available.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      )}
+
+      {/* Dialog for Upload Document */}
+      <Dialog open={documentsPopup} onOpenChange={setDocumentsPopup}>
+        <DialogContent className="max-w-xl">
+          <DialogHeader>
+            <DialogTitle>Upload Document</DialogTitle>
+          </DialogHeader>
+
+          <div className="space-y-4">
+            {documentItems.map((d, index) => (
+              <div
+                key={index}
+                className="grid grid-cols-1 md:grid-cols-12 gap-3 items-start"
+              >
+                {/* Title */}
+                <div className="md:col-span-4">
+                  <label className="block text-xs font-medium mb-1">
+                    Title <span className="text-red-500">*</span>
+                  </label>
+                  <Input
+                    value={d.title}
+                    onChange={(e) =>
+                      handleTitleChange(index, e.target.value)
+                    }
+                    className="text-sm"
+                  />
+                  {errors?.title && (
+                    <p className="mt-1 text-xs text-red-500">
+                      {errors.title[0]}
+                    </p>
+                  )}
+                </div>
+
+                {/* File */}
+                <div className="md:col-span-6">
+                  <label className="block text-xs font-medium mb-1">
+                    File <span className="text-red-500">*</span>
+                  </label>
+                  <Input
+                    type="file"
+                    onChange={(e) =>
+                      handleFileChange(
+                        index,
+                        e.target.files?.[0] || null
+                      )
+                    }
+                    className="text-sm"
+                  />
+                  {errors?.value && (
+                    <p className="mt-1 text-xs text-red-500">
+                      {errors.value[0]}
+                    </p>
+                  )}
+                  {d.file && (
+                    <p className="mt-1 text-xs text-slate-500 truncate">
+                      Selected: {d.file.name}
+                    </p>
+                  )}
+                </div>
+
+                {/* Add / Remove */}
+                <div className="md:col-span-2 flex items-center justify-center md:justify-start mt-1">
+                  {documentItems.length - 1 === index ? (
+                    <button
+                      type="button"
+                      onClick={addDocumentInfo}
+                      className="inline-flex items-center text-primary hover:text-primary/80"
+                    >
+                      <PlusCircle className="h-6 w-6" />
+                    </button>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={() => removeItem(index)}
+                      className="inline-flex items-center text-red-600 hover:text-red-700"
+                    >
+                      <Trash2 className="h-5 w-5" />
+                    </button>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <DialogFooter className="mt-4">
+            <Button
+              variant="outline"
+              type="button"
+              onClick={closeDocumentPopup}
+            >
+              Cancel
+            </Button>
+            <Button
+              type="button"
+              className="bg-primary text-white"
+              disabled={!documentItems.length || loading}
+              onClick={saveDocumentInfo}
+            >
+              {loading ? "Saving..." : "Save and Upload"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
 
-export default CompanyDocumemt;
+export default CompanyDocument;

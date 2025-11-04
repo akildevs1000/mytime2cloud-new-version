@@ -22,7 +22,7 @@ import License from "@/components/Company/License";
 
 import Document from "@/components/Company/Document";
 import Password from "@/components/Company/Password";
-import Admin from "@/components/Company/Admin";
+import Admin from "@/components/Company/Admin/Page";
 import AttendanceRating from "@/components/Company/AttendanceRating";
 import DoorPin from "@/components/Company/DoorPin";
 import ChangeLogo from "@/components/Company/ChangeLogo";

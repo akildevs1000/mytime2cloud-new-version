@@ -440,6 +440,19 @@ export const getDevices = async (params = {}) => {
     return data;
 };
 
+export const getAdmins = async (params = {}) => {
+    const user = await getUser();
+    const { data } = await axios.get(`${API_BASE}/admin`, {
+        params: {
+            ...params,
+            company_id: user?.company_id || 0,
+        },
+    });
+    return data;
+};
+
+
+
 // companyId will be passed dynamically
 export const openDoor = async (device_id = 0) => {
     const user = await getUser();

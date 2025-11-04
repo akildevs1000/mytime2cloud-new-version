@@ -1,5 +1,6 @@
 "use client";
 
+import { cn } from "@/lib/utils";
 import { Loader2 } from "lucide-react";
 
 export default function DataTable({
@@ -10,9 +11,15 @@ export default function DataTable({
   emptyMessage = "No data found.",
   onRowClick = () => {},
   pagination = null,
+  className = "",
 }) {
   return (
-    <div className="bg-white rounded-xl shadow-lg border border-gray-200 min-h-[800px] max-h-[400px] flex flex-col">
+    <div
+      className={cn(
+        "bg-white rounded-xl shadow-lg border border-gray-200 min-h-[800px] flex flex-col",
+        className
+      )}
+    >
       {/* Table wrapper */}
       <div className="overflow-x-auto overflow-y-auto flex-1">
         <table className="w-full text-left table-auto">
@@ -84,11 +91,7 @@ export default function DataTable({
       </div>
 
       {/* Pagination sticky at bottom */}
-      {pagination && (
-        <div className="">
-          {pagination}
-        </div>
-      )}
+      {pagination && <div className="">{pagination}</div>}
     </div>
   );
 }
