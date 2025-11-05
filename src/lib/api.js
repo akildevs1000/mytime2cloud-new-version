@@ -496,17 +496,6 @@ export const getSubDepartments = async (params = {}) => {
     return data;
 };
 
-export const getSepartmentsForTable = async (params = {}) => {
-    const user = await getUser();
-    const { data } = await axios.get(`${API_BASE}/departments`, {
-        params: {
-            ...params,
-            company_id: user?.company_id || 0,
-        },
-    });
-    return data;
-};
-
 // companyId will be passed dynamically
 export const getDeviceList = async (branch_id = 0) => {
     const user = await getUser();
@@ -558,6 +547,36 @@ export const deleteAdmin = async (id) => {
 };
 
 // ADMINS END
+
+// DEPARTMENT
+
+export const getSepartmentsForTable = async (params = {}) => {
+    const user = await getUser();
+    const { data } = await axios.get(`${API_BASE}/departments`, {
+        params: {
+            ...params,
+            company_id: user?.company_id || 0,
+        },
+    });
+    return data;
+};
+
+export const createDepartment = async (payload = {}) => {
+    const user = await getUser();
+    await axios.post(`${API_BASE}/departments`, { ...payload, company_id: user?.company_id || 0 });
+    return true;
+};
+export const updateDepartment = async (id, payload = {}) => {
+    const user = await getUser();
+    await axios.put(`${API_BASE}/departments/${id}`, { ...payload, company_id: user?.company_id || 0 });
+    return true;
+};
+export const deleteDepartment = async (id) => {
+    await axios.delete(`${API_BASE}/departments/${id}`);
+    return true;
+};
+
+// DEPARTMENT END
 
 
 // companyId will be passed dynamically
