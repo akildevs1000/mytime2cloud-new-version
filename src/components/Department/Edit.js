@@ -71,10 +71,19 @@ const Edit = ({
     <Dialog open={actualOpen} onOpenChange={actualSetOpen}>
       <DialogContent className="max-w-lg">
         <DialogHeader>
-          <DialogTitle>Edit Admin</DialogTitle>
+          <DialogTitle>Edit Department</DialogTitle>
         </DialogHeader>
 
         <div className="space-y-4">
+          <div>
+            <label className="block text-xs font-medium mb-1">Branch</label>
+            <DropDown
+              placeholder="Select Branch"
+              onChange={(val) => handleChange("branch_id", val)}
+              value={form.branch_id}
+              items={branches}
+            />
+          </div>
           <div>
             <label className="block text-xs font-medium mb-1">Name</label>
             <Input

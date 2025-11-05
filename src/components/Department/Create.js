@@ -76,12 +76,12 @@ const Create = ({ onSuccess = () => { } }) => {
 
   return (
     <>
-      <Button onClick={() => setOpen(true)}>Add Admin</Button>
+      <Button onClick={() => setOpen(true)}>Add Department</Button>
 
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="max-w-lg">
           <DialogHeader>
-            <DialogTitle>New Admin</DialogTitle>
+            <DialogTitle>New Department</DialogTitle>
           </DialogHeader>
 
           <div className="space-y-4">
@@ -118,7 +118,7 @@ const Create = ({ onSuccess = () => { } }) => {
               disabled={loading}
               className="bg-primary text-white"
             >
-              {loading ? "Saving..." : "Create Admin"}
+              {loading ? "Saving..." : "Create Department"}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -127,8 +127,8 @@ const Create = ({ onSuccess = () => { } }) => {
       <SuccessDialog
         successOpen={successOpen}
         onOpenChange={setSuccessOpen}
-        title="Admin Saved"
-        description="Admin Saved successfully."
+        title="Department Saved"
+        description="Department Saved successfully."
       />
     </>
   );
