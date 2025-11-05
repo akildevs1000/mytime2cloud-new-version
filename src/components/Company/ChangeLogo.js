@@ -73,6 +73,11 @@ const ChangeLogo = () => {
                     <img
                         src={imagePreview}
                         alt="Company Logo"
+                        onError={(e) => {
+                            // if logo fails to load, clear preview so fallback icon shows
+                            e.target.onerror = null;
+                            setImagePreview(null);
+                        }}
                         className="w-full h-full object-cover"
                     />
                 ) : (
