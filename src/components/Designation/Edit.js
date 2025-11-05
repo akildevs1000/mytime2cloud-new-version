@@ -48,7 +48,7 @@ const Edit = ({
     try {
       let { data } = await updateDesignations(initialData.id, form);
 
-      if (!data?.status == false) {
+      if (data?.status == false) {
         console.log(data?.status);
 
         const firstKey = Object.keys(data.errors)[0]; // get the first key

@@ -46,9 +46,7 @@ const Edit = ({
     setLoading(true);
     try {
       let { data } = await updateSubDepartments(initialData.id, form);
-      if (!data?.status == false) {
-        console.log(data?.status);
-
+      if (data?.status == false) {
         const firstKey = Object.keys(data.errors)[0]; // get the first key
         const firstError = data.errors[firstKey][0]; // get its first error message
         setGlobalError(firstError);
@@ -58,8 +56,6 @@ const Edit = ({
       actualSetOpen(false);
     } catch (error) {
       setGlobalError(parseApiError(error));
-    } finally {
-      setLoading(false);
     }
   };
 
