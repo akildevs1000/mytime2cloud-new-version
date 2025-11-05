@@ -26,7 +26,6 @@ const Edit = ({
   const actualOpen = isControlled ? controlledOpen : open;
   const actualSetOpen = isControlled ? controlledSetOpen : setOpen;
 
-  const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
 
   const [globalError, setGlobalError] = useState(null);
@@ -44,14 +43,11 @@ const Edit = ({
   };
 
   const onSubmit = async () => {
-    setError(null);
+    setGlobalError(null);
     setLoading(true);
     try {
       let { data } = await updateDesignations(initialData.id, form);
 
-      console.log(data);
-
-      
       if (!data?.status == false) {
         console.log(data?.status);
 
@@ -63,7 +59,7 @@ const Edit = ({
       onSuccess();
       actualSetOpen(false);
     } catch (error) {
-      setError(parseApiError(error));
+      setGlobalError(parseApiError(error));
     } finally {
       setLoading(false);
     }
