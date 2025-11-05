@@ -40,6 +40,20 @@ export const getBranches = async () => {
     return data;
 };
 
+export const getRoles = async () => {
+
+    const user = await getUser();
+
+    const { data } = await axios.get(`${API_BASE}/role`, {
+        params: {
+            order_by: "name",
+            per_page: 1000,
+            company_id: user?.company_id || 0,
+        },
+    });
+    return data;
+};
+
 // companyId will be passed dynamically
 export const getDepartments = async (branch_id = null) => {
     const user = await getUser();
@@ -516,6 +530,8 @@ export const getDevices = async (params = {}) => {
     return data;
 };
 
+
+// ADMINS
 export const getAdmins = async (params = {}) => {
     const user = await getUser();
     const { data } = await axios.get(`${API_BASE}/admin`, {
@@ -526,7 +542,22 @@ export const getAdmins = async (params = {}) => {
     });
     return data;
 };
+export const createAdmin = async (payload = {}) => {
+    const user = await getUser();
+    await axios.post(`${API_BASE}/admin`, { ...payload, company_id: user?.company_id || 0 });
+    return true;
+};
+export const updateAdmin = async (id, payload = {}) => {
+    const user = await getUser();
+    await axios.put(`${API_BASE}/admin/${id}`, { ...payload, company_id: user?.company_id || 0 });
+    return true;
+};
+export const deleteAdmin = async (id) => {
+    await axios.delete(`${API_BASE}/admin/${id}`);
+    return true;
+};
 
+// ADMINS END
 
 
 // companyId will be passed dynamically

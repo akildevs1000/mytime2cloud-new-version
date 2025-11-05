@@ -4,10 +4,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { RefreshCw } from 'lucide-react';
 
 import { getBranches, getDepartments, getDeviceLogs, getScheduledEmployeeList, getStatuses, parseApiError } from '@/lib/api';
-import BranchSelect from '@/components/ui/BranchSelect';
 
-import DepartmentSelect from '@/components/ui/DepartmentSelect';
-import EmployeeMultiSelect from '@/components/ui/EmployeeMultiSelect';
 import DropDown from '@/components/ui/DropDown';
 import DateRangeSelect from "@/components/ui/DateRange";
 import Pagination from '@/lib/Pagination';

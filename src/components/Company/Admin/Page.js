@@ -1,110 +1,91 @@
+// Admin.jsx
 "use client";
 
-import React, { useState, useEffect } from 'react';
-import { Lock, Plus, User, User2Icon, UserCheck, UserLock } from 'lucide-react';
+import React, { useState, useEffect } from "react";
+import { UserLock } from "lucide-react";
+import { getAdmins, parseApiError } from "@/lib/api";
 
-import { getAdmins, parseApiError } from '@/lib/api';
-
-import DropDown from '@/components/ui/DropDown';
-import Pagination from '@/lib/Pagination';
-import DataTable from '@/components/ui/DataTable';
+import Pagination from "@/lib/Pagination";
+import DataTable from "@/components/ui/DataTable";
 import Columns from "./columns";
+import AdminFormDialog from "@/components/Company/Admin/Create";
 
 export default function Admin() {
+  const [admins, setAdmins] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
 
-    const [employees, setAttendance] = useState([]);
-    const [isLoading, setIsLoading] = useState(false);
-    const [error, setError] = useState(null);
+  // Pagination
+  const [currentPage, setCurrentPage] = useState(1);
+  const [perPage, setPerPage] = useState(25);
+  const [total, setTotal] = useState(0);
 
-    // Pagination State
-    const [currentPage, setCurrentPage] = useState(1);
-    const [perPage, setPerPage] = useState(25);
-    const [total, setTotalAttendance] = useState(0);
+  useEffect(() => {
+    fetchRecords();
+  }, [currentPage, perPage]);
 
+  const fetchRecords = async () => {
+    try {
+      setIsLoading(true);
+      setError(null);
 
+      const result = await getAdmins({
+        page: currentPage,
+        per_page: perPage,
+      });
 
-    const handleRowClick = async () => {
-        console.log(`Row clicked`)
-    };
+      if (result && Array.isArray(result.data)) {
+        setAdmins(result.data);
+        setCurrentPage(result.current_page || 1);
+        setTotal(result.total || 0);
+      } else {
+        throw new Error("Invalid data structure from API.");
+      }
+    } catch (error) {
+      setError(parseApiError(error));
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
+  const columns = Columns({
+    onSuccess: fetchRecords, // refresh after edit
+  });
 
-    useEffect(() => {
-        fetchRecords();
-    }, [currentPage, perPage]);
+  return (
+    <>
+      <div className="flex flex-wrap items-center justify-between mb-6">
+        <div className="flex flex-wrap items-center space-x-3">
+          <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100 flex items-center">
+            <UserLock className="mr-3 h-6 w-6 text-primary" />
+            Admin
+          </h2>
+        </div>
 
-    const fetchRecords = async () => {
-        try {
-            setIsLoading(true);
+        {/* Add Admin Dialog */}
+        <AdminFormDialog onSuccess={fetchRecords} />
+      </div>
 
-            const params = {
-                page: currentPage,
-                per_page: perPage,
-            };
-
-            const result = await getAdmins(params);
-
-            console.log(result.data);
-
-            // Check if result has expected structure before setting state
-            if (result && Array.isArray(result.data)) {
-                setAttendance(result.data);
-                setCurrentPage(result.current_page || 1);
-                setTotalAttendance(result.total || 0);
-                setIsLoading(false);
-                return; // Success, exit
-            } else {
-                // If the API returned a 2xx status but the data structure is wrong
-                throw new Error('Invalid data structure received from API.');
-            }
-
-        } catch (error) {
-            setError(parseApiError(error))
-            setIsLoading(false); // Make sure loading state is turned off on error
+      <DataTable
+        className="bg-slate-50 overflow-hidden min-h-[300px]"
+        columns={columns}
+        data={admins}
+        isLoading={isLoading}
+        error={error}
+        pagination={
+          <Pagination
+            page={currentPage}
+            perPage={perPage}
+            total={total}
+            onPageChange={setCurrentPage}
+            onPerPageChange={(n) => {
+              setPerPage(n);
+              setCurrentPage(1);
+            }}
+            pageSizeOptions={[10, 25, 50]}
+          />
         }
-    };
-
-    return (
-        <>
-            <div className="flex flex-wrap items-center justify-between mb-6">
-                {/* Left side: Title + Dropdown */}
-                <div className="flex flex-wrap items-center space-x-3 space-y-2 sm:space-y-0">
-                    <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-6 flex items-center">
-                        <UserLock className="mr-3 h-6 w-6 text-primary" />
-                        Admin
-                    </h2>
-                </div>
-
-                {/* Right side: Refresh Button */}
-                <button
-                    onClick={fetchRecords}
-                    className="bg-primary text-white px-4 py-1 rounded-lg font-semibold shadow-md hover:bg-indigo-700 transition-all flex items-center space-x-2 whitespace-nowrap"
-                >
-                    <Plus className={`w-4 h-4 mr-1 ${isLoading ? 'animate-spin' : ''}`} />
-                    New Device
-                </button>
-            </div>
-
-
-            <DataTable
-                className="bg-slate-50  overflow-hidden min-h-[300px]"
-                columns={Columns(handleRowClick)}
-                data={employees}
-                isLoading={isLoading}
-                error={error}
-                pagination={
-                    <Pagination
-                        page={currentPage}
-                        perPage={perPage}
-                        total={total}
-                        onPageChange={setCurrentPage}
-                        onPerPageChange={(n) => {
-                            setPerPage(n);
-                            setCurrentPage(1);
-                        }}
-                        pageSizeOptions={[10, 25, 50]}
-                    />
-                }
-            />
-        </>
-    );
+      />
+    </>
+  );
 }

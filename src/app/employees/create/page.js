@@ -21,15 +21,12 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 
-import { Check, ChevronsUpDown, User, Briefcase, Phone, ArrowLeft, Upload, Calendar as CalenddarIcon, CheckCircle2, CalendarIcon } from "lucide-react";
-import { cn, convertFileToBase64 } from "@/lib/utils";
+import { User, Briefcase, Phone, ArrowLeft, Upload } from "lucide-react";
+import { convertFileToBase64 } from "@/lib/utils";
 import { useRouter } from 'next/navigation';
 
-import { getBranches, getDepartments, parseApiError, storeEmployee } from '@/lib/api';
+import { getDepartments, parseApiError, storeEmployee } from '@/lib/api';
 
-
-import { user } from '@/config';
-import { format } from 'date-fns';
 import BranchSelect from '@/components/ui/BranchSelect';
 import DatePicker from '@/components/ui/DatePicker';
 
@@ -66,24 +63,11 @@ const EmployeeProfileForm = () => {
 
     const [open, setOpen] = useState(false);
     const [globalError, setGlobalError] = useState(null);
-    const [branches, setBranches] = useState([]);
     const [departments, setDepartments] = useState([]);
     const [imagePreview, setImagePreview] = useState(null);
     const [imageFile, setImageFile] = useState(null);
 
     const selectedBranchId = watch("branch_id");
-
-    useEffect(() => {
-        const fetchBranches = async () => {
-            try {
-                setBranches(await getBranches());
-            } catch (error) {
-                console.error("Error fetching branches:", error);
-                setBranches([]);
-            }
-        };
-        fetchBranches();
-    }, []);
 
     useEffect(() => {
         // Reset departments and department_id if no branch is selected
@@ -135,28 +119,6 @@ const EmployeeProfileForm = () => {
                 setImagePreview(null);
                 setImageFile(null);
             }
-        }
-    };
-
-    const onSubmitNew = async (data) => {
-
-        setGlobalError(null);
-
-        let profile_image_base64 = null;
-
-        if (imageFile) {
-            profile_image_base64 = await convertFileToBase64(imageFile);
-        }
-
-        try {
-            await storeEmployee({ ...data, profile_image_base64 });
-            setOpen(true);
-            await new Promise(resolve => setTimeout(resolve, 2000));
-            setOpen(false);
-            router.push(`/employees`);
-
-        } catch (error) {
-            setGlobalError(parseApiError(error));
         }
     };
 
