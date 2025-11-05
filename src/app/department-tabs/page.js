@@ -7,9 +7,9 @@ import {
   TabsContent,
 } from "@/components/ui/tabs";
 
-import DesignationTab from "@/components/Company/DesignationTab";
-import SubDepartment from "@/components/Company/SubDepartment";
-import Department from "@/components/Company/DepartmentTab";
+import Designation from "@/components/Designation/Page";
+import SubDepartment from "@/components/SubDepartment/Page";
+import Department from "@/components/Department/Page";
 
 
 const DepartmentTabs = () => {
@@ -56,7 +56,7 @@ const DepartmentTabs = () => {
       {/* --- Tabs Content --- */}
       <div className="rounded-xl bg-slate-50/80 p-6 shadow-sm">
         <TabsContent value="designation" className="space-y-2">
-          <DesignationTab />
+          <Designation />
         </TabsContent>
 
         <TabsContent value="subdepartment" className="space-y-2">
