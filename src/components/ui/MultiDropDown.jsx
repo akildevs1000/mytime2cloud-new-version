@@ -107,7 +107,7 @@ export default function MultiDropDown({
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className="min-w-30 max-w-full  border border-gray-300 flex justify-between"
+          className="border border-gray-300 flex justify-between"
         >
           {getDisplayContent()}
           <span className="material-icons text-gray-400 ml-2 text-base shrink-0">

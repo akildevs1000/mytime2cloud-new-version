@@ -2,8 +2,8 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { RefreshCw } from 'lucide-react';
-
-import { getBranches, getDepartments, getDeviceLogs, getScheduledEmployeeList, getStatuses, parseApiError } from '@/lib/api';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { getAttendanceReports, getBranches, getDepartments, getDeviceLogs, getScheduledEmployeeList, getStatuses, parseApiError } from '@/lib/api';
 
 import DropDown from '@/components/ui/DropDown';
 import DateRangeSelect from "@/components/ui/DateRange";
@@ -12,32 +12,33 @@ import { EmployeeExtras } from '@/components/Employees/Extras';
 import DataTable from '@/components/ui/DataTable';
 import Columns from "./columns";
 import MultiDropDown from '@/components/ui/MultiDropDown';
+import { formatDate, formatDateDubai } from '@/lib/utils';
 
+const reportTemplates = [
+    { id: `Template1`, name: `Monthly Report Format A` },
+    { id: `Template2`, name: `Monthly Report Format B` },
+    { id: `Template3`, name: `Daily` },
+];
 
+const ShiftTypes = [
+    { id: `0`, name: `General` },
+    { id: `2`, name: `Multi` },
+];
 
 export default function AttendanceTable() {
 
     // filters
-    const [shiftTypeId, setShiftTypeId] = useState(2);
+    const [shiftTypeId, setShiftTypeId] = useState(`2`);
     const [selectedStatusIds, setSelectedStatusIds] = useState([]);
     const [selectedBranch, setSelectedBranch] = useState(null);
     const [selectedDepartmentId, setSelectedDepartment] = useState(null);
     const [selectedEmployeeIds, setSelectedEmployeeIds] = useState([]);
     const [selectedReportTemplate, setSelectedReportTemplate] = useState(null);
 
-
-    const [reportTemplates, setReportTemplates] = useState([
-        { id: `Template1`, name: `Monthly Report Format A` },
-        { id: `Template2`, name: `Monthly Report Format B` },
-        { id: `Template3`, name: `Daily` },
-    ]);
-
     const [from, setFrom] = useState(null);
     const [to, setTo] = useState(null);
 
-
-
-    const [employees, setAttendance] = useState([]);
+    const [records, setAttendance] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
 
@@ -46,40 +47,6 @@ export default function AttendanceTable() {
     const [perPage, setPerPage] = useState(25);
     const [total, setTotalAttendance] = useState(0);
 
-
-
-    const fetchRecords = useCallback(async (page, perPage) => {
-        setIsLoading(true);
-        setError(null);
-
-        try {
-            const params = {
-                page: page,
-                per_page: perPage,
-                sortDesc: 'false',
-                branch_id: selectedBranch,
-                department_id: selectedDepartmentId,
-                employee_ids: selectedEmployeeIds,
-            };
-            const result = await getDeviceLogs(params);
-
-            // Check if result has expected structure before setting state
-            if (result && Array.isArray(result.data)) {
-                setAttendance(result.data);
-                setCurrentPage(result.current_page || 1);
-                setTotalAttendance(result.total || 0);
-                setIsLoading(false);
-                return; // Success, exit
-            } else {
-                // If the API returned a 2xx status but the data structure is wrong
-                throw new Error('Invalid data structure received from API.');
-            }
-
-        } catch (error) {
-            setError(parseApiError(error))
-            setIsLoading(false); // Make sure loading state is turned off on error
-        }
-    }, [perPage]);
 
     const [statusses, setStatusses] = useState([]);
     const [branches, setBranches] = useState([]);
@@ -136,19 +103,60 @@ export default function AttendanceTable() {
     useEffect(() => {
         fetchScheduledEmployees();
     }, [selectedDepartmentId]);
+    const fetchRecords = async () => {
+        // Validate required parameters first
+        if (
+            !shiftTypeId ||
+            !selectedReportTemplate ||
+            !selectedEmployeeIds?.length ||
+            !selectedBranch ||
+            !currentPage ||
+            !perPage
+        ) {
+            alert("Please fill/select all required fields.");
+            return;
+        }
+
+        setIsLoading(true);
+        setError(null);
+
+        try {
+            const params = {
+                page: currentPage,
+                per_page: perPage,
+                shift_type_id: shiftTypeId,
+                report_template: selectedReportTemplate,
+                from_date: formatDateDubai(from),
+                to_date: formatDateDubai(to),
+                employee_id: selectedEmployeeIds,
+                statuses: selectedStatusIds,
+                branch_id: selectedBranch,
+                showTabs: JSON.stringify({ single: true, dual: false, multi: true }),
+            };
+            console.log(params);
+
+            const result = await getAttendanceReports(params);
+
+            if (result && Array.isArray(result.data)) {
+                setAttendance(result.data);
+                setCurrentPage(result.current_page || 1);
+                setTotalAttendance(result.total || 0);
+            } else {
+                throw new Error("Invalid data structure received from API.");
+            }
+
+        } catch (error) {
+            setError(parseApiError(error));
+        } finally {
+            setIsLoading(false); // Always turn off loading
+        }
+    };
 
 
     useEffect(() => {
-        fetchRecords(currentPage, perPage);
-    }, [currentPage, perPage, fetchRecords]); // Re-fetch when page or perPage changes
+        fetchRecords();
+    }, [currentPage, perPage, shiftTypeId]);
 
-    const handleSubmit = () => {
-
-        console.log(selectedStatusIds, selectedBranch, selectedDepartmentId, selectedEmployeeIds, selectedReportTemplate, from, to);
-
-        return;
-        fetchRecords(currentPage, perPage);
-    }
 
     return (
         <>
@@ -216,33 +224,68 @@ export default function AttendanceTable() {
                 </div>
 
                 {/* Refresh Button */}
-                <button onClick={handleSubmit} className="bg-primary text-white px-4 py-1 rounded-lg font-semibold shadow-md hover:bg-indigo-700 transition-all flex items-center space-x-2 whitespace-nowrap">
+                <button onClick={fetchRecords} className="bg-primary text-white px-4 py-1 rounded-lg font-semibold shadow-md hover:bg-indigo-700 transition-all flex items-center space-x-2 whitespace-nowrap">
                     <RefreshCw className={`w-4 h-4 mr-1 ${isLoading ? 'animate-spin' : ''}`} /> Submit
                 </button>
 
-                {/* <EmployeeExtras data={employees} onUploadSuccess={fetchRecords} /> */}
+                {/* <EmployeeExtras data={records} onUploadSuccess={fetchRecords} /> */}
             </div>
 
-            <DataTable
-                columns={Columns}
-                data={employees}
-                isLoading={isLoading}
-                error={error}
-                onRowClick={(item) => console.log("Clicked:", item)}
-                pagination={
-                    <Pagination
-                        page={currentPage}
-                        perPage={perPage}
-                        total={total}
-                        onPageChange={setCurrentPage}
-                        onPerPageChange={(n) => {
-                            setPerPage(n);
-                            setCurrentPage(1);
-                        }}
-                        pageSizeOptions={[10, 25, 50]}
-                    />
-                }
-            />
+            <Tabs
+                value={shiftTypeId} // controlled tab
+                onValueChange={(value) => setShiftTypeId(value)} // update on click
+                className="w-full"
+            >
+                {/* --- Tabs Header aligned Right --- */}
+                <div className="flex justify-start mb-4">
+                    <div className="p-2 bg-white w-full rounded-lg shadow">
+                        <TabsList className="flex bg-white   p-1">
+                            {ShiftTypes.map((shift) => (
+                                <TabsTrigger
+                                    key={shift.id}
+                                    value={shift.id}
+                                    className="px-4 py-2 text-sm font-medium rounded-md 
+                data-[state=active]:bg-primary/10 
+                data-[state=active]:text-primary 
+                data-[state=active]:shadow-sm 
+                transition-all duration-200"
+                                >
+                                    {shift.name}
+                                </TabsTrigger>
+                            ))}
+                        </TabsList>
+                    </div>
+
+                </div>
+
+                {/* --- Tabs Content --- */}
+                {ShiftTypes.map((shift) => (
+                    <TabsContent key={shift.id} value={shift.id} className="space-y-2 rounded-lg">
+                        <DataTable
+                            columns={Columns(shiftTypeId)}
+                            data={records}
+                            isLoading={isLoading}
+                            error={error}
+                            onRowClick={(item) => console.log("Clicked:", item)}
+                            pagination={
+                                <Pagination
+                                    page={currentPage}
+                                    perPage={perPage}
+                                    total={total}
+                                    onPageChange={setCurrentPage}
+                                    onPerPageChange={(n) => {
+                                        setPerPage(n);
+                                        setCurrentPage(1);
+                                    }}
+                                    pageSizeOptions={[10, 25, 50]}
+                                />
+                            }
+                        />
+                    </TabsContent>
+                ))}
+            </Tabs>
+
+
         </>
     );
 }

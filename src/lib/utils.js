@@ -42,3 +42,30 @@ export function addTimes(time1, time2) {
     .toString()
     .padStart(2, "0")}`;
 }
+
+export function formatDate(value) {
+  if (!value) return ""; // handle null/undefined safely
+  if (value instanceof Date) {
+    return value.toISOString().split("T")[0]; // convert Date → ISO → date-only
+  }
+  if (typeof value === "string") {
+    return value.split("T")[0]; // already a string → split
+  }
+  return ""; // fallback if something unexpected
+};
+
+export const formatDateDubai = (date) => {
+  if (!date) return "";
+  const d = new Date(date);
+  const formatter = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Asia/Dubai", // ✅ use Dubai timezone
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  });
+  return formatter.format(d); // returns YYYY-MM-DD
+};
+
+
+
+

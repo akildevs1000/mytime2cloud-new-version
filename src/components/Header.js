@@ -29,7 +29,7 @@ export default function Header() {
         { name: 'PAYROLL', href: '/payroll' },
         { name: 'ACCESS CONTROL', href: '/access-control' },
         { name: 'VISITORS', href: '/visitors' },
-        { name: 'REPORTS', href: '/reports' },
+        { name: 'REPORTS', href: '/attendance' },
         { name: 'SETTINGS', href: '/company' },
     ];
 

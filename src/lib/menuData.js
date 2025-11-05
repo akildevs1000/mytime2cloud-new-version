@@ -5,6 +5,7 @@ const attendanceMenu = [
   { href: "shift", icon: "event", label: "Shift" },
   { href: "schedule", icon: "schedule", label: "Schedule" },
   { href: "attendance", icon: "event_note", label: "Leave Requests" },
+  { href: "reports", icon: "event_note", label: "Leave Requests" },
   { href: "logs", icon: "history", label: "Device Logs" },
   { href: "access_control_logs", icon: "lock", label: "Access Control Logs" },
 ];
@@ -29,6 +30,7 @@ export const leftNavLinks = {
   "/employees": employeesMenu,
 
   "/attendance": attendanceMenu,
+  "/reports": attendanceMenu,
   "/shift": attendanceMenu,
   "/schedule": attendanceMenu,
 
