@@ -474,28 +474,6 @@ export const getScheduledEmployeeList = async (branch_id = null, department_ids 
     return data;
 };
 
-export const getDesinations = async (params = {}) => {
-    const user = await getUser();
-    const { data } = await axios.get(`${API_BASE}/designation`, {
-        params: {
-            ...params,
-            company_id: user?.company_id || 0,
-        },
-    });
-    return data;
-};
-
-export const getSubDepartments = async (params = {}) => {
-    const user = await getUser();
-    const { data } = await axios.get(`${API_BASE}/sub-departments`, {
-        params: {
-            ...params,
-            company_id: user?.company_id || 0,
-        },
-    });
-    return data;
-};
-
 // companyId will be passed dynamically
 export const getDeviceList = async (branch_id = 0) => {
     const user = await getUser();
@@ -577,6 +555,60 @@ export const deleteDepartment = async (id) => {
 };
 
 // DEPARTMENT END
+
+// SUB DEPARTMENT
+export const getSubDepartments = async (params = {}) => {
+    const user = await getUser();
+    const { data } = await axios.get(`${API_BASE}/sub-departments`, {
+        params: {
+            ...params,
+            company_id: user?.company_id || 0,
+        },
+    });
+    return data;
+};
+export const createSubDepartments = async (payload = {}) => {
+    const user = await getUser();
+    return await axios.post(`${API_BASE}/sub-departments`, { ...payload, company_id: user?.company_id || 0 });
+};
+export const updateSubDepartments = async (id, payload = {}) => {
+    const user = await getUser();
+    await axios.put(`${API_BASE}/sub-departments/${id}`, { ...payload, company_id: user?.company_id || 0 });
+    return true;
+};
+export const deleteSubDepartments = async (id) => {
+    await axios.delete(`${API_BASE}/sub-departments/${id}`);
+    return true;
+};
+// SUB DEPARTMENT END
+// DESIGNATION
+export const getDesinations = async (params = {}) => {
+    const user = await getUser();
+    const { data } = await axios.get(`${API_BASE}/designation`, {
+        params: {
+            ...params,
+            company_id: user?.company_id || 0,
+        },
+    });
+    return data;
+};
+
+export const createDesinations = async (payload = {}) => {
+    const user = await getUser();
+    await axios.post(`${API_BASE}/designation`, { ...payload, company_id: user?.company_id || 0 });
+    return true;
+};
+export const updateDesinations = async (id, payload = {}) => {
+    const user = await getUser();
+    await axios.put(`${API_BASE}/designation/${id}`, { ...payload, company_id: user?.company_id || 0 });
+    return true;
+};
+export const deleteDesinations = async (id) => {
+    await axios.delete(`${API_BASE}/designation/${id}`);
+    return true;
+};
+
+// DESIGNATION END
 
 
 // companyId will be passed dynamically
