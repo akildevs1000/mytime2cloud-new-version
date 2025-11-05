@@ -7,11 +7,12 @@ import Edit from "@/components/SubDepartment/Edit";
 
 import { deleteSubDepartments, parseApiError } from "@/lib/api";
 
-
 function OptionsMenu({ admin, onSuccess = () => { } }) {
   const [openEdit, setOpenEdit] = useState(false);
 
   const onDelete = async (id) => {
+    const confirmDelete = window.confirm("Are you sure you want to delete this item?");
+    if (!confirmDelete) return; // exit if user cancels
     try {
       await deleteSubDepartments(id);
       onSuccess(); // refresh parent data after successful delete

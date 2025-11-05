@@ -2,14 +2,14 @@
 
 import React, { useState, useEffect } from "react";
 import { UserLock } from "lucide-react";
-import { getSubDepartments, parseApiError } from "@/lib/api";
+import { getDesignations, parseApiError } from "@/lib/api";
 
 import Pagination from "@/lib/Pagination";
 import DataTable from "@/components/ui/DataTable";
 import Columns from "./columns";
-import Create from "@/components/SubDepartment/Create";
+import Create from "@/components/Designation/Create";
 
-export default function SubDepartment() {
+export default function Designation() {
   const [records, setRecords] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -28,7 +28,7 @@ export default function SubDepartment() {
       setIsLoading(true);
       setError(null);
 
-      const result = await getSubDepartments({
+      const result = await getDesignations({
         page: currentPage,
         per_page: perPage,
       });
@@ -57,7 +57,7 @@ export default function SubDepartment() {
         <div className="flex flex-wrap items-center space-x-3">
           <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100 flex items-center">
             <UserLock className="mr-3 h-6 w-6 text-primary" />
-            Sub Department
+            Designation
           </h2>
         </div>
 

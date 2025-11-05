@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/dialog";
 import DropDown from "@/components/ui/DropDown";
 
-import { createSubDepartments, parseApiError } from "@/lib/api";
+import { createDesignations, parseApiError } from "@/lib/api";
 import { SuccessDialog } from "@/components/SuccessDialog";
 
 let defaultPayload = {
@@ -44,9 +44,11 @@ const Create = ({ onSuccess = () => { } }) => {
     setLoading(true);
     try {
 
-      let { data } = await createSubDepartments(form);
+      let { data } = await createDesignations(form);
 
-      if (!data?.status) {
+      if (!data?.status == false) {
+        console.log(data?.status);
+        
         const firstKey = Object.keys(data.errors)[0]; // get the first key
         const firstError = data.errors[firstKey][0]; // get its first error message
         setGlobalError(firstError);
@@ -70,12 +72,12 @@ const Create = ({ onSuccess = () => { } }) => {
 
   return (
     <>
-      <Button onClick={() => setOpen(true)}>Add Sub Department</Button>
+      <Button onClick={() => setOpen(true)}>Add Designation</Button>
 
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="max-w-lg">
           <DialogHeader>
-            <DialogTitle>New Sub Department</DialogTitle>
+            <DialogTitle>New Designation</DialogTitle>
           </DialogHeader>
 
           <div className="space-y-4">
@@ -103,7 +105,7 @@ const Create = ({ onSuccess = () => { } }) => {
               disabled={loading}
               className="bg-primary text-white"
             >
-              {loading ? "Saving..." : "Create Sub Department"}
+              {loading ? "Saving..." : "Create Designation"}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -112,8 +114,8 @@ const Create = ({ onSuccess = () => { } }) => {
       <SuccessDialog
         successOpen={successOpen}
         onOpenChange={setSuccessOpen}
-        title="Sub Department Saved"
-        description="Sub Department Saved successfully."
+        title="Designation Saved"
+        description="Designation Saved successfully."
       />
     </>
   );

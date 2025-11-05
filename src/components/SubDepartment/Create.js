@@ -46,7 +46,7 @@ const Create = ({ onSuccess = () => { } }) => {
 
       let { data } = await createSubDepartments(form);
 
-      if (!data?.status) {
+       if (!data?.status == false) {
         const firstKey = Object.keys(data.errors)[0]; // get the first key
         const firstError = data.errors[firstKey][0]; // get its first error message
         setGlobalError(firstError);

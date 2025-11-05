@@ -13,11 +13,11 @@ import {
 } from "@/components/ui/dialog";
 import DropDown from "@/components/ui/DropDown";
 
-import { parseApiError, updateSubDepartments } from "@/lib/api";
+import { parseApiError, updateDesignations } from "@/lib/api";
 
 const Edit = ({
   initialData = {},
-  onSuccess = () => {},
+  onSuccess = () => { },
   controlledOpen,
   controlledSetOpen,
 }) => {
@@ -28,6 +28,8 @@ const Edit = ({
 
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
+
+  const [globalError, setGlobalError] = useState(null);
 
   const [form, setForm] = useState(initialData);
 
@@ -45,7 +47,19 @@ const Edit = ({
     setError(null);
     setLoading(true);
     try {
-      await updateSubDepartments(initialData.id, form);
+      let { data } = await updateDesignations(initialData.id, form);
+
+      console.log(data);
+
+      
+      if (!data?.status == false) {
+        console.log(data?.status);
+
+        const firstKey = Object.keys(data.errors)[0]; // get the first key
+        const firstError = data.errors[firstKey][0]; // get its first error message
+        setGlobalError(firstError);
+        return;
+      }
       onSuccess();
       actualSetOpen(false);
     } catch (error) {
@@ -70,8 +84,14 @@ const Edit = ({
               onChange={(e) => handleChange("name", e.target.value)}
             />
           </div>
-      
+
         </div>
+
+        {globalError && (
+          <div className="mb-4 p-3 border border-red-500 bg-red-50 text-red-700 rounded-lg" role="alert">
+            {globalError}
+          </div>
+        )}
 
         <DialogFooter className="mt-4">
           <Button variant="outline" onClick={() => actualSetOpen(false)}>

@@ -573,8 +573,7 @@ export const createSubDepartments = async (payload = {}) => {
 };
 export const updateSubDepartments = async (id, payload = {}) => {
     const user = await getUser();
-    await axios.put(`${API_BASE}/sub-departments/${id}`, { ...payload, company_id: user?.company_id || 0 });
-    return true;
+    return await axios.put(`${API_BASE}/sub-departments/${id}`, { ...payload, company_id: user?.company_id || 0 });
 };
 export const deleteSubDepartments = async (id) => {
     await axios.delete(`${API_BASE}/sub-departments/${id}`);
@@ -582,7 +581,7 @@ export const deleteSubDepartments = async (id) => {
 };
 // SUB DEPARTMENT END
 // DESIGNATION
-export const getDesinations = async (params = {}) => {
+export const getDesignations = async (params = {}) => {
     const user = await getUser();
     const { data } = await axios.get(`${API_BASE}/designation`, {
         params: {
@@ -593,17 +592,17 @@ export const getDesinations = async (params = {}) => {
     return data;
 };
 
-export const createDesinations = async (payload = {}) => {
+export const createDesignations = async (payload = {}) => {
     const user = await getUser();
     await axios.post(`${API_BASE}/designation`, { ...payload, company_id: user?.company_id || 0 });
     return true;
 };
-export const updateDesinations = async (id, payload = {}) => {
+export const updateDesignations = async (id, payload = {}) => {
     const user = await getUser();
     await axios.put(`${API_BASE}/designation/${id}`, { ...payload, company_id: user?.company_id || 0 });
     return true;
 };
-export const deleteDesinations = async (id) => {
+export const deleteDesignations = async (id) => {
     await axios.delete(`${API_BASE}/designation/${id}`);
     return true;
 };

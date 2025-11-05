@@ -3,17 +3,19 @@
 
 import { useState } from "react";
 import { MoreVertical, PenBox, Trash2 } from "lucide-react";
-import Edit from "@/components/SubDepartment/Edit";
+import Edit from "@/components/Designation/Edit";
 
-import { deleteSubDepartments, parseApiError } from "@/lib/api";
+import { deleteDesignations, parseApiError } from "@/lib/api";
 
 
 function OptionsMenu({ admin, onSuccess = () => { } }) {
   const [openEdit, setOpenEdit] = useState(false);
 
   const onDelete = async (id) => {
+    const confirmDelete = window.confirm("Are you sure you want to delete this item?");
+    if (!confirmDelete) return; // exit if user cancels
     try {
-      await deleteSubDepartments(id);
+      await deleteDesignations(id);
       onSuccess(); // refresh parent data after successful delete
       setOpenEdit(false); // close menu
     } catch (error) {
