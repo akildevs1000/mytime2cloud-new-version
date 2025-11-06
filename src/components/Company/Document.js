@@ -227,9 +227,9 @@ const CompanyDocument = ({ companyId = 43 }) => {
                       <button
                         type="button"
                         onClick={() => deleteDocument(d.id)}
-                        className="inline-flex items-center justify-center rounded-full p-1 hover:bg-red-50 dark:hover:bg-red-900/30"
+                        className="inline-flex items-center justify-center rounded-full p-1 hover:bg-gray-500 dark:hover:bg-gray-900/30"
                       >
-                        <Trash2 className="h-4 w-4 text-red-600" />
+                        <Trash2 className="h-4 w-4 text-gray-600" />
                       </button>
                     )}
                   </td>
@@ -267,7 +267,7 @@ const CompanyDocument = ({ companyId = 43 }) => {
                 {/* Title */}
                 <div className="md:col-span-4">
                   <label className="block text-xs font-medium mb-1">
-                    Title <span className="text-red-500">*</span>
+                    Title <span className="text-gray-500">*</span>
                   </label>
                   <Input
                     value={d.title}
@@ -277,7 +277,7 @@ const CompanyDocument = ({ companyId = 43 }) => {
                     className="text-sm"
                   />
                   {errors?.title && (
-                    <p className="mt-1 text-xs text-red-500">
+                    <p className="mt-1 text-xs text-gray-500">
                       {errors.title[0]}
                     </p>
                   )}
@@ -286,7 +286,7 @@ const CompanyDocument = ({ companyId = 43 }) => {
                 {/* File */}
                 <div className="md:col-span-6">
                   <label className="block text-xs font-medium mb-1">
-                    File <span className="text-red-500">*</span>
+                    File <span className="text-gray-500">*</span>
                   </label>
                   <Input
                     type="file"
@@ -299,7 +299,7 @@ const CompanyDocument = ({ companyId = 43 }) => {
                     className="text-sm"
                   />
                   {errors?.value && (
-                    <p className="mt-1 text-xs text-red-500">
+                    <p className="mt-1 text-xs text-gray-500">
                       {errors.value[0]}
                     </p>
                   )}
@@ -333,7 +333,7 @@ const CompanyDocument = ({ companyId = 43 }) => {
                     <button
                       type="button"
                       onClick={() => removeItem(index)}
-                      className="inline-flex items-center text-red-600 hover:text-red-700"
+                      className="inline-flex items-center text-gray-600 hover:text-gray-700"
                       aria-label="Remove document row"
                     >
                       <Trash2 className="h-5 w-5" />

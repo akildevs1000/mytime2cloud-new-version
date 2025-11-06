@@ -5,7 +5,7 @@ const attendanceMenu = [
   { href: "shift", icon: "event", label: "Shift" },
   { href: "schedule", icon: "schedule", label: "Schedule" },
   { href: "attendance", icon: "event_note", label: "Leave Requests" },
-  { href: "reports", icon: "event_note", label: "Leave Requests" },
+  { href: "reports", icon: "event_note", label: "Leave Requests--" },
   { href: "logs", icon: "history", label: "Device Logs" },
   { href: "access_control_logs", icon: "lock", label: "Access Control Logs" },
 ];
@@ -13,6 +13,7 @@ const attendanceMenu = [
 const companyMenu = [
   { href: "company", icon: "event", label: "Company" },
   { href: "device", icon: "event", label: "Device" },
+  { href: "branch", icon: "event", label: "Branch" },
   { href: "department-tabs", icon: "event", label: "Department" },
 ];
 

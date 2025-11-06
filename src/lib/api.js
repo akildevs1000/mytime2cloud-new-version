@@ -580,6 +580,7 @@ export const deleteSubDepartments = async (id) => {
     return true;
 };
 // SUB DEPARTMENT END
+
 // DESIGNATION
 export const getDesignations = async (params = {}) => {
     const user = await getUser();
@@ -604,6 +605,37 @@ export const updateDesignations = async (id, payload = {}) => {
 };
 export const deleteDesignations = async (id) => {
     await axios.delete(`${API_BASE}/designation/${id}`);
+    return true;
+};
+
+// DESIGNATION END
+
+
+
+// DESIGNATION
+export const getBranchesForTable = async (params = {}) => {
+    const user = await getUser();
+    const { data } = await axios.get(`${API_BASE}/branch`, {
+        params: {
+            ...params,
+            company_id: user?.company_id || 0,
+        },
+    });
+    return data;
+};
+
+export const createBranch = async (payload = {}) => {
+    const user = await getUser();
+    await axios.post(`${API_BASE}/branch`, { ...payload, company_id: user?.company_id || 0 });
+    return true;
+};
+export const updateBranch = async (id, payload = {}) => {
+    const user = await getUser();
+    await axios.put(`${API_BASE}/branch/${id}`, { ...payload, company_id: user?.company_id || 0 });
+    return true;
+};
+export const deleteBranch = async (id) => {
+    await axios.delete(`${API_BASE}/branch/${id}`);
     return true;
 };
 
