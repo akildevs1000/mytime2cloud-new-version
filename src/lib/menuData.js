@@ -16,31 +16,32 @@ import {
   Layers,
   Workflow,
   Shield,
+  Group,
 } from "lucide-react";
 
 // 1️⃣ Reusable menu groups
 const attendanceMenu = [
-  { href: "shift", icon: Clock, label: "Shift" },
-  { href: "schedule", icon: CalendarDays, label: "Schedule" },
-  { href: "attendance", icon: FileText, label: "Leave Requests" },
-  { href: "reports", icon: FileText, label: "Reports" },
-  { href: "logs", icon: History, label: "Device Logs" },
-  { href: "access_control_logs", icon: Lock, label: "Access Control Logs" },
+  { href: "/shift", icon: Clock, label: "Shift" },
+  { href: "/schedule", icon: CalendarDays, label: "Schedule" },
+  { href: "/attendance", icon: FileText, label: "Leave Requests" },
+  { href: "/reports", icon: FileText, label: "Reports" },
+  { href: "/logs", icon: History, label: "Device Logs" },
+  { href: "/access_control_logs", icon: Lock, label: "Access Control Logs" },
 ];
 
 const companyMenu = [
-  { href: "company", icon: Building, label: "Company" },
-  { href: "branch", icon: Briefcase, label: "Branch" },
-  { href: "group-login", icon: Briefcase, label: "Group Login" },
-  { href: "department-tabs", icon: Layers, label: "Department" },
-  { href: "automation", icon: Workflow, label: "Automation" },
-  { href: "roles", icon: Shield, label: "Roles" },
-  { href: "device", icon: Briefcase, label: "Device" },
-  { href: "holidays", icon: CalendarDays, label: "Holidays" },
-  { href: "leaves", icon: FileText, label: "Leaves" },
-  { href: "announcements", icon: Megaphone, label: "Announcements" },
-  { href: "activity", icon: ActivitySquare, label: "Activity" },
-  { href: "payroll", icon: DollarSign, label: "Payroll" },
+  { href: "/company", icon: Building, label: "Company" },
+  { href: "/branch", icon: Briefcase, label: "Branch" },
+  { href: "/group-login", icon: Group, label: "Group Login" },
+  { href: "/department-tabs", icon: Layers, label: "Department" },
+  { href: "/automation", icon: Workflow, label: "Automation" },
+  { href: "/roles", icon: Shield, label: "Roles" },
+  { href: "/device", icon: Briefcase, label: "Device" },
+  { href: "/holidays", icon: CalendarDays, label: "Holidays" },
+  { href: "/leaves", icon: FileText, label: "Leaves" },
+  { href: "/announcements", icon: Megaphone, label: "Announcements" },
+  { href: "/activity", icon: ActivitySquare, label: "Activity" },
+  { href: "/payroll", icon: DollarSign, label: "Payroll" },
 ];
 
 const employeesMenu = [
