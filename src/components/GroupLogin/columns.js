@@ -3,26 +3,31 @@
 
 import { useState } from "react";
 import { MoreVertical, PenBox, Trash2 } from "lucide-react";
-import Edit from "@/components/Branch/Edit";
+import Edit from "@/components/GroupLogin/Edit";
 
-import { deleteBranch } from "@/lib/api";
+import { deleteAdmin } from "@/lib/api";
 import { parseApiError } from "@/lib/utils";
 
 
-function OptionsMenu({ item, onSuccess = () => { } }) {
+function OptionsMenu({ admin, pageTitle, onSuccess = (e) => { e } }) {
   const [openEdit, setOpenEdit] = useState(false);
 
   const onDelete = async (id) => {
     const confirmDelete = window.confirm("Are you sure you want to delete this item?");
     if (!confirmDelete) return; // exit if user cancels
     try {
-      await deleteBranch(id);
-      onSuccess(); // refresh parent data after successful delete
+      await deleteAdmin(id);
+      onSuccess({ title: `${pageTitle} Deleted`, description: `${pageTitle} Deleted successfully` }); actualSetOpen(false);
       setOpenEdit(false); // close menu
     } catch (error) {
       console.log(parseApiError(error));
     }
   };
+
+  const handleSuccess = (e) => {
+    onSuccess(e); // refresh parent data
+    setOpenEdit(false);
+  }
 
   return (
     <div className="relative">
@@ -40,7 +45,7 @@ function OptionsMenu({ item, onSuccess = () => { } }) {
             <PenBox size={14} /> Edit
           </button>
           <button
-            onClick={() => onDelete(item.id)}
+            onClick={() => onDelete(admin.id)}
             className="flex items-center gap-2 text-sm w-full text-left px-3 py-2 hover:bg-gray-100 text-gray-600"
           >
             <Trash2 size={14} /> Delete
@@ -51,125 +56,63 @@ function OptionsMenu({ item, onSuccess = () => { } }) {
       {/* 👇 Edit Dialog Integration */}
       {openEdit === "edit" && (
         <Edit
-          initialData={item}
+          pageTitle={pageTitle}
+          initialData={admin}
           controlledOpen={true}
           controlledSetOpen={(val) => setOpenEdit(val ? "edit" : false)}
-          onSuccess={() => {
-            onSuccess(); // refresh parent data
-            setOpenEdit(false);
-          }}
+          onSuccess={handleSuccess}
         />
       )}
     </div>
   );
 }
 
-export default function Columns({ handleRowClick, onSuccess = () => { } } = {}) {
+
+export default function Columns({ pageTitle, onSuccess = (e) => { e } } = {}) {
   return [
     {
-      key: "branch_name",
+      key: "name",
       header: "Name",
-      render: (item) => (
-        <span onClick={() => handleRowClick(item)}
-          className="text-gray-800 cursor-pointer block max-w-[150px] truncate"
-          title={item.branch_name || "—"}
+      render: (admin) => (
+        <span
+          className="text-gray-800 cursor-pointer"
+          title={admin.name || "—"}
         >
-          {item.branch_name || "—"}
+          {admin.name || "—"}
         </span>
       ),
     },
     {
-      key: "licence_number",
-      header: "Licence",
-      render: (item) => (
+      key: "email",
+      header: "Email",
+      render: (admin) => (
         <span
-          className="text-gray-800 cursor-pointer block max-w-[150px] truncate"
-          title={item.licence_number || "—"}
+          className="text-gray-800 cursor-pointer"
+          title={admin.email || "—"}
         >
-          {item.licence_number || "—"}
+          {admin.email || "—"}
         </span>
       ),
     },
     {
-      key: "licence_issue_by_department",
-      header: "Licence Issued By Department",
-      render: (item) => (
+      key: "role",
+      header: "Role",
+      render: (admin) => (
         <span
-          className="text-gray-800 cursor-pointer block max-w-[150px] truncate"
-          title={item.licence_issue_by_department || "—"}
+          className="text-gray-800 cursor-pointer"
+          title={admin.role?.name || "—"}
         >
-          {item.licence_issue_by_department || "—"}
+          {admin.role?.name || "—"}
         </span>
       ),
     },
-    {
-      key: "licence_expiry",
-      header: "Licence Expiry",
-      render: (item) => (
-        <span
-          className="text-gray-800 cursor-pointer block max-w-[150px] truncate"
-          title={item.licence_expiry || "—"}
-        >
-          {item.licence_expiry || "—"}
-        </span>
-      ),
-    },
-    {
-      key: "lat",
-      header: "Lat",
-      render: (item) => (
-        <span
-          className="text-gray-800 cursor-pointer block max-w-[150px] truncate"
-          title={item.lat || "—"}
-        >
-          {item.lat || "—"}
-        </span>
-      ),
-    },
-    {
-      key: "lon",
-      header: "Lon",
-      render: (item) => (
-        <span
-          className="text-gray-800 cursor-pointer block max-w-[150px] truncate"
-          title={item.lon || "—"}
-        >
-          {item.lon || "—"}
-        </span>
-      ),
-    },
-    {
-      key: "address",
-      header: "Address",
-      render: (item) => (
-        <span
-          className="text-gray-800 cursor-pointer block max-w-[150px] truncate"
-          title={item.address || "—"}
-        >
-          {item.address || "—"}
-        </span>
-      ),
-    },
-    {
-      key: "created_date",
-      header: "Since",
-      render: (item) => (
-        <span
-          className="text-gray-800 cursor-pointer block max-w-[150px] truncate"
-          title={item.created_date || "—"}
-        >
-          {item.created_date || "—"}
-        </span>
-      ),
-    },
-
-
     {
       key: "options",
       header: "Options",
-      render: (item) => (
+      render: (admin) => (
         <OptionsMenu
-          item={item}
+          pageTitle={pageTitle}
+          admin={admin}
           onSuccess={onSuccess}
         />
       ),

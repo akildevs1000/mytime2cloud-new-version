@@ -1,8 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Building, GitBranch, UserLock } from "lucide-react";
-import { getBranchesForTable } from "@/lib/api";
+import { getAdmins } from "@/lib/api";
 
 import Pagination from "@/lib/Pagination";
 import DataTable from "@/components/ui/DataTable";
@@ -10,16 +9,27 @@ import Columns from "./columns";
 import Create from "@/components/GroupLogin/Create";
 import { useRouter } from "next/navigation";
 import { parseApiError } from "@/lib/utils";
+import { SuccessDialog } from "../SuccessDialog";
 
 export default function Branch() {
   const [records, setRecords] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [sucessObject, setSucessObject] = useState({ title: "", description: "" });
+
+  const [successOpen, setSuccessOpen] = useState(false);
+
 
   // Pagination
   const [currentPage, setCurrentPage] = useState(1);
   const [perPage, setPerPage] = useState(25);
   const [total, setTotal] = useState(0);
+
+  const handleSuccess = (e) => {
+    setSuccessOpen(true);
+    setSucessObject(e);
+    fetchRecords();
+  }
 
   useEffect(() => {
     fetchRecords();
@@ -30,7 +40,7 @@ export default function Branch() {
       setIsLoading(true);
       setError(null);
 
-      const result = await getBranchesForTable({
+      const result = await getAdmins({
         page: currentPage,
         per_page: perPage,
       });
@@ -58,8 +68,9 @@ export default function Branch() {
   };
 
   const columns = Columns({
-    onSuccess: fetchRecords,
+    onSuccess: handleSuccess,
     handleRowClick: handleRowClick,
+    pageTitle: "Group Login"
   });
 
   return (
@@ -67,11 +78,18 @@ export default function Branch() {
       <div className="flex flex-wrap items-center justify-between mb-6">
         <div className="flex flex-wrap items-center space-x-3">
           <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100 flex items-center">
-            Group Login
+            Group Login {successOpen}
           </h2>
         </div>
 
-        <Create pageTitle="Group Login" onSuccess={fetchRecords} />
+        <Create pageTitle="Group Login" onSuccess={handleSuccess} />
+
+        <SuccessDialog
+          open={successOpen}
+          onOpenChange={setSuccessOpen}
+          title={sucessObject.title}
+          description={sucessObject.description}
+        />
       </div>
 
       <DataTable
@@ -94,6 +112,8 @@ export default function Branch() {
           />
         }
       />
+
+
     </>
   );
 }

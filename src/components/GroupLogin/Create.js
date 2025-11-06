@@ -13,40 +13,57 @@ import {
 } from "@/components/ui/dialog";
 import DropDown from "@/components/ui/DropDown";
 
-import { createBranch } from "@/lib/api";
-import { SuccessDialog } from "@/components/SuccessDialog";
-import DatePicker from "../ui/DatePicker";
+import { getBranches, getRoles, createAdmin } from "@/lib/api";
 import { parseApiError } from "@/lib/utils";
 
 let defaultPayload = {
-  user_id: 0, // dont changedefault 
-
-  branch_name: "",
-  licence_number: "",
-  licence_issue_by_department: "",
-  licence_expiry: "",
-  lat: "",
-  lon: "",
-  address: "",
+  branch_id: "",
+  name: "",
+  email: "",
+  password: "",
+  password_confirmation: "",
+  role_id: "",
+  order: 0
 };
 
-const Create = ({ pageTitle = "Item", onSuccess = () => { } }) => {
+const Create = ({ pageTitle = "Add Item", onSuccess = (e) => { e } }) => {
 
   const [open, setOpen] = useState(false);
-  const [successOpen, setSuccessOpen] = useState(false);
   const [globalError, setGlobalError] = useState(null);
+
+
+  const [branches, setBranches] = useState([]);
+  const [roles, setRoles] = useState([]);
   const [loading, setLoading] = useState(false);
 
   const [form, setForm] = useState(defaultPayload);
 
   useEffect(() => {
     if (open) {
+      fetchBranches();
+      fetchRoles();
       setForm(defaultPayload);
     }
   }, [open]);
 
+  const fetchBranches = async () => {
+    try {
+      setBranches(await getBranches());
+    } catch (error) {
+      setGlobalError(parseApiError(error));
+    }
+  };
+
+  const fetchRoles = async () => {
+    try {
+      const result = await getRoles();
+      setRoles(result.data || []);
+    } catch (error) {
+      setGlobalError(parseApiError(error));
+    }
+  };
+
   const handleChange = (field, value) => {
-    console.log(field, value);
     setForm((prev) => ({ ...prev, [field]: value }));
   };
 
@@ -55,19 +72,12 @@ const Create = ({ pageTitle = "Item", onSuccess = () => { } }) => {
     setLoading(true);
     try {
 
-      let { data } = await createBranch(form);
-
-      if (data?.status == false) {
-
-        const firstKey = Object.keys(data.errors)[0]; // get the first key
-        const firstError = data.errors[firstKey][0]; // get its first error message
-        setGlobalError(firstError);
-        return;
-      }
-      console.log(data);
+      await createAdmin(form);
       await new Promise(resolve => setTimeout(resolve, 2000));
+
+      // inform to parent component
+      onSuccess({ title: `${pageTitle} Save`, description: `${pageTitle} Save successfully` });
       setOpen(false);
-      onSuccess();
     } catch (error) {
       setGlobalError(parseApiError(error));
     } finally {
@@ -80,74 +90,73 @@ const Create = ({ pageTitle = "Item", onSuccess = () => { } }) => {
       <Button onClick={() => setOpen(true)}>Add {pageTitle}</Button>
 
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="!w-[600px] !max-w-[90%]">
+        <DialogContent className="max-w-lg">
           <DialogHeader>
             <DialogTitle>New {pageTitle}</DialogTitle>
           </DialogHeader>
 
           <div className="space-y-4">
+            <div>
+              <label className="block text-xs font-medium mb-1">Branch</label>
+              <DropDown
+                placeholder="Select Branch"
+                onChange={(val) => handleChange("branch_id", val)}
+                value={form.branch_id}
+                items={branches}
+              />
+            </div>
 
             <div>
               <label className="block text-xs font-medium mb-1">Name</label>
               <Input
-                value={form.branch_name}
-                onChange={(e) => handleChange("branch_name", e.target.value)}
+                value={form.name}
+                onChange={(e) => handleChange("name", e.target.value)}
               />
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-              <div>
-                <label className="block text-xs font-medium mb-1">Licence</label>
-                <Input
-                  value={form.licence_number}
-                  onChange={(e) => handleChange("licence_number", e.target.value)}
-                />
-              </div>
-              <div>
-                <label className="block text-xs font-medium mb-1">Issued By Department</label>
-                <Input
-                  value={form.licence_issue_by_department}
-                  onChange={(e) => handleChange("licence_issue_by_department", e.target.value)}
-                />
-              </div>
-              <div>
-                <label className="block text-xs font-medium mb-1">Licence Expiry</label>
-                <DatePicker
-                  value={form.licence_expiry}
-                  onChange={(value) => handleChange("licence_expiry", value)}
-                  placeholder="Pick a date"
-                />
-              </div>
+            <div>
+              <label className="block text-xs font-medium mb-1">Email</label>
+              <Input
+                type="email"
+                value={form.email}
+                onChange={(e) => handleChange("email", e.target.value)}
+              />
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
-                <label className="block text-xs font-medium mb-1">Lat</label>
+                <label className="block text-xs font-medium mb-1">
+                  Password <span className="text-red-500">*</span>
+                </label>
                 <Input
-                  value={form.lat}
-                  onChange={(e) => handleChange("lat", e.target.value)}
+                  type="password"
+                  value={form.password}
+                  onChange={(e) => handleChange("password", e.target.value)}
                 />
               </div>
               <div>
-                <label className="block text-xs font-medium mb-1">Lon</label>
+                <label className="block text-xs font-medium mb-1">
+                  Confirm Password
+                </label>
                 <Input
-                  value={form.lon}
-                  onChange={(e) => handleChange("lon", e.target.value)}
+                  type="password"
+                  value={form.password_confirmation}
+                  onChange={(e) =>
+                    handleChange("password_confirmation", e.target.value)
+                  }
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-xs font-medium mb-1">Address</label>
-              <textarea
-                value={form.address}
-                onChange={(e) => handleChange("address", e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 text-sm"
-                rows={4} // adjust height
+              <label className="block text-xs font-medium mb-1">Role</label>
+              <DropDown
+                placeholder="Select Role"
+                onChange={(val) => handleChange("role_id", val)}
+                value={form.role_id}
+                items={roles}
               />
             </div>
-
-
           </div>
 
           {globalError && (
@@ -170,13 +179,6 @@ const Create = ({ pageTitle = "Item", onSuccess = () => { } }) => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-
-      <SuccessDialog
-        successOpen={successOpen}
-        onOpenChange={setSuccessOpen}
-        title={`Saved ${pageTitle}`}
-        description="Branch Saved successfully."
-      />
     </>
   );
 };

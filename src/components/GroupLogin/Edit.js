@@ -13,10 +13,11 @@ import {
 } from "@/components/ui/dialog";
 import DropDown from "@/components/ui/DropDown";
 
-import { updateBranch } from "@/lib/api";
+import { getBranches, getRoles, updateAdmin } from "@/lib/api";
 import { parseApiError } from "@/lib/utils";
 
-const Edit = ({
+const EditAdminFormDialog = ({
+  pageTitle = "item",
   initialData = {},
   onSuccess = () => { },
   controlledOpen,
@@ -27,42 +28,50 @@ const Edit = ({
   const actualOpen = isControlled ? controlledOpen : open;
   const actualSetOpen = isControlled ? controlledSetOpen : setOpen;
 
+  const [branches, setBranches] = useState([]);
+  const [roles, setRoles] = useState([]);
+  const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
-
-  const [globalError, setGlobalError] = useState(null);
 
   const [form, setForm] = useState(initialData);
 
   useEffect(() => {
     if (actualOpen) {
+      fetchBranches();
+      fetchRoles();
       setForm(initialData);
     }
   }, [actualOpen, initialData]);
+
+  const fetchBranches = async () => {
+    try {
+      setBranches(await getBranches());
+    } catch (error) {
+      setError(parseApiError(error));
+    }
+  };
+
+  const fetchRoles = async () => {
+    try {
+      const result = await getRoles();
+      setRoles(result.data || []);
+    } catch (error) {
+      setError(parseApiError(error));
+    }
+  };
 
   const handleChange = (field, value) => {
     setForm((prev) => ({ ...prev, [field]: value }));
   };
 
   const onSubmit = async () => {
-    setGlobalError(null);
+    setError(null);
     setLoading(true);
     try {
-      let { data } = await updateBranch(initialData.id, form);
-
-      console.log(data?.status);
-
-      if (data?.status == false) {
-        console.log(data?.status);
-
-        const firstKey = Object.keys(data.errors)[0]; // get the first key
-        const firstError = data.errors[firstKey][0]; // get its first error message
-        setGlobalError(firstError);
-        return;
-      }
-      onSuccess();
-      actualSetOpen(false);
+      await updateAdmin(initialData.id, form);
+      onSuccess({ title: `${pageTitle} Saved`, description: `${pageTitle} Saved successfully` }); actualSetOpen(false);
     } catch (error) {
-      setGlobalError(parseApiError(error));
+      setError(parseApiError(error));
     } finally {
       setLoading(false);
     }
@@ -72,78 +81,73 @@ const Edit = ({
     <Dialog open={actualOpen} onOpenChange={actualSetOpen}>
       <DialogContent className="max-w-lg">
         <DialogHeader>
-          <DialogTitle>Edit Branch</DialogTitle>
+          <DialogTitle>Edit Admin</DialogTitle>
         </DialogHeader>
 
         <div className="space-y-4">
+          <div>
+            <label className="block text-xs font-medium mb-1">Branch</label>
+            <DropDown
+              placeholder="Select Branch"
+              onChange={(val) => handleChange("branch_id", val)}
+              value={form.branch_id}
+              items={branches}
+            />
+          </div>
 
           <div>
             <label className="block text-xs font-medium mb-1">Name</label>
             <Input
-              value={form.branch_name}
-              onChange={(e) => handleChange("branch_name", e.target.value)}
+              value={form.name}
+              onChange={(e) => handleChange("name", e.target.value)}
             />
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-            <div>
-              <label className="block text-xs font-medium mb-1">Licence</label>
-              <Input
-                value={form.licence_number}
-                onChange={(e) => handleChange("licence_number", e.target.value)}
-              />
-            </div>
-            <div>
-              <label className="block text-xs font-medium mb-1">Issued By Department</label>
-              <Input
-                value={form.licence_issue_by_department}
-                onChange={(e) => handleChange("licence_issue_by_department", e.target.value)}
-              />
-            </div>
-            <div>
-              <label className="block text-xs font-medium mb-1">Licence Expiry</label>
-              <Input
-                value={form.licence_expiry}
-                onChange={(e) => handleChange("licence_expiry", e.target.value)}
-              />
-            </div>
+          <div>
+            <label className="block text-xs font-medium mb-1">Email</label>
+            <Input
+              type="email"
+              value={form.email}
+              onChange={(e) => handleChange("email", e.target.value)}
+            />
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-medium mb-1">Lat</label>
+              <label className="block text-xs font-medium mb-1">
+                Password
+              </label>
               <Input
-                value={form.lat}
-                onChange={(e) => handleChange("lat", e.target.value)}
+                type="password"
+                value={form.password}
+                onChange={(e) => handleChange("password", e.target.value)}
+                placeholder="Leave blank to keep same"
               />
             </div>
             <div>
-              <label className="block text-xs font-medium mb-1">Lon</label>
+              <label className="block text-xs font-medium mb-1">
+                Confirm Password
+              </label>
               <Input
-                value={form.lon}
-                onChange={(e) => handleChange("lon", e.target.value)}
+                type="password"
+                value={form.password_confirmation}
+                onChange={(e) =>
+                  handleChange("password_confirmation", e.target.value)
+                }
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-xs font-medium mb-1">Address</label>
-            <textarea
-              value={form.address}
-              onChange={(e) => handleChange("address", e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 text-sm"
-              rows={4} // adjust height
+            <label className="block text-xs font-medium mb-1">Role</label>
+            <DropDown
+              placeholder="Select Role"
+              onChange={(val) => handleChange("role_id", val)}
+              value={form.role_id}
+              items={roles}
             />
           </div>
-
-
         </div>
-
-        {globalError && (
-          <div className="mb-4 p-3 border border-red-500 bg-red-50 text-red-700 rounded-lg" role="alert">
-            {globalError}
-          </div>
-        )}
 
         <DialogFooter className="mt-4">
           <Button variant="outline" onClick={() => actualSetOpen(false)}>
@@ -162,4 +166,4 @@ const Edit = ({
   );
 };
 
-export default Edit;
+export default EditAdminFormDialog;
