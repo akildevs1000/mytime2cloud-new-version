@@ -23,10 +23,10 @@ import {
     FileText,
     Briefcase, Phone, ArrowLeft, Upload, Calendar as CalenddarIcon, CalendarIcon
 } from "lucide-react";
-import { addTimes, cn, convertFileToBase64 } from "@/lib/utils";
+import { addTimes, cn, convertFileToBase64, parseApiError } from "@/lib/utils";
 import { useRouter } from 'next/navigation';
 
-import { getBranches, getDepartments, parseApiError, storeEmployee, storeShift } from '@/lib/api';
+import { storeShift } from '@/lib/api';
 import {
     Select,
     SelectContent,

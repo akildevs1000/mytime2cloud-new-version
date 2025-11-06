@@ -11,10 +11,10 @@ import { Input } from "@/components/ui/input";
 import {
   ArrowLeft
 } from "lucide-react";
-import { addTimes, cn } from "@/lib/utils";
+import { addTimes, cn, parseApiError } from "@/lib/utils";
 import { useRouter } from 'next/navigation';
 
-import { parseApiError, storeShift } from '@/lib/api';
+import { storeShift } from '@/lib/api';
 import {
   Select,
   SelectContent,
@@ -32,8 +32,6 @@ import DaysSelector from "@/components/DaysSelector";
 
 
 import Link from 'next/link';
-
-
 
 
 import axios from 'axios'; // Ensure you import axios at the top of your file

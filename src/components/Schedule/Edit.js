@@ -22,10 +22,10 @@ import {
 } from "@/components/ui/select";
 
 import { Check, ChevronsUpDown, User, Briefcase, Phone, ArrowLeft, Upload, Calendar as CalenddarIcon, CheckCircle2, CalendarIcon } from "lucide-react";
-import { cn, convertFileToBase64 } from "@/lib/utils";
+import { cn, convertFileToBase64, parseApiError } from "@/lib/utils";
 import { useRouter } from 'next/navigation';
 
-import { getBranches, getDepartments, parseApiError, storeEmployee } from '@/lib/api';
+import { getBranches, getDepartments, storeEmployee } from '@/lib/api';
 
 
 import { user } from '@/config';

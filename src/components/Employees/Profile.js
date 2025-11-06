@@ -37,10 +37,10 @@ import {
 
 
 import { Check, ChevronsUpDown, User, Briefcase, Phone } from "lucide-react";
-import { cn, convertFileToBase64 } from "@/lib/utils";
+import { cn, convertFileToBase64, parseApiError } from "@/lib/utils";
 import { useRouter } from 'next/navigation';
 
-import { getBranches, getDepartments, parseApiError, storeEmployee, updateEmployee } from '@/lib/api';
+import { getBranches, getDepartments, storeEmployee, updateEmployee } from '@/lib/api';
 import DatePicker from '@/components/ui/DatePicker';
 
 
