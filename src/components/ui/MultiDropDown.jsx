@@ -48,7 +48,7 @@ export default function MultiDropDown({
       newSelection = [...value, id];
     }
 
-    // console.log("🚀 ~ handleSelect ~ newSelection:", newSelection);
+    console.log("🚀 ~ handleSelect ~ newSelection:", newSelection);
 
     onChange(newSelection);
   };
@@ -101,7 +101,7 @@ export default function MultiDropDown({
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger asChild>
+      <PopoverTrigger asChild className="w-full">
         <Button
           ref={triggerRef}
           variant="outline"

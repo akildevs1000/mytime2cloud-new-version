@@ -13,8 +13,9 @@ import {
 } from "@/components/ui/dialog";
 import DropDown from "@/components/ui/DropDown";
 
-import { getBranches, getRoles, createAdmin } from "@/lib/api";
+import { getBranches, getRoles, createGroupLogin, getDepartments } from "@/lib/api";
 import { parseApiError } from "@/lib/utils";
+import MultiDropDown from "../ui/MultiDropDown";
 
 let defaultPayload = {
   branch_id: "",
@@ -23,20 +24,32 @@ let defaultPayload = {
   password: "",
   password_confirmation: "",
   role_id: "",
-  order: 0
+  department_ids: []
 };
 
 const Create = ({ pageTitle = "Add Item", onSuccess = (e) => { e } }) => {
 
   const [open, setOpen] = useState(false);
   const [globalError, setGlobalError] = useState(null);
-
+  const [departments, setDepartments] = useState([]);
 
   const [branches, setBranches] = useState([]);
   const [roles, setRoles] = useState([]);
   const [loading, setLoading] = useState(false);
 
   const [form, setForm] = useState(defaultPayload);
+
+  const fetchDepartments = async () => {
+    try {
+      setDepartments(await getDepartments(form.branch_id));
+    } catch (error) {
+      setGlobalError(parseApiError(error));
+    }
+  };
+
+  useEffect(() => {
+    fetchDepartments();
+  }, [form.branch_id]);
 
   useEffect(() => {
     if (open) {
@@ -72,7 +85,7 @@ const Create = ({ pageTitle = "Add Item", onSuccess = (e) => { e } }) => {
     setLoading(true);
     try {
 
-      await createAdmin(form);
+      await createGroupLogin(form);
       await new Promise(resolve => setTimeout(resolve, 2000));
 
       // inform to parent component
@@ -103,6 +116,17 @@ const Create = ({ pageTitle = "Add Item", onSuccess = (e) => { e } }) => {
                 onChange={(val) => handleChange("branch_id", val)}
                 value={form.branch_id}
                 items={branches}
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs font-medium mb-1">Departments</label>
+              <MultiDropDown
+                placeholder={'Select Department'}
+                items={departments}
+                value={form.department_ids}
+                onChange={(val) => handleChange("department_ids", val)}
+                badgesCount={1}
               />
             </div>
 

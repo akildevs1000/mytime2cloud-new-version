@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { getAdmins } from "@/lib/api";
+import { getGroupLogins } from "@/lib/api";
 
 import Pagination from "@/lib/Pagination";
 import DataTable from "@/components/ui/DataTable";
@@ -11,7 +11,7 @@ import { useRouter } from "next/navigation";
 import { parseApiError } from "@/lib/utils";
 import { SuccessDialog } from "../SuccessDialog";
 
-export default function Branch() {
+export default function GroupLogin() {
   const [records, setRecords] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -40,7 +40,7 @@ export default function Branch() {
       setIsLoading(true);
       setError(null);
 
-      const result = await getAdmins({
+      const result = await getGroupLogins({
         page: currentPage,
         per_page: perPage,
       });

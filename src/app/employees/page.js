@@ -5,7 +5,7 @@ import { Search, Plus, RefreshCw } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Input } from '@/components/ui/input';
-import { getBranches, getEmployees, removeEmployee } from '@/lib/api';
+import { getBranches, getDepartments, getEmployees, removeEmployee } from '@/lib/api';
 import { EmployeeExtras } from '@/components/Employees/Extras';
 
 import Columns from "./columns";
@@ -13,6 +13,7 @@ import DataTable from '@/components/ui/DataTable';
 import Pagination from '@/lib/Pagination';
 import { parseApiError } from '@/lib/utils';
 import DropDown from '@/components/ui/DropDown';
+import MultiDropDown from '@/components/ui/MultiDropDown';
 
 export default function EmployeeDataTable() {
 
@@ -27,6 +28,7 @@ export default function EmployeeDataTable() {
     const [searchTerm, setSearchTerm] = useState('');
 
     const [selectedBranch, setSelectedBranch] = useState(null);
+    const [selectedDepartments, setSelectedDepartments] = useState([]);
     const [branches, setBranches] = useState([]);
 
     const fetchBranches = async () => {
@@ -52,6 +54,7 @@ export default function EmployeeDataTable() {
                 per_page: perPage,
                 sortDesc: 'false',
                 branch_id: selectedBranch,
+                department_ids: selectedDepartments,
                 search: searchTerm || null, // Only include search if it's not empty
             };
             const result = await getEmployees(params);
@@ -72,9 +75,24 @@ export default function EmployeeDataTable() {
             setError(parseApiError(error));
             setIsLoading(false);
         }
-    }, [perPage, selectedBranch, searchTerm]);
+    }, [perPage, selectedBranch, selectedDepartments, searchTerm]);
 
     const router = useRouter();
+
+    const [departments, setDepartments] = useState([]);
+
+    const fetchDepartments = async () => {
+        try {
+            setDepartments(await getDepartments(selectedBranch));
+        } catch (error) {
+            setError(parseApiError(error));
+        }
+    };
+
+
+    useEffect(() => {
+        fetchDepartments();
+    }, [selectedBranch]);
 
 
     useEffect(() => {
@@ -82,6 +100,8 @@ export default function EmployeeDataTable() {
     }, [currentPage, perPage, fetchEmployees]); // Re-fetch when page or perPage changes
 
     const handleRefresh = () => {
+        setSelectedBranch(null);
+        setSelectedDepartments([]);
         fetchEmployees(currentPage, perPage);
     }
 
@@ -110,6 +130,15 @@ export default function EmployeeDataTable() {
                             onChange={(id) => { setSelectedBranch(id); setCurrentPage(1); }}
                             value={selectedBranch}
                             items={branches}
+                        />
+                    </div>
+                    <div className="relative">
+                        <MultiDropDown
+                            placeholder={'Select Departments'}
+                            items={departments}
+                            value={selectedDepartments}
+                            onChange={setSelectedDepartments}
+                            badgesCount={1}
                         />
                     </div>
 

@@ -4,6 +4,8 @@
 import { useState } from "react";
 import { MoreVertical, PenBox, Trash2 } from "lucide-react";
 import Edit from "@/components/GroupLogin/Edit";
+import { Badge } from "@/components/ui/badge";
+import { Tooltip } from "@/components/ui/tooltip";
 
 import { deleteAdmin } from "@/lib/api";
 import { parseApiError } from "@/lib/utils";
@@ -67,17 +69,13 @@ function OptionsMenu({ admin, pageTitle, onSuccess = (e) => { e } }) {
   );
 }
 
-
 export default function Columns({ pageTitle, onSuccess = (e) => { e } } = {}) {
   return [
     {
       key: "name",
       header: "Name",
       render: (admin) => (
-        <span
-          className="text-gray-800 cursor-pointer"
-          title={admin.name || "—"}
-        >
+        <span className="text-gray-800 cursor-pointer" title={admin.name || "—"}>
           {admin.name || "—"}
         </span>
       ),
@@ -86,10 +84,7 @@ export default function Columns({ pageTitle, onSuccess = (e) => { e } } = {}) {
       key: "email",
       header: "Email",
       render: (admin) => (
-        <span
-          className="text-gray-800 cursor-pointer"
-          title={admin.email || "—"}
-        >
+        <span className="text-gray-800 cursor-pointer" title={admin.email || "—"}>
           {admin.email || "—"}
         </span>
       ),
@@ -98,23 +93,43 @@ export default function Columns({ pageTitle, onSuccess = (e) => { e } } = {}) {
       key: "role",
       header: "Role",
       render: (admin) => (
-        <span
-          className="text-gray-800 cursor-pointer"
-          title={admin.role?.name || "—"}
-        >
+        <span className="text-gray-800 cursor-pointer" title={admin.role?.name || "—"}>
           {admin.role?.name || "—"}
         </span>
       ),
     },
     {
+      key: "departments",
+      header: "Departments",
+      render: (admin) => {
+        if (!admin.departments || admin.departments.length === 0) return "—";
+
+        const maxDisplay = 1; // show first 2 departments
+        const firstTwo = admin.departments.slice(0, maxDisplay);
+        const remainingCount = admin.departments.length - maxDisplay;
+
+        return (
+          <div className="flex flex-wrap gap-1">
+            {firstTwo.map((dept) => (
+              <Badge key={dept.id} variant="outline">
+                {dept.name}
+              </Badge>
+            ))}
+
+            {remainingCount > 0 && (
+              <Tooltip content={admin.departments.map((d) => d.name).join(", ")}>
+                <Badge variant="secondary">+{remainingCount} more</Badge>
+              </Tooltip>
+            )}
+          </div>
+        );
+      },
+    },
+    {
       key: "options",
       header: "Options",
       render: (admin) => (
-        <OptionsMenu
-          pageTitle={pageTitle}
-          admin={admin}
-          onSuccess={onSuccess}
-        />
+        <OptionsMenu pageTitle={pageTitle} admin={admin} onSuccess={onSuccess} />
       ),
     },
   ];

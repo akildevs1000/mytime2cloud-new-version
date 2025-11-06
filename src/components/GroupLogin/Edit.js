@@ -13,8 +13,9 @@ import {
 } from "@/components/ui/dialog";
 import DropDown from "@/components/ui/DropDown";
 
-import { getBranches, getRoles, updateAdmin } from "@/lib/api";
+import { getBranches, getRoles, updateGroupLogin } from "@/lib/api";
 import { parseApiError } from "@/lib/utils";
+import MultiDropDown from "../ui/MultiDropDown";
 
 const EditAdminFormDialog = ({
   pageTitle = "item",
@@ -29,11 +30,35 @@ const EditAdminFormDialog = ({
   const actualSetOpen = isControlled ? controlledSetOpen : setOpen;
 
   const [branches, setBranches] = useState([]);
+  const [departments, setDepartments] = useState([]);
+
   const [roles, setRoles] = useState([]);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
 
   const [form, setForm] = useState(initialData);
+
+  const fetchDepartments = async () => {
+    try {
+      setDepartments(await getDepartments(form.branch_id));
+
+
+      // if editing, keep the selected department_ids
+      if (initialData.department_ids) {
+        const validIds = data
+          .filter((d) => initialData.department_ids.includes(d.id))
+          .map((d) => d.id);
+
+        handleChange("department_ids", validIds);
+      }
+    } catch (error) {
+      setGlobalError(parseApiError(error));
+    }
+  };
+
+  useEffect(() => {
+    fetchDepartments();
+  }, [form.branch_id]);
 
   useEffect(() => {
     if (actualOpen) {
@@ -92,6 +117,17 @@ const EditAdminFormDialog = ({
               onChange={(val) => handleChange("branch_id", val)}
               value={form.branch_id}
               items={branches}
+            />
+          </div>
+
+          <div>
+            <label className="block text-xs font-medium mb-1">Departments</label>
+            <MultiDropDown
+              placeholder={'Select Department'}
+              items={departments}
+              value={form.department_ids}
+              onChange={(val) => handleChange("department_ids", val)}
+              badgesCount={1}
             />
           </div>
 

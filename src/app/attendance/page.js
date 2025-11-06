@@ -31,7 +31,7 @@ export default function AttendanceTable() {
     const [shiftTypeId, setShiftTypeId] = useState(`2`);
     const [selectedStatusIds, setSelectedStatusIds] = useState([]);
     const [selectedBranch, setSelectedBranch] = useState(null);
-    const [selectedDepartmentId, setSelectedDepartment] = useState(null);
+    const [selectedDepartmentIds, setSelectedDepartment] = useState([]);
     const [selectedEmployeeIds, setSelectedEmployeeIds] = useState([]);
     const [selectedReportTemplate, setSelectedReportTemplate] = useState(null);
 
@@ -82,7 +82,7 @@ export default function AttendanceTable() {
 
     const fetchScheduledEmployees = async () => {
         try {
-            let result = await getScheduledEmployeeList(selectedBranch, [selectedDepartmentId]);
+            let result = await getScheduledEmployeeList(selectedBranch, selectedDepartmentIds);
 
             setScheduledEmployees(result.map((e) => ({ ...e, name: e.full_name, id: e.system_user_id })));
         } catch (error) {
@@ -102,20 +102,24 @@ export default function AttendanceTable() {
 
     useEffect(() => {
         fetchScheduledEmployees();
-    }, [selectedDepartmentId]);
+    }, [selectedDepartmentIds]);
+
     const fetchRecords = async () => {
-        // Validate required parameters first
+
         if (
-            !shiftTypeId ||
-            !selectedReportTemplate ||
-            !selectedEmployeeIds?.length ||
-            !selectedBranch ||
-            !currentPage ||
-            !perPage
+            !selectedEmployeeIds?.length
         ) {
-            alert("Please fill/select all required fields.");
+            alert("Please select employee(s)");
             return;
         }
+
+        if (
+            !selectedReportTemplate
+        ) {
+            alert("Please select template.");
+            return;
+        }
+
 
         setIsLoading(true);
         setError(null);
@@ -131,6 +135,7 @@ export default function AttendanceTable() {
                 employee_id: selectedEmployeeIds,
                 statuses: selectedStatusIds,
                 branch_id: selectedBranch,
+                department_ids: selectedDepartmentIds,
                 showTabs: JSON.stringify({ single: true, dual: false, multi: true }),
             };
             console.log(params);
@@ -151,11 +156,6 @@ export default function AttendanceTable() {
             setIsLoading(false); // Always turn off loading
         }
     };
-
-
-    useEffect(() => {
-        fetchRecords();
-    }, [currentPage, perPage, shiftTypeId]);
 
 
     return (
@@ -186,11 +186,12 @@ export default function AttendanceTable() {
                 </div>
 
                 <div className="flex flex-col">
-                    <DropDown
+                    <MultiDropDown
                         placeholder={'Select Department'}
-                        onChange={setSelectedDepartment}
-                        value={selectedDepartmentId}
                         items={departments}
+                        value={selectedDepartmentIds}
+                        onChange={setSelectedDepartment}
+                        badgesCount={1}
                     />
                 </div>
 

@@ -4,7 +4,7 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import Link from 'next/link';
 
-import { getBranches, getBranchesForTable, getEmployees } from '@/lib/api';
+import { getBranches, getBranchesForTable } from '@/lib/api';
 import { EmployeeExtras } from '@/components/Employees/Extras';
 import { Input } from '@/components/ui/input';
 import { useRouter } from "next/navigation";

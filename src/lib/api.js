@@ -5,6 +5,32 @@ const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'https://backend.mytime2clou
 
 import { getUser } from "@/config/index";
 
+export const buildQueryParams = async (params = {}) => {
+    const user = await getUser();
+
+    const queryParams = {
+        ...params,
+        company_id: user?.company_id ?? 0,
+    };
+
+    // Only include branch_id if it's not 0
+    if (user?.branch_id && user.branch_id !== 0) {
+        queryParams.branch_id = user.branch_id;
+    }
+
+    // Include department_ids only if valid and non-empty
+    if (Array.isArray(user?.department_ids) && user.department_ids.length > 0) {
+        queryParams.department_ids = user.department_ids;
+    }
+    else if (Array.isArray(params?.department_ids) && params.department_ids.length > 0) {
+        queryParams.department_ids = params.department_ids;
+    }
+
+    // queryParams.department_ids = [145, 410]
+
+    return queryParams;
+};
+
 export const getStatuses = async () => {
     const { data } = await axios.get(`${API_BASE}/attendance-statuses`);
     return data;
@@ -12,13 +38,8 @@ export const getStatuses = async () => {
 
 export const getBranches = async () => {
 
-    const user = await getUser();
-
     const { data } = await axios.get(`${API_BASE}/branch-list`, {
-        params: {
-            order_by: "name",
-            company_id: user?.company_id || 0,
-        },
+        params: await buildQueryParams(),
     });
     return data;
 };
@@ -63,74 +84,49 @@ export const getVisitorLink = async () => {
 
 // companyId will be passed dynamically
 export const getScheduleEmployees = async (params = {}) => {
-    const user = await getUser();
-
     const { data } = await axios.get(`${API_BASE}/employees_with_schedule_count`, {
-        params: {
-            ...params,
-            company_id: user?.company_id || 0,
-        },
+        params: await buildQueryParams(params),
     });
     return data;
 };
 
 export const getDeviceLogs = async (params = {}) => {
-    const user = await getUser();
-
     const { data } = await axios.get(`${API_BASE}/attendance_logs`, {
-        params: {
-            ...params,
-            company_id: user?.company_id || 0,
-        },
+        params: await buildQueryParams(params),
     });
     return data;
 };
 
 export const getAccessControlReport = async (params = {}) => {
-    const user = await getUser();
-
     const { data } = await axios.get(`${API_BASE}/access_control_report`, {
-        params: {
-            ...params,
-            company_id: user?.company_id || 0,
-        },
+        params: await buildQueryParams(params),
     });
     return data;
 };
-
 
 
 export const getEmployees = async (params = {}) => {
-    const user = await getUser();
-
-    const { data } = await axios.get(`${API_BASE}/employeev1`, {
-        params: {
-            ...params,
-            company_id: user?.company_id || 0,
-        },
-    });
+    const { data } = await axios.get(`${API_BASE}/employeev1`, { params: await buildQueryParams(params) });
     return data;
 };
 
-export const getShifts = async (params = {}) => {
-    const user = await getUser();
 
+export const getShifts = async (params = {}) => {
     const { data } = await axios.get(`${API_BASE}/shift`, {
-        params: {
-            ...params,
-            company_id: user?.company_id || 0,
-        },
+        params: await buildQueryParams(params),
     });
     return data;
 };
 
 export const getShiftDropDownList = async (branch_id = null) => {
-    const user = await getUser();
+    const params = {};
+
+    // Include branch_id if passed
+    if (branch_id) {
+        params.branch_id = branch_id;
+    }
     const { data } = await axios.get(`${API_BASE}/shift_dropdownlist`, {
-        params: {
-            branch_id: branch_id,
-            company_id: user?.company_id || 0,
-        },
+        params: await buildQueryParams(params),
     });
     return data;
 };
@@ -141,8 +137,7 @@ export const getDocuments = async (id) => {
 };
 
 export const deleteDocument = async (id) => {
-    await axios.delete(`${API_BASE}/documentinfo/${id}`);
-    return true;
+    return await axios.delete(`${API_BASE}/documentinfo/${id}`);
 };
 
 export async function uploadEmployeeDocument(employeeId, payload) {
@@ -156,45 +151,40 @@ export async function uploadEmployeeDocument(employeeId, payload) {
     fd.append("employee_id", employeeId);
     fd.append("company_id", user?.company_id || 0);
 
-    await axios.post(`${API_BASE}/employee-update-document-new/`, fd, {
+    return await axios.post(`${API_BASE}/employee-update-document-new/`, fd, {
         headers: { "Content-Type": "multipart/form-data" },
     });
-    return true;
 }
 
 
 export const getAttendnaceCount = async (branch_id = null) => {
-    const user = await getUser();
+    const params = {};
+
+    // Include branch_id if passed
+    if (branch_id) {
+        params.branch_id = branch_id;
+    }
+
     const { data } = await axios.get(`${API_BASE}/dashbaord_attendance_count`, {
-        params: {
-            branch_id: branch_id,
-            company_id: user?.company_id || 0,
-        },
+        params: await buildQueryParams(params),
     });
     return data;
 };
 
 // companyId will be passed dynamically
-export const getLogs = async (page = 1, count = 10, per_page = 10) => {
-    const user = await getUser();
+export const getLogs = async (page = 1, count = 10) => {
+    const params = { page };
     const { data } = await axios.get(`${API_BASE}/device/getLastRecordsHistory/${count}`, {
-        params: {
-            page: page,
-            company_id: user?.company_id || 0,
-        },
+        params: await buildQueryParams(params),
     });
     return data;
 };
 
 // companyId will be passed dynamically
 export const getTodayLogsCount = async (branch_id = null, department_id = null) => {
-    const user = await getUser();
+    const params = { branch_id, department_id };
     const { data } = await axios.get(`${API_BASE}/get_logs_count`, {
-        params: {
-            branch_id: branch_id,
-            department_id: department_id,
-            company_id: user?.company_id || 0,
-        },
+        params: await buildQueryParams(params),
     });
     return data;
 };
@@ -207,50 +197,40 @@ export const getLogoOnly = async () => {
 
 export const updateLogoOnly = async (payload) => {
     const user = await getUser();
-    await axios.post(`${API_BASE}/update-logo-only`, { ...payload, company_id: user?.company_id || 0 });
-    return true;
+    return await axios.post(`${API_BASE}/update-logo-only`, { ...payload, company_id: user?.company_id || 0 });
 };
 
 export const storeEmployee = async (payload) => {
     const user = await getUser();
-    await axios.post(`${API_BASE}/employee-store-new`, { ...payload, company_id: user?.company_id || 0 });
-    return true;
+    return await axios.post(`${API_BASE}/employee-store-new`, { ...payload, company_id: user?.company_id || 0 });
 };
 
 export const setPin = async (payload) => {
     const user = await getUser();
-    await axios.post(`${API_BASE}/set-pin`, { ...payload, company_id: user?.company_id || 0 });
-    return true;
+    return await axios.post(`${API_BASE}/set-pin`, { ...payload, company_id: user?.company_id || 0 });
 };
-
 
 export const updateContact = async (payload) => {
     const user = await getUser();
-    await axios.post(`${API_BASE}/company/${user?.company_id}/update/contact`, payload);
-    return true;
+    return await axios.post(`${API_BASE}/company/${user?.company_id}/update/contact`, payload);
 };
 
 export const updatePassword = async (payload) => {
-    const user = await getUser();
-    await axios.post(`${API_BASE}/company/${user?.company_id}/update/user`, payload);
-    return true;
+    return await axios.post(`${API_BASE}/company/${user?.company_id}/update/user`, payload);
 };
 
 export const updateLicense = async (payload) => {
     const user = await getUser();
-    await axios.post(`${API_BASE}/company/${user?.company_id}/trade-license`, payload);
-    return true;
+    return await axios.post(`${API_BASE}/company/${user?.company_id}/trade-license`, payload);
 };
 
 export const postAddPerson = async (payload) => {
     const user = await getUser();
-    await axios.post(`${API_BASE}/SDK/AddPerson`, { ...payload, company_id: user?.company_id || 0 });
-    return true;
+    return await axios.post(`${API_BASE}/SDK/AddPerson`, { ...payload, company_id: user?.company_id || 0 });
 };
 
 export const updateProfilePicture = async (payload) => {
-    await axios.post(`${API_BASE}/employee-update-profile-picture`, payload);
-    return true;
+    return await axios.post(`${API_BASE}/employee-update-profile-picture`, payload);
 };
 
 export const storeShift = async (payload) => {
@@ -261,143 +241,86 @@ export const storeShift = async (payload) => {
 
 export const storeSchedule = async (payload) => {
     const user = await getUser();
-    await axios.post(`${API_BASE}/schedule_employees`, { ...payload, company_id: user?.company_id || 0 });
-    return true;
+    return await axios.post(`${API_BASE}/schedule_employees`, { ...payload, company_id: user?.company_id || 0 });
 };
 
 export const storePayroll = async (payload) => {
     const user = await getUser();
-    await axios.post(`${API_BASE}/payroll`, { ...payload, company_id: user?.company_id || 0 });
-    return true;
+    return await axios.post(`${API_BASE}/payroll`, { ...payload, company_id: user?.company_id || 0 });
 };
 
 export const updateEmployee = async (payload, id = 0) => {
-    await axios.post(`${API_BASE}/employee-update-new/${id}`, payload);
-    return true;
+    return await axios.post(`${API_BASE}/employee-update-new/${id}`, payload);
 };
 
 export const removeEmployee = async (id = 0) => {
-
     await axios.delete(`${API_BASE}/employee/${id}`);
-
     return true;
 };
 
 export const removeShift = async (id = 0) => {
-
     await axios.delete(`${API_BASE}/shift/${id}`);
-
     return true;
 };
 
 export const updateEmergencyContact = async (payload, id = 0) => {
-
-    await axios.post(`${API_BASE}/employee-update-emergency-contact-new/${id}`, payload);
-
-    return true;
+    return await axios.post(`${API_BASE}/employee-update-emergency-contact-new/${id}`, payload);
 };
 
 export const updateBank = async (payload) => {
-
     const user = await getUser();
-
-    await axios.post(`${API_BASE}/employee-update-bank-new`, { ...payload, company_id: user?.company_id || 0 });
-
-    return true;
+    return await axios.post(`${API_BASE}/employee-update-bank-new`, { ...payload, company_id: user?.company_id || 0 });
 };
 
 export const updateAccessSettings = async (payload) => {
-
     const user = await getUser();
-
-    await axios.post(`${API_BASE}/employee-update-access-settings-new`, { ...payload, company_id: user?.company_id || 0 });
-
-    return true;
+    return await axios.post(`${API_BASE}/employee-update-access-settings-new`, { ...payload, company_id: user?.company_id || 0 });
 };
 
 export const updateLogin = async (payload) => {
-
     const user = await getUser();
-
-    await axios.post(`${API_BASE}/employee-update-login-new`, { ...payload, company_id: user?.company_id || 0 });
-
-    return true;
+    return await axios.post(`${API_BASE}/employee-update-login-new`, { ...payload, company_id: user?.company_id || 0 });
 };
 
 export const updateSettings = async (payload) => {
-
     const user = await getUser();
-
-    await axios.post(`${API_BASE}/employee-update-settings-new`, { ...payload, company_id: user?.company_id || 0 });
-
-    return true;
+    return await axios.post(`${API_BASE}/employee-update-settings-new`, { ...payload, company_id: user?.company_id || 0 });
 };
 
 export const getLeaveGroups = async () => {
-
-    const user = await getUser();
-
-    let { data } = await axios.get(`${API_BASE}/leave_groups`, { company_id: user?.company_id || 0, per_page: 100 });
-
+    let params = { per_page: 100 };
+    let { data } = await axios.get(`${API_BASE}/leave_groups`, { params: await buildQueryParams(params) });
     return data.data;
 };
 
 export const getLeaveManagers = async () => {
-
-    const user = await getUser();
-
-    let { data } = await axios.get(`${API_BASE}/employeesList`, { company_id: user?.company_id || 0, per_page: 100 });
-
+    let params = { per_page: 100 };
+    let { data } = await axios.get(`${API_BASE}/employeesList`, { params: await buildQueryParams(params) });
     return data.data;
 };
 
 export const updateAddress = async (payload, id = 0) => {
-
-    await axios.post(`${API_BASE}/employee-update-address-new/${id}`, payload);
-
-    return true;
+    return await axios.post(`${API_BASE}/employee-update-address-new/${id}`, payload);
 };
 
 export const updateVisa = async (payload) => {
-
     const user = await getUser();
-
-    console.log("Storing employee with payload:", payload, user?.company_id || 0);
-
-    await axios.post(`${API_BASE}/employee-update-visa-new`, { ...payload, company_id: user?.company_id || 0 });
-
-    return true;
+    return await axios.post(`${API_BASE}/employee-update-visa-new`, { ...payload, company_id: user?.company_id || 0 });
 };
 
 export const updateEmirate = async (payload) => {
-
     const user = await getUser();
-
-    console.log("Storing employee with payload:", payload, user?.company_id || 0);
-
-    await axios.post(`${API_BASE}/employee-update-emirate-new`, { ...payload, company_id: user?.company_id || 0 });
-
-    return true;
+    return await axios.post(`${API_BASE}/employee-update-emirate-new`, { ...payload, company_id: user?.company_id || 0 });
 };
 
 export const updatePassport = async (payload) => {
-
     const user = await getUser();
-
-    console.log("Storing employee with payload:", payload, user?.company_id || 0);
-
-    await axios.post(`${API_BASE}/employee-update-passport-new`, { ...payload, company_id: user?.company_id || 0 });
-
-    return true;
+    return await axios.post(`${API_BASE}/employee-update-passport-new`, { ...payload, company_id: user?.company_id || 0 });
 };
 
 export const updateQualification = async (payload) => {
-
     const user = await getUser();
-
-    await axios.post(`${API_BASE}/employee-update-qualification-new`, { ...payload, company_id: user?.company_id || 0 });
-
-    return true;
+    return await axios.post(`${API_BASE}/employee-update-qualification-new`, { ...payload, company_id: user?.company_id || 0 });
 };
 
 export const uploadEmployee = async (payload) => {
@@ -418,89 +341,96 @@ export const uploadCompanyDocument = async (payload) => {
     return data;
 };
 
-
-// companyId will be passed dynamically
 export const getCompanyDocuments = async () => {
-    const user = await getUser();
     const { data } = await axios.get(`${API_BASE}/document`, {
-        params: {
-            company_id: user?.company_id || 0,
-        },
+        params: await buildQueryParams(),
     });
     return data;
 };
 
 // companyId will be passed dynamically
 export const getEmployeeList = async (branch_id = 0, department_id = 0) => {
-    const user = await getUser();
+    let params = {
+        branch_id: branch_id,
+        department_id: department_id,
+    };
     const { data } = await axios.get(`${API_BASE}/scheduled_employees_with_type`, {
-        params: {
-            branch_id: branch_id,
-            department_id: department_id,
-            company_id: user?.company_id || 0,
-        },
+        params: await buildQueryParams(params),
     });
     return data;
 };
 
 export const getScheduledEmployeeList = async (branch_id = null, department_ids = [], shift_type_id = 2) => {
-    const user = await getUser();
+
+    const params = {
+        per_page: 1000,
+        branch_id,
+        department_ids, // passed from dropdown
+        shift_type_id,
+    };
+
     const { data } = await axios.get(`${API_BASE}/scheduled_employees_with_type`, {
-        params: {
-            per_page: 1000,
-            branch_id: branch_id,
-            department_ids: department_ids,
-            company_id: user?.company_id || 0,
-            shift_type_id: shift_type_id
-        },
+        params: await buildQueryParams(params),
     });
     return data;
 };
 
 // companyId will be passed dynamically
 export const getDeviceList = async (branch_id = 0) => {
-    const user = await getUser();
+
+    const params = {
+        branch_id,
+    };
+
     const { data } = await axios.get(`${API_BASE}/device-list`, {
-        params: {
-            branch_id: branch_id,
-            company_id: user?.company_id || 0,
-        },
+        params: await buildQueryParams(params),
     });
     return data;
 };
 
 export const getDevices = async (params = {}) => {
-    const user = await getUser();
     const { data } = await axios.get(`${API_BASE}/device`, {
-        params: {
-            ...params,
-            company_id: user?.company_id || 0,
-        },
+        params: await buildQueryParams(params),
     });
     return data;
 };
 
+// Group
+export const getGroupLogins = async (params = {}) => {
+    const { data } = await axios.get(`${API_BASE}/group-login`, {
+        params: await buildQueryParams(params),
+    });
+    return data;
+};
+export const createGroupLogin = async (payload = {}) => {
+    const user = await getUser();
+    return await axios.post(`${API_BASE}/group-login`, { ...payload, company_id: user?.company_id || 0 });
+};
+export const updateGroupLogin = async (id, payload = {}) => {
+    const user = await getUser();
+    return await axios.put(`${API_BASE}/group-login/${id}`, { ...payload, company_id: user?.company_id || 0 });
+};
+export const deleteGroupLogin = async (id) => {
+    await axios.delete(`${API_BASE}/group-login/${id}`);
+    return true;
+};
+
+// Group END
 
 // ADMINS
 export const getAdmins = async (params = {}) => {
-    const user = await getUser();
     const { data } = await axios.get(`${API_BASE}/admin`, {
-        params: {
-            ...params,
-            company_id: user?.company_id || 0,
-        },
+        params: await buildQueryParams(params),
     });
     return data;
 };
 export const createAdmin = async (payload = {}) => {
     const user = await getUser();
-    await axios.post(`${API_BASE}/admin`, { ...payload, company_id: user?.company_id || 0 });
-    return true;
+    return await axios.post(`${API_BASE}/admin`, { ...payload, company_id: user?.company_id || 0 });
 };
 export const updateAdmin = async (id, payload = {}) => {
     const user = await getUser();
-    await axios.put(`${API_BASE}/admin/${id}`, { ...payload, company_id: user?.company_id || 0 });
-    return true;
+    return await axios.put(`${API_BASE}/admin/${id}`, { ...payload, company_id: user?.company_id || 0 });
 };
 export const deleteAdmin = async (id) => {
     await axios.delete(`${API_BASE}/admin/${id}`);
@@ -512,25 +442,20 @@ export const deleteAdmin = async (id) => {
 // DEPARTMENT
 
 export const getSepartmentsForTable = async (params = {}) => {
-    const user = await getUser();
     const { data } = await axios.get(`${API_BASE}/departments`, {
-        params: {
-            ...params,
-            company_id: user?.company_id || 0,
-        },
+        params: await buildQueryParams(params),
     });
     return data;
 };
 
 export const createDepartment = async (payload = {}) => {
     const user = await getUser();
-    await axios.post(`${API_BASE}/departments`, { ...payload, company_id: user?.company_id || 0 });
-    return true;
+    return await axios.post(`${API_BASE}/departments`, { ...payload, company_id: user?.company_id || 0 });
 };
+
 export const updateDepartment = async (id, payload = {}) => {
     const user = await getUser();
-    await axios.put(`${API_BASE}/departments/${id}`, { ...payload, company_id: user?.company_id || 0 });
-    return true;
+    return await axios.put(`${API_BASE}/departments/${id}`, { ...payload, company_id: user?.company_id || 0 });
 };
 export const deleteDepartment = async (id) => {
     await axios.delete(`${API_BASE}/departments/${id}`);
@@ -541,12 +466,8 @@ export const deleteDepartment = async (id) => {
 
 // SUB DEPARTMENT
 export const getSubDepartments = async (params = {}) => {
-    const user = await getUser();
     const { data } = await axios.get(`${API_BASE}/sub-departments`, {
-        params: {
-            ...params,
-            company_id: user?.company_id || 0,
-        },
+        params: await buildQueryParams(params),
     });
     return data;
 };
@@ -566,25 +487,19 @@ export const deleteSubDepartments = async (id) => {
 
 // DESIGNATION
 export const getDesignations = async (params = {}) => {
-    const user = await getUser();
     const { data } = await axios.get(`${API_BASE}/designation`, {
-        params: {
-            ...params,
-            company_id: user?.company_id || 0,
-        },
+        params: await buildQueryParams(params),
     });
     return data;
 };
 
 export const createDesignations = async (payload = {}) => {
     const user = await getUser();
-    await axios.post(`${API_BASE}/designation`, { ...payload, company_id: user?.company_id || 0 });
-    return true;
+    return await axios.post(`${API_BASE}/designation`, { ...payload, company_id: user?.company_id || 0 });
 };
 export const updateDesignations = async (id, payload = {}) => {
     const user = await getUser();
-    await axios.put(`${API_BASE}/designation/${id}`, { ...payload, company_id: user?.company_id || 0 });
-    return true;
+    return await axios.put(`${API_BASE}/designation/${id}`, { ...payload, company_id: user?.company_id || 0 });
 };
 export const deleteDesignations = async (id) => {
     await axios.delete(`${API_BASE}/designation/${id}`);
@@ -594,15 +509,10 @@ export const deleteDesignations = async (id) => {
 // DESIGNATION END
 
 
-
 // DESIGNATION
 export const getBranchesForTable = async (params = {}) => {
-    const user = await getUser();
     const { data } = await axios.get(`${API_BASE}/branch`, {
-        params: {
-            ...params,
-            company_id: user?.company_id || 0,
-        },
+        params: await buildQueryParams(params),
     });
     return data;
 };
@@ -616,7 +526,8 @@ export const updateBranch = async (id, payload = {}) => {
     return await axios.put(`${API_BASE}/branch/${id}`, { ...payload, company_id: user?.company_id || 0 });
 };
 export const deleteBranch = async (id) => {
-    return await axios.delete(`${API_BASE}/branch/${id}`);
+    await axios.delete(`${API_BASE}/branch/${id}`);
+    return true;
 };
 
 // DESIGNATION END
@@ -624,24 +535,24 @@ export const deleteBranch = async (id) => {
 
 // companyId will be passed dynamically
 export const openDoor = async (device_id = 0) => {
-    const user = await getUser();
+
+    let params = {
+        device_id: device_id,
+    };
+
     const { data } = await axios.get(`${API_BASE}/open_door`, {
-        params: {
-            device_id: device_id,
-            company_id: user?.company_id || 0,
-        },
+        params: await buildQueryParams(params),
     });
     return data;
 };
 
 // companyId will be passed dynamically
 export const closeDoor = async (device_id = 0) => {
-    const user = await getUser();
+    let params = {
+        device_id: device_id,
+    };
     const { data } = await axios.get(`${API_BASE}/close_door`, {
-        params: {
-            device_id: device_id,
-            company_id: user?.company_id || 0,
-        },
+        params: await buildQueryParams(params),
     });
     return data;
 };
@@ -649,42 +560,35 @@ export const closeDoor = async (device_id = 0) => {
 
 // companyId will be passed dynamically
 export const checkPin = async (pin = "0000") => {
-    const user = await getUser();
+    let params = {
+        pin: pin,
+    };
     const { data } = await axios.get(`${API_BASE}/check-pin`, {
-        params: {
-            pin: pin,
-            company_id: user?.company_id || 0,
-        },
+        params: await buildQueryParams(params),
     });
     return data;
 };
 
 // companyId will be passed dynamically
 export const getLastTenLogs = async (UserID = "0") => {
-    const user = await getUser();
+    let params = {
+        UserID: UserID,
+    };
     const { data } = await axios.get(`${API_BASE}/get_last_ten_attendance_logs`, {
-        params: {
-            UserID: UserID,
-            company_id: user?.company_id || 0,
-        },
+        params: await buildQueryParams(params),
     });
     return data;
 };
 
-
-// companyId will be passed dynamically
 export const getAttendanceReports = async (payload = {}) => {
-    const user = await getUser();
-    const { data } = await axios.post(`${API_BASE}/attendance-report-new`, { ...payload, company_id: user?.company_id || 0 });
+    const body = await buildQueryParams(payload); // prepares company_id, branch_id, department_ids
+    const { data } = await axios.post(`${API_BASE}/attendance-report-new`, body);
     return data;
 };
 
 export const getCompanyInfo = async () => {
     const user = await getUser();
-
-    const data = await axios.get(`${API_BASE}/company/${user?.company_id || 0}`);
-
-    return data;
+    return await axios.get(`${API_BASE}/company/${user?.company_id || 0}`);
 };
 
 
