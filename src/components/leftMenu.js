@@ -1,48 +1,77 @@
-// LeftMenu.jsx
 'use client';
 
 import Link from "next/link";
 import { usePathname } from 'next/navigation';
-import { leftNavLinks } from '../lib/menuData'; // Import your data
+import { leftNavLinks } from '../lib/menuData';
+import { LogInIcon } from "lucide-react";
 
 export default function LeftMenu() {
   const pathname = usePathname();
 
-  if (pathname == "/login") return;
+  if (pathname === "/login") return null;
 
-  // Determine the primary route segment (e.g., /employees from /employees/add)
-  // This is a simple logic; you might need a more robust check for complex paths.
   const primaryPath = '/' + pathname.split('/')[1];
-
-  // Get the links for the current primary path
-  const links = leftNavLinks[primaryPath] || leftNavLinks['/']; // Default to dashboard links if path isn't found
+  const links = leftNavLinks[primaryPath] || leftNavLinks['/'];
 
   return (
     <aside
-      className="w-20 bg-gray-700 dark:bg-surface-dark border-border-light dark:border-border-dark flex flex-col items-center py-4"
+      className="group relative w-20 hover:w-56 bg-gray-800 dark:bg-surface-dark border-r border-gray-700 
+                 flex flex-col py-4 transition-all duration-300 ease-in-out overflow-hidden"
     >
-      <nav className="flex flex-col space-y-4">
-        {links.map((link) => (
-          <Link
-            key={link.label}
-            href={link.href}
-            // Logic for active link: is the current pathname exactly the link's href?
-            className={`p-2 rounded-lg ${pathname === link.href
-                ? "text-white" // Active styling
-                : "text-gray-100 dark:text-subtext-dark" // Default styling
-              }`}
-          >
-            <span className="material-icons">{link.icon}</span>
-          </Link>
-        ))}
+      <nav className="flex flex-col items-center gap-3 mt-2">
+        {links.map((link) => {
+          const isActive = pathname === link.href;
+          const Icon = link.icon;
+
+          return (
+            <Link
+              key={link.label}
+              href={link.href}
+              className={`flex items-center w-14 group-hover:w-full px-0 group-hover:px-4 py-3 
+                           transition-all duration-300 ease-in-out
+                ${isActive
+                  ? "bg-primary/30 text-white"
+                  : "text-gray-300 hover:bg-gray-700 hover:text-white"
+                }`}
+            >
+              {/* Icon container stays centered in collapsed state */}
+              <div className="flex justify-center w-full group-hover:w-8 group-hover:justify-start transition-all duration-300">
+                <Icon size={22} strokeWidth={1.8} />
+              </div>
+
+              {/* Label only appears when hovered */}
+              <span
+                className="overflow-hidden w-0 opacity-0 group-hover:w-auto group-hover:opacity-100 
+             transition-all duration-300 whitespace-nowrap text-sm font-medium ml-0 group-hover:ml-2"
+              >
+                {link.label}
+              </span>
+
+
+
+
+            </Link>
+          );
+        })}
       </nav>
-      {/* Settings remains at the bottom, so it can be outside the map */}
-      <div className="mt-auto">
+
+      {/* Bottom section */}
+      <div className="mt-auto flex items-center justify-center group-hover:justify-start w-full px-0 group-hover:px-4 mb-2 transition-all duration-300">
         <a
-          className="p-2 rounded-lg text-subtext-light dark:text-subtext-dark hover:bg-primary/10 hover:text-primary"
+          className="flex items-center w-14 group-hover:w-full py-3 rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white 
+                     transition-all duration-200"
           href="#"
         >
-          <span className="material-icons">settings</span>
+          <div className="flex justify-center w-full group-hover:w-8 group-hover:justify-start transition-all duration-300">
+            <LogInIcon size={22} strokeWidth={1.8} />
+          </div>
+          <span
+            className="ml-2 opacity-0 group-hover:opacity-100 group-hover:translate-x-0 
+                       transform -translate-x-2 transition-all duration-300 ease-in-out 
+                       whitespace-nowrap text-sm font-medium"
+          >
+            Login
+          </span>
         </a>
       </div>
     </aside>
