@@ -11,10 +11,17 @@ const attendanceMenu = [
 ];
 
 const companyMenu = [
-  { href: "company", icon: "event", label: "Company" },
-  { href: "device", icon: "event", label: "Device" },
+  { href: "company", icon: "domain", label: "Company" },
   { href: "branch", icon: "event", label: "Branch" },
   { href: "department-tabs", icon: "event", label: "Department" },
+  { href: "department-tabs", icon: "event", label: "Automation" },
+  { href: "department-tabs", icon: "event", label: "Roles" },
+  { href: "device", icon: "event", label: "Device" },
+  { href: "department-tabs", icon: "event", label: "Holidays" },
+  { href: "department-tabs", icon: "event", label: "Leaves" },
+  { href: "department-tabs", icon: "event", label: "Announcements" },
+  { href: "department-tabs", icon: "event", label: "Activity" },
+  { href: "department-tabs", icon: "event", label: "Payroll" },
 ];
 
 const employeesMenu = [
