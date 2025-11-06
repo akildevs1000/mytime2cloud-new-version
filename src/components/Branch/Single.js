@@ -49,15 +49,13 @@ const Edit = ({
       let { data } = await updateBranch(initialData.id, form);
 
       if (data?.status == false) {
-        console.log(data?.status);
 
         const firstKey = Object.keys(data.errors)[0]; // get the first key
         const firstError = data.errors[firstKey][0]; // get its first error message
         setGlobalError(firstError);
         return;
       }
-      onSuccess();
-      actualSetOpen(false);
+      setOpen(true);
     } catch (error) {
       setGlobalError(parseApiError(error));
     } finally {
@@ -65,7 +63,7 @@ const Edit = ({
     }
   };
 
-  if(!form) return;
+  if (!form) return;
 
   return (
     <>
@@ -161,8 +159,8 @@ const Edit = ({
               <SuccessDialog
                 open={open}
                 onOpenChange={setOpen}
-                title="Profile Saved"
-                description="Your profile information has been inserted successfully."
+                title="Branch Info"
+                description="Branch Info saved successfully."
               />
             </div>
           </div>

@@ -609,17 +609,14 @@ export const getBranchesForTable = async (params = {}) => {
 
 export const createBranch = async (payload = {}) => {
     const user = await getUser();
-    await axios.post(`${API_BASE}/branch`, { ...payload, company_id: user?.company_id || 0 });
-    return true;
+    return await axios.post(`${API_BASE}/branch`, { ...payload, company_id: user?.company_id || 0 });
 };
 export const updateBranch = async (id, payload = {}) => {
     const user = await getUser();
-    await axios.put(`${API_BASE}/branch/${id}`, { ...payload, company_id: user?.company_id || 0 });
-    return true;
+    return await axios.put(`${API_BASE}/branch/${id}`, { ...payload, company_id: user?.company_id || 0 });
 };
 export const deleteBranch = async (id) => {
-    await axios.delete(`${API_BASE}/branch/${id}`);
-    return true;
+    return await axios.delete(`${API_BASE}/branch/${id}`);
 };
 
 // DESIGNATION END

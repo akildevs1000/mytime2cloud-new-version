@@ -49,6 +49,8 @@ const Edit = ({
     try {
       let { data } = await updateBranch(initialData.id, form);
 
+      console.log(data?.status);
+
       if (data?.status == false) {
         console.log(data?.status);
 
