@@ -14,7 +14,6 @@ import {
 import DropDown from "@/components/ui/DropDown";
 
 import { getBranches, getRoles, createAdmin } from "@/lib/api";
-import { SuccessDialog } from "@/components/SuccessDialog";
 import { parseApiError } from "@/lib/utils";
 
 let defaultPayload = {
@@ -27,10 +26,9 @@ let defaultPayload = {
   order: 0
 };
 
-const CreateAdminFormDialog = ({ onSuccess = () => { } }) => {
+const Create = ({ pageTitle = "Add Item", onSuccess = (e) => { e } }) => {
 
   const [open, setOpen] = useState(false);
-  const [successOpen, setSuccessOpen] = useState(false);
   const [globalError, setGlobalError] = useState(null);
 
 
@@ -75,15 +73,11 @@ const CreateAdminFormDialog = ({ onSuccess = () => { } }) => {
     try {
 
       await createAdmin(form);
-
-      onSuccess();
-
-      setOpen(false);
-
       await new Promise(resolve => setTimeout(resolve, 2000));
 
-      setSuccessOpen(true);
-
+      // inform to parent component
+      onSuccess({ title: `${pageTitle} Save`, description: `${pageTitle} Save successfully` });
+      setOpen(false);
     } catch (error) {
       setGlobalError(parseApiError(error));
     } finally {
@@ -93,12 +87,12 @@ const CreateAdminFormDialog = ({ onSuccess = () => { } }) => {
 
   return (
     <>
-      <Button onClick={() => setOpen(true)}>Add Admin</Button>
+      <Button onClick={() => setOpen(true)}>Add {pageTitle}</Button>
 
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="max-w-lg">
           <DialogHeader>
-            <DialogTitle>New Admin</DialogTitle>
+            <DialogTitle>New {pageTitle}</DialogTitle>
           </DialogHeader>
 
           <div className="space-y-4">
@@ -180,20 +174,13 @@ const CreateAdminFormDialog = ({ onSuccess = () => { } }) => {
               disabled={loading}
               className="bg-primary text-white"
             >
-              {loading ? "Saving..." : "Create Admin"}
+              {loading ? "Saving..." : `Create ${pageTitle}`}
             </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
-
-      <SuccessDialog
-        successOpen={successOpen}
-        onOpenChange={setSuccessOpen}
-        title="Admin Saved"
-        description="Admin Saved successfully."
-      />
     </>
   );
 };
 
-export default CreateAdminFormDialog;
+export default Create;

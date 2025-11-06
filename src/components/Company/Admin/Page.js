@@ -1,25 +1,37 @@
-// Admin.jsx
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { UserLock } from "lucide-react";
 import { getAdmins } from "@/lib/api";
 
 import Pagination from "@/lib/Pagination";
 import DataTable from "@/components/ui/DataTable";
 import Columns from "./columns";
-import AdminFormDialog from "@/components/Company/Admin/Create";
+import Create from "@/components/Company/Admin/Create";
+import { useRouter } from "next/navigation";
 import { parseApiError } from "@/lib/utils";
+import { SuccessDialog } from "@/components/SuccessDialog";
 
-export default function Admin() {
-  const [admins, setAdmins] = useState([]);
+let pageTitle = "Admin";
+
+export default function Branch() {
+  const [records, setRecords] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [sucessObject, setSucessObject] = useState({ title: "", description: "" });
+
+  const [successOpen, setSuccessOpen] = useState(false);
+
 
   // Pagination
   const [currentPage, setCurrentPage] = useState(1);
   const [perPage, setPerPage] = useState(25);
   const [total, setTotal] = useState(0);
+
+  const handleSuccess = (e) => {
+    setSuccessOpen(true);
+    setSucessObject(e);
+    fetchRecords();
+  }
 
   useEffect(() => {
     fetchRecords();
@@ -36,7 +48,7 @@ export default function Admin() {
       });
 
       if (result && Array.isArray(result.data)) {
-        setAdmins(result.data);
+        setRecords(result.data);
         setCurrentPage(result.current_page || 1);
         setTotal(result.total || 0);
       } else {
@@ -49,8 +61,18 @@ export default function Admin() {
     }
   };
 
+  const router = useRouter();
+
+  const handleRowClick = (employee) => {
+    console.log(employee);
+    // You can customize per row
+    router.push(`/branch/short-list`);
+  };
+
   const columns = Columns({
-    onSuccess: fetchRecords, // refresh after edit
+    onSuccess: handleSuccess,
+    handleRowClick: handleRowClick,
+    pageTitle: pageTitle
   });
 
   return (
@@ -58,19 +80,24 @@ export default function Admin() {
       <div className="flex flex-wrap items-center justify-between mb-6">
         <div className="flex flex-wrap items-center space-x-3">
           <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100 flex items-center">
-            <UserLock className="mr-3 h-6 w-6 text-primary" />
-            Admin
+            {pageTitle} {successOpen}
           </h2>
         </div>
 
-        {/* Add Admin Dialog */}
-        <AdminFormDialog onSuccess={fetchRecords} />
+        <Create pageTitle={pageTitle} onSuccess={handleSuccess} />
+
+        <SuccessDialog
+          open={successOpen}
+          onOpenChange={setSuccessOpen}
+          title={sucessObject.title}
+          description={sucessObject.description}
+        />
       </div>
 
       <DataTable
         className="bg-slate-50 overflow-hidden min-h-[300px]"
         columns={columns}
-        data={admins}
+        data={records}
         isLoading={isLoading}
         error={error}
         pagination={
@@ -87,6 +114,8 @@ export default function Admin() {
           />
         }
       />
+
+
     </>
   );
 }

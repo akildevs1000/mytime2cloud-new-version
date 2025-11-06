@@ -3,24 +3,31 @@
 
 import { useState } from "react";
 import { MoreVertical, PenBox, Trash2 } from "lucide-react";
-import EditAdminFormDialog from "@/components/Company/Admin/Edit";
+import Edit from "@/components/Company/Admin/Edit";
 
 import { deleteAdmin } from "@/lib/api";
 import { parseApiError } from "@/lib/utils";
 
 
-function OptionsMenu({ admin, onSuccess = () => { } }) {
+function OptionsMenu({ admin, pageTitle, onSuccess = (e) => { e } }) {
   const [openEdit, setOpenEdit] = useState(false);
 
   const onDelete = async (id) => {
+    const confirmDelete = window.confirm("Are you sure you want to delete this item?");
+    if (!confirmDelete) return; // exit if user cancels
     try {
       await deleteAdmin(id);
-      onSuccess(); // refresh parent data after successful delete
+      onSuccess({ title: `${pageTitle} Deleted`, description: `${pageTitle} Deleted successfully` }); actualSetOpen(false);
       setOpenEdit(false); // close menu
     } catch (error) {
       console.log(parseApiError(error));
     }
   };
+
+  const handleSuccess = (e) => {
+    onSuccess(e); // refresh parent data
+    setOpenEdit(false);
+  }
 
   return (
     <div className="relative">
@@ -48,14 +55,12 @@ function OptionsMenu({ admin, onSuccess = () => { } }) {
 
       {/* 👇 Edit Dialog Integration */}
       {openEdit === "edit" && (
-        <EditAdminFormDialog
+        <Edit
+          pageTitle={pageTitle}
           initialData={admin}
           controlledOpen={true}
           controlledSetOpen={(val) => setOpenEdit(val ? "edit" : false)}
-          onSuccess={() => {
-            onSuccess(); // refresh parent data
-            setOpenEdit(false);
-          }}
+          onSuccess={handleSuccess}
         />
       )}
     </div>
@@ -63,14 +68,14 @@ function OptionsMenu({ admin, onSuccess = () => { } }) {
 }
 
 
-export default function Columns({ onSuccess = () => { } } = {}) {
+export default function Columns({ pageTitle, onSuccess = (e) => { e } } = {}) {
   return [
     {
       key: "name",
       header: "Name",
       render: (admin) => (
         <span
-          className="text-gray-800 cursor-pointer block max-w-[150px] truncate"
+          className="text-gray-800 cursor-pointer"
           title={admin.name || "—"}
         >
           {admin.name || "—"}
@@ -82,7 +87,7 @@ export default function Columns({ onSuccess = () => { } } = {}) {
       header: "Email",
       render: (admin) => (
         <span
-          className="text-gray-800 cursor-pointer block max-w-[150px] truncate"
+          className="text-gray-800 cursor-pointer"
           title={admin.email || "—"}
         >
           {admin.email || "—"}
@@ -94,7 +99,7 @@ export default function Columns({ onSuccess = () => { } } = {}) {
       header: "Role",
       render: (admin) => (
         <span
-          className="text-gray-800 cursor-pointer block max-w-[150px] truncate"
+          className="text-gray-800 cursor-pointer"
           title={admin.role?.name || "—"}
         >
           {admin.role?.name || "—"}
@@ -106,6 +111,7 @@ export default function Columns({ onSuccess = () => { } } = {}) {
       header: "Options",
       render: (admin) => (
         <OptionsMenu
+          pageTitle={pageTitle}
           admin={admin}
           onSuccess={onSuccess}
         />

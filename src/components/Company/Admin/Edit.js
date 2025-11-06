@@ -17,8 +17,9 @@ import { getBranches, getRoles, updateAdmin } from "@/lib/api";
 import { parseApiError } from "@/lib/utils";
 
 const EditAdminFormDialog = ({
+  pageTitle = "item",
   initialData = {},
-  onSuccess = () => {},
+  onSuccess = () => { },
   controlledOpen,
   controlledSetOpen,
 }) => {
@@ -68,8 +69,7 @@ const EditAdminFormDialog = ({
     setLoading(true);
     try {
       await updateAdmin(initialData.id, form);
-      onSuccess();
-      actualSetOpen(false);
+      onSuccess({ title: `${pageTitle} Saved`, description: `${pageTitle} Saved successfully` }); actualSetOpen(false);
     } catch (error) {
       setError(parseApiError(error));
     } finally {
