@@ -30,7 +30,7 @@ let defaultPayload = {
   address: "",
 };
 
-const Create = ({ onSuccess = () => { } }) => {
+const Create = ({ pageTitle = "Item", onSuccess = () => { } }) => {
 
   const [open, setOpen] = useState(false);
   const [successOpen, setSuccessOpen] = useState(false);
@@ -58,20 +58,16 @@ const Create = ({ onSuccess = () => { } }) => {
       let { data } = await createBranch(form);
 
       if (data?.status == false) {
+
         const firstKey = Object.keys(data.errors)[0]; // get the first key
         const firstError = data.errors[firstKey][0]; // get its first error message
         setGlobalError(firstError);
         return;
       }
-
-      onSuccess();
-
-      setOpen(false);
-
+      console.log(data);
       await new Promise(resolve => setTimeout(resolve, 2000));
-
-      setSuccessOpen(true);
-
+      setOpen(false);
+      onSuccess();
     } catch (error) {
       setGlobalError(parseApiError(error));
     } finally {
@@ -81,12 +77,12 @@ const Create = ({ onSuccess = () => { } }) => {
 
   return (
     <>
-      <Button onClick={() => setOpen(true)}>Add Branch</Button>
+      <Button onClick={() => setOpen(true)}>Add {pageTitle}</Button>
 
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="!w-[600px] !max-w-[90%]">
           <DialogHeader>
-            <DialogTitle>New Branch</DialogTitle>
+            <DialogTitle>New {pageTitle}</DialogTitle>
           </DialogHeader>
 
           <div className="space-y-4">
@@ -169,7 +165,7 @@ const Create = ({ onSuccess = () => { } }) => {
               disabled={loading}
               className="bg-primary text-white"
             >
-              {loading ? "Saving..." : "Create Branch"}
+              {loading ? "Saving..." : `Create ${pageTitle}`}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -178,7 +174,7 @@ const Create = ({ onSuccess = () => { } }) => {
       <SuccessDialog
         successOpen={successOpen}
         onOpenChange={setSuccessOpen}
-        title="Branch Saved"
+        title={`Saved ${pageTitle}`}
         description="Branch Saved successfully."
       />
     </>

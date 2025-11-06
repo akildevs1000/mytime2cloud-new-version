@@ -1,11 +1,11 @@
 "use client";
 
-import Branch from "@/components/Branch/Page";
+import GroupLogin from "@/components/GroupLogin/Page";
 
-const BranchPage = () => {
+const GroupLoginPage = () => {
   return (
-    <Branch />
+    <GroupLogin />
   );
 };
 
-export default BranchPage;
+export default GroupLoginPage;
