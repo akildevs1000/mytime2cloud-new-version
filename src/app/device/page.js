@@ -3,12 +3,13 @@
 import React, { useState, useEffect } from 'react';
 import { Plus } from 'lucide-react';
 
-import { getBranches, getDevices, parseApiError } from '@/lib/api';
+import { getBranches, getDevices } from '@/lib/api';
 
 import DropDown from '@/components/ui/DropDown';
 import Pagination from '@/lib/Pagination';
 import DataTable from '@/components/ui/DataTable';
 import Columns from "./columns";
+import { parseApiError } from '@/lib/utils';
 
 export default function AttendanceTable() {
 

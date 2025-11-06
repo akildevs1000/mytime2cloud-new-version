@@ -13,8 +13,9 @@ import {
 } from "@/components/ui/dialog";
 import DropDown from "@/components/ui/DropDown";
 
-import { parseApiError, updateBranch } from "@/lib/api";
+import { updateBranch } from "@/lib/api";
 import { SuccessDialog } from "../SuccessDialog";
+import { parseApiError } from "@/lib/utils";
 
 const Edit = ({
   initialData = {},

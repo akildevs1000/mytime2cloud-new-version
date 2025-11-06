@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { RefreshCw } from 'lucide-react';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { getAttendanceReports, getBranches, getDepartments, getDeviceLogs, getScheduledEmployeeList, getStatuses, parseApiError } from '@/lib/api';
+import { getAttendanceReports, getBranches, getDepartments, getDeviceLogs, getScheduledEmployeeList, getStatuses } from '@/lib/api';
 
 import DropDown from '@/components/ui/DropDown';
 import DateRangeSelect from "@/components/ui/DateRange";
@@ -12,7 +12,7 @@ import { EmployeeExtras } from '@/components/Employees/Extras';
 import DataTable from '@/components/ui/DataTable';
 import Columns from "./columns";
 import MultiDropDown from '@/components/ui/MultiDropDown';
-import { formatDate, formatDateDubai } from '@/lib/utils';
+import { formatDate, formatDateDubai, parseApiError } from '@/lib/utils';
 
 const reportTemplates = [
     { id: `Template1`, name: `Monthly Report Format A` },

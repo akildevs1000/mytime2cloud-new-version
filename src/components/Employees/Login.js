@@ -15,7 +15,8 @@ import {
 } from "@/components/ui/form";
 import { useRouter } from "next/navigation";
 import { LogIn } from "lucide-react";
-import {  parseApiError, updateLogin } from "@/lib/api";
+import {  updateLogin } from "@/lib/api";
+import { parseApiError } from "@/lib/utils";
 
 const Login = ({ employee_id, user}) => {
     const router = useRouter();

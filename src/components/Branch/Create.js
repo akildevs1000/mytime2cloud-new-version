@@ -13,9 +13,10 @@ import {
 } from "@/components/ui/dialog";
 import DropDown from "@/components/ui/DropDown";
 
-import { createBranch, parseApiError } from "@/lib/api";
+import { createBranch } from "@/lib/api";
 import { SuccessDialog } from "@/components/SuccessDialog";
 import DatePicker from "../ui/DatePicker";
+import { parseApiError } from "@/lib/utils";
 
 let defaultPayload = {
   user_id: 0, // dont changedefault 

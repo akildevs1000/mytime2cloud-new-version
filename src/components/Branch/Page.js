@@ -2,13 +2,14 @@
 
 import React, { useState, useEffect } from "react";
 import { Building, GitBranch, UserLock } from "lucide-react";
-import { getBranchesForTable, parseApiError } from "@/lib/api";
+import { getBranchesForTable } from "@/lib/api";
 
 import Pagination from "@/lib/Pagination";
 import DataTable from "@/components/ui/DataTable";
 import Columns from "./columns";
 import Create from "@/components/Branch/Create";
 import { useRouter } from "next/navigation";
+import { parseApiError } from "@/lib/utils";
 
 export default function Branch() {
   const [records, setRecords] = useState([]);

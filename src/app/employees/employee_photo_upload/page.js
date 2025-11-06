@@ -6,16 +6,15 @@ import { RefreshCw } from "lucide-react";
 import {
   getBranches,
   getDepartments,
-  getDeviceList,
   getEmployees,
   postAddPerson,
-  parseApiError,
   getDevices,
 } from "@/lib/api";
 
 import DropDown from "@/components/ui/DropDown";
 import { Button } from "@/components/ui/button";
 import { SuccessDialog } from "@/components/SuccessDialog";
+import { parseApiError } from "@/lib/utils";
 
 export default function EmployeeDeviceUpload() {
   // filters / picks

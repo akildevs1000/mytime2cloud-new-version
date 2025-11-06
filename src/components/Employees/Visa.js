@@ -17,8 +17,9 @@ import {
 
 import { useRouter } from "next/navigation";
 import {  Plane } from "lucide-react";
-import { parseApiError, updateVisa } from "@/lib/api";
+import { updateVisa } from "@/lib/api";
 import DatePicker from "@/components/ui/DatePicker";
+import { parseApiError } from "@/lib/utils";
 
 const Visa = ({ employee_id, visa }) => {
 

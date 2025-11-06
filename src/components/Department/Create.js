@@ -13,8 +13,9 @@ import {
 } from "@/components/ui/dialog";
 import DropDown from "@/components/ui/DropDown";
 
-import { getBranches, createDepartment, parseApiError } from "@/lib/api";
+import { getBranches, createDepartment } from "@/lib/api";
 import { SuccessDialog } from "@/components/SuccessDialog";
+import { parseApiError } from "@/lib/utils";
 
 let defaultPayload = {
   name: "",

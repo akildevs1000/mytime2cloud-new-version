@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { RefreshCw } from 'lucide-react';
 
-import { getBranches, getDeviceList, getDeviceLogs, parseApiError } from '@/lib/api';
+import { getBranches, getDeviceList, getDeviceLogs } from '@/lib/api';
 
 import DropDown from '@/components/ui/DropDown';
 import DateRangeSelect from "@/components/ui/DateRange";
@@ -11,6 +11,7 @@ import Pagination from '@/lib/Pagination';
 import { EmployeeExtras } from '@/components/Employees/Extras';
 import DataTable from '@/components/ui/DataTable';
 import Columns from "./columns";
+import { parseApiError } from '@/lib/utils';
 
 
 

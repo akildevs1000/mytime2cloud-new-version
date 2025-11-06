@@ -8,7 +8,8 @@ import { Upload, Image, ArrowLeft, Save } from "lucide-react";
 
 import useImageUpload from "@/hooks/useImageUpload";
 import { SuccessDialog } from "../SuccessDialog";
-import { parseApiError, updateLogoOnly, getLogoOnly } from "@/lib/api";
+import { updateLogoOnly, getLogoOnly } from "@/lib/api";
+import { parseApiError } from "@/lib/utils";
 
 
 const ChangeLogo = () => {

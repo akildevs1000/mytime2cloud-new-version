@@ -2,12 +2,13 @@
 
 import React, { useState, useEffect } from "react";
 import { UserLock } from "lucide-react";
-import { getDesignations, parseApiError } from "@/lib/api";
+import { getDesignations } from "@/lib/api";
 
 import Pagination from "@/lib/Pagination";
 import DataTable from "@/components/ui/DataTable";
 import Columns from "./columns";
 import Create from "@/components/Designation/Create";
+import { parseApiError } from "@/lib/utils";
 
 export default function Designation() {
   const [records, setRecords] = useState([]);

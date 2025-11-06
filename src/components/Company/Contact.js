@@ -9,7 +9,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
 import { User, ArrowLeft, Upload, Image, Briefcase, Badge, BaggageClaim, Building, Building2, Building2Icon, Info, Settings, Contact } from "lucide-react";
-import { parseApiError, updateContact } from "@/lib/api";
+import { updateContact } from "@/lib/api";
+import { parseApiError } from "@/lib/utils";
 
 const CompanyContact = ({ contact, isLoading }) => {
 

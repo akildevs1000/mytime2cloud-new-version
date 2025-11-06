@@ -5,7 +5,8 @@ import { useState } from "react";
 import { MoreVertical, PenBox, Trash2 } from "lucide-react";
 import Edit from "@/components/Branch/Edit";
 
-import { deleteBranch, parseApiError } from "@/lib/api";
+import { deleteBranch } from "@/lib/api";
+import { parseApiError } from "@/lib/utils";
 
 
 function OptionsMenu({ item, onSuccess = () => { } }) {

@@ -5,7 +5,8 @@ import { useState } from "react";
 import { MoreVertical, PenBox, Trash2 } from "lucide-react";
 import Edit from "@/components/SubDepartment/Edit";
 
-import { deleteSubDepartments, parseApiError } from "@/lib/api";
+import { deleteSubDepartments } from "@/lib/api";
+import { parseApiError } from "@/lib/utils";
 
 function OptionsMenu({ admin, onSuccess = () => { } }) {
   const [openEdit, setOpenEdit] = useState(false);

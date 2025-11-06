@@ -9,9 +9,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
 import { User, ArrowLeft, Upload, Image, Briefcase, Badge, BaggageClaim, Building, Building2, Building2Icon, Info, Settings, File } from "lucide-react";
-import { parseApiError, updateContact, updateLicense } from "@/lib/api";
+import { updateContact, updateLicense } from "@/lib/api";
 import DropDown from "../ui/DropDown";
 import DatePicker from "../ui/DatePicker";
+import { parseApiError } from "@/lib/utils";
 
 const CompanyLicense = ({ license, isLoading }) => {
 

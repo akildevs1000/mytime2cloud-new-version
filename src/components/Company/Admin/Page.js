@@ -3,12 +3,13 @@
 
 import React, { useState, useEffect } from "react";
 import { UserLock } from "lucide-react";
-import { getAdmins, parseApiError } from "@/lib/api";
+import { getAdmins } from "@/lib/api";
 
 import Pagination from "@/lib/Pagination";
 import DataTable from "@/components/ui/DataTable";
 import Columns from "./columns";
 import AdminFormDialog from "@/components/Company/Admin/Create";
+import { parseApiError } from "@/lib/utils";
 
 export default function Admin() {
   const [admins, setAdmins] = useState([]);

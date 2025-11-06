@@ -13,7 +13,8 @@ import {
 } from "@/components/ui/dialog";
 import DropDown from "@/components/ui/DropDown";
 
-import { getBranches, getRoles, updateAdmin, parseApiError } from "@/lib/api";
+import { getBranches, getRoles, updateAdmin } from "@/lib/api";
+import { parseApiError } from "@/lib/utils";
 
 const EditAdminFormDialog = ({
   initialData = {},

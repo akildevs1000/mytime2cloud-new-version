@@ -16,8 +16,9 @@ import {
 
 import { useRouter } from "next/navigation";
 import { IdCard } from "lucide-react";
-import { parseApiError, updateEmirate } from "@/lib/api";
+import { updateEmirate } from "@/lib/api";
 import DatePicker from "@/components/ui/DatePicker";
+import { parseApiError } from "@/lib/utils";
 
 const Emirate = ({ employee_id, emirate }) => {
 

@@ -5,7 +5,7 @@ import { SuccessDialog } from "@/components/SuccessDialog";
 import { Button } from "@/components/ui/button";
 import { Briefcase, ArrowLeft, LogInIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { parseApiError, storeSchedule } from "@/lib/api";
+import { storeSchedule } from "@/lib/api";
 import BranchSelect from "@/components/ui/BranchSelect";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
@@ -14,6 +14,7 @@ import EmployeeMultiSelect from "@/components/ui/EmployeeMultiSelect";
 import DateRangeSelect from "@/components/ui/DateRange";
 import DropDown from "@/components/ui/DropDown";
 import ShiftSelect from "@/components/ui/ShiftSelect";
+import { parseApiError } from "@/lib/utils";
 
 const EmployeeProfileForm = () => {
     const router = useRouter();

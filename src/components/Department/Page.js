@@ -2,12 +2,13 @@
 
 import React, { useState, useEffect } from "react";
 import { UserLock } from "lucide-react";
-import { getSepartmentsForTable, parseApiError } from "@/lib/api";
+import { getSepartmentsForTable } from "@/lib/api";
 
 import Pagination from "@/lib/Pagination";
 import DataTable from "@/components/ui/DataTable";
 import Columns from "./columns";
 import DepartmentCreate from "@/components/Department/Create";
+import { parseApiError } from "@/lib/utils";
 
 export default function Department() {
   const [records, setRecords] = useState([]);

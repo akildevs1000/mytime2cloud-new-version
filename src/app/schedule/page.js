@@ -5,13 +5,14 @@ import { Search, Plus, RefreshCw } from 'lucide-react';
 import Link from 'next/link';
 
 import { Input } from '@/components/ui/input';
-import { getScheduleEmployees, parseApiError, removeEmployee } from '@/lib/api';
+import { getScheduleEmployees } from '@/lib/api';
 import BranchSelect from '@/components/ui/BranchSelect';
 import DataTable from '@/components/ui/DataTable';
 import Pagination from '@/lib/Pagination';
 import { useRouter } from "next/navigation";
 
 import Columns from "./columns";
+import { parseApiError } from '@/lib/utils';
 
 export default function List() {
 

@@ -22,10 +22,10 @@ import {
 } from "@/components/ui/select";
 
 import { User, Briefcase, Phone, ArrowLeft, Upload } from "lucide-react";
-import { convertFileToBase64 } from "@/lib/utils";
+import { convertFileToBase64, parseApiError } from "@/lib/utils";
 import { useRouter } from 'next/navigation';
 
-import { getDepartments, parseApiError, storeEmployee } from '@/lib/api';
+import { getDepartments, storeEmployee } from '@/lib/api';
 
 import BranchSelect from '@/components/ui/BranchSelect';
 import DatePicker from '@/components/ui/DatePicker';

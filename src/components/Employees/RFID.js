@@ -14,8 +14,9 @@ import {
     FormMessage,
 } from "@/components/ui/form";
 import { useRouter } from "next/navigation";
-import { Banknote, CardSim, Lock, Phone, PhoneCall, Users } from "lucide-react";
-import { parseApiError, updateAccessSettings } from "@/lib/api";
+import { Lock } from "lucide-react";
+import { updateAccessSettings } from "@/lib/api";
+import { parseApiError } from "@/lib/utils";
 
 const RFID = ({ employee_id, rfid_card_number = "",rfid_card_password = "" }) => {
     const router = useRouter();

@@ -5,7 +5,8 @@ import { useState } from "react";
 import { MoreVertical, PenBox, Trash2 } from "lucide-react";
 import EditAdminFormDialog from "@/components/Company/Admin/Edit";
 
-import { deleteAdmin, parseApiError } from "@/lib/api";
+import { deleteAdmin } from "@/lib/api";
+import { parseApiError } from "@/lib/utils";
 
 
 function OptionsMenu({ admin, onSuccess = () => { } }) {

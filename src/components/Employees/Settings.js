@@ -14,9 +14,10 @@ import {
 } from "@/components/ui/form";
 import { useRouter } from "next/navigation";
 import { Settings2 } from "lucide-react";
-import { updateSettings, getLeaveManagers, getLeaveGroups, parseApiError } from "@/lib/api";
+import { updateSettings, getLeaveManagers, getLeaveGroups } from "@/lib/api";
 import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { parseApiError } from "@/lib/utils";
 
 const Settings = ({ employee_id, leave_group_id, reporting_manager_id, status, web_login_access, mobile_app_login_access, tracking_status, user_id }) => {
     const router = useRouter();

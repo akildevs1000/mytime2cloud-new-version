@@ -16,9 +16,10 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { parseApiError, storePayroll } from "@/lib/api";
+import { storePayroll } from "@/lib/api";
 import DatePicker from "@/components/ui/DatePicker";
 import { SuccessDialog } from "@/components/SuccessDialog";
+import { parseApiError } from "@/lib/utils";
 
 
 export default function Payroll({ employee_id, payroll }) {

@@ -17,7 +17,7 @@ import {
   CommandItem,
 } from "@/components/ui/command";
 import { getScheduleEmployees } from "@/lib/api";
-import { cn } from "@/lib/utils";
+import { cn, parseApiError } from "@/lib/utils";
 
 const MAX_BADGES_TO_DISPLAY = 2;
 

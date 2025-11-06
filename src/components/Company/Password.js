@@ -9,8 +9,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
 import { User, ArrowLeft, Upload, Image, Briefcase, Badge, BaggageClaim, Building, Building2, Building2Icon, Info, Settings, Lock } from "lucide-react";
-import { convertFileToBase64 } from "@/lib/utils";
-import { parseApiError, storeEmployee, updateContact, updatePassword } from "@/lib/api";
+import { convertFileToBase64,parseApiError } from "@/lib/utils";
+import { storeEmployee, updateContact, updatePassword } from "@/lib/api";
 
 const CompanyPassword = () => {
 

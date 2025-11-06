@@ -13,8 +13,9 @@ import {
 } from "@/components/ui/dialog";
 import DropDown from "@/components/ui/DropDown";
 
-import { getBranches, getRoles, createAdmin, parseApiError } from "@/lib/api";
+import { getBranches, getRoles, createAdmin } from "@/lib/api";
 import { SuccessDialog } from "@/components/SuccessDialog";
+import { parseApiError } from "@/lib/utils";
 
 let defaultPayload = {
   branch_id: "",

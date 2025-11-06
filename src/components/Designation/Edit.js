@@ -13,7 +13,8 @@ import {
 } from "@/components/ui/dialog";
 import DropDown from "@/components/ui/DropDown";
 
-import { parseApiError, updateDesignations } from "@/lib/api";
+import { updateDesignations } from "@/lib/api";
+import { parseApiError } from "@/lib/utils";
 
 const Edit = ({
   initialData = {},

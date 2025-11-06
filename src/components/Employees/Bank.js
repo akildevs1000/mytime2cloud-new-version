@@ -15,7 +15,8 @@ import {
 } from "@/components/ui/form";
 import { useRouter } from "next/navigation";
 import { Banknote } from "lucide-react";
-import { parseApiError, updateBank } from "@/lib/api";
+import { updateBank } from "@/lib/api";
+import { parseApiError } from "@/lib/utils";
 
 const Bank = ({ employee_id, bank }) => {
     const router = useRouter();

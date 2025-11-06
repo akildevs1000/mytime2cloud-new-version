@@ -10,7 +10,7 @@ import { Input } from "@/components/ui/input";
 
 import { User, ArrowLeft, Upload, Image, Briefcase, Badge, BaggageClaim, Building, Building2, Building2Icon, Info, Settings } from "lucide-react";
 import { convertFileToBase64 } from "@/lib/utils";
-import { parseApiError, getCompanyInfo } from "@/lib/api";
+import { getCompanyInfo } from "@/lib/api";
 import { set } from "date-fns";
 import { ca } from "date-fns/locale";
 

@@ -28,6 +28,7 @@ import DoorPin from "@/components/Company/DoorPin";
 import ChangeLogo from "@/components/Company/ChangeLogo";
 import { getCompanyInfo, getVisitorLink } from "@/lib/api";
 import VisitorAppLink from "@/components/Company/VisitorAppLink";
+import { parseApiError } from "@/lib/utils";
 
 
 const Company = () => {

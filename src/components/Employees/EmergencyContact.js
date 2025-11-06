@@ -14,8 +14,9 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { useRouter } from "next/navigation";
-import { Phone, PhoneCall, Users } from "lucide-react";
-import { parseApiError, updateEmergencyContact } from "@/lib/api";
+import { PhoneCall } from "lucide-react";
+import { updateEmergencyContact } from "@/lib/api";
+import { parseApiError } from "@/lib/utils";
 
 const EmergencyContact = ({ id, phone_relative_number, relation, local_address, local_city, local_country }) => {
 
