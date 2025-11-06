@@ -27,10 +27,10 @@ export default function LeftMenu() {
             <Link
               key={link.label}
               href={link.href}
-              className={`flex items-center w-14 group-hover:w-full px-0 group-hover:px-4 py-3 
+              className={`flex items-center w-14 group-hover:w-[90%] rounded-xl px-0 group-hover:px-4 py-3 
                            transition-all duration-300 ease-in-out
                 ${isActive
-                  ? "bg-primary/30 text-white"
+                  ? "bg-gray-700 text-white rounded-xl"
                   : "text-gray-300 hover:bg-gray-700 hover:text-white"
                 }`}
             >

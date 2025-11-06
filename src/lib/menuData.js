@@ -31,6 +31,7 @@ const attendanceMenu = [
 const companyMenu = [
   { href: "company", icon: Building, label: "Company" },
   { href: "branch", icon: Briefcase, label: "Branch" },
+  { href: "group-login", icon: Briefcase, label: "Group Login" },
   { href: "department-tabs", icon: Layers, label: "Department" },
   { href: "automation", icon: Workflow, label: "Automation" },
   { href: "roles", icon: Shield, label: "Roles" },
@@ -49,7 +50,7 @@ const employeesMenu = [
 
 // 2️⃣ Centralized navigation object
 export const leftNavLinks = {
-  "/": [{ href: "#", icon: Home, label: "Overview" }],
+  "/": [{ href: "#", icon: Home, label: "Home" }],
 
   "/employees": employeesMenu,
 
@@ -59,4 +60,9 @@ export const leftNavLinks = {
   "/schedule": attendanceMenu,
 
   "/company": companyMenu,
+  "/branch": companyMenu,
+  "/group-login": companyMenu,
+  "/department-tabs": companyMenu,
+  "/device": companyMenu,
+  
 };
