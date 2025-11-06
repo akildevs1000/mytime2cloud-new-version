@@ -6,7 +6,7 @@ import Link from 'next/link';
 
 import { Input } from '@/components/ui/input';
 import { getScheduleEmployees } from '@/lib/api';
-import BranchSelect from '@/components/ui/BranchSelect';
+
 import DataTable from '@/components/ui/DataTable';
 import Pagination from '@/lib/Pagination';
 import { useRouter } from "next/navigation";
@@ -36,6 +36,21 @@ export default function List() {
     const [searchTerm, setSearchTerm] = useState('');
 
     const [selectedBranch, setSelectedBranch] = useState(null);
+
+
+    const [branches, setBranches] = useState([]);
+
+    const fetchBranches = async () => {
+        try {
+            setBranches(await getBranches());
+        } catch (error) {
+            setGlobalError(parseApiError(error));
+        }
+    };
+
+    useEffect(() => {
+        fetchBranches();
+    }, []);
 
     const fetchRecords = useCallback(async (page, perPage) => {
         setIsLoading(true);
@@ -87,9 +102,11 @@ export default function List() {
                 </h1>
                 <div className="flex flex-wrap items-center space-x-3 space-y-2 sm:space-y-0">
                     <div className="relative">
-                        <BranchSelect
-                            selectedBranchId={selectedBranch}
-                            onSelect={(id) => { setSelectedBranch(id); setCurrentPage(1); }}
+                        <DropDown
+                            placeholder="Select Branch"
+                            onChange={(id) => { setSelectedBranch(id); setCurrentPage(1); }}
+                            value={selectedBranch}
+                            items={branches}
                         />
                     </div>
 

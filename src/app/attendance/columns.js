@@ -1,48 +1,4 @@
-const setStatusLabel = (status) => {
-    const statuses = {
-        A: "Absent",
-        P: "Present",
-        M: "Missed",
-        LC: "Present",
-        EG: "Present",
-        O: "Week Off",
-        L: "Leave",
-        H: "Holiday",
-        V: "Vacation",
-    };
-    return statuses[status];
-};
-
-const getBgColor = (status) => {
-    const colors = {
-        A: "#dc2626", // light orange
-        P: "#bbf7d0", // light green
-        M: "#e5e7eb", // light gray
-        LC: "#bbf7d0",
-        EG: "#bbf7d0",
-        O: "#fed7aa",
-        L: "#fef08a", // light yellow
-        H: "#c7d2fe", // light indigo
-        V: "#c7d2fe",
-    };
-    return colors[status] || "#f3f4f6";
-};
-
-const getTextColor = (status) => {
-    const colors = {
-        A: "#fee2e2", // dark orange
-        P: "#15803d", // dark green
-        M: "#374151", // dark gray
-        LC: "#15803d",
-        EG: "#15803d",
-        O: "#c2410c",
-        L: "#854d0e", // dark yellow-brown
-        H: "#3730a3", // dark indigo
-        V: "#3730a3",
-    };
-    return colors[status] || "#111827";
-};
-
+import { getBgColor, getTextColor, setStatusLabel } from "@/lib/utils";
 
 export default (shiftTypeId) => {
     // Base columns
@@ -65,25 +21,30 @@ export default (shiftTypeId) => {
                         }}
                     />
                     <div>
-                        <p className="font-medium text-gray-800">{employee.full_name}</p>
-                        <p className="text-sm text-gray-500">{employee.designation?.title || employee.last_name}</p>
+                        <p className="font-medium text-gray-800 max-w-[150] truncate">{employee.display_name} {employee.employee_id}</p>
+                        <p className="text-sm text-gray-500">{employee.branch?.branch_name}</p>
                     </div>
                 </div>
             ),
         },
         {
-            key: "emp_device",
-            header: "Emp Id / Device Id",
+            key: "department", header: "Dept",
             render: ({ employee }) => (
-                <>
-                    <p className="text-gray-800">{employee.employee_id || "—"}</p>
-                    <p className="text-sm text-gray-500">Device ID: {employee.system_user_id || "—"}</p>
-                </>
+                <p className="text-sm text-gray-500">{employee.department?.name}</p>
             ),
         },
-        { key: "branch", header: "Branch", render: ({ employee }) => employee.branch?.branch_name || "N/A" },
-        { key: "department", header: "Department", render: ({ employee }) => employee.department?.name || "N/A" },
-        { key: "date", header: "Date", render: (log) => `${log?.date}` },
+        {
+            key: "shift", header: "Shift",
+            render: (log) => (
+
+                <p className="text-sm text-gray-500">{log.shift?.name}</p>
+            ),
+        },
+        {
+            key: "date", header: "Date",
+            render: (log) => (<p className="text-sm text-gray-500">{log.date}</p>)
+        },
+
     ];
 
     // Define in/out columns
@@ -93,28 +54,29 @@ export default (shiftTypeId) => {
         inOutColumns.push({
             key: `in${i}`,
             header: `In${i}`,
-            render: (log) => `${log[`in${i}`] || "—"}`,
+            render: (log) => (<p className="text-sm text-gray-500">{`${log[`in${i}`] || "—"}`}</p>)
+
         });
         inOutColumns.push({
             key: `out${i}`,
             header: `Out${i}`,
-            render: (log) => `${log[`out${i}`] || "—"}`,
+            render: (log) => (<p className="text-sm text-gray-500">{`${log[`out${i}`] || "—"}`}</p>)
         });
     }
 
     // Other columns
     const otherColumns = [
-        { key: "ot", header: "OT", render: (log) => `${log?.ot}` },
-        { key: "total_hrs", header: "Total Hrs", render: (log) => `${log?.total_hrs}` },
+        { key: "ot", header: "OT", render: (log) => (<p className="text-sm text-gray-500">{log.ot}</p>) },
+        { key: "total_hrs", header: "Total Hrs", render: (log) => (<p className="text-sm text-gray-500">{log.total_hrs}</p>) },
         {
             key: "status",
             header: "Status",
             render: (log) => (
-                <span
+                <span className="text-sm"
                     style={{
                         color: getTextColor(log?.status),
                         backgroundColor: getBgColor(log?.status),
-                        padding: "4px 14px",
+                        padding: "2px 10px",
                         borderRadius: "50px",
                     }}
                 >

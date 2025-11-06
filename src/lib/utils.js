@@ -95,3 +95,50 @@ export const parseApiError = (error) => {
 }
 
 
+export const setStatusLabel = (status) => {
+    const statuses = {
+        A: "Absent",
+        P: "Present",
+        M: "Missed",
+        LC: "Present",
+        EG: "Present",
+        O: "Week Off",
+        L: "Leave",
+        H: "Holiday",
+        V: "Vacation",
+    };
+    return statuses[status];
+};
+
+export const getBgColor = (status) => {
+    const colors = {
+        A: "#dc2626", // light orange
+        P: "#bbf7d0", // light green
+        M: "#e5e7eb", // light gray
+        LC: "#bbf7d0",
+        EG: "#bbf7d0",
+        O: "#fed7aa",
+        L: "#fef08a", // light yellow
+        H: "#c7d2fe", // light indigo
+        V: "#c7d2fe",
+    };
+    return colors[status] || "#f3f4f6";
+};
+
+export const getTextColor = (status) => {
+    const colors = {
+        A: "#fee2e2", // dark orange
+        P: "#15803d", // dark green
+        M: "#374151", // dark gray
+        LC: "#15803d",
+        EG: "#15803d",
+        O: "#c2410c",
+        L: "#854d0e", // dark yellow-brown
+        H: "#3730a3", // dark indigo
+        V: "#3730a3",
+    };
+    return colors[status] || "#111827";
+};
+
+
+

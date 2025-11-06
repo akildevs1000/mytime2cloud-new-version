@@ -5,14 +5,14 @@ import { Search, Plus, RefreshCw } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Input } from '@/components/ui/input';
-import { getEmployees, removeEmployee } from '@/lib/api';
+import { getBranches, getEmployees, removeEmployee } from '@/lib/api';
 import { EmployeeExtras } from '@/components/Employees/Extras';
-import BranchSelect from '@/components/ui/BranchSelect';
 
 import Columns from "./columns";
 import DataTable from '@/components/ui/DataTable';
 import Pagination from '@/lib/Pagination';
 import { parseApiError } from '@/lib/utils';
+import DropDown from '@/components/ui/DropDown';
 
 export default function EmployeeDataTable() {
 
@@ -27,6 +27,19 @@ export default function EmployeeDataTable() {
     const [searchTerm, setSearchTerm] = useState('');
 
     const [selectedBranch, setSelectedBranch] = useState(null);
+    const [branches, setBranches] = useState([]);
+
+    const fetchBranches = async () => {
+        try {
+            setBranches(await getBranches());
+        } catch (error) {
+            setError(parseApiError(error));
+        }
+    };
+
+    useEffect(() => {
+        fetchBranches();
+    }, []);
 
 
     const fetchEmployees = useCallback(async (page, perPage) => {
@@ -92,9 +105,11 @@ export default function EmployeeDataTable() {
                 </h1>
                 <div className="flex flex-wrap items-center space-x-3 space-y-2 sm:space-y-0">
                     <div className="relative">
-                        <BranchSelect
-                            selectedBranchId={selectedBranch}
-                            onSelect={(id) => { setSelectedBranch(id); setCurrentPage(1); }}
+                        <DropDown
+                            placeholder="Select Branch"
+                            onChange={(id) => { setSelectedBranch(id); setCurrentPage(1); }}
+                            value={selectedBranch}
+                            items={branches}
                         />
                     </div>
 

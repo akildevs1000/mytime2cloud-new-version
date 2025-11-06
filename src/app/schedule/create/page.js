@@ -5,8 +5,7 @@ import { SuccessDialog } from "@/components/SuccessDialog";
 import { Button } from "@/components/ui/button";
 import { Briefcase, ArrowLeft, LogInIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { storeSchedule } from "@/lib/api";
-import BranchSelect from "@/components/ui/BranchSelect";
+import { getBranches, storeSchedule } from "@/lib/api";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import DepartmentSelect from "@/components/ui/DepartmentSelect";
@@ -45,6 +44,22 @@ const EmployeeProfileForm = () => {
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     const [filterEmployeesByScheduleType, setFilterEmployeesByScheduleType] = useState(0);
+
+
+
+    const [branches, setBranches] = useState([]);
+
+    const fetchBranches = async () => {
+        try {
+            setBranches(await getBranches());
+        } catch (error) {
+            setGlobalError(parseApiError(error));
+        }
+    };
+
+    useEffect(() => {
+        fetchBranches();
+    }, []);
 
     const onSubmit = async (e) => {
         e.preventDefault();
@@ -103,11 +118,11 @@ const EmployeeProfileForm = () => {
                                             {/* Branch Select */}
                                             <div className="flex flex-col">
                                                 <label className="font-medium mb-1">Branch</label>
-                                                <BranchSelect
-                                                    selectedBranchId={formData.branch_id}
-                                                    onSelect={(id) =>
-                                                        setFormData((prev) => ({ ...prev, branch_id: id }))
-                                                    }
+                                                <DropDown
+                                                    placeholder="Select Branch"
+                                                    value={formData.branch_id}
+                                                    items={branches}
+                                                    onChange={(id) => { setFormData((prev) => ({ ...prev, branch_id: id })) }}
                                                 />
                                             </div>
 

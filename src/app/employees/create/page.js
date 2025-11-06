@@ -25,10 +25,10 @@ import { User, Briefcase, Phone, ArrowLeft, Upload } from "lucide-react";
 import { convertFileToBase64, parseApiError } from "@/lib/utils";
 import { useRouter } from 'next/navigation';
 
-import { getDepartments, storeEmployee } from '@/lib/api';
+import { getBranches, getDepartments, storeEmployee } from '@/lib/api';
 
-import BranchSelect from '@/components/ui/BranchSelect';
 import DatePicker from '@/components/ui/DatePicker';
+import DropDown from '@/components/ui/DropDown';
 
 
 const EmployeeProfileForm = () => {
@@ -48,7 +48,7 @@ const EmployeeProfileForm = () => {
             // Employment Details
             employee_id: null,
             joining_date: null,
-            branch_id: null, // null for no selection
+            branch_id: "null", // null for no selection
             // Contact Information
             phone_number: "",
             whatsapp_number: "",
@@ -66,6 +66,20 @@ const EmployeeProfileForm = () => {
     const [departments, setDepartments] = useState([]);
     const [imagePreview, setImagePreview] = useState(null);
     const [imageFile, setImageFile] = useState(null);
+
+    const [branches, setBranches] = useState([]);
+
+    const fetchBranches = async () => {
+        try {
+            setBranches(await getBranches());
+        } catch (error) {
+            setGlobalError(parseApiError(error));
+        }
+    };
+
+    useEffect(() => {
+        fetchBranches();
+    }, []);
 
     const selectedBranchId = watch("branch_id");
 
@@ -358,11 +372,12 @@ const EmployeeProfileForm = () => {
                                                         <FormItem className="flex flex-col">
                                                             <FormLabel>Branch</FormLabel>
 
-                                                            <BranchSelect
-                                                                selectedBranchId={field.value}
-                                                                onSelect={(id) => { setValue("branch_id", id); }}
+                                                            <DropDown
+                                                                placeholder="Select Branch"
+                                                                value={field.value}
+                                                                items={branches}
+                                                                onChange={(id) => { setValue("branch_id", id); }}
                                                             />
-
                                                             <FormMessage />
                                                         </FormItem>
                                                     )}

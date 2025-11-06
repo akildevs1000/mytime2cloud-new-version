@@ -4,7 +4,6 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useForm } from "react-hook-form"; // Used for standard form handling
 import { SuccessDialog } from "@/components/SuccessDialog"; // Import the new component
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import {
     Form,
     FormControl,
@@ -21,19 +20,16 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 
-import { Check, ChevronsUpDown, User, Briefcase, Phone, ArrowLeft, Upload, Calendar as CalenddarIcon, CheckCircle2, CalendarIcon } from "lucide-react";
-import { cn, convertFileToBase64, parseApiError } from "@/lib/utils";
+import { Briefcase } from "lucide-react";
+import { parseApiError } from "@/lib/utils";
 import { useRouter } from 'next/navigation';
 
 import { getBranches, getDepartments, storeEmployee } from '@/lib/api';
 
-
-import { user } from '@/config';
-import { format } from 'date-fns';
-import BranchSelect from '@/components/ui/BranchSelect';
 import DatePicker from '@/components/ui/DatePicker';
 import { Switch } from '../ui/switch';
 import { Label } from '../ui/label';
+import DropDown from '../ui/DropDown';
 
 
 const EmployeeScheduleEdit = () => {
@@ -53,8 +49,6 @@ const EmployeeScheduleEdit = () => {
     const [globalError, setGlobalError] = useState(null);
     const [branches, setBranches] = useState([]);
     const [departments, setDepartments] = useState([]);
-    const [imagePreview, setImagePreview] = useState(null);
-    const [imageFile, setImageFile] = useState(null);
 
     const selectedBranchId = watch("branch_id");
 
@@ -118,10 +112,6 @@ const EmployeeScheduleEdit = () => {
             department_id: data.department_id,
         };
 
-        if (imageFile) {
-            finalPayload.profile_image_base64 = await convertFileToBase64(imageFile);
-        }
-
         try {
 
             await storeEmployee(finalPayload);
@@ -167,8 +157,11 @@ const EmployeeScheduleEdit = () => {
                                                 <FormItem className="flex flex-col">
                                                     <FormLabel>Branch</FormLabel>
 
-                                                    <BranchSelect
-                                                        onSelect={(id) => { setValue("branch_id", id); }}
+                                                    <DropDown
+                                                        placeholder="Select Branch"
+                                                        value={field.value}
+                                                        items={branches}
+                                                        onChange={(id) => { setValue("branch_id", id); }}
                                                     />
 
                                                     <FormMessage />
