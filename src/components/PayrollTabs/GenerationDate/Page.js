@@ -1,12 +1,12 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { getBranches, getPayrollFormula } from "@/lib/api";
+import { getBranches, getPayrollGenerationDate } from "@/lib/api";
 
 import Pagination from "@/lib/Pagination";
 import DataTable from "@/components/ui/DataTable";
 import Columns from "./columns";
-import Create from "@/components/PayrollTabs/Formula/Create";
+import Create from "./Create";
 import { useRouter } from "next/navigation";
 import { parseApiError } from "@/lib/utils";
 import { SuccessDialog } from "@/components/SuccessDialog";
@@ -56,7 +56,7 @@ export default function GroupLogin() {
       setIsLoading(true);
       setError(null);
 
-      const result = await getPayrollFormula({
+      const result = await getPayrollGenerationDate({
         page: currentPage,
         per_page: perPage,
         branch_id: selectedBranchId,
@@ -87,7 +87,7 @@ export default function GroupLogin() {
   const columns = Columns({
     onSuccess: handleSuccess,
     handleRowClick: handleRowClick,
-    pageTitle: "Payroll Formulla"
+    pageTitle: "Payroll Generation Date"
   });
 
   return (
@@ -95,7 +95,7 @@ export default function GroupLogin() {
       <div className="flex flex-wrap items-center justify-between mb-6">
         <div className="flex flex-wrap items-center space-x-3 space-y-2 sm:space-y-0">
           <h2 className="text-2xl font-extrabold text-gray-900 flex items-center">
-            Payroll Formulla
+            Payroll Generation Date
           </h2>
 
           <div className="flex flex-col">
@@ -107,7 +107,7 @@ export default function GroupLogin() {
             />
           </div>
         </div>
-        <Create pageTitle="Payroll Formulla" onSuccess={handleSuccess} />
+        <Create pageTitle="Payroll Generation Date" onSuccess={handleSuccess} />
 
         <SuccessDialog
           open={successOpen}

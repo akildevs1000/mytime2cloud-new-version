@@ -8,6 +8,7 @@ import {
 } from "@/components/ui/tabs";
 
 import PayrollFormula from "@/components/PayrollTabs/Formula/Page";
+import GenerationDate from "@/components/PayrollTabs/GenerationDate/Page";
 
 
 const DepartmentTabs = () => {
@@ -43,7 +44,7 @@ const DepartmentTabs = () => {
       {/* --- Tabs Content --- */}
       <div className="rounded-xl  py-6">
         <TabsContent value="payroll_generate_date" className="space-y-2">
-          <PayrollFormula />
+          <GenerationDate />
         </TabsContent>
         <TabsContent value="payroll_formula" className="space-y-2">
           <PayrollFormula />

@@ -417,7 +417,7 @@ export const deleteGroupLogin = async (id) => {
 
 // Group END
 
-// Group
+// PayrollFormula
 export const getPayrollFormula = async (params = {}) => {
     const { data } = await axios.get(`${API_BASE}/payroll_formula`, {
         params: await buildQueryParams(params),
@@ -439,7 +439,31 @@ export const deletePayrollFormula = async (id) => {
     return true;
 };
 
-// Group END
+// PayrollFormula END
+
+// GenerationDate
+export const getPayrollGenerationDate = async (params = {}) => {
+    const { data } = await axios.get(`${API_BASE}/payroll_generate_date`, {
+        params: await buildQueryParams(params),
+    });
+    return data;
+};
+export const createPayrollGenerationDate = async (payload = {}) => {
+    const user = await getUser();
+    return await axios.post(`${API_BASE}/payroll_generate_date`, { ...payload, company_id: user?.company_id || 0 });
+};
+
+export const updatePayrollGenerationDate = async (id, payload = {}) => {
+    const user = await getUser();
+    return await axios.put(`${API_BASE}/payroll_generate_date/${id}`, { ...payload, company_id: user?.company_id || 0 });
+};
+
+export const deletePayrollGenerationDate = async (id) => {
+    await axios.delete(`${API_BASE}/payroll_generate_date/${id}`);
+    return true;
+};
+
+// GenerationDate END
 
 // ADMINS
 export const getAdmins = async (params = {}) => {
