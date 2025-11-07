@@ -23,8 +23,7 @@ import {
 const attendanceMenu = [
   { href: "/shift", icon: Clock, label: "Shift" },
   { href: "/schedule", icon: CalendarDays, label: "Schedule" },
-  { href: "/attendance", icon: FileText, label: "Leave Requests" },
-  { href: "/reports", icon: FileText, label: "Reports" },
+  { href: "/attendance", icon: FileText, label: "Reports" },
   { href: "/logs", icon: History, label: "Device Logs" },
   { href: "/access_control_logs", icon: Lock, label: "Access Control Logs" },
 ];
@@ -49,16 +48,19 @@ const employeesMenu = [
   { href: "/employees/employee_photo_upload", icon: Upload, label: "Employee Upload" },
 ];
 
-// 2️⃣ Centralized navigation object
+
 export const leftNavLinks = {
   "/": [{ href: "#", icon: Home, label: "Home" }],
 
   "/employees": employeesMenu,
+  "/employee_photo_upload": employeesMenu,
 
-  "/attendance": attendanceMenu,
-  "/reports": attendanceMenu,
   "/shift": attendanceMenu,
   "/schedule": attendanceMenu,
+  "/attendance": attendanceMenu,
+  "/reports": attendanceMenu,
+  "/logs": attendanceMenu,
+  "/access_control_logs": attendanceMenu,
 
   "/company": companyMenu,
   "/branch": companyMenu,

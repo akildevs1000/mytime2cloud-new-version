@@ -77,6 +77,7 @@ export default function AttendanceTable() {
                 per_page: perPage,
                 sortDesc: 'false',
                 device: selectedDeviceId,
+                branch_id: selectedBranch,
                 from_date: from,
                 to_date: to,
             };

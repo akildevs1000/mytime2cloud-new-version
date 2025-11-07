@@ -55,14 +55,15 @@ export default [
   {
     key: "department",
     header: "Department",
-    render: ({ employee }) => (
-      <span
+    render: ({ employee }) => {
+      return (<span
         onClick={() => handleRowClick(employee.id)}
         className="text-gray-800 cursor-pointer"
       >
         {employee.department?.name || "N/A"}
-      </span>
-    ),
+      </span >)
+    }
+    ,
   },
   {
     key: "datetime",
