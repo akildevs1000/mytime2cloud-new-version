@@ -26,8 +26,8 @@ export default function Header() {
         { name: 'DASHBOARD', href: '/' },
         { name: 'EMPLOYEES', href: '/employees' },
         { name: 'ATTENDANCE', href: '/attendance' }, // Assuming these paths for example
-        { name: 'PAYROLL', href: '/payroll' },
-        { name: 'ACCESS CONTROL', href: '/access-control' },
+        { name: 'PAYROLL', href: '/payroll-tabs' },
+        { name: 'ACCESS CONTROL', href: '/access_control_logs' },
         { name: 'VISITORS', href: '/visitors' },
         { name: 'REPORTS', href: '/attendance' },
         { name: 'SETTINGS', href: '/company' },
