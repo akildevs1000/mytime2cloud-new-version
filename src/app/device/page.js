@@ -40,6 +40,7 @@ export default function AttendanceTable() {
     };
 
     const router = useRouter();
+    
     const handleRowClick = async () => {
         router.push("device/short-list")
     };

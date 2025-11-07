@@ -4,7 +4,7 @@ import { deleteDevice } from "@/lib/api";
 import { parseApiError } from "@/lib/utils";
 
 
-export default function Columns({ pageTitle, onSuccess = (e) => { e } } = {}) {
+export default function Columns({ pageTitle, handleRowClick, onSuccess = (e) => { e } } = {}) {
 
   return [
     {
@@ -78,7 +78,7 @@ export default function Columns({ pageTitle, onSuccess = (e) => { e } } = {}) {
       render: (device) => (
         <span
           title={device.door_open || "—"}
-          onClick={() => handleRowClick(device.id)}
+          onClick={() => console.log(device.id)}
         >
           <img src="/icons/door_open.png" className="w-7" />
         </span>
@@ -90,7 +90,7 @@ export default function Columns({ pageTitle, onSuccess = (e) => { e } } = {}) {
       render: (device) => (
         <span
           title={device.door_close || "—"}
-          onClick={() => handleRowClick(device.id)}
+          onClick={() => console.log(device.id)}
         >
           <img src="/icons/door_close.png" className="w-7" />
         </span>
@@ -102,7 +102,7 @@ export default function Columns({ pageTitle, onSuccess = (e) => { e } } = {}) {
       render: (device) => (
         <span
           title={device.always_open ? "Yes" : "No"}
-          onClick={() => handleRowClick(device.id)}
+          onClick={() => console.log(device.id)}
           className="inline-block"
         >
           <img
@@ -130,7 +130,7 @@ export default function Columns({ pageTitle, onSuccess = (e) => { e } } = {}) {
         <span
           className="text-gray-800 cursor-pointer block max-w-[150px] truncate"
           title={device.sync_date_time || "—"}
-          onClick={() => handleRowClick(device.id)}
+          onClick={() => console.log(device.id)}
         >
           <img src="/icons/sync_date_time.png" className="w-7" />
 
@@ -140,13 +140,21 @@ export default function Columns({ pageTitle, onSuccess = (e) => { e } } = {}) {
     {
       key: "status_id",
       header: "Status",
-      render: (device) => (
-        <span className="text-center text-gray-800 block max-w-[80px] truncate">
-          <img src="/icons/device_status_open.png" className="w-7" />
-          {/* <img src="/icons/device_status_close.png" /> */}
-        </span>
-      ),
+      render: (device) => {
+        const isActive = device.status_id == 1;
+
+        return (
+          <div className="flex items-center justify-center space-x-2">
+            <img
+              src={`/icons/device_status_${isActive ? 'open' : 'close'}.png`}
+              alt={isActive ? "Active" : "Inactive"}
+              className="w-7 h-7 object-contain"
+            />
+          </div>
+        );
+      },
     },
+
     {
       key: "options",
       header: "Options",
