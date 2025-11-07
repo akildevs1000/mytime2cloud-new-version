@@ -417,6 +417,30 @@ export const deleteGroupLogin = async (id) => {
 
 // Group END
 
+// Group
+export const getPayrollFormula = async (params = {}) => {
+    const { data } = await axios.get(`${API_BASE}/payroll_formula`, {
+        params: await buildQueryParams(params),
+    });
+    return data;
+};
+export const PayrollFormulaCreate = async (payload = {}) => {
+    const user = await getUser();
+    return await axios.post(`${API_BASE}/payroll_formula`, { ...payload, company_id: user?.company_id || 0 });
+};
+
+export const updatePayrollFormula = async (id, payload = {}) => {
+    const user = await getUser();
+    return await axios.put(`${API_BASE}/payroll_formula/${id}`, { ...payload, company_id: user?.company_id || 0 });
+};
+
+export const deletePayrollFormula = async (id) => {
+    await axios.delete(`${API_BASE}/payroll_formula/${id}`);
+    return true;
+};
+
+// Group END
+
 // ADMINS
 export const getAdmins = async (params = {}) => {
     const { data } = await axios.get(`${API_BASE}/admin`, {

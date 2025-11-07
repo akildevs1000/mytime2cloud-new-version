@@ -41,7 +41,7 @@ const companyMenu = [
   { href: "/leaves", icon: FileText, label: "Leaves" },
   { href: "/announcements", icon: Megaphone, label: "Announcements" },
   { href: "/activity", icon: ActivitySquare, label: "Activity" },
-  { href: "/payroll", icon: DollarSign, label: "Payroll" },
+  { href: "/payroll-tabs", icon: DollarSign, label: "Payroll" },
 ];
 
 const employeesMenu = [
@@ -65,5 +65,7 @@ export const leftNavLinks = {
   "/group-login": companyMenu,
   "/department-tabs": companyMenu,
   "/device": companyMenu,
-  
+
+  "/payroll-tabs": companyMenu,
+
 };
