@@ -10,6 +10,9 @@ import Pagination from '@/lib/Pagination';
 import DataTable from '@/components/ui/DataTable';
 import Columns from "./columns";
 import { parseApiError } from '@/lib/utils';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { SuccessDialog } from '@/components/SuccessDialog';
 
 export default function AttendanceTable() {
 
@@ -36,8 +39,9 @@ export default function AttendanceTable() {
         }
     };
 
+    const router = useRouter();
     const handleRowClick = async () => {
-        console.log(`Row clicked`)
+        router.push("device/short-list")
     };
 
 
@@ -80,13 +84,28 @@ export default function AttendanceTable() {
         }
     };
 
+    const [sucessObject, setSucessObject] = useState({ title: "", description: "" });
+    const [successOpen, setSuccessOpen] = useState(false);
+
+    const handleSuccess = (e) => {
+        setSuccessOpen(true);
+        setSucessObject(e);
+        fetchRecords();
+    }
+
+    const columns = Columns({
+        onSuccess: handleSuccess,
+        handleRowClick: handleRowClick,
+        pageTitle: "Device"
+    });
+
     return (
         <>
             <div className="flex flex-wrap items-center justify-between mb-6">
                 {/* Left side: Title + Dropdown */}
                 <div className="flex flex-wrap items-center space-x-3 space-y-2 sm:space-y-0">
                     <h1 className="text-2xl font-extrabold text-gray-900 flex items-center">
-                        Device Logs
+                        Devices
                     </h1>
 
                     <div className="flex flex-col">
@@ -99,19 +118,23 @@ export default function AttendanceTable() {
                     </div>
                 </div>
 
-                {/* Right side: Refresh Button */}
-                <button
-                    onClick={fetchRecords}
-                    className="bg-primary text-white px-4 py-1 rounded-lg font-semibold shadow-md hover:bg-indigo-700 transition-all flex items-center space-x-2 whitespace-nowrap"
-                >
-                    <Plus className={`w-4 h-4 mr-1 ${isLoading ? 'animate-spin' : ''}`} />
-                    New Device
-                </button>
+                <Link href="/device/create">
+                    <button className="bg-primary text-white px-4 py-1 rounded-lg font-semibold shadow-md hover:bg-indigo-700 transition-all flex items-center space-x-2 whitespace-nowrap">
+                        <Plus className="w-4 h-4" />
+                        <span>New</span>
+                    </button>
+                </Link>
             </div>
 
+            <SuccessDialog
+                open={successOpen}
+                onOpenChange={setSuccessOpen}
+                title={sucessObject.title}
+                description={sucessObject.description}
+            />
 
             <DataTable
-                columns={Columns(handleRowClick)}
+                columns={columns}
                 data={employees}
                 isLoading={isLoading}
                 error={error}

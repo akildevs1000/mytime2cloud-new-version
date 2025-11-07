@@ -18,7 +18,6 @@ export default function Branch() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const [sucessObject, setSucessObject] = useState({ title: "", description: "" });
-
   const [successOpen, setSuccessOpen] = useState(false);
 
 

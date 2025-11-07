@@ -47,7 +47,7 @@ export default function DropDown({
         </Button>
       </PopoverTrigger>
 
-      <PopoverContent className="w-[300px] max-w-full p-0">
+      <PopoverContent className="w-[300px] max-w-full max-h-60 p-0">
         <Command>
           <CommandInput placeholder="Search item..." />
           <CommandEmpty>No item found.</CommandEmpty>

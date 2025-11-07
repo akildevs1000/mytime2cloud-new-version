@@ -13,6 +13,7 @@ import { useRouter } from "next/navigation";
 
 import Columns from "./columns";
 import { parseApiError } from '@/lib/utils';
+import DropDown from '@/components/ui/DropDown';
 
 export default function List() {
 
@@ -44,7 +45,7 @@ export default function List() {
         try {
             setBranches(await getBranches());
         } catch (error) {
-            setGlobalError(parseApiError(error));
+            setError(parseApiError(error));
         }
     };
 

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { SuccessDialog } from "@/components/SuccessDialog";
 import { Button } from "@/components/ui/button";
 import { Briefcase, ArrowLeft, LogInIcon } from "lucide-react";

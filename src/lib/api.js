@@ -388,12 +388,30 @@ export const getDeviceList = async (branch_id = 0) => {
     return data;
 };
 
+// Device
 export const getDevices = async (params = {}) => {
     const { data } = await axios.get(`${API_BASE}/device`, {
         params: await buildQueryParams(params),
     });
     return data;
 };
+
+export const createDevice = async (payload = {}) => {
+    const user = await getUser();
+    return await axios.post(`${API_BASE}/device`, { ...payload, company_id: user?.company_id || 0 });
+};
+
+export const updateDevice = async (id, payload = {}) => {
+    const user = await getUser();
+    return await axios.put(`${API_BASE}/device/${id}`, { ...payload, company_id: user?.company_id || 0 });
+};
+
+export const deleteDevice = async (id) => {
+    await axios.delete(`${API_BASE}/device/${id}`);
+    return true;
+};
+
+// Device End
 
 // Group
 export const getGroupLogins = async (params = {}) => {
