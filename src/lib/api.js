@@ -441,6 +441,17 @@ export const deletePayrollFormula = async (id) => {
 
 // PayrollFormula END
 
+
+// Activity
+export const getActivity = async (params = {}) => {
+    const { data } = await axios.get(`${API_BASE}/activity`, {
+        params: await buildQueryParams(params),
+    });
+    return data;
+};
+
+// Activity END
+
 // GenerationDate
 export const getPayrollGenerationDate = async (params = {}) => {
     const { data } = await axios.get(`${API_BASE}/payroll_generate_date`, {

@@ -4,7 +4,7 @@ import { format } from "date-fns";
 import { Calendar as CalendarIcon, Check, X } from "lucide-react";
 
 // Assuming your shadcn/ui components are correctly imported:
-import { cn } from "@/lib/utils";
+import { cn, formatDateDubai } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {
@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/popover";
 import { useState } from "react";
 
-export default function DateRangeSelect({ className,onChange = () => {} }) {
+export default function DateRangeSelect({ className, onChange = () => {} }) {
   // 1. Main state for the selected range (displayed in the button)
   const [date, setDate] = useState({
     from: new Date(new Date().getFullYear(), new Date().getMonth(), 1), // First day of current month
@@ -43,7 +43,10 @@ export default function DateRangeSelect({ className,onChange = () => {} }) {
     setDate(draftDate); // Commit the draft selection to the main state
     setOpen(false); // Close the popover
 
-    onChange(draftDate); // Notify parent component of the new date range
+    onChange({
+      from: formatDateDubai(draftDate.from),
+      to: formatDateDubai(draftDate.to),
+    }); // Notify parent component of the new date range
   };
 
   const handleCancel = () => {
