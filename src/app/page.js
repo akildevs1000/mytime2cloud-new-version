@@ -7,7 +7,7 @@ import RecentVisitors from '@/components/VisitorDashboard/RecentVisitors';
 
 export default function VisitorDashboard() {
   return (
-    <div className="p-8 bg-gray-100 min-h-screen">
+    <>
       {/* Page Title */}
       <div className="text-4xl font-extrabold text-gray-800 mb-5">
         Visitor Management Dashboard
@@ -41,6 +41,6 @@ export default function VisitorDashboard() {
         <h3 className="text-xl font-bold text-gray-800 mb-4">Recent Visitors</h3>
         <RecentVisitors />
       </div>
-    </div>
+    </>
   );
 }

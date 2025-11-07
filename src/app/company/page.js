@@ -124,64 +124,63 @@ const Company = () => {
   const handleGoBack = () => router.push(`/`);
 
   return (
-    <div className="min-h-screen  py-8">
-      <div className="max-w-7xl mx-auto space-y-6">
-        {/* Page header */}
-        <div className="flex items-center justify-between px-1">
+    <>
+      {/* Page header */}
+      <div className="flex items-center justify-between px-1">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+            Company Information
+          </h1>
+          <p className="text-sm text-muted-foreground mt-1">
+            Manage your company profile, licenses, admins and security settings.
+          </p>
+        </div>
+        <Button
+          onClick={handleGoBack}
+          className="bg-primary text-white hover:bg-indigo-700"
+        >
+          <ArrowLeft className="mr-2 h-4 w-4" />
+          Back to Home
+        </Button>
+      </div>
+
+      {/* Single card with left image + right tabs */}
+      <div className="rounded-2xl bg-white  shadow-lg p-6 lg:p-8 flex flex-col lg:flex-row gap-8">
+        {/* Left: image / logo section */}
+        <div>
           <div>
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
-              Company Information
-            </h1>
-            <p className="text-sm text-muted-foreground mt-1">
-              Manage your company profile, licenses, admins and security settings.
-            </p>
+            <ChangeLogo />
           </div>
-          <Button
-            onClick={handleGoBack}
-            className="bg-primary text-white hover:bg-indigo-700"
-          >
-            <ArrowLeft className="mr-2 h-4 w-4" />
-            Back to Home
-          </Button>
+
+          {/* Divider */}
+          <div className="my-6 h-px w-full bg-gradient-to-r from-transparent via-slate-300 to-transparent" />
+
+          <div className="mt-5">
+            <VisitorAppLink />
+          </div>
         </div>
 
-        {/* Single card with left image + right tabs */}
-        <div className="rounded-2xl bg-white  shadow-lg p-6 lg:p-8 flex flex-col lg:flex-row gap-8">
-          {/* Left: image / logo section */}
-          <div>
-            <div>
-              <ChangeLogo />
-            </div>
 
-            {/* Divider */}
-            <div className="my-6 h-px w-full bg-gradient-to-r from-transparent via-slate-300 to-transparent" />
-
-            <div className="mt-5">
-              <VisitorAppLink />
-            </div>
+        {/* Right: tabs section inside same card */}
+        <div className="flex-1">
+          {/* Heading above tabs */}
+          <div className="mb-4">
+            <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+              Company Settings
+            </h2>
+            <p className="text-sm text-muted-foreground">
+              Switch between different sections to configure your company.
+            </p>
           </div>
 
-
-          {/* Right: tabs section inside same card */}
-          <div className="flex-1">
-            {/* Heading above tabs */}
-            <div className="mb-4">
-              <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
-                Company Settings
-              </h2>
-              <p className="text-sm text-muted-foreground">
-                Switch between different sections to configure your company.
-              </p>
-            </div>
-
-            <Tabs defaultValue="company" className="w-full">
-              {/* Tabs header */}
-              <TabsList className="flex w-full justify-start  rounded-xl p-1 mb-4 overflow-x-auto">
-                {tabs.map((tab) => (
-                  <TabsTrigger
-                    key={tab.value}
-                    value={tab.value}
-                    className="
+          <Tabs defaultValue="company" className="w-full">
+            {/* Tabs header */}
+            <TabsList className="flex w-full justify-start  rounded-xl p-1 mb-4 overflow-x-auto">
+              {tabs.map((tab) => (
+                <TabsTrigger
+                  key={tab.value}
+                  value={tab.value}
+                  className="
                       px-4 py-2 text-xs sm:text-sm font-medium rounded-lg
                       text-gray-600 dark:text-gray-200
                       whitespace-nowrap
@@ -191,18 +190,18 @@ const Company = () => {
                       data-[state=active]:shadow-sm
                       hover:bg-white/70
                     "
-                  >
-                    {tab.label}
-                  </TabsTrigger>
-                ))}
-              </TabsList>
+                >
+                  {tab.label}
+                </TabsTrigger>
+              ))}
+            </TabsList>
 
-              {/* Tabs content */}
-              {tabs.map((tab) => (
-                <TabsContent
-                  key={tab.value}
-                  value={tab.value}
-                  className="
+            {/* Tabs content */}
+            {tabs.map((tab) => (
+              <TabsContent
+                key={tab.value}
+                value={tab.value}
+                className="
                     rounded-xl
                     bg-slate-50/80 dark:bg-slate-900/60
                     p-5
@@ -212,15 +211,13 @@ const Company = () => {
                     fade-in-50
                     slide-in-from-top-2
                   "
-                >
-                  {tab.component}
-                </TabsContent>
-              ))}
-            </Tabs>
-          </div>
+              >
+                {tab.component}
+              </TabsContent>
+            ))}
+          </Tabs>
         </div>
-      </div>
-    </div>
+      </div></>
   );
 };
 

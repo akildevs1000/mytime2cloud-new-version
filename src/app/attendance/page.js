@@ -232,59 +232,61 @@ export default function AttendanceTable() {
                 {/* <EmployeeExtras data={records} onUploadSuccess={fetchRecords} /> */}
             </div>
 
-            <Tabs
-                value={shiftTypeId} // controlled tab
-                onValueChange={(value) => setShiftTypeId(value)} // update on click
-                className="w-full"
-            >
-                {/* --- Tabs Header aligned Right --- */}
-                <div className="flex justify-start mb-4">
-                    <div className="p-2 bg-white w-full rounded-lg shadow">
-                        <TabsList className="flex bg-white   p-1">
-                            {ShiftTypes.map((shift) => (
-                                <TabsTrigger
-                                    key={shift.id}
-                                    value={shift.id}
-                                    className="px-4 py-2 text-sm font-medium rounded-md 
+            <div className='flex'>
+                <Tabs
+                    value={shiftTypeId} // controlled tab
+                    onValueChange={(value) => setShiftTypeId(value)} // update on click
+                    className="w-full"
+                >
+                    {/* --- Tabs Header aligned Right --- */}
+                    <div className="flex justify-start mb-4">
+                        <div className="p-2 bg-white w-full rounded-lg shadow">
+                            <TabsList className="flex bg-white   p-1">
+                                {ShiftTypes.map((shift) => (
+                                    <TabsTrigger
+                                        key={shift.id}
+                                        value={shift.id}
+                                        className="px-4 py-2 text-sm font-medium rounded-md 
                 data-[state=active]:bg-primary/10 
                 data-[state=active]:text-primary 
                 data-[state=active]:shadow-sm 
                 transition-all duration-200"
-                                >
-                                    {shift.name}
-                                </TabsTrigger>
-                            ))}
-                        </TabsList>
+                                    >
+                                        {shift.name}
+                                    </TabsTrigger>
+                                ))}
+                            </TabsList>
+                        </div>
+
                     </div>
 
-                </div>
-
-                {/* --- Tabs Content --- */}
-                {ShiftTypes.map((shift) => (
-                    <TabsContent key={shift.id} value={shift.id} className="space-y-2 rounded-lg">
-                        <DataTable
-                            columns={Columns(shiftTypeId)}
-                            data={records}
-                            isLoading={isLoading}
-                            error={error}
-                            onRowClick={(item) => console.log("Clicked:", item)}
-                            pagination={
-                                <Pagination
-                                    page={currentPage}
-                                    perPage={perPage}
-                                    total={total}
-                                    onPageChange={setCurrentPage}
-                                    onPerPageChange={(n) => {
-                                        setPerPage(n);
-                                        setCurrentPage(1);
-                                    }}
-                                    pageSizeOptions={[10, 25, 50]}
-                                />
-                            }
-                        />
-                    </TabsContent>
-                ))}
-            </Tabs>
+                    {/* --- Tabs Content --- */}
+                    {ShiftTypes.map((shift) => (
+                        <TabsContent key={shift.id} value={shift.id} className="space-y-2 rounded-lg">
+                            <DataTable
+                                columns={Columns(shiftTypeId)}
+                                data={records}
+                                isLoading={isLoading}
+                                error={error}
+                                onRowClick={(item) => console.log("Clicked:", item)}
+                                pagination={
+                                    <Pagination
+                                        page={currentPage}
+                                        perPage={perPage}
+                                        total={total}
+                                        onPageChange={setCurrentPage}
+                                        onPerPageChange={(n) => {
+                                            setPerPage(n);
+                                            setCurrentPage(1);
+                                        }}
+                                        pageSizeOptions={[10, 25, 50]}
+                                    />
+                                }
+                            />
+                        </TabsContent>
+                    ))}
+                </Tabs>
+            </div>
 
 
         </>
