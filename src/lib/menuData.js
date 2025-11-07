@@ -17,6 +17,7 @@ import {
   Workflow,
   Shield,
   Group,
+  Calendar,
 } from "lucide-react";
 
 // 1️⃣ Reusable menu groups
@@ -48,9 +49,16 @@ const employeesMenu = [
   { href: "/employees/employee_photo_upload", icon: Upload, label: "Employee Upload" },
 ];
 
+const dashboardMenu = [
+  { href: "#", icon: Home, label: "Dashboard" },
+  { href: "/employees", icon: Users, label: "Employees" },
+  { href: "/shift", icon: FileText, label: "Attendance" },
+  { href: "/attendance", icon: Calendar, label: "Reports" },
+];
 
 export const leftNavLinks = {
-  "/": [{ href: "#", icon: Home, label: "Home" }],
+  "/": dashboardMenu,
+
 
   "/employees": employeesMenu,
   "/employee_photo_upload": employeesMenu,

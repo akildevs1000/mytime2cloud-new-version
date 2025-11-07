@@ -121,7 +121,7 @@ export default function AttendanceTable() {
 
                 <div className="flex flex-col">
                     <DropDown
-                        placeholder={'Select Department'}
+                        placeholder={'Select Device'}
                         onChange={setSelectedDevice}
                         value={selectedDeviceId}
                         items={devices}

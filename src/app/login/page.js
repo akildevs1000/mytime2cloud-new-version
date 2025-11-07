@@ -157,7 +157,7 @@ const Login = () => {
 
         try {
 
-            const {data} = await axios.post(
+            const { data } = await axios.post(
                 `${process.env.NEXT_PUBLIC_API_URL || "https://backend.mytime2cloud.com/api"}/login`, credentials
             );
 
@@ -168,6 +168,7 @@ const Login = () => {
             if (token) {
                 localStorage.setItem("token", token);
                 localStorage.setItem("user", JSON.stringify(user));
+                window.location.href = "/";
                 // router.push("/dashboard");
             } else {
                 setError("No token received from server");

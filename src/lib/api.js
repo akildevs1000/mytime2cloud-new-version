@@ -19,14 +19,17 @@ export const buildQueryParams = async (params = {}) => {
     }
 
     // Include department_ids only if valid and non-empty
-    if (Array.isArray(user?.department_ids) && user.department_ids.length > 0) {
-        queryParams.department_ids = user.department_ids;
+    if (Array.isArray(user?.departments) && user.departments.length > 0) {
+        queryParams.department_ids = user.departments.map(e => e.id);
     }
     else if (Array.isArray(params?.department_ids) && params.department_ids.length > 0) {
         queryParams.department_ids = params.department_ids;
     }
 
     // queryParams.department_ids = [145, 410]
+
+
+    console.log(queryParams.department_ids);
 
     return queryParams;
 };
@@ -60,14 +63,10 @@ export const getRoles = async () => {
 
 // companyId will be passed dynamically
 export const getDepartments = async (branch_id = null) => {
-    const user = await getUser();
 
-    const { data } = await axios.get(`${API_BASE}/department-list`, {
-        params: {
-            branch_id: branch_id,
-            company_id: user?.company_id || 0,
-        },
-    });
+    let params = { branch_id };
+
+    const { data } = await axios.get(`${API_BASE}/department-list`, { params: await buildQueryParams(params) });
     return data;
 };
 
