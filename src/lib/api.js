@@ -375,7 +375,7 @@ export const getScheduledEmployeeList = async (branch_id = null, department_ids 
 };
 
 // companyId will be passed dynamically
-export const getDeviceList = async (branch_id = 0) => {
+export const getDeviceList = async (branch_id = null) => {
 
     const params = {
         branch_id,

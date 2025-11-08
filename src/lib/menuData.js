@@ -18,6 +18,7 @@ import {
   Shield,
   Group,
   Calendar,
+  DoorClosedIcon,
 } from "lucide-react";
 
 // 1️⃣ Reusable menu groups
@@ -36,7 +37,7 @@ const companyMenu = [
   { href: "/department-tabs", icon: Layers, label: "Department" },
   { href: "/automation", icon: Workflow, label: "Automation" },
   { href: "/roles", icon: Shield, label: "Roles" },
-  { href: "/device", icon: Briefcase, label: "Device" },
+  { href: "/device", icon: DoorClosedIcon, label: "Device" },
   { href: "/holidays", icon: CalendarDays, label: "Holidays" },
   { href: "/leaves", icon: FileText, label: "Leaves" },
   { href: "/announcements", icon: Megaphone, label: "Announcements" },
