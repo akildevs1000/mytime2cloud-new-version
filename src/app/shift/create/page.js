@@ -1,29 +1,14 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useState } from 'react';
 import { SuccessDialog } from "@/components/SuccessDialog"; // Import the new component
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-
-import {
-    Card,
-    CardHeader,
-    CardTitle,
-    CardContent,
-} from "@/components/ui/card"
-
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
-import {
-    Clock,
-    Coffee,
-    AlarmClock,
-    CheckCircle2,
-    FileText,
-    Briefcase, Phone, ArrowLeft, Upload, Calendar as CalenddarIcon, CalendarIcon
-} from "lucide-react";
-import { addTimes, cn, convertFileToBase64, parseApiError } from "@/lib/utils";
+import { ArrowLeft } from "lucide-react";
+import { parseApiError } from "@/lib/utils";
 import { useRouter } from 'next/navigation';
 
 import { storeShift } from '@/lib/api';
@@ -43,7 +28,7 @@ import TimePicker from '@/components/ui/TimePicker';
 import DaysSelector from "@/components/DaysSelector";
 
 
-const EmployeeProfileForm = () => {
+const ShiftCreate = () => {
 
     const [schedule, setSchedule] = useState({
         "shift_type_id": 6,
@@ -85,7 +70,6 @@ const EmployeeProfileForm = () => {
     });
 
     const handleChange = (key, value) => {
-        console.log("🚀 ~ handleChange ~ key, value:", key, value)
         setSchedule((prev) => ({
             ...prev,
             [key]: value,
@@ -758,4 +742,4 @@ const EmployeeProfileForm = () => {
     );
 };
 
-export default EmployeeProfileForm;
+export default ShiftCreate;

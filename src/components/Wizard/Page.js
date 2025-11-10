@@ -1,167 +1,242 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import { Check } from "lucide-react";
+import { useState } from "react";
+import { ArrowLeft, ArrowRight, Check } from "lucide-react";
+import { AnimatePresence, motion } from "framer-motion";
+
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+
 import BranchCreate from "./BranchCreate";
 import DepartmentCreate from "./DepartmentCreate";
 import DeviceCreate from "./DeviceCreate";
-import { motion } from "framer-motion";
-import { getBranches, getDepartments, getDeviceList } from "@/lib/api";
-import { SuccessDialog } from "@/components/SuccessDialog";
+import ShiftCreate from "./ShiftCreate";
+import EmployeeCreate from "./EmployeeCreate";
 
-export default function MultiStepDialog() {
+export default function CreateAccountPage() {
   const [open, setOpen] = useState(true);
-  const [successOpen, setSuccessOpen] = useState(false);
   const [stepIndex, setStepIndex] = useState(0);
-  const [loading, setLoading] = useState(true);
-
-  const fetchSetupData = async () => {
-    try {
-      setLoading(true);
-
-      // Run all API calls in parallel for faster performance
-      const [branches, departments, devices] = await Promise.all([
-        getBranches(),
-        getDepartments(),
-        getDeviceList(),
-      ]);
-
-      // Determine which step to show
-      if (branches.length === 0) {
-        setStepIndex(0); // Step 1: Branch
-        setOpen(true);
-      } else if (departments.length === 0) {
-        setStepIndex(1); // Step 2: Department
-        setOpen(true);
-      } else if (devices.length === 0) {
-        setStepIndex(2); // Step 3: Device
-        setOpen(true);
-      } else {
-        // All data present → skip setup
-        setOpen(false);
-      }
-
-    } catch (error) {
-      console.error("Setup fetch error:", parseApiError(error));
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchSetupData();
-  }, []);
 
   const steps = [
     {
-      id: 0,
-      title: "Account",
-      subtitle: "Basic account info",
-      content: <BranchCreate onSuccess={next} goBack={back} stepIndex={stepIndex} />,
-    },
-    {
       id: 1,
-      title: "Company",
-      subtitle: "Company details",
-      content: <DepartmentCreate onSuccess={next} goBack={back} stepIndex={stepIndex} />,
+      label: "Step 1",
+      sidebarTitle: "Branch Info",
+      title: "Branch Information",
+      subtitle: "Create branch Info",
+      content: <BranchCreate />,
     },
     {
       id: 2,
-      title: "Confirm",
-      subtitle: "Review & finish",
-      content: <DeviceCreate onSuccess={finish} goBack={back} stepIndex={stepIndex} />,
+      label: "Step 2",
+      sidebarTitle: "Department Info",
+      title: "Department Information",
+      subtitle: "Now, add your departments.",
+      content: <DepartmentCreate />,
+    },
+    {
+      id: 3,
+      label: "Step 3",
+      sidebarTitle: "Device Info",
+      title: "Department Information",
+      subtitle: "Now, add your departments.",
+      content: <DeviceCreate />,
+    },
+    {
+      id: 4,
+      label: "Step 4",
+      sidebarTitle: "Shift Info",
+      title: "Department Information",
+      subtitle: "Now, add your departments.",
+      content: <ShiftCreate />,
+    },
+    {
+      id: 5,
+      label: "Step 5",
+      sidebarTitle: "Employee Info",
+      title: "Department Information",
+      subtitle: "Now, add your departments.",
+      content: <EmployeeCreate />,
+    },
+    {
+      id: 6,
+      label: "Step 6",
+      sidebarTitle: "Assign Schedule",
+      title: "Department Information",
+      subtitle: "Now, add your departments.",
+      content: <DepartmentCreate />,
     },
   ];
 
-  const maxIndex = steps.length - 1;
+  const currentStep = steps[stepIndex];
+  const isLastStep = stepIndex === steps.length - 1;
 
-  function next() { if (stepIndex < maxIndex) setStepIndex(stepIndex + 1); }
-  function back() { if (stepIndex > 0) setStepIndex(stepIndex - 1); }
 
-  async function finish() {
-    setSuccessOpen(true)
-    setOpen(false)
-  }
+  const handleNext = async () => {
+    if (stepIndex < steps.length - 1) {
+      setStepIndex(stepIndex + 1);
+    } else {
+      setOpen(false); // close dialog on finish
+    }
+  };
 
-  if (loading) return;
+  const handleBack = async () => {
+    setStepIndex(stepIndex - 1);
+  };
 
   return (
-    <>
-      <SuccessDialog
-        open={successOpen}
-        onOpenChange={setSuccessOpen}
-        title="Setup completed"
-        description="Default configuration has been completed"
-      />
-      <Dialog open={open} onOpenChange={() => { }}>
-        <DialogContent className="sm:max-w-2xl w-full"
-          onInteractOutside={(e) => e.preventDefault()}
-          onEscapeKeyDown={(e) => e.preventDefault()}>
-          <div className="flex items-start justify-between">
-            <DialogHeader>
-              <DialogTitle>Initial Setup</DialogTitle>
-              <p className="text-sm text-muted-foreground">Please provide the necessary information to ensure a smooth process.</p>
-            </DialogHeader>
-          </div>
-          <Card className="pa-0">
-            <CardHeader className="pt-2">
-              <CardTitle className="flex items-center justify-between gap-2">
-                {steps.map((s, i) => (
-                  <div key={s.id} className="flex items-center">
-                    {/* Step Circle */}
-                    <motion.div
-                      animate={{
-                        background: i === stepIndex
-                          ? "linear-gradient(to right, #6946dd, #8b63f0)" // purple gradient
-                          : i < stepIndex
-                            ? "linear-gradient(to right, #34d399, #059669)" // completed green
-                            : "#e5e7eb",
-                        color: i <= stepIndex ? "#fff" : "#6b7280",
-                        scale: i === stepIndex ? 1.2 : 1,
-                      }}
-                      transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                      className="w-8 h-8 flex items-center justify-center rounded-full text-sm font-medium shadow-md"
-                    >
-                      {i < stepIndex ? <Check size={14} /> : i + 1}
-                    </motion.div>
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogContent
+        className="
+    w-full 
+    max-w-[95vw]        /* use 95% of viewport width */
+    xl:max-w-[1300px]   /* cap at 1200px on big screens */
+    p-0 
+    overflow-hidden
+  "
+      >
 
+        <DialogHeader>
+          <DialogTitle >
+          </DialogTitle>
+        </DialogHeader>
 
-                    {/* Connector Line */}
-                    {i !== steps.length - 1 && (
-                      <motion.div
-                        initial={{ width: 0 }}
-                        animate={{ width: 210 }}
-                        transition={{ duration: 0.5 }}
-                        className={`h-2 mx-2 rounded ${i < stepIndex
-                          ? "bg-gradient-to-r from-green-400 to-green-600"
-                          : "bg-gray-200"
-                          }`}
-                      />
-                    )}
+        <Card className="flex flex-col md:flex-row border-none shadow-none rounded-none">
+          {/* Sidebar Stepper */}
+          <CardContent className="w-full md:w-[260px] border-b md:border-b-0  dark:border-border-dark shrink-0">
+            <div className="flex md:flex-col gap-8">
+              {steps.map((step, index) => {
+                const isActive = index === stepIndex;
+                const isCompleted = index < stepIndex;
+
+                return (
+                  <div key={step.id} className="flex items-start gap-4">
+                    <div className="flex flex-col items-center">
+                      <div
+                        className={[
+                          "flex h-8 w-8 items-center justify-center rounded-full text-sm font-bold",
+                          isActive
+                            ? "bg-primary text-white"
+                            : isCompleted
+                              ? "bg-primary/10 border-2 border-primary text-primary"
+                              : "border-2 border-border-light dark:border-border-dark text-text-light/60 dark:text-text-dark/60",
+                        ].join(" ")}
+                      >
+                        {step.id}
+                      </div>
+                      {index < steps.length - 1 && (
+                        <div className="h-10 w-0.5 bg-border-light dark:bg-border-dark md:block hidden" />
+                      )}
+                    </div>
+                    <div>
+                      <p className="text-sm text-text-light/60 dark:text-text-dark/60">
+                        {step.label}
+                      </p>
+                      <p
+                        className={[
+                          "font-semibold",
+                          isActive
+                            ? "text-primary"
+                            : "text-text-light/60 dark:text-text-dark/60",
+                        ].join(" ")}
+                      >
+                        {step.sidebarTitle}
+                      </p>
+                    </div>
                   </div>
-                ))}
-              </CardTitle>
-            </CardHeader>
+                );
+              })}
+            </div>
+          </CardContent>
 
-            {/* Step Content with smooth transition */}
-            <CardContent>
-              <motion.div
-                key={stepIndex}
-                initial={{ opacity: 0, x: 50 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -50 }}
-                transition={{ duration: 0.3 }}
-              >
-                {steps[stepIndex].content}
-              </motion.div>
-            </CardContent>
-          </Card>
+          {/* Step Content with Framer Motion */}
+          <div className="flex-1">
+            <div className="flex flex-col h-full">
+              <div className="">
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={stepIndex}
+                    initial={{ opacity: 0, x: 30 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -30 }}
+                    transition={{ duration: 0.25, ease: "easeOut" }}
+                    className="h-full"
+                  >
+                    {currentStep.content}
+                  </motion.div>
+                </AnimatePresence>
+              </div>
 
-        </DialogContent>
-      </Dialog>
-    </>
+              <div className="flex justify-end mr-5 gap-5">
+                {stepIndex > 0 && <Button
+                  className="rounded-xl flex items-center justify-end bg-gray-200 text-gray-500 hover:bg-gray-300 hover:text-gray-500"
+                  type="button"
+                  onClick={handleBack}
+                >
+                  <AnimatePresence mode="wait" initial={false}>
+                    <motion.div
+                      key="back"
+                      className="flex items-center gap-2"
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      transition={{ duration: 0.2 }}
+                    >
+                      {!isLastStep &&
+                        <motion.div
+                          animate={{ x: [0, 5, 0], opacity: [1, 0.7, 1] }}
+                          transition={{
+                            duration: 1,
+                            repeat: Infinity,
+                            ease: "easeInOut"
+                          }}
+                        >
+                          <ArrowLeft className="h-5 w-5" />
+                        </motion.div>}
+                      <span>{isLastStep ? "Finish" : "Back"} </span>
 
+                      {isLastStep && <Check className="h-5 w-5" />}
+                    </motion.div>
+                  </AnimatePresence>
+                </Button>}
+
+
+                <Button
+                  className="rounded-xl flex items-center justify-end"
+                  type="button"
+                  onClick={handleNext}
+                >
+                  <AnimatePresence mode="wait" initial={false}>
+                    <motion.div
+                      key="next"
+                      className="flex items-center gap-2"
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      transition={{ duration: 0.2 }}
+                    >
+                      <span>{isLastStep ? "Finish" : "Next"}</span>
+                      {!isLastStep &&
+                        <motion.div
+                          animate={{ x: [0, 5, 0], opacity: [1, 0.7, 1] }}
+                          transition={{
+                            duration: 1,
+                            repeat: Infinity,
+                            ease: "easeInOut"
+                          }}
+                        >
+                          <ArrowRight className="h-5 w-5" />
+                        </motion.div>}
+                      {isLastStep && <Check className="h-5 w-5" />}
+                    </motion.div>
+                  </AnimatePresence>
+                </Button>
+              </div>
+            </div>
+          </div>
+        </Card>
+      </DialogContent>
+    </Dialog>
   );
 }

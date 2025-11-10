@@ -14,7 +14,7 @@ import {
 import { addTimes, cn, parseApiError } from "@/lib/utils";
 import { useRouter } from 'next/navigation';
 
-import { storeShift } from '@/lib/api';
+import { storeShift, getShifts } from '@/lib/api';
 import {
   Select,
   SelectContent,
@@ -33,9 +33,7 @@ import DaysSelector from "@/components/DaysSelector";
 
 import Link from 'next/link';
 
-
 import axios from 'axios'; // Ensure you import axios at the top of your file
-import { getShifts } from '@/lib/api';
 
 const DEFAULT_SCHEDULE = {
   shift_type_id: 6,

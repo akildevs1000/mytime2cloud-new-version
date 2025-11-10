@@ -111,7 +111,7 @@ const Login = () => {
 
     const router = useRouter(); // Initialize router
 
-    const [credentials, setCredentials] = useState({ email: 'info@taklahinteriors.com', password: 'AkiL@332211', source: 'admin' });
+    const [credentials, setCredentials] = useState({ email: '', password: 'AkiL@332211', source: 'admin' });
     const [showPassword, setShowPassword] = useState(false);
     const [loading, setLoading] = useState(false);
     const [msg, setMsg] = useState('');

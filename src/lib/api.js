@@ -517,7 +517,7 @@ export const deleteAdmin = async (id) => {
 
 // DEPARTMENT
 
-export const getSepartmentsForTable = async (params = {}) => {
+export const getDepartmentsForTable = async (params = {}) => {
     const { data } = await axios.get(`${API_BASE}/departments`, {
         params: await buildQueryParams(params),
     });

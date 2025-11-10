@@ -30,3 +30,66 @@ export const STATUSSES = [
         "name": "Active",
     }
 ];
+
+export const SHIFT_TYPES = [
+    {
+        id: 1, name: "Flexible"
+
+    },
+    {
+        id: 6, name: "Single"
+
+    },
+    {
+        id: 2, name: "Multi"
+
+    },
+    {
+        id: 4, name: "Night"
+
+    },
+    {
+        id: 5, name: "Dual"
+    }
+]
+
+export const DAYS_LIST = [
+    {
+        id: "Not Applicable", name: "Not Applicable"
+    },
+    {
+        id: "monday", name: "Monday"
+    },
+    {
+        id: "tuesday", name: "Tuesday"
+    },
+    {
+        id: "wednesday", name: "Wednesday"
+    },
+    {
+        id: "thursday", name: "Thursday"
+    },
+    {
+        id: "friday", name: "Friday"
+    },
+    {
+        id: "saturday", name: "Saturday"
+    },
+    {
+        id: "sunday", name: "Sunday"
+    },
+]
+
+export const ONE_TO_TEN_NUMBERS = [
+    { id: "0", name: "0" },
+    { id: "1", name: "1" },
+    { id: "2", name: "2" },
+    { id: "3", name: "3" },
+    { id: "4", name: "4" },
+    { id: "5", name: "5" },
+    { id: "6", name: "6" },
+    { id: "7", name: "7" },
+    { id: "8", name: "8" },
+    { id: "9", name: "9" },
+    { id: "10", name: "10" },
+]

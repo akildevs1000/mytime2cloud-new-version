@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { UserLock } from "lucide-react";
-import { getSepartmentsForTable } from "@/lib/api";
+import { getDepartmentsForTable } from "@/lib/api";
 
 import Pagination from "@/lib/Pagination";
 import DataTable from "@/components/ui/DataTable";
@@ -29,7 +29,7 @@ export default function Department() {
       setIsLoading(true);
       setError(null);
 
-      const result = await getSepartmentsForTable({
+      const result = await getDepartmentsForTable({
         page: currentPage,
         per_page: perPage,
       });
