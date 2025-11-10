@@ -33,11 +33,11 @@ const attendanceMenu = [
 const companyMenu = [
   { href: "/company", icon: Building, label: "Company" },
   { href: "/branch", icon: Briefcase, label: "Branch" },
-  { href: "/group-login", icon: Group, label: "Group Login" },
   { href: "/department-tabs", icon: Layers, label: "Department" },
+  { href: "/device", icon: DoorClosedIcon, label: "Device" },
+  { href: "/group-login", icon: Group, label: "Group Login" },
   { href: "/automation", icon: Workflow, label: "Automation" },
   { href: "/roles", icon: Shield, label: "Roles" },
-  { href: "/device", icon: DoorClosedIcon, label: "Device" },
   { href: "/holidays", icon: CalendarDays, label: "Holidays" },
   { href: "/leaves", icon: FileText, label: "Leaves" },
   { href: "/announcements", icon: Megaphone, label: "Announcements" },
