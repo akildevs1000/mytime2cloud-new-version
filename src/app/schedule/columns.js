@@ -108,28 +108,28 @@ export default (handleRowClick) => {
                 <div onClick={() => handleRowClick(employee)} className="flex flex-col text-gray-500">{employee.schedule_all.length}</div>
             ),
         },
-        {
-            key: "actions",
-            header: "Actions",
-            render: (employee) => (
-                <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                        <MoreVertical
-                            className="w-5 h-5 text-gray-400 cursor-pointer hover:text-gray-700 transition-colors"
-                            title="More Options"
-                        />
-                    </DropdownMenuTrigger>
+        // {
+        //     key: "actions",
+        //     header: "Actions",
+        //     render: (employee) => (
+        //         <DropdownMenu>
+        //             <DropdownMenuTrigger asChild>
+        //                 <MoreVertical
+        //                     className="w-5 h-5 text-gray-400 cursor-pointer hover:text-gray-700 transition-colors"
+        //                     title="More Options"
+        //                 />
+        //             </DropdownMenuTrigger>
 
-                    <DropdownMenuContent align="end" className="w-30 bg-white shadow-md rounded-md py-1">
-                        <DropdownMenuItem
-                            onClick={() => console.log("Edit", employee.id)}
-                            className="flex items-center gap-2 px-3 py-2 text-gray-700 hover:bg-gray-100"
-                        >
-                            <Pencil className="w-4 h-4 text-primary" /> <span className="text-primary">Edit</span>
-                        </DropdownMenuItem>
-                    </DropdownMenuContent>
-                </DropdownMenu>
-            ),
-        },
+        //             <DropdownMenuContent align="end" className="w-30 bg-white shadow-md rounded-md py-1">
+        //                 <DropdownMenuItem
+        //                     onClick={() => console.log("Edit", employee.id)}
+        //                     className="flex items-center gap-2 px-3 py-2 text-gray-700 hover:bg-gray-100"
+        //                 >
+        //                     <Pencil className="w-4 h-4 text-primary" /> <span className="text-primary">Edit</span>
+        //                 </DropdownMenuItem>
+        //             </DropdownMenuContent>
+        //         </DropdownMenu>
+        //     ),
+        // },
     ]
 };
