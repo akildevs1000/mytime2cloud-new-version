@@ -3,7 +3,7 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 
-import { getDepartmentsForTable, } from '@/lib/api';
+import { getScheduleEmployees, } from '@/lib/api';
 import { parseApiError } from '@/lib/utils';
 import { AnimatePresence, motion } from "framer-motion";
 import Create from './Create';
@@ -17,7 +17,6 @@ export default function Index() {
     // Pagination State
     const [currentPage, setCurrentPage] = useState(1);
     const [perPage, setPerPage] = useState(10); // Default to 10 for a cleaner table, even if the API suggests 100
-    const [loading, setLoading] = useState(false);
 
     const fetchItems = useCallback(async (page, perPage) => {
         setError(null);
@@ -28,7 +27,7 @@ export default function Index() {
                 per_page: perPage,
                 sortDesc: 'false',
             };
-            const result = await getDepartmentsForTable(params);
+            const result = await getScheduleEmployees(params);
 
             // Check if result has expected structure before setting state
             if (result && Array.isArray(result.data)) {
@@ -54,78 +53,76 @@ export default function Index() {
     }
 
     return (
-        <>
-            {/* Make sure the parent (e.g. CardContent) has controlled padding */}
-            {/* <CardContent className="md:col-span-2 p-0"> */}
-
-            <div className="flex justify-center items-center w-full">
-                {/* LEFT: Branch list */}
-
-                <div
-                    className="px-5 border-r border-l shrink-0 h-full flex flex-col"
-                >
-                    {items.length === 0 ? (
-                        <div className="flex-1 flex items-center justify-center min-h-[60vh] text-center text-subtext-light dark:text-subtext-dark">
-                            No department created yet
-                        </div>
-                    ) : (
-
-                        <>
-                            <div className="text-xl  font-bold text-text-light dark:text-text-dark">
-                                Department List
-                            </div>
-
-                            <div className='flex-1 flex items-center min-h-[60vh] min-w-60'>
-                                <motion.ul
-                                    className="divide-y divide-border-light dark:divide-border-dark flex-1 overflow-y-auto"
-                                    initial={false}
-                                >
-                                    <AnimatePresence>
-                                        {items.map((item,index) => (
-                                            <motion.li
-                                                key={item.id}
-                                                className="px-3 py-3 flex items-center gap-3 hover:bg-primary/10 cursor-pointer transition-colors"
-                                                onClick={() => handleRowClick(item)}
-                                                initial={{ opacity: 0, y: -10 }}
-                                                animate={{ opacity: 1, y: 0 }}
-                                                exit={{ opacity: 0, y: 10 }}
-                                                layout
-                                                transition={{ duration: 0.3 }}
-                                            >
-                                                <div className="overflow-hidden">
-                                                    <p className="font-medium text-text-light dark:text-text-dark truncate">
-                                                        {index + 1}. {item.name}
-                                                    </p>
-                                                </div>
-                                            </motion.li>
-                                        ))}
-                                    </AnimatePresence>
-                                </motion.ul>
-                            </div>
-                        </>
-
-                    )}
-                </div>
-
-                <div className="flex-1 p-6">
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                        {/* Form Fields */}
-                        <div className="lg:col-span-2 lg:pl-4 space-y-4">
-                            <div className="text-2xl font-bold text-text-light dark:text-text-dark">
-                                Department Information
-                            </div>
-                            <p className="text-sm text-text-light/60 dark:text-text-dark/60">
-                                Fill in the department name to create department.
-                            </p>
-
-                            {/* Create */}
-                            <Create onSuccess={fetchItems} />
-
-                        </div>
+        <div className="flex justify-center items-center w-full">
+            <div
+                className="px-5 border-r border-l shrink-0 h-full flex flex-col"
+            >
+                {items.length === 0 ? (
+                    <div className="flex-1 flex items-center justify-center min-h-[60vh] text-center text-subtext-light dark:text-subtext-dark">
+                        No employee created yet
                     </div>
-                </div>
+                ) : (
+
+                    <>
+                        <div className="text-xl  font-bold text-text-light dark:text-text-dark">
+                            Employee List
+                        </div>
+
+                        <div className='flex-1 flex items-center min-h-[60vh] min-w-60'>
+                            <motion.ul
+                                className="divide-y divide-border-light dark:divide-border-dark flex-1 overflow-y-auto"
+                                initial={false}
+                            >
+                                <AnimatePresence>
+                                    {items.map((item) => (
+                                        <motion.li
+                                            key={item.id}
+                                            className="px-3 py-3 flex items-center gap-3 hover:bg-primary/10 cursor-pointer transition-colors"
+                                            onClick={() => handleRowClick(item)}
+                                            initial={{ opacity: 0, y: -10 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                            exit={{ opacity: 0, y: 10 }}
+                                            layout
+                                            transition={{ duration: 0.3 }}
+                                        >
+                                            <img
+                                                alt={item.full_name}
+                                                className="w-9 h-9 rounded-full flex-shrink-0"
+                                                src={`https://placehold.co/40x40/6946dd/ffffff?text=${item.full_name.charAt(0)}`}
+                                                onError={(e) => {
+                                                    e.currentTarget.onerror = null;
+                                                    e.currentTarget.src = `https://placehold.co/40x40/6946dd/ffffff?text=${item.full_name.charAt(0)}`;
+                                                }}
+                                            />
+                                            <div className="overflow-hidden">
+                                                <p className="font-medium text-text-light dark:text-text-dark">
+                                                    {item.full_name}
+                                                </p>
+                                                <p className="text-sm text-subtext-light dark:text-subtext-dark">
+                                                    {item.employee_id || 'N/A'}
+                                                </p>
+                                            </div>
+                                        </motion.li>
+                                    ))}
+                                </AnimatePresence>
+                            </motion.ul>
+                        </div>
+                    </>
+
+                )}
             </div>
 
-        </>
+            <div className="flex-1 py-6 px-1">
+                <div className="lg:col-span-2 lg:pl-4 space-y-4">
+                    <div className="text-2xl font-bold text-text-light dark:text-text-dark">
+                        Assing Schedule Information
+                    </div>
+                    <p className="text-sm text-text-light/60 dark:text-text-dark/60">
+                        Fill information to assing schedule to employee.
+                    </p>
+                    <Create onSuccess={fetchItems} />
+                </div>
+            </div>
+        </div>
     );
 }

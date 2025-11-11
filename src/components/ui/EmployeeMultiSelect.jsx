@@ -34,7 +34,6 @@ export default function EmployeeMultiSelect({
   // ... (Data Fetching and Popover Width Logic remains the same)
 
   const fetchEmployees = async () => {
-
     if (!selectedBranchId) {
       console.warn("Operation skipped: selectedBranchId is missing.");
       return;
@@ -145,14 +144,14 @@ export default function EmployeeMultiSelect({
 
   return (
     <Popover open={employeeOpen} onOpenChange={setEmployeeOpen}>
-      <PopoverTrigger asChild className="flex justify-between">
+      <PopoverTrigger asChild className="flex justify-between w-full">
         <Button
           ref={triggerRef}
           variant="outline"
           role="combobox"
           aria-expanded={employeeOpen}
           // The height property is crucial here to ensure a consistent look
-          className="border border-gray-300"
+          className="border border-gray-300 "
         >
           {/* Use the new function to render content */}
           {getDisplayContent()}

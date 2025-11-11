@@ -22,7 +22,7 @@ import {
 import { Button } from '@/components/ui/button';
 
 
-import { getBranches, getEmployees } from '@/lib/api';
+import { getBranches, getScheduleEmployees } from '@/lib/api';
 import { EmployeeExtras } from '@/components/Employees/Extras';
 import { Input } from '@/components/ui/input';
 import { useRouter } from "next/navigation";
@@ -92,7 +92,7 @@ export default function EmployeeShortList() {
         branch_id: selectedBranch,
         search: searchTerm || null, // Only include search if it's not empty
       };
-      const result = await getEmployees(params);
+      const result = await getScheduleEmployees(params);
 
       // Check if result has expected structure before setting state
       if (result && Array.isArray(result.data)) {
