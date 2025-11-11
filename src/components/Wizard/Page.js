@@ -8,11 +8,14 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 
-import BranchCreate from "./BranchCreate";
-import DepartmentCreate from "./DepartmentCreate";
-import DeviceCreate from "./DeviceCreate";
-import ShiftCreate from "./ShiftCreate";
-import EmployeeCreate from "./EmployeeCreate";
+import Branch from "./Branch/Index";
+import Department from "./Department/Index";
+import Device from "./Device/Index";
+import Shift from "./Shift/Index";
+import Employee from "./Employee/Index";
+import Schedule from "./Schedule/Index";
+
+
 
 export default function CreateAccountPage() {
   const [open, setOpen] = useState(true);
@@ -25,7 +28,7 @@ export default function CreateAccountPage() {
       sidebarTitle: "Branch Info",
       title: "Branch Information",
       subtitle: "Create branch Info",
-      content: <BranchCreate />,
+      content: <Branch />,
     },
     {
       id: 2,
@@ -33,7 +36,7 @@ export default function CreateAccountPage() {
       sidebarTitle: "Department Info",
       title: "Department Information",
       subtitle: "Now, add your departments.",
-      content: <DepartmentCreate />,
+      content: <Department />,
     },
     {
       id: 3,
@@ -41,7 +44,7 @@ export default function CreateAccountPage() {
       sidebarTitle: "Device Info",
       title: "Department Information",
       subtitle: "Now, add your departments.",
-      content: <DeviceCreate />,
+      content: <Device />,
     },
     {
       id: 4,
@@ -49,7 +52,7 @@ export default function CreateAccountPage() {
       sidebarTitle: "Shift Info",
       title: "Department Information",
       subtitle: "Now, add your departments.",
-      content: <ShiftCreate />,
+      content: <Shift />,
     },
     {
       id: 5,
@@ -57,7 +60,7 @@ export default function CreateAccountPage() {
       sidebarTitle: "Employee Info",
       title: "Department Information",
       subtitle: "Now, add your departments.",
-      content: <EmployeeCreate />,
+      content: <Employee />,
     },
     {
       id: 6,
@@ -65,7 +68,7 @@ export default function CreateAccountPage() {
       sidebarTitle: "Assign Schedule",
       title: "Department Information",
       subtitle: "Now, add your departments.",
-      content: <DepartmentCreate />,
+      content: <Schedule />,
     },
   ];
 

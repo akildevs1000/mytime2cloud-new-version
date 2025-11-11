@@ -6,9 +6,9 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { getEmployees, } from '@/lib/api';
 import { parseApiError } from '@/lib/utils';
 import { AnimatePresence, motion } from "framer-motion";
-import EmployeeCreate from '../Employees/Create';
+import Create from './Create';
 
-export default function ScheduleAssign() {
+export default function Index() {
 
     const [items, setItems] = useState([]);
     const [error, setError] = useState(null);
@@ -120,7 +120,7 @@ export default function ScheduleAssign() {
                     <p className="text-sm text-text-light/60 dark:text-text-dark/60">
                         Fill in the employee name to create employee.
                     </p>
-                    <EmployeeCreate options={{ h: 40, w: 40 }} onSuccess={fetchItems} />
+                    <Create options={{ h: 40, w: 40 }} onSuccess={fetchItems} />
                 </div>
             </div>
         </div>

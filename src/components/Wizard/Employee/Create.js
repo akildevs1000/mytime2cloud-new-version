@@ -46,7 +46,7 @@ const initialFormData = {
 };
 
 
-const EmployeeCreate = ({ options, onSuccess }) => {
+const Create = ({ options, onSuccess }) => {
   const router = useRouter();
   const fileInputRef = useRef(null);
 
@@ -100,15 +100,9 @@ const EmployeeCreate = ({ options, onSuccess }) => {
   }, []);
 
   // Use useCallback for fetchDepartments to avoid issues if used as a dependency, though not strictly needed here
-  const fetchDepartments = useCallback(async (branchId) => {
-    if (!branchId) {
-      setDepartments([]);
-      setFormData(prev => ({ ...prev, department_id: "" }));
-      return;
-    }
-
+  const fetchDepartments = useCallback(async () => {
     try {
-      let data = await getDepartments(branchId);
+      let data = await getDepartments(null);
       // Ensure IDs are strings for Select if they come as numbers, or use them as is.
       setDepartments(data.map(d => ({ ...d, id: d.id.toString() })));
 
@@ -126,8 +120,8 @@ const EmployeeCreate = ({ options, onSuccess }) => {
 
   // 8. Dependency Effect (Branch -> Department)
   useEffect(() => {
-    fetchDepartments(formData.branch_id);
-  }, [formData.branch_id, fetchDepartments]); // Dependency on branch_id and the memoized function
+    fetchDepartments();
+  }, []); // Dependency on branch_id and the memoized function
 
 
   // 9. File Change Handler
@@ -171,20 +165,20 @@ const EmployeeCreate = ({ options, onSuccess }) => {
       branch_id: parseInt(formData.branch_id) || null,
       department_id: parseInt(formData.department_id) || null,
     };
-    
+
     // Construct full_name if not explicitly entered
     payloadData.full_name = formData.full_name || `${formData.first_name || ''} ${formData.last_name || ''}`.trim();
-    
+
     // Clean up fields that might have been explicitly set as "null" or are non-payload fields
     delete payloadData.employee_device_id;
-    
+
     // Replace empty strings with null for fields where the API expects null if empty/optional
     Object.keys(payloadData).forEach(key => {
-        if (payloadData[key] === "") {
-            payloadData[key] = null;
-        }
+      if (payloadData[key] === "") {
+        payloadData[key] = null;
+      }
     });
-    
+
     let finalPayload = { ...payloadData };
 
     if (imageFile) {
@@ -309,7 +303,7 @@ const EmployeeCreate = ({ options, onSuccess }) => {
                   />
                 </div>
               </div>
-              
+
               {/* Row 2: First Name, Last Name */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
                 {/* First Name Input */}
@@ -380,7 +374,6 @@ const EmployeeCreate = ({ options, onSuccess }) => {
                   <Select
                     onValueChange={(value) => handleSelectChange("department_id", value)}
                     value={formData.department_id}
-                    disabled={!formData.branch_id || departments.length === 0}
                   >
                     <SelectTrigger className="w-full">
                       <SelectValue placeholder="Select Department" />
@@ -459,4 +452,4 @@ const EmployeeCreate = ({ options, onSuccess }) => {
   );
 };
 
-export default EmployeeCreate;
+export default Create;

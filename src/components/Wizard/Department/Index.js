@@ -3,19 +3,12 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 
-import { createDepartment, getDepartmentsForTable, } from '@/lib/api';
-import { Input } from '@/components/ui/input';
+import { getDepartmentsForTable, } from '@/lib/api';
 import { parseApiError } from '@/lib/utils';
-import { Button } from '../ui/button';
 import { AnimatePresence, motion } from "framer-motion";
+import Create from './Create';
 
-
-let initialPayload = {
-    name: "",
-    branch_id: 0,
-};
-
-export default function DepartmentCreate() {
+export default function Index() {
 
     const [items, setItems] = useState([]);
     const [error, setError] = useState(null);
@@ -26,7 +19,7 @@ export default function DepartmentCreate() {
     const [perPage, setPerPage] = useState(10); // Default to 10 for a cleaner table, even if the API suggests 100
     const [loading, setLoading] = useState(false);
 
-    const fetchEmployees = useCallback(async (page, perPage) => {
+    const fetchItems = useCallback(async (page, perPage) => {
         setError(null);
 
         try {
@@ -52,46 +45,13 @@ export default function DepartmentCreate() {
         }
     }, [perPage]);
 
-    const [form, setForm] = useState(initialPayload);
-
     useEffect(() => {
-        fetchEmployees(currentPage, perPage);
-    }, [currentPage, perPage, fetchEmployees]); // Re-fetch when page or perPage changes
+        fetchItems(currentPage, perPage);
+    }, [currentPage, perPage, fetchItems]); // Re-fetch when page or perPage changes
 
     const handleRowClick = (item) => {
         console.log(item);
     }
-
-    const handleChange = (field, value) => {
-        setForm((prev) => ({ ...prev, [field]: value }));
-    };
-
-    const onSubmit = async () => {
-        setGlobalError(null);
-        setLoading(true);
-        try {
-            let { data } = await createDepartment(form);
-
-            if (data?.status == false) {
-
-                if (data.errors) {
-                    const firstKey = Object.keys(data.errors)[0]; // get the first key
-                    setGlobalError(firstKey);
-                    return;
-                } else {
-                    setGlobalError(data.message);
-                    return;
-                }
-
-            }
-            fetchEmployees(currentPage, perPage);
-            setForm(initialPayload);
-        } catch (error) {
-            setGlobalError(parseApiError(error));
-        } finally {
-            setLoading(false);
-        }
-    };
 
     return (
         <>
@@ -121,7 +81,7 @@ export default function DepartmentCreate() {
                                     initial={false}
                                 >
                                     <AnimatePresence>
-                                        {items.map((item) => (
+                                        {items.map((item,index) => (
                                             <motion.li
                                                 key={item.id}
                                                 className="px-3 py-3 flex items-center gap-3 hover:bg-primary/10 cursor-pointer transition-colors"
@@ -132,18 +92,9 @@ export default function DepartmentCreate() {
                                                 layout
                                                 transition={{ duration: 0.3 }}
                                             >
-                                                <img
-                                                    alt={item.name}
-                                                    className="w-9 h-9 rounded-full flex-shrink-0"
-                                                    src={`https://placehold.co/40x40/6946dd/ffffff?text=${item.name.charAt(0)}`}
-                                                    onError={(e) => {
-                                                        e.currentTarget.onerror = null;
-                                                        e.currentTarget.src = `https://placehold.co/40x40/6946dd/ffffff?text=${item.name.charAt(0)}`;
-                                                    }}
-                                                />
                                                 <div className="overflow-hidden">
                                                     <p className="font-medium text-text-light dark:text-text-dark truncate">
-                                                        {item.name}
+                                                        {index + 1}. {item.name}
                                                     </p>
                                                 </div>
                                             </motion.li>
@@ -156,7 +107,6 @@ export default function DepartmentCreate() {
                     )}
                 </div>
 
-                {/* RIGHT: Branch details */}
                 <div className="flex-1 p-6">
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                         {/* Form Fields */}
@@ -167,35 +117,10 @@ export default function DepartmentCreate() {
                             <p className="text-sm text-text-light/60 dark:text-text-dark/60">
                                 Fill in the department name to create department.
                             </p>
-                            <div className="grid grid-cols-1 md:grid-cols-1 gap-4">
-                                <div>
-                                    <label className="block text-xs font-medium mb-1">Name</label>
-                                    <Input
-                                        value={form.name}
-                                        onChange={(e) => handleChange("name", e.target.value)}
-                                    />
-                                </div>
-                            </div>
 
+                            {/* Create */}
+                            <Create onSuccess={fetchItems} />
 
-
-
-                            {globalError && (
-                                <div className="mb-4 p-3 border border-red-500 bg-red-50 text-red-700 rounded-lg" role="alert">
-                                    {globalError}
-                                </div>
-                            )}
-
-                            {/* Buttons Right Aligned */}
-                            <div className="flex justify-end gap-3 mt-4">
-                                <Button
-                                    onClick={onSubmit}
-                                    disabled={loading}
-                                    className="bg-primary text-white"
-                                >
-                                    {loading ? "Saving..." : "Submit"}
-                                </Button>
-                            </div>
                         </div>
                     </div>
                 </div>

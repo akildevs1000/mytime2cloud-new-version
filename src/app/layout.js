@@ -27,11 +27,7 @@ export default function RootLayout({ children }) {
         <div className="flex h-screen">
           <LeftMenu />
           <MainContentWrapper>
-            <div className="min-h-screen  py-8">
-              <div className="mx-auto space-y-6">
-                {children}
-              </div>
-            </div>
+            {children}
           </MainContentWrapper>
         </div>
       </body>

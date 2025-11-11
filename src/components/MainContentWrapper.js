@@ -13,7 +13,11 @@ export default function MainContentWrapper({ children }) {
 
   return (
     <main className={`flex-1 overflow-y-auto ${paddingClass}`}>
-      {children}
+      <div className={`min-h-screen py-${isLoginPage && 'py-8'}`}>
+        <div className="mx-auto space-y-6">
+          {children}
+        </div>
+      </div>
     </main>
   );
 }
