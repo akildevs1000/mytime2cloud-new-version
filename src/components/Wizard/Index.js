@@ -4,7 +4,6 @@ import { useState } from "react";
 import { ArrowLeft, ArrowRight, Check } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 
@@ -15,10 +14,7 @@ import Shift from "./Shift/Index";
 import Employee from "./Employee/Index";
 import Schedule from "./Schedule/Index";
 
-
-
 export default function Index() {
-    const [open, setOpen] = useState(true);
     const [stepIndex, setStepIndex] = useState(0);
 
     const steps = [
@@ -89,7 +85,7 @@ export default function Index() {
     };
 
     return (
-        <Card className="flex flex-col md:flex-row border-none shadow-none rounded-none">
+        <Card className="flex flex-col md:flex-row border-none shadow-none rounded-none h-full">
             {/* Sidebar Stepper */}
             <CardContent className="w-full md:w-[260px] border-b md:border-b-0  dark:border-border-dark shrink-0">
                 <div className="flex md:flex-col gap-8">
