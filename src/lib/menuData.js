@@ -19,6 +19,7 @@ import {
   Group,
   Calendar,
   DoorClosedIcon,
+  LogInIcon,
 } from "lucide-react";
 
 // 1️⃣ Reusable menu groups
@@ -34,8 +35,8 @@ const companyMenu = [
   { href: "/company", icon: Building, label: "Company" },
   { href: "/branch", icon: Briefcase, label: "Branch" },
   { href: "/department-tabs", icon: Layers, label: "Department" },
+  { href: "/login-tabs", icon: LogInIcon, label: "Login" },
   { href: "/device", icon: DoorClosedIcon, label: "Device" },
-  { href: "/group-login", icon: Group, label: "Group Login" },
   { href: "/automation", icon: Workflow, label: "Automation" },
   { href: "/roles", icon: Shield, label: "Roles" },
   { href: "/holidays", icon: CalendarDays, label: "Holidays" },
@@ -73,7 +74,7 @@ export const leftNavLinks = {
 
   "/company": companyMenu,
   "/branch": companyMenu,
-  "/group-login": companyMenu,
+  "/login-tabs": companyMenu,
   "/department-tabs": companyMenu,
   "/device": companyMenu,
 

@@ -22,7 +22,6 @@ import License from "@/components/Company/License";
 
 import Document from "@/components/Company/Document";
 import Password from "@/components/Company/Password";
-import Admin from "@/components/Company/Admin/Page";
 import AttendanceRating from "@/components/Company/AttendanceRating";
 import DoorPin from "@/components/Company/DoorPin";
 import ChangeLogo from "@/components/Company/ChangeLogo";
@@ -105,16 +104,6 @@ const Company = () => {
       component: <Password />,
     },
     {
-      label: "Admins",
-      value: "admins",
-      component: <Admin />,
-    },
-    {
-      label: "Attendance Rating",
-      value: "attendance",
-      component: <AttendanceRating />,
-    },
-    {
       label: "Door Pin",
       value: "door_pin",
       component: <DoorPin pin={pin} isLoading={isLoading} />,
@@ -132,7 +121,7 @@ const Company = () => {
             Company Information
           </h1>
           <p className="text-sm text-muted-foreground mt-1">
-            Manage your company profile, licenses, admins and security settings.
+            Manage your company profile, contact, license, documents, password and door pin settings.
           </p>
         </div>
         <Button
@@ -169,7 +158,7 @@ const Company = () => {
               Company Settings
             </h2>
             <p className="text-sm text-muted-foreground">
-              Switch between different sections to configure your company.
+              Switch between different sections to configure your company settings.
             </p>
           </div>
 
