@@ -51,7 +51,7 @@ export default function Header() {
         { name: 'ACCESS CONTROL', href: '/access_control_logs' },
         { name: 'VISITORS', href: '/visitors' },
         { name: 'REPORTS', href: '/attendance' },
-        { name: 'SETTINGS', href: '/company' },
+        { name: 'SETTINGS', href: '/setup' },
     ];
 
     const restrictedNames = ['SETTINGS', 'PAYROLL', 'ACCESS CONTROL', 'VISITORS'];
@@ -63,7 +63,7 @@ export default function Header() {
 
     return (
         <>
-            <MultiStepDialog />
+            {/* <MultiStepDialog /> */}
             <header className="flex items-center justify-between p-4 shadow-sm bg-white dark:bg-gray-800">
                 <div className="flex items-center space-x-4">
                     <button className="text-gray-600 dark:text-gray-300">

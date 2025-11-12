@@ -20,6 +20,7 @@ import {
   Calendar,
   DoorClosedIcon,
   LogInIcon,
+  Settings,
 } from "lucide-react";
 
 // 1️⃣ Reusable menu groups
@@ -32,6 +33,7 @@ const attendanceMenu = [
 ];
 
 const companyMenu = [
+  { href: "/setup", icon: Settings, label: "Setup" },
   { href: "/company", icon: Building, label: "Company" },
   { href: "/branch", icon: Briefcase, label: "Branch" },
   { href: "/department-tabs", icon: Layers, label: "Department" },
@@ -72,12 +74,13 @@ export const leftNavLinks = {
   "/logs": attendanceMenu,
   "/access_control_logs": attendanceMenu,
 
+  
+  "/setup": companyMenu,
   "/company": companyMenu,
   "/branch": companyMenu,
   "/login-tabs": companyMenu,
   "/department-tabs": companyMenu,
   "/device": companyMenu,
-
   "/payroll-tabs": companyMenu,
 
 };
