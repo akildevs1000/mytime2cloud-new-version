@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Building, GitBranch, UserLock } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { getBranchesForTable } from "@/lib/api";
 
 import Pagination from "@/lib/Pagination";
@@ -11,7 +11,32 @@ import Create from "@/components/Branch/Create";
 import { useRouter } from "next/navigation";
 import { parseApiError } from "@/lib/utils";
 
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+
+
+import { SuccessDialog } from "@/components/SuccessDialog";
+
+let defaultPayload = {
+  user_id: 0, // dont changedefault 
+
+  branch_name: "",
+  licence_number: "",
+  licence_issue_by_department: "",
+  licence_expiry: "",
+  lat: "",
+  lon: "",
+  address: "",
+};
+
+
 export default function Branch() {
+  const [open, setOpen] = useState(false);
+  const [successOpen, setSuccessOpen] = useState(false);
   const [records, setRecords] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -57,6 +82,12 @@ export default function Branch() {
     router.push(`/branch/short-list`);
   };
 
+  const handleSuccess = () => {
+    setOpen(false);
+    setSuccessOpen(true);
+    fetchRecords();
+  }
+
   const columns = Columns({
     onSuccess: fetchRecords,
     handleRowClick: handleRowClick,
@@ -71,7 +102,25 @@ export default function Branch() {
           </h2>
         </div>
 
-        <Create onSuccess={fetchRecords} />
+
+        <Button onClick={() => setOpen(true)}>Add Branch</Button>
+
+        <Dialog open={open} onOpenChange={setOpen}>
+          <DialogContent className="!w-[600px] !max-w-[90%]">
+            <DialogHeader>
+              <DialogTitle>New Branch</DialogTitle>
+            </DialogHeader>
+
+            <Create onSuccess={handleSuccess} />
+          </DialogContent>
+        </Dialog>
+
+        <SuccessDialog
+          successOpen={successOpen}
+          onOpenChange={setSuccessOpen}
+          title="Branch Saved"
+          description="Branch Saved successfully."
+        />
       </div>
 
       <DataTable
