@@ -5,6 +5,7 @@ export const MODEL_NUMBERS = [
     { id: `OX-900`, name: `OX-900` },
     { id: `OX-745`, name: `OX-745` },
     { id: `OX-945`, name: `OX-945` },
+    { id: `OX-1000`, name: `OX-1000` },
 ];
 
 export const FUNCTIONS = [
