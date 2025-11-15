@@ -15,7 +15,7 @@ let initialPayload = {
     user_id: 0,
 };
 
-export default function Index({ onSuccess = () => { } }) {
+export default function Create({ onSuccess = () => { } }) {
 
     const [globalError, setGlobalError] = useState(null);
 
