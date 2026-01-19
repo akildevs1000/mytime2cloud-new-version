@@ -28,7 +28,7 @@ const VisitorAppLink = () => {
      
 
       {/* QR Code box */}
-      <div className="w-40 h-40 rounded-xl bg-white darks:bg-slate-900 flex items-center justify-center mb-2 shadow-sm border-2 border-dashed border-indigo-200 darks:border-slate-700 overflow-hidden">
+      <div className="w-40 h-40 rounded-xl bg-white dark:bg-slate-900 flex items-center justify-center mb-2 shadow-sm border-2 border-dashed border-indigo-200 dark:border-slate-700 overflow-hidden">
         {qrImageUrl ? (
           <img
             src={qrImageUrl}

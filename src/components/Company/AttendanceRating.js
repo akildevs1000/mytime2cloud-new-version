@@ -14,17 +14,17 @@ const CompanyAttendanceRating = () => {
 
   return (
     <div className="space-y-3">
-      <div className="overflow-x-auto darks:bg-slate-900 ">
+      <div className="overflow-x-auto dark:bg-slate-900 ">
         <table className="min-w-full text-sm">
           <thead>
-            <tr className="bg-slate-50 darks:bg-slate-800 text-left text-xs font-semibold uppercase tracking-wide text-slate-600 darks:text-slate-300">
-              <th className="px-4 py-3 border-b border-slate-200 darks:border-slate-700">
+            <tr className="bg-slate-50 dark:bg-slate-800 text-left text-xs font-semibold uppercase tracking-wide text-slate-600 dark:text-slate-300">
+              <th className="px-4 py-3 border-b border-slate-200 dark:border-slate-700">
                 Attendance Percentage
               </th>
-              <th className="px-4 py-3 border-b border-slate-200 darks:border-slate-700">
+              <th className="px-4 py-3 border-b border-slate-200 dark:border-slate-700">
                 Rating
               </th>
-              <th className="px-4 py-3 border-b border-slate-200 darks:border-slate-700">
+              <th className="px-4 py-3 border-b border-slate-200 dark:border-slate-700">
                 Description
               </th>
             </tr>
@@ -35,17 +35,17 @@ const CompanyAttendanceRating = () => {
                 key={index}
                 className={
                   index % 2 === 0
-                    ? "bg-white darks:bg-slate-900"
-                    : "bg-slate-50 darks:bg-slate-950/40"
+                    ? "bg-white dark:bg-slate-900"
+                    : "bg-slate-50 dark:bg-slate-950/40"
                 }
               >
-                <td className="px-4 py-2.5 border-b border-slate-100 darks:border-slate-800 text-muted-foreground">
+                <td className="px-4 py-2.5 border-b border-slate-100 dark:border-slate-800 text-muted-foreground">
                   {item.percentage}
                 </td>
-                <td className="px-4 py-2.5 border-b border-slate-100 darks:border-slate-800 text-muted-foreground ">
+                <td className="px-4 py-2.5 border-b border-slate-100 dark:border-slate-800 text-muted-foreground ">
                   {item.rating}
                 </td>
-                <td className="px-4 py-2.5 border-b border-slate-100 darks:border-slate-800 text-muted-foreground">
+                <td className="px-4 py-2.5 border-b border-slate-100 dark:border-slate-800 text-muted-foreground">
                   {item.description}
                 </td>
               </tr>

@@ -67,10 +67,10 @@ const Edit = ({
 
   return (
     <>
-      <div className="relative darks:bg-card-dark rounded-lg w-full pt-15 flex items-center justify-center">
-        <div className="bg-white darks:bg-gray-800 p-8 rounded-xl py-16">
+      <div className="relative dark:bg-card-dark rounded-lg w-full pt-15 flex items-center justify-center">
+        <div className="bg-white dark:bg-gray-800 p-8 rounded-xl py-16">
           {/* Heading */}
-          <h2 className="text-lg font-semibold mb-6 text-gray-800 darks:text-white">
+          <h2 className="text-lg font-semibold mb-6 text-gray-800 dark:text-white">
             Branch Details
           </h2>
 

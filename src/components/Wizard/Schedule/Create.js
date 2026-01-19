@@ -196,7 +196,7 @@ const Create = ({ onSuccess = () => { } }) => {
           <Label
             // ✅ FIX 2: Update htmlFor to match the new id of the first Switch
             htmlFor="over-time-switch"
-            className="text-sm font-medium text-text-light darks:text-text-dark"
+            className="text-sm font-medium text-text-light dark:text-text-dark"
           >
             Over Time
           </Label>
@@ -225,7 +225,7 @@ const Create = ({ onSuccess = () => { } }) => {
           <Label
             // ✅ FIX 4: Update htmlFor to match the new unique id
             htmlFor="auto-shift-switch"
-            className="text-sm font-medium text-text-light darks:text-text-dark"
+            className="text-sm font-medium text-text-light dark:text-text-dark"
           >
             is Auto Shift
           </Label>

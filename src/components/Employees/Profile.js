@@ -193,7 +193,7 @@ const Profile = ({ payload }) => {
   };
 
   return (
-    <div className="bg-white darks:bg-gray-800 py-8">
+    <div className="bg-white dark:bg-gray-800 py-8">
       <div className="">
 
         {/* Columns 2 & 3: Main Form Fields (No separate background/padding) */}
@@ -205,7 +205,7 @@ const Profile = ({ payload }) => {
               {/* Personal Details Section */}
               {/* ... (rest of your form fields are here) ... */}
               <section>
-                <h2 className="text-xl font-semibold text-gray-900 darks:text-gray-100 mb-6 flex items-center">
+                <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-6 flex items-center">
                   <User className="mr-3 h-6 w-6 text-primary" />
                   Personal Details
                 </h2>
@@ -301,11 +301,11 @@ const Profile = ({ payload }) => {
                 </div>
               </section>
 
-              <hr className="border-gray-200 darks:border-gray-700" />
+              <hr className="border-gray-200 dark:border-gray-700" />
 
               {/* Employment Details Section */}
               <section>
-                <h2 className="text-xl font-semibold text-gray-900 darks:text-gray-100 mb-6 flex items-center">
+                <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-6 flex items-center">
                   <Briefcase className="mr-3 h-6 w-6 text-primary" />
                   Employment Details
                 </h2>
@@ -451,11 +451,11 @@ const Profile = ({ payload }) => {
                 </div>
               </section>
 
-              <hr className="border-gray-200 darks:border-gray-700" />
+              <hr className="border-gray-200 dark:border-gray-700" />
 
               {/* Contact Information Section */}
               <section>
-                <h2 className="text-xl font-semibold text-gray-900 darks:text-gray-100 mb-6 flex items-center">
+                <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-6 flex items-center">
                   <Phone className="mr-3 h-6 w-6 text-primary" />
                   Contact Information
                 </h2>

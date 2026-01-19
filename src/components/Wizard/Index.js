@@ -87,7 +87,7 @@ export default function Index() {
     return (
         <Card className="flex flex-col md:flex-row border-none shadow-none rounded-none h-full">
             {/* Sidebar Stepper */}
-            <CardContent className="w-full md:w-[260px] border-b md:border-b-0  darks:border-border-dark shrink-0">
+            <CardContent className="w-full md:w-[260px] border-b md:border-b-0  dark:border-border-dark shrink-0">
                 <div className="flex md:flex-col gap-8">
                     {steps.map((step, index) => {
                         const isActive = index === stepIndex;
@@ -103,17 +103,17 @@ export default function Index() {
                                                 ? "bg-primary text-white"
                                                 : isCompleted
                                                     ? "bg-primary/10 border-2 border-primary text-primary"
-                                                    : "border-2 border-border-light darks:border-border-dark text-text-light/60 darks:text-text-dark/60",
+                                                    : "border-2 border-border-light dark:border-border-dark text-text-light/60 dark:text-text-dark/60",
                                         ].join(" ")}
                                     >
                                         {step.id}
                                     </div>
                                     {index < steps.length - 1 && (
-                                        <div className="h-10 w-0.5 bg-border-light darks:bg-border-dark md:block hidden" />
+                                        <div className="h-10 w-0.5 bg-border-light dark:bg-border-dark md:block hidden" />
                                     )}
                                 </div>
                                 <div>
-                                    <p className="text-sm text-text-light/60 darks:text-text-dark/60">
+                                    <p className="text-sm text-text-light/60 dark:text-text-dark/60">
                                         {step.label}
                                     </p>
                                     <p
@@ -121,7 +121,7 @@ export default function Index() {
                                             "font-semibold",
                                             isActive
                                                 ? "text-primary"
-                                                : "text-text-light/60 darks:text-text-dark/60",
+                                                : "text-text-light/60 dark:text-text-dark/60",
                                         ].join(" ")}
                                     >
                                         {step.sidebarTitle}

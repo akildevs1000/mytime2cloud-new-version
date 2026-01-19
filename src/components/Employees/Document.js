@@ -81,7 +81,7 @@ const Document = ({ employee_id }) => {
         <div className="py-6 space-y-8">
             <div>
                 <div className="mb-4 flex items-center justify-between">
-                    <h3 className="text-lg font-semibold text-text-light darks:text-text-dark">
+                    <h3 className="text-lg font-semibold text-text-light dark:text-text-dark">
                         All Documents
                     </h3>
 
@@ -150,28 +150,28 @@ const Document = ({ employee_id }) => {
                     </Dialog>
                 </div>
 
-                <div className="overflow-hidden rounded-lg border border-border-light darks:border-border-dark">
-                    <table className="min-w-full divide-y divide-border-light darks:divide-border-dark">
-                        <thead className="bg-background-light darks:bg-background-dark">
+                <div className="overflow-hidden rounded-lg border border-border-light dark:border-border-dark">
+                    <table className="min-w-full divide-y divide-border-light dark:divide-border-dark">
+                        <thead className="bg-background-light dark:bg-background-dark">
                             <tr>
-                                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-subtext-light darks:text-subtext-dark">
+                                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-subtext-light dark:text-subtext-dark">
                                     Document Title
                                 </th>
-                                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-subtext-light darks:text-subtext-dark">
+                                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-subtext-light dark:text-subtext-dark">
                                     Document Attachment
                                 </th>
-                                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-subtext-light darks:text-subtext-dark">
+                                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-subtext-light dark:text-subtext-dark">
                                     Action
                                 </th>
                             </tr>
                         </thead>
-                        <tbody className="divide-y divide-border-light bg-surface-light darks:divide-border-dark darks:bg-surface-dark">
+                        <tbody className="divide-y divide-border-light bg-surface-light dark:divide-border-dark dark:bg-surface-dark">
                             {documents.map((e, index) => (
                                 <tr key={e?.id ?? index}>
-                                    <td className="whitespace-nowrap px-6 py-4 text-sm font-medium text-text-light darks:text-text-dark">
+                                    <td className="whitespace-nowrap px-6 py-4 text-sm font-medium text-text-light dark:text-text-dark">
                                         {e.title}
                                     </td>
-                                    <td className="whitespace-nowrap px-6 py-4 text-sm text-subtext-light darks:text-subtext-dark">
+                                    <td className="whitespace-nowrap px-6 py-4 text-sm text-subtext-light dark:text-subtext-dark">
                                         <a
                                             title="Download Attachment"
                                             target="_blank"
@@ -182,7 +182,7 @@ const Document = ({ employee_id }) => {
                                         </a>
                                     </td>
 
-                                    <td className="whitespace-nowrap px-6 py-4 text-sm text-subtext-light darks:text-subtext-dark">
+                                    <td className="whitespace-nowrap px-6 py-4 text-sm text-subtext-light dark:text-subtext-dark">
                                         <a
                                             title="Delete Attachment"
                                             onClick={() => onDelete(e.id)}

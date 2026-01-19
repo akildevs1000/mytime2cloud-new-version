@@ -25,12 +25,12 @@ export default function DaysSelector({ schedule, setSchedule }) {
         const isActive = schedule.days?.includes(day);
 
         const cardOn =
-          "bg-background-light darks:bg-gray-800/50 border border-border-light darks:border-border-dark";
+          "bg-background-light dark:bg-gray-800/50 border border-border-light dark:border-border-dark";
         const cardOff =
-          "bg-red-100/50 darks:bg-red-900/40 border border-red-200 darks:border-red-800/60";
+          "bg-red-100/50 dark:bg-red-900/40 border border-red-200 dark:border-red-800/60";
 
-        const textOn = "text-text-strong-light darks:text-text-strong-dark";
-        const textOff = "text-red-700 darks:text-red-300";
+        const textOn = "text-text-strong-light dark:text-text-strong-dark";
+        const textOff = "text-red-700 dark:text-red-300";
 
         return (
           <div

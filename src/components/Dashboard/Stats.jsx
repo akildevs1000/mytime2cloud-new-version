@@ -1,7 +1,7 @@
 function Stats({}) {
   return (
     <>
-      <div className="glass-card darks:glass-card  p-4 rounded-xl relative overflow-hidden group">
+      <div className="glass-card dark:glass-card  p-4 rounded-xl relative overflow-hidden group">
         <div className="absolute right-0 top-0 p-3 opacity-5 group-hover:opacity-10 transition-opacity">
           <span className="material-symbols-outlined text-4xl text-slate-900">
             groups
@@ -20,7 +20,7 @@ function Stats({}) {
           </span>
         </div>
       </div>
-      <div className="glass-card darks:glass-card p-4 rounded-xl relative overflow-hidden group border-l-2 border-l-emerald-500/50">
+      <div className="glass-card dark:glass-card p-4 rounded-xl relative overflow-hidden group border-l-2 border-l-emerald-500/50">
         <div className="absolute right-0 top-0 p-3 opacity-5 group-hover:opacity-10 transition-opacity">
           <span className="material-symbols-outlined text-4xl text-emerald-600">
             check_circle
@@ -39,7 +39,7 @@ function Stats({}) {
           </span>
         </div>
       </div>
-      <div className="glass-card darks:glass-card p-4 rounded-xl relative overflow-hidden group">
+      <div className="glass-card dark:glass-card p-4 rounded-xl relative overflow-hidden group">
         <div className="absolute right-0 top-0 p-3 opacity-5 group-hover:opacity-10 transition-opacity">
           <span className="material-symbols-outlined text-4xl text-rose-500">
             cancel
@@ -56,7 +56,7 @@ function Stats({}) {
           </span>
         </div>
       </div>
-      <div className="glass-card darks:glass-card p-4 rounded-xl relative overflow-hidden group">
+      <div className="glass-card dark:glass-card p-4 rounded-xl relative overflow-hidden group">
         <div className="absolute right-0 top-0 p-3 opacity-5 group-hover:opacity-10 transition-opacity">
           <span className="material-symbols-outlined text-4xl text-purple-500">
             event
@@ -70,7 +70,7 @@ function Stats({}) {
           </span>
         </div>
       </div>
-      <div className="glass-card darks:glass-card p-4 rounded-xl relative overflow-hidden group">
+      <div className="glass-card dark:glass-card p-4 rounded-xl relative overflow-hidden group">
         <div className="absolute right-0 top-0 p-3 opacity-5 group-hover:opacity-10 transition-opacity">
           <span className="material-symbols-outlined text-4xl text-indigo-400">
             flight
@@ -87,7 +87,7 @@ function Stats({}) {
           </span>
         </div>
       </div>
-      <div className="glass-card darks:glass-card p-4 rounded-xl relative overflow-hidden group border-l-2 border-l-amber-500/50">
+      <div className="glass-card dark:glass-card p-4 rounded-xl relative overflow-hidden group border-l-2 border-l-amber-500/50">
         <div className="absolute right-0 top-0 p-3 opacity-5 group-hover:opacity-10 transition-opacity">
           <span className="material-symbols-outlined text-4xl text-amber-500">
             schedule
@@ -104,7 +104,7 @@ function Stats({}) {
           </span>
         </div>
       </div>
-      <div className="glass-card darks:glass-card p-4 rounded-xl relative overflow-hidden group border-l-2 border-l-orange-500/50">
+      <div className="glass-card dark:glass-card p-4 rounded-xl relative overflow-hidden group border-l-2 border-l-orange-500/50">
         <div className="absolute right-0 top-0 p-3 opacity-5 group-hover:opacity-10 transition-opacity">
           <span className="material-symbols-outlined text-4xl text-orange-400">
             cloud_off

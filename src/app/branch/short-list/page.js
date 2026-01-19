@@ -118,10 +118,10 @@ export default function EmployeeShortList() {
           onError={(e) => { e.target.onerror = null; e.target.src = `https://placehold.co/40x40/6946dd/ffffff?text=${employee.full_name.charAt(0)}`; }}
         />
         <div>
-          <p className="font-medium text-text-light darks:text-text-dark">
+          <p className="font-medium text-text-light dark:text-text-dark">
             {employee.branch_name}
           </p>
-          <p className="text-sm text-subtext-light darks:text-subtext-dark">
+          <p className="text-sm text-subtext-light dark:text-subtext-dark">
             {employee.address || 'N/A'}
           </p>
         </div>
@@ -133,10 +133,10 @@ export default function EmployeeShortList() {
     <>
       <div className="flex flex-1 gap-6">
         <div
-          className="w-80 bg-surface-light darks:bg-surface-dark border-r border-border-light darks:border-border-dark flex flex-col"
+          className="w-80 bg-surface-light dark:bg-surface-dark border-r border-border-light dark:border-border-dark flex flex-col"
         >
           <div
-            className="p-4 border-b border-border-light darks:border-border-dark flex justify-between items-center"
+            className="p-4 border-b border-border-light dark:border-border-dark flex justify-between items-center"
           >
             <h2 className="text-lg font-semibold">Branches</h2>
             <Link href="/employees/create">
@@ -152,11 +152,11 @@ export default function EmployeeShortList() {
 
               <div className="relative flex-grow">
                 <span
-                  className="material-icons absolute left-3 top-1/2 -translate-y-1/2 text-subtext-light darks:text-subtext-dark"
+                  className="material-icons absolute left-3 top-1/2 -translate-y-1/2 text-subtext-light dark:text-subtext-dark"
                 >search</span
                 >
                 <Input
-                  className="w-full  pl-10 pr-4 py-2 rounded-lg border border-border-light darks:border-border-dark   focus:ring-primary focus:border-primary"
+                  className="w-full  pl-10 pr-4 py-2 rounded-lg border border-border-light dark:border-border-dark   focus:ring-primary focus:border-primary"
                   placeholder="Search Branch"
                   type="text"
                   value={searchTerm}
@@ -167,7 +167,7 @@ export default function EmployeeShortList() {
             </div>
           </div>
           <div className="flex-1 overflow-y-auto">
-            <ul className="divide-y divide-border-light darks:divide-border-dark">
+            <ul className="divide-y divide-border-light dark:divide-border-dark">
               {employees.map(renderEmployeeRow)}
             </ul>
           </div>

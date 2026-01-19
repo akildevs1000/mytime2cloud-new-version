@@ -15,7 +15,7 @@ export function SuccessDialog({ open, onOpenChange, title, description }) {
       <DialogContent
         className="
           fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 
-          border-none shadow-xl bg-white darks:bg-gray-900
+          border-none shadow-xl bg-white dark:bg-gray-900
           max-w-sm w-[90%] rounded-2xl p-8 text-center flex flex-col items-center justify-center
         "
       >
@@ -34,12 +34,12 @@ export function SuccessDialog({ open, onOpenChange, title, description }) {
           </span>
         </div>
 
-        <h1 className="text-2xl font-bold text-gray-800 darks:text-gray-100 mb-2">
+        <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-2">
           {title}
         </h1>
 
         <DialogDescription asChild>
-          <p className="text-gray-600 darks:text-gray-300">{description}</p>
+          <p className="text-gray-600 dark:text-gray-300">{description}</p>
         </DialogDescription>
       </DialogContent>
     </Dialog>

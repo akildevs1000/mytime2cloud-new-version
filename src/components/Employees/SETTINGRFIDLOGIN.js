@@ -47,14 +47,14 @@ export default function SETTINGRFIDLOGIN({ employee_id, user, rfid_card_number, 
 
     return (
         <>
-            <div className="bg-surface-light darks:bg-surface-dark px-6 py-4 rounded-lg flex shadow-sm">
+            <div className="bg-surface-light dark:bg-surface-dark px-6 py-4 rounded-lg flex shadow-sm">
                 {/* Left Tabs */}
-                <div className="flex flex-col w-48 border-r border-border-light darks:border-border-dark">
+                <div className="flex flex-col w-48 border-r border-border-light dark:border-border-dark">
                     {TABS.map((tab) => {
                         const isCurrent = activeTab === tab.id;
                         const classes = isCurrent
-                            ? 'border-l-2 border-primary bg-surface-light darks:bg-surface-dark text-primary font-medium'
-                            : 'border-l-4 border-transparent text-subtext-light darks:text-subtext-dark  hover:text-text-light darks:hover:text-text-dark';
+                            ? 'border-l-2 border-primary bg-surface-light dark:bg-surface-dark text-primary font-medium'
+                            : 'border-l-4 border-transparent text-subtext-light dark:text-subtext-dark  hover:text-text-light dark:hover:text-text-dark';
 
                         return (
                             <button

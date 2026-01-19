@@ -65,13 +65,13 @@ const CompanyPassword = () => {
       <div className="lg:col-span-2 lg:pl-4">
         <form onSubmit={onSubmit} className="space-y-8">
           <section>
-            <h2 className="text-xl font-semibold text-gray-900 darks:text-gray-100 mb-6 flex items-center">
+            <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-6 flex items-center">
               <Lock className="mr-3 h-6 w-6 text-primary" />
               Password Information
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-1 gap-6">
               <div className="flex flex-col">
-                <label className="mb-1 text-sm font-medium text-gray-700 darks:text-gray-200">
+                <label className="mb-1 text-sm font-medium text-gray-700 dark:text-gray-200">
                   Current Password
                 </label>
                 <Input
@@ -84,7 +84,7 @@ const CompanyPassword = () => {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-5">
               <div className="flex flex-col">
-                <label className="mb-1 text-sm font-medium text-gray-700 darks:text-gray-200">
+                <label className="mb-1 text-sm font-medium text-gray-700 dark:text-gray-200">
                   New Password
                 </label>
                 <Input
@@ -94,7 +94,7 @@ const CompanyPassword = () => {
                 />
               </div>
               <div className="flex flex-col">
-                <label className="mb-1 text-sm font-medium text-gray-700 darks:text-gray-200">
+                <label className="mb-1 text-sm font-medium text-gray-700 dark:text-gray-200">
                   Confirm New Password
                 </label>
                 <Input

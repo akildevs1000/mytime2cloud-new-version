@@ -61,11 +61,11 @@ const RFID = ({ employee_id, rfid_card_number = "",rfid_card_password = "" }) =>
     };
 
     return (
-        <div className="bg-white darks:bg-gray-800 py-8">
+        <div className="bg-white dark:bg-gray-800 py-8">
             <div className="">
                 <Form {...form}>
                     <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
-                        <h2 className="text-xl font-semibold text-gray-900 darks:text-gray-100 mb-6 flex items-center">
+                        <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-6 flex items-center">
                             <Lock className="mr-3 h-6 w-6 text-primary" />
                             RFID Information
                         </h2>
