@@ -15,7 +15,7 @@ export default function LeftMenu() {
 
   return (
     <aside
-      className="group relative w-20 hover:w-56 bg-white dark:bg-surface-dark 
+      className="group relative w-20 hover:w-56 dark:border-r dark:border-gray-700  bg-white dark:bg-obsidian 
                  flex flex-col py-4 transition-all duration-300 ease-in-out overflow-hidden"
     >
       <nav className="flex flex-col items-center gap-3 mt-2">

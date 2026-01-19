@@ -24,14 +24,15 @@ export default function RootLayout({ children }) {
           href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
         />
       </head>
-      <body className="font-display bg-obsidian text-slate-900">
+      <body className="bg-obsidian text-slate-200 font-body overflow-hidden selection:bg-primary/30">
         <Header />
-        <div className="flex h-screen overflow-hidden">
+        <div className="flex flex-1 overflow-hidden">
           <LeftMenu />
           <MainContentWrapper>
             {children}
           </MainContentWrapper>
         </div>
+
       </body>
     </html>
   );

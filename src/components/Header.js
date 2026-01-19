@@ -78,7 +78,7 @@ export default function Header() {
     return (
         <>
             {/* <MultiStepDialog /> */}
-            <header className="flex items-center justify-between p-4  bg-white dark:bg-gray-800">
+            <header className="flex items-center justify-between bg-white dark:bg-obsidian p-4 dark:border-b dark:border-gray-200 dark:border-gray-700  shadow-sm z-20">
                 <div className="flex items-center space-x-4">
                     <button className="text-gray-600 dark:text-gray-300">
                         <span className="material-icons">menu</span>
@@ -180,10 +180,10 @@ export default function Header() {
                             </PopoverContent>
                         </Popover> */}
                         <div className="text-right hidden sm:block">
-                            <h2 className="text-sm font-bold dark:text-gray-300 font-display">
+                            <h2 className="text-sm font-bold text-gray-600 dark:text-gray-300 font-display">
                                 10:42 AM
                             </h2>
-                            <p className="text-[10px] dark:text-gray-300 font-mono">
+                            <p className="text-[10px] text-gray-600 dark:text-gray-300 font-mono">
                                 OCT 24, 2023
                             </p>
                         </div>

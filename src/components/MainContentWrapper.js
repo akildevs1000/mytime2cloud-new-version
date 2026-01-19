@@ -12,12 +12,8 @@ export default function MainContentWrapper({ children }) {
   const paddingClass = isLoginPage ? '' : 'p-6';
 
   return (
-    <main className={`flex-1 overflow-y-auto ${paddingClass}`}>
-      <div className={`min-h-screen py-${isLoginPage && 'py-8'}`}>
-        <div className="mx-auto space-y-6">
-          {children}
-        </div>
-      </div>
+    <main className={`flex-1 flex flex-col h-screen overflow-hidden relative z-10 p-5`}>
+      {children}
     </main>
   );
 }
