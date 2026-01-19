@@ -108,7 +108,7 @@ const EmployeeTabs = ({ selectedEmployee }) => {
     };
     return (
         <div className="mt-6">
-            <div className="border-b border-border-light dark:border-border-dark">
+            <div className="border-b border-border-light darks:border-border-dark">
                 <nav
                     aria-label="Tabs"
                     className="-mb-px flex space-x-4 sm:space-x-8 overflow-x-auto"
@@ -117,7 +117,7 @@ const EmployeeTabs = ({ selectedEmployee }) => {
                         const isCurrent = activeTab === tab.id;
                         const classes = isCurrent
                             ? "border-primary text-primary"
-                            : "border-transparent text-subtext-light dark:text-subtext-dark hover:text-text-light dark:hover:text-text-dark hover:border-border-light dark:hover:border-border-dark";
+                            : "border-transparent text-subtext-light darks:text-subtext-dark hover:text-text-light darks:hover:text-text-dark hover:border-border-light darks:hover:border-border-dark";
 
                         return (
                             <button

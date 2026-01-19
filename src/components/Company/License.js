@@ -82,14 +82,14 @@ const CompanyLicense = ({ license, isLoading }) => {
       <div className="lg:col-span-2 lg:pl-4">
         <form onSubmit={onSubmit} className="space-y-8">
           <section>
-            <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-6 flex items-center">
+            <h2 className="text-xl font-semibold text-gray-900 darks:text-gray-100 mb-6 flex items-center">
               <File className="mr-3 h-6 w-6 text-primary" />
               License Information
             </h2>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div className="flex flex-col">
-                <label className="mb-1 text-sm font-medium text-gray-700 dark:text-gray-200">
+                <label className="mb-1 text-sm font-medium text-gray-700 darks:text-gray-200">
                   License Type
                 </label>
                 <DropDown
@@ -119,7 +119,7 @@ const CompanyLicense = ({ license, isLoading }) => {
                 />
               </div>
               <div className="flex flex-col">
-                <label className="mb-1 text-sm font-medium text-gray-700 dark:text-gray-200">
+                <label className="mb-1 text-sm font-medium text-gray-700 darks:text-gray-200">
                   License
                 </label>
                 <Input className="bg-white"
@@ -129,7 +129,7 @@ const CompanyLicense = ({ license, isLoading }) => {
                 />
               </div>
               <div className="flex flex-col">
-                <label className="mb-1 text-sm font-medium text-gray-700 dark:text-gray-200">
+                <label className="mb-1 text-sm font-medium text-gray-700 darks:text-gray-200">
                   Emirate
                 </label>
                 <Input className="bg-white"
@@ -139,7 +139,7 @@ const CompanyLicense = ({ license, isLoading }) => {
                 />
               </div>
               <div className="flex flex-col">
-                <label className="mb-1 text-sm font-medium text-gray-700 dark:text-gray-200">
+                <label className="mb-1 text-sm font-medium text-gray-700 darks:text-gray-200">
                   Manager
                 </label>
                 <Input className="bg-white"
@@ -149,7 +149,7 @@ const CompanyLicense = ({ license, isLoading }) => {
                 />
               </div>
               <div className="flex flex-col">
-                <label className="mb-1 text-sm font-medium text-gray-700 dark:text-gray-200">
+                <label className="mb-1 text-sm font-medium text-gray-700 darks:text-gray-200">
                   Issue Date
                 </label>
                 <DatePicker
@@ -162,7 +162,7 @@ const CompanyLicense = ({ license, isLoading }) => {
 
               </div>
               <div className="flex flex-col">
-                <label className="mb-1 text-sm font-medium text-gray-700 dark:text-gray-200">
+                <label className="mb-1 text-sm font-medium text-gray-700 darks:text-gray-200">
                   Expiry Date
                 </label>
                 <DatePicker
@@ -175,7 +175,7 @@ const CompanyLicense = ({ license, isLoading }) => {
 
               </div>
               <div className="flex flex-col">
-                <label className="mb-1 text-sm font-medium text-gray-700 dark:text-gray-200">
+                <label className="mb-1 text-sm font-medium text-gray-700 darks:text-gray-200">
                   Makeem No
                 </label>
                 <Input className="bg-white"

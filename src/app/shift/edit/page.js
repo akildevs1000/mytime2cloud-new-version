@@ -127,10 +127,10 @@ export default function EmployeeProfileForm() {
     return (
         <div className="">
             <div
-                className="relative  dark:bg-card-dark px-12  rounded-lg "
+                className="relative  darks:bg-card-dark px-12  rounded-lg "
             >
                 <div className="flex justify-between items-center  px-5">
-                    <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+                    <h1 className="text-2xl font-bold text-gray-900 darks:text-gray-100">
 
                     </h1>
                     <Button
@@ -147,10 +147,10 @@ export default function EmployeeProfileForm() {
                     className=" sm:p-6 lg:p-8 grid grid-cols-1 lg:grid-cols-5 gap-8 items-start"
                 >
                     <div
-                        className="lg:col-span-3 bg-card-light dark:bg-card-dark p-6 rounded-2xl border border-border-light dark:border-border-dark shadow-sm"
+                        className="lg:col-span-3 bg-card-light darks:bg-card-dark p-6 rounded-2xl border border-border-light darks:border-border-dark shadow-sm"
                     >
                         <header className="flex justify-between items-center mb-8">
-                            <h1 className="text-xl font-bold text-text-strong-light dark:text-text-strong-dark">
+                            <h1 className="text-xl font-bold text-text-strong-light darks:text-text-strong-dark">
                                 Shift &amp; Schedule Management
                             </h1>
 
@@ -158,7 +158,7 @@ export default function EmployeeProfileForm() {
                                 <Switch id="auto-shift" />
                                 <Label
                                     htmlFor="auto-shift"
-                                    className="text-sm font-medium text-text-light dark:text-text-dark"
+                                    className="text-sm font-medium text-text-light darks:text-text-dark"
                                 >
                                     Auto Shift
                                 </Label>
@@ -166,17 +166,17 @@ export default function EmployeeProfileForm() {
                         </header>
                         <div className="space-y-8">
                             <div
-                                className="border-b border-border-light dark:border-border-dark pb-8"
+                                className="border-b border-border-light darks:border-border-dark pb-8"
                             >
                                 <h3
-                                    className="text-base font-semibold text-text-strong-light dark:text-text-strong-dark mb-4"
+                                    className="text-base font-semibold text-text-strong-light darks:text-text-strong-dark mb-4"
                                 >
                                     Shift Details
                                 </h3>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <div>
                                         <Label
-                                            className="block text-xs font-medium text-text-light dark:text-text-dark mb-1.5"
+                                            className="block text-xs font-medium text-text-light darks:text-text-dark mb-1.5"
                                             htmlFor="type-of-schedule"
                                         >Type of Schedule*</Label>
                                         <Select onValueChange={(value) => handleChange("shift_type_id", Number(value))}>
@@ -198,11 +198,11 @@ export default function EmployeeProfileForm() {
                                     </div>
                                     <div>
                                         <Label
-                                            className="block text-xs font-medium text-text-light dark:text-text-dark mb-1.5"
+                                            className="block text-xs font-medium text-text-light darks:text-text-dark mb-1.5"
                                             htmlFor="name-of-schedule"
                                         >Name of Schedule*</Label>
                                         <Input
-                                            className="w-full rounded-lg border-border-light dark:border-border-dark bg-background-light dark:bg-gray-800/50 text-text-strong-light dark:text-text-strong-dark focus:ring-2 focus:ring-[var(--primary)] focus:border-[var(--primary)] text-sm transition-all"
+                                            className="w-full rounded-lg border-border-light darks:border-border-dark bg-background-light darks:bg-gray-800/50 text-text-strong-light darks:text-text-strong-dark focus:ring-2 focus:ring-[var(--primary)] focus:border-[var(--primary)] text-sm transition-all"
                                             id="name-of-schedule"
                                             type="text"
                                             value={schedule.name}
@@ -215,17 +215,17 @@ export default function EmployeeProfileForm() {
                                 schedule.shift_type_id === 4 || schedule.shift_type_id === 6 ?
                                     (
                                         <div
-                                            className="border-b border-border-light dark:border-border-dark pb-8"
+                                            className="border-b border-border-light darks:border-border-dark pb-8"
                                         >
                                             <h3
-                                                className="text-base font-semibold text-text-strong-light dark:text-text-strong-dark mb-4"
+                                                className="text-base font-semibold text-text-strong-light darks:text-text-strong-dark mb-4"
                                             >
                                                 Time Configuration
                                             </h3>
                                             <div className="grid grid-cols-2 sm:grid-cols-4 gap-6">
                                                 <div>
                                                     <Label
-                                                        className="block text-xs font-medium text-text-light dark:text-text-dark mb-1.5"
+                                                        className="block text-xs font-medium text-text-light darks:text-text-dark mb-1.5"
                                                         htmlFor="on-duty-time"
                                                     >On Duty Time</Label
                                                     >
@@ -241,7 +241,7 @@ export default function EmployeeProfileForm() {
                                                 </div>
                                                 <div>
                                                     <Label
-                                                        className="block text-xs font-medium text-text-light dark:text-text-dark mb-1.5"
+                                                        className="block text-xs font-medium text-text-light darks:text-text-dark mb-1.5"
                                                         htmlFor="off-duty-time"
                                                     >Off Duty Time</Label
                                                     >
@@ -254,7 +254,7 @@ export default function EmployeeProfileForm() {
                                                 </div>
                                                 <div>
                                                     <Label
-                                                        className="block text-xs font-medium text-text-light dark:text-text-dark mb-1.5"
+                                                        className="block text-xs font-medium text-text-light darks:text-text-dark mb-1.5"
                                                         htmlFor="min-working-hrs"
                                                     >Min working hrs</Label
                                                     >
@@ -267,7 +267,7 @@ export default function EmployeeProfileForm() {
                                                 </div>
                                                 <div>
                                                     <Label
-                                                        className="block text-xs font-medium text-text-light dark:text-text-dark mb-1.5"
+                                                        className="block text-xs font-medium text-text-light darks:text-text-dark mb-1.5"
                                                         htmlFor="ot-start"
                                                     >OT start after</Label
                                                     >
@@ -280,7 +280,7 @@ export default function EmployeeProfileForm() {
                                                 </div>
                                                 <div>
                                                     <Label
-                                                        className="block text-xs font-medium text-text-light dark:text-text-dark mb-1.5"
+                                                        className="block text-xs font-medium text-text-light darks:text-text-dark mb-1.5"
                                                         htmlFor="beginning-in"
                                                     >Beginning In</Label
                                                     >
@@ -293,7 +293,7 @@ export default function EmployeeProfileForm() {
                                                 </div>
                                                 <div>
                                                     <Label
-                                                        className="block text-xs font-medium text-text-light dark:text-text-dark mb-1.5"
+                                                        className="block text-xs font-medium text-text-light darks:text-text-dark mb-1.5"
                                                         htmlFor="beginning-out"
                                                     >Beginning Out</Label
                                                     >
@@ -306,7 +306,7 @@ export default function EmployeeProfileForm() {
                                                 </div>
                                                 <div>
                                                     <Label
-                                                        className="block text-xs font-medium text-text-light dark:text-text-dark mb-1.5"
+                                                        className="block text-xs font-medium text-text-light darks:text-text-dark mb-1.5"
                                                         htmlFor="ending-in"
                                                     >Ending In</Label
                                                     >
@@ -319,7 +319,7 @@ export default function EmployeeProfileForm() {
                                                 </div>
                                                 <div>
                                                     <Label
-                                                        className="block text-xs font-medium text-text-light dark:text-text-dark mb-1.5"
+                                                        className="block text-xs font-medium text-text-light darks:text-text-dark mb-1.5"
                                                         htmlFor="ending-out"
                                                     >Ending Out</Label
                                                     >
@@ -338,17 +338,17 @@ export default function EmployeeProfileForm() {
 
 
                             <div
-                                className="border-b border-border-light dark:border-border-dark pb-8"
+                                className="border-b border-border-light darks:border-border-dark pb-8"
                             >
                                 <h3
-                                    className="text-base font-semibold text-text-strong-light dark:text-text-strong-dark mb-4"
+                                    className="text-base font-semibold text-text-strong-light darks:text-text-strong-dark mb-4"
                                 >
                                     Half Day Configuration
                                 </h3>
                                 <div className="grid grid-cols-1 md:grid-cols-3 gap-x-6 gap-y-4">
                                     <div className="md:col-span-1">
                                         <Label
-                                            className="block text-xs font-medium text-text-light dark:text-text-dark mb-1.5"
+                                            className="block text-xs font-medium text-text-light darks:text-text-dark mb-1.5"
                                             htmlFor="half-day-weekdays"
                                         >Half Day Setting</Label
                                         >
@@ -376,7 +376,7 @@ export default function EmployeeProfileForm() {
                                     <div className="md:col-span-2 grid grid-cols-2 gap-6">
                                         <div>
                                             <Label
-                                                className="block text-xs font-medium text-text-light dark:text-text-dark mb-1.5"
+                                                className="block text-xs font-medium text-text-light darks:text-text-dark mb-1.5"
                                                 htmlFor="half-day-in-time"
                                             >In Time</Label
                                             >
@@ -389,7 +389,7 @@ export default function EmployeeProfileForm() {
                                         </div>
                                         <div>
                                             <Label
-                                                className="block text-xs font-medium text-text-light dark:text-text-dark mb-1.5"
+                                                className="block text-xs font-medium text-text-light darks:text-text-dark mb-1.5"
                                                 htmlFor="half-day-out-time"
                                             >Out Time</Label
                                             >
@@ -404,10 +404,10 @@ export default function EmployeeProfileForm() {
                                 </div>
                             </div>
                             <div
-                                className="border-b border-border-light dark:border-border-dark pb-8"
+                                className="border-b border-border-light darks:border-border-dark pb-8"
                             >
                                 <h3
-                                    className="text-base font-semibold text-text-strong-light dark:text-text-strong-dark mb-4"
+                                    className="text-base font-semibold text-text-strong-light darks:text-text-strong-dark mb-4"
                                 >
                                     Working Days Status
                                 </h3>
@@ -416,49 +416,49 @@ export default function EmployeeProfileForm() {
                                 </div>
                             </div>
                             <div
-                                className="border-b border-border-light dark:border-border-dark pb-8"
+                                className="border-b border-border-light darks:border-border-dark pb-8"
                             >
                                 <h3
-                                    className="text-base font-semibold text-text-strong-light dark:text-text-strong-dark mb-4"
+                                    className="text-base font-semibold text-text-strong-light darks:text-text-strong-dark mb-4"
                                 >
                                     Grace Period &amp; Overtime
                                 </h3>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <div>
                                         <Label
-                                            className="block text-xs font-medium text-text-light dark:text-text-dark mb-1.5"
+                                            className="block text-xs font-medium text-text-light darks:text-text-dark mb-1.5"
                                             htmlFor="grace-period-cin"
                                         >Grace Period for Check-in (CIN)</Label
                                         >
                                         <div className="relative">
                                             <Input
-                                                className="w-full rounded-lg border-border-light dark:border-border-dark bg-background-light dark:bg-gray-800/50 text-text-strong-light dark:text-text-strong-dark focus:ring-2 focus:ring-[var(--primary)] focus:border-[var(--primary)] pr-16 text-sm transition-all"
+                                                className="w-full rounded-lg border-border-light darks:border-border-dark bg-background-light darks:bg-gray-800/50 text-text-strong-light darks:text-text-strong-dark focus:ring-2 focus:ring-[var(--primary)] focus:border-[var(--primary)] pr-16 text-sm transition-all"
                                                 id="grace-period-cin"
                                                 type="number"
                                                 value={schedule.late_time}
                                                 onChange={(e) => handleChange("late_time", e.target.value)} // ✅ fixed
                                             />
                                             <span
-                                                className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-sm text-text-light dark:text-text-dark"
+                                                className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-sm text-text-light darks:text-text-dark"
                                             >minutes</span>
                                         </div>
                                     </div>
                                     <div>
                                         <Label
-                                            className="block text-xs font-medium text-text-light dark:text-text-dark mb-1.5"
+                                            className="block text-xs font-medium text-text-light darks:text-text-dark mb-1.5"
                                             htmlFor="grace-period-cout"
                                         >Grace Period for Check-out (COUT)</Label
                                         >
                                         <div className="relative">
                                             <Input
-                                                className="w-full rounded-lg border-border-light dark:border-border-dark bg-background-light dark:bg-gray-800/50 text-text-strong-light dark:text-text-strong-dark focus:ring-2 focus:ring-[var(--primary)] focus:border-[var(--primary)] pr-16 text-sm transition-all"
+                                                className="w-full rounded-lg border-border-light darks:border-border-dark bg-background-light darks:bg-gray-800/50 text-text-strong-light darks:text-text-strong-dark focus:ring-2 focus:ring-[var(--primary)] focus:border-[var(--primary)] pr-16 text-sm transition-all"
                                                 id="grace-period-cout"
                                                 type="number"
                                                 value={schedule.early_time}
                                                 onChange={(e) => handleChange("early_time", e.target.value)}
                                             />
                                             <span
-                                                className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-sm text-text-light dark:text-text-dark"
+                                                className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-sm text-text-light darks:text-text-dark"
                                             >minutes</span
                                             >
                                         </div>
@@ -466,26 +466,26 @@ export default function EmployeeProfileForm() {
                                     <div className="md:col-span-2 space-y-4">
                                         {/* <div>
                                             <Label
-                                                className="block text-xs font-medium text-text-light dark:text-text-dark mb-1.5"
+                                                className="block text-xs font-medium text-text-light darks:text-text-dark mb-1.5"
                                                 htmlFor="overtime-threshold"
                                             >Calculate Overtime after</Label
                                             >
                                             <div className="relative">
                                                 <Input
-                                                    className="w-full rounded-lg border-border-light dark:border-border-dark bg-background-light dark:bg-gray-800/50 text-text-strong-light dark:text-text-strong-dark focus:ring-2 focus:ring-[var(--primary)] focus:border-[var(--primary)] pr-16 text-sm transition-all"
+                                                    className="w-full rounded-lg border-border-light darks:border-border-dark bg-background-light darks:bg-gray-800/50 text-text-strong-light darks:text-text-strong-dark focus:ring-2 focus:ring-[var(--primary)] focus:border-[var(--primary)] pr-16 text-sm transition-all"
                                                     id="overtime-threshold"
                                                     type="number"
                                                     value="30"
                                                 />
                                                 <span
-                                                    className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-sm text-text-light dark:text-text-dark"
+                                                    className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-sm text-text-light darks:text-text-dark"
                                                 >minutes</span
                                                 >
                                             </div>
                                         </div> */}
                                         <div>
                                             <Label
-                                                className="block text-xs font-medium text-text-light dark:text-text-dark mb-1.5"
+                                                className="block text-xs font-medium text-text-light darks:text-text-dark mb-1.5"
                                             >Apply Overtime to</Label
                                             >
                                             <div className="flex items-center space-x-6">
@@ -523,14 +523,14 @@ export default function EmployeeProfileForm() {
                             </div>
                             <div className="">
                                 <h3
-                                    className="text-base font-semibold text-text-strong-light dark:text-text-strong-dark mb-4"
+                                    className="text-base font-semibold text-text-strong-light darks:text-text-strong-dark mb-4"
                                 >
                                     Conditional Rules
                                 </h3>
                                 <div className="space-y-4">
                                     <div className="flex items-center justify-between gap-4">
                                         <Label
-                                            className="flex-grow text-sm text-text-strong-light dark:text-text-strong-dark whitespace-nowrap"
+                                            className="flex-grow text-sm text-text-strong-light darks:text-text-strong-dark whitespace-nowrap"
                                             htmlFor="absent-for-in-threshold"
                                         >Mark as Absent for In after</Label
                                         >
@@ -546,7 +546,7 @@ export default function EmployeeProfileForm() {
                                     </div>
                                     <div className="flex items-center justify-between gap-4">
                                         <Label
-                                            className="flex-grow text-sm text-text-strong-light dark:text-text-strong-dark whitespace-nowrap"
+                                            className="flex-grow text-sm text-text-strong-light darks:text-text-strong-dark whitespace-nowrap"
                                             htmlFor="absent-for-out-threshold"
                                         >Mark as Absent for Out before</Label
                                         >

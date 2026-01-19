@@ -88,9 +88,9 @@ const EmployeeProfileForm = () => {
 
     return (
         <div className="">
-            <div className="relative dark:bg-card-dark px-13 rounded-lg">
+            <div className="relative darks:bg-card-dark px-13 rounded-lg">
                 <div className="flex justify-between items-center px-5">
-                    <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+                    <h1 className="text-2xl font-bold text-gray-900 darks:text-gray-100">
                         Assign Employees
                     </h1>
                     <Button
@@ -103,13 +103,13 @@ const EmployeeProfileForm = () => {
                     </Button>
                 </div>
 
-                <div className="relative dark:bg-card-dark p-8 pt-20 rounded-lg">
-                    <div className="bg-white dark:bg-gray-800 p-8 rounded-xl shadow-lg">
+                <div className="relative darks:bg-card-dark p-8 pt-20 rounded-lg">
+                    <div className="bg-white darks:bg-gray-800 p-8 rounded-xl shadow-lg">
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                             <div className="lg:col-span-2 lg:pl-4">
                                 <form onSubmit={onSubmit} className="space-y-8">
                                     <section>
-                                        <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-6 flex items-center">
+                                        <h2 className="text-xl font-semibold text-gray-900 darks:text-gray-100 mb-6 flex items-center">
                                             <Briefcase className="mr-3 h-6 w-6 text-primary" />
                                             Employee Schedule Details
                                         </h2>
@@ -220,7 +220,7 @@ const EmployeeProfileForm = () => {
                                                 <Label
                                                     // ✅ FIX 2: Update htmlFor to match the new id of the first Switch
                                                     htmlFor="over-time-switch"
-                                                    className="text-sm font-medium text-text-light dark:text-text-dark"
+                                                    className="text-sm font-medium text-text-light darks:text-text-dark"
                                                 >
                                                     Over Time
                                                 </Label>
@@ -249,7 +249,7 @@ const EmployeeProfileForm = () => {
                                                 <Label
                                                     // ✅ FIX 4: Update htmlFor to match the new unique id
                                                     htmlFor="auto-shift-switch"
-                                                    className="text-sm font-medium text-text-light dark:text-text-dark"
+                                                    className="text-sm font-medium text-text-light darks:text-text-dark"
                                                 >
                                                     is Auto Shift
                                                 </Label>

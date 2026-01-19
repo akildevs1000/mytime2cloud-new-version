@@ -97,7 +97,7 @@ export default function Branch() {
     <>
       <div className="flex flex-wrap items-center justify-between mb-6">
         <div className="flex flex-wrap items-center space-x-3">
-          <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100 flex items-center">
+          <h2 className="text-xl font-semibold text-gray-900 darks:text-gray-100 flex items-center">
             Branches
           </h2>
         </div>

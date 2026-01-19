@@ -181,10 +181,10 @@ const EmployeeProfileForm = () => {
     return (
         <div className="">
             <div
-                className="relative  dark:bg-card-dark px-13  rounded-lg "
+                className="relative  darks:bg-card-dark px-13  rounded-lg "
             >
                 <div className="flex justify-between items-center  px-5">
-                    <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+                    <h1 className="text-2xl font-bold text-gray-900 darks:text-gray-100">
                         Employees
                     </h1>
                     <Button
@@ -198,14 +198,14 @@ const EmployeeProfileForm = () => {
                 </div>
 
                 <div
-                    className="relative dark:bg-card-dark p-8 pt-20 rounded-lg" // pt-24 provides space for the absolutely positioned image section
+                    className="relative darks:bg-card-dark p-8 pt-20 rounded-lg" // pt-24 provides space for the absolutely positioned image section
                 >
                     {/* Profile Image and Upload Controls - Absolutely positioned to overlap the top border */}
                     <div
                         className="absolute -top-4 left-1/2 -translate-x-1/2 flex flex-col items-center" // Changed -top-2 to -top-4 for slightly more overlap, but -top-2 was also fine.
                     >
                         {/* Image Preview Area */}
-                        <div className="w-48 h-48 rounded-full bg-indigo-100 dark:bg-indigo-900 flex items-center justify-center mb-6 border-4 border-dashed border-indigo-200 dark:border-indigo-700 overflow-hidden">
+                        <div className="w-48 h-48 rounded-full bg-indigo-100 darks:bg-indigo-900 flex items-center justify-center mb-6 border-4 border-dashed border-indigo-200 darks:border-indigo-700 overflow-hidden">
                             {imagePreview ? (
                                 <img
                                     src={imagePreview}
@@ -218,7 +218,7 @@ const EmployeeProfileForm = () => {
                         </div>
 
                         {/* File Name Display */}
-                        <p className="text-sm text-gray-500 dark:text-gray-400 mb-4 text-center">
+                        <p className="text-sm text-gray-500 darks:text-gray-400 mb-4 text-center">
                             {imageFile ? imageFile.name : "No Image Selected"}
                         </p>
 
@@ -241,13 +241,13 @@ const EmployeeProfileForm = () => {
                         />
 
                         {/* Constraints Text */}
-                        <p className="text-xs text-gray-500 dark:text-gray-400 mt-2 text-center">
+                        <p className="text-xs text-gray-500 darks:text-gray-400 mt-2 text-center">
                             * Upload JPG or PNG only. <br />
                             Maximum file size 2MB.
                         </p>
                     </div>
 
-                    <div className="bg-white dark:bg-gray-800 p-8 rounded-xl shadow-lg pt-50">
+                    <div className="bg-white darks:bg-gray-800 p-8 rounded-xl shadow-lg pt-50">
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
 
                             {/* Columns 2 & 3: Main Form Fields (No separate background/padding) */}
@@ -259,7 +259,7 @@ const EmployeeProfileForm = () => {
                                         {/* Personal Details Section */}
                                         {/* ... (rest of your form fields are here) ... */}
                                         <section>
-                                            <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-6 flex items-center">
+                                            <h2 className="text-xl font-semibold text-gray-900 darks:text-gray-100 mb-6 flex items-center">
                                                 <User className="mr-3 h-6 w-6 text-primary" />
                                                 Personal Details
                                             </h2>
@@ -355,11 +355,11 @@ const EmployeeProfileForm = () => {
                                             </div>
                                         </section>
 
-                                        <hr className="border-gray-200 dark:border-gray-700" />
+                                        <hr className="border-gray-200 darks:border-gray-700" />
 
                                         {/* Employment Details Section */}
                                         <section>
-                                            <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-6 flex items-center">
+                                            <h2 className="text-xl font-semibold text-gray-900 darks:text-gray-100 mb-6 flex items-center">
                                                 <Briefcase className="mr-3 h-6 w-6 text-primary" />
                                                 Employment Details
                                             </h2>
@@ -458,7 +458,7 @@ const EmployeeProfileForm = () => {
                                                         <FormItem className="md:col-span-1">
                                                             <FormLabel>System User ID (Device Id)</FormLabel>
                                                             <FormControl>
-                                                                <Input placeholder="Asset Tracking ID (Optional)" {...field} />
+                                                                <Input placeholder="Unique ID (e.g., 123456)" {...field} />
                                                             </FormControl>
                                                             <FormMessage />
                                                         </FormItem>
@@ -467,11 +467,11 @@ const EmployeeProfileForm = () => {
                                             </div>
                                         </section>
 
-                                        <hr className="border-gray-200 dark:border-gray-700" />
+                                        <hr className="border-gray-200 darks:border-gray-700" />
 
                                         {/* Contact Information Section */}
                                         <section>
-                                            <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-6 flex items-center">
+                                            <h2 className="text-xl font-semibold text-gray-900 darks:text-gray-100 mb-6 flex items-center">
                                                 <Phone className="mr-3 h-6 w-6 text-primary" />
                                                 Contact Information
                                             </h2>

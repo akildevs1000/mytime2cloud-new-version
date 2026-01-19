@@ -58,19 +58,19 @@ export default function Index() {
                 className="px-5 border-r border-l shrink-0 h-full flex flex-col"
             >
                 {items.length === 0 ? (
-                    <div className="flex-1 flex items-center justify-center min-h-[60vh] text-center text-subtext-light dark:text-subtext-dark">
+                    <div className="flex-1 flex items-center justify-center min-h-[60vh] text-center text-subtext-light darks:text-subtext-dark">
                         No employee created yet
                     </div>
                 ) : (
 
                     <>
-                        <div className="text-xl  font-bold text-text-light dark:text-text-dark">
+                        <div className="text-xl  font-bold text-text-light darks:text-text-dark">
                             Employee List
                         </div>
 
                         <div className='flex-1 flex items-center min-h-[60vh] min-w-60'>
                             <motion.ul
-                                className="divide-y divide-border-light dark:divide-border-dark flex-1 overflow-y-auto"
+                                className="divide-y divide-border-light darks:divide-border-dark flex-1 overflow-y-auto"
                                 initial={false}
                             >
                                 <AnimatePresence>
@@ -95,10 +95,10 @@ export default function Index() {
                                                 }}
                                             />
                                             <div className="overflow-hidden">
-                                                <p className="font-medium text-text-light dark:text-text-dark">
+                                                <p className="font-medium text-text-light darks:text-text-dark">
                                                     {item.full_name}
                                                 </p>
-                                                <p className="text-sm text-subtext-light dark:text-subtext-dark">
+                                                <p className="text-sm text-subtext-light darks:text-subtext-dark">
                                                     {item.employee_id || 'N/A'}
                                                 </p>
                                             </div>
@@ -114,10 +114,10 @@ export default function Index() {
 
             <div className="flex-1 py-6 px-1">
                 <div className="lg:col-span-2 lg:pl-4 space-y-4">
-                    <div className="text-2xl font-bold text-text-light dark:text-text-dark">
+                    <div className="text-2xl font-bold text-text-light darks:text-text-dark">
                         Assing Schedule Information
                     </div>
-                    <p className="text-sm text-text-light/60 dark:text-text-dark/60">
+                    <p className="text-sm text-text-light/60 darks:text-text-dark/60">
                         Fill information to assing schedule to employee.
                     </p>
                     <Create onSuccess={fetchItems} />

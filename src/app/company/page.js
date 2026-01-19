@@ -117,7 +117,7 @@ const Company = () => {
       {/* Page header */}
       <div className="flex items-center justify-between px-1">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+          <h1 className="text-2xl font-bold text-gray-900 darks:text-gray-100">
             Company Information
           </h1>
           <p className="text-sm text-muted-foreground mt-1">
@@ -154,7 +154,7 @@ const Company = () => {
         <div className="flex-1">
           {/* Heading above tabs */}
           <div className="mb-4">
-            <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+            <h2 className="text-lg font-semibold text-gray-900 darks:text-gray-100">
               Company Settings
             </h2>
             <p className="text-sm text-muted-foreground">
@@ -171,7 +171,7 @@ const Company = () => {
                   value={tab.value}
                   className="
                       px-4 py-2 text-xs sm:text-sm font-medium rounded-lg
-                      text-gray-600 dark:text-gray-200
+                      text-gray-600 darks:text-gray-200
                       whitespace-nowrap
                       transition-all duration-200
                       data-[state=active]:bg-white
@@ -192,7 +192,7 @@ const Company = () => {
                 value={tab.value}
                 className="
                     rounded-xl
-                    bg-slate-50/80 dark:bg-slate-900/60
+                    bg-slate-50/80 darks:bg-slate-900/60
                     p-5
                     transition-all
                     duration-300

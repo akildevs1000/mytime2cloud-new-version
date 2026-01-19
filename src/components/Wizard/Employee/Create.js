@@ -48,7 +48,7 @@ const initialFormData = {
 
 const Create = ({ options, onSuccess }) => {
   const router = useRouter();
-  const fileInputRef = useRef(null);
+  const fileInputRef = useRef("");
 
   // 1. Standard React State for Form Data
   const [formData, setFormData] = useState(initialFormData);
@@ -209,14 +209,14 @@ const Create = ({ options, onSuccess }) => {
   return (
     <div className="pt-15 overflow-y-auto max-h-[500px]">
       <div
-        className="relative dark:bg-card-dark p-8 pt-20 rounded-lg"
+        className="relative darks:bg-card-dark p-8 pt-20 rounded-lg"
       >
         {/* Profile Image and Upload Controls */}
         <div
           className="absolute -top-4 left-1/2 -translate-x-1/2 flex flex-col items-center"
         >
           {/* Image Preview Area */}
-          <div className={`w-${options.w || 48} h-${options.h || 48} rounded-full bg-indigo-100 dark:bg-indigo-900 flex items-center justify-center mb-6 border-4 border-dashed border-indigo-200 dark:border-indigo-700 overflow-hidden`}>
+          <div className={`w-${options.w || 48} h-${options.h || 48} rounded-full bg-indigo-100 darks:bg-indigo-900 flex items-center justify-center mb-6 border-4 border-dashed border-indigo-200 darks:border-indigo-700 overflow-hidden`}>
             {imagePreview ? (
               <img
                 src={imagePreview}
@@ -229,7 +229,7 @@ const Create = ({ options, onSuccess }) => {
           </div>
 
           {/* File Name Display */}
-          <p className="text-sm text-gray-500 dark:text-gray-400 mb-4 text-center">
+          <p className="text-sm text-gray-500 darks:text-gray-400 mb-4 text-center">
             {imageFile ? imageFile.name : "No Image Selected"}
           </p>
 
@@ -252,7 +252,7 @@ const Create = ({ options, onSuccess }) => {
           />
 
           {/* Constraints Text */}
-          <p className="text-xs text-gray-500 dark:text-gray-400 mt-2 text-center">
+          <p className="text-xs text-gray-500 darks:text-gray-400 mt-2 text-center">
             * Upload JPG or PNG only. <br />
             Maximum file size 2MB.
           </p>
@@ -263,7 +263,7 @@ const Create = ({ options, onSuccess }) => {
 
             {/* Personal Details Section */}
             <section className='mt-5'>
-              <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-6 flex items-center">
+              <h2 className="text-xl font-semibold text-gray-900 darks:text-gray-100 mb-6 flex items-center">
                 <User className="mr-3 h-6 w-6 text-primary" />
                 Personal Details
               </h2>
@@ -272,7 +272,7 @@ const Create = ({ options, onSuccess }) => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* Title Select - Use standard Select component but manage state manually */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Title</label>
+                  <label className="block text-sm font-medium text-gray-700 darks:text-gray-300 mb-2">Title</label>
                   <Select
                     onValueChange={(value) => handleSelectChange("title", value)}
                     value={formData.title}
@@ -293,7 +293,7 @@ const Create = ({ options, onSuccess }) => {
 
                 {/* Full Legal Name Input */}
                 <div>
-                  <label htmlFor="full_name" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Full Legal Name</label>
+                  <label htmlFor="full_name" className="block text-sm font-medium text-gray-700 darks:text-gray-300 mb-2">Full Legal Name</label>
                   <Input
                     id="full_name"
                     name="full_name"
@@ -308,7 +308,7 @@ const Create = ({ options, onSuccess }) => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
                 {/* First Name Input */}
                 <div>
-                  <label htmlFor="first_name" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">First Name</label>
+                  <label htmlFor="first_name" className="block text-sm font-medium text-gray-700 darks:text-gray-300 mb-2">First Name</label>
                   <Input
                     id="first_name"
                     name="first_name"
@@ -320,7 +320,7 @@ const Create = ({ options, onSuccess }) => {
 
                 {/* Last Name Input */}
                 <div>
-                  <label htmlFor="last_name" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Last Name</label>
+                  <label htmlFor="last_name" className="block text-sm font-medium text-gray-700 darks:text-gray-300 mb-2">Last Name</label>
                   <Input
                     id="last_name"
                     name="last_name"
@@ -335,7 +335,7 @@ const Create = ({ options, onSuccess }) => {
               {/* Row 3: Display Name */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
                 <div>
-                  <label htmlFor="display_name" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Display Name / Nickname</label>
+                  <label htmlFor="display_name" className="block text-sm font-medium text-gray-700 darks:text-gray-300 mb-2">Display Name / Nickname</label>
                   <Input
                     id="display_name"
                     name="display_name"
@@ -347,11 +347,11 @@ const Create = ({ options, onSuccess }) => {
               </div>
             </section>
 
-            <hr className="border-gray-200 dark:border-gray-700" />
+            <hr className="border-gray-200 darks:border-gray-700" />
 
             {/* Employment Details Section */}
             <section>
-              <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-6 flex items-center">
+              <h2 className="text-xl font-semibold text-gray-900 darks:text-gray-100 mb-6 flex items-center">
                 <Briefcase className="mr-3 h-6 w-6 text-primary" />
                 Employment Details
               </h2>
@@ -359,7 +359,7 @@ const Create = ({ options, onSuccess }) => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* Branch Dropdown */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Branch</label>
+                  <label className="block text-sm font-medium text-gray-700 darks:text-gray-300 mb-2">Branch</label>
                   <DropDown
                     placeholder="Select Branch"
                     value={formData.branch_id}
@@ -370,7 +370,7 @@ const Create = ({ options, onSuccess }) => {
 
                 {/* Department Select (dependent on Branch) */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Department</label>
+                  <label className="block text-sm font-medium text-gray-700 darks:text-gray-300 mb-2">Department</label>
                   <Select
                     onValueChange={(value) => handleSelectChange("department_id", value)}
                     value={formData.department_id}
@@ -393,7 +393,7 @@ const Create = ({ options, onSuccess }) => {
 
                 {/* Employee ID Input */}
                 <div>
-                  <label htmlFor="employee_id" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Employee ID</label>
+                  <label htmlFor="employee_id" className="block text-sm font-medium text-gray-700 darks:text-gray-300 mb-2">Employee ID</label>
                   <Input
                     id="employee_id"
                     name="employee_id"
@@ -405,11 +405,11 @@ const Create = ({ options, onSuccess }) => {
 
                 {/* System User ID Input (Device ID) */}
                 <div>
-                  <label htmlFor="system_user_id" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">System User ID (Device Id)</label>
+                  <label htmlFor="system_user_id" className="block text-sm font-medium text-gray-700 darks:text-gray-300 mb-2">System User ID (Device Id)</label>
                   <Input
                     id="system_user_id"
                     name="system_user_id"
-                    placeholder="Asset Tracking ID (Optional)"
+                    placeholder="Unique ID (e.g., 123456)"
                     value={formData.system_user_id || ""}
                     onChange={handleChange}
                   />
@@ -417,7 +417,7 @@ const Create = ({ options, onSuccess }) => {
 
                 {/* Joining Date Input */}
                 <div className="flex flex-col">
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Joining Date</label>
+                  <label className="block text-sm font-medium text-gray-700 darks:text-gray-300 mb-2">Joining Date</label>
                   <DatePicker
                     value={formData.joining_date}
                     onChange={handleDateChange}

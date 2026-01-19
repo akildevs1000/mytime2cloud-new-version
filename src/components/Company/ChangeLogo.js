@@ -69,7 +69,7 @@ const ChangeLogo = () => {
 
     return (
         <div className="w-full lg:w-72 lg:border-r lg:border-slate-200/60 lg:pr-8 flex flex-col items-center">
-            <div className="w-40 h-40 rounded-full bg-indigo-50 dark:bg-indigo-900 flex items-center justify-center mb-4 border-4 border-dashed border-indigo-200 dark:border-indigo-700 overflow-hidden">
+            <div className="w-40 h-40 rounded-full bg-indigo-50 darks:bg-indigo-900 flex items-center justify-center mb-4 border-4 border-dashed border-indigo-200 darks:border-indigo-700 overflow-hidden">
                 {imagePreview ? (
                     <img
                         src={imagePreview}

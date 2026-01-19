@@ -8,6 +8,20 @@ import { getUser } from "@/config/index";
 import MultiStepDialog from "./Wizard/Page";
 
 export default function Header() {
+
+    // Initialize state based on the current presence of the 'dark' class
+    const [isDark, setIsDark] = useState(false);
+
+    // Sync state with document class on mount and when changed
+    useEffect(() => {
+        const root = window.document.documentElement;
+        if (isDark) {
+            root.classList.add("dark");
+        } else {
+            root.classList.remove("dark");
+        }
+    }, [isDark]);
+
     const router = useRouter();
     const pathname = usePathname();
     const [user, setUser] = useState(null);
@@ -64,9 +78,9 @@ export default function Header() {
     return (
         <>
             {/* <MultiStepDialog /> */}
-            <header className="flex items-center justify-between p-4 shadow-sm bg-white dark:bg-gray-800">
+            <header className="flex items-center justify-between p-4 shadow-sm bg-white darks:bg-gray-800">
                 <div className="flex items-center space-x-4">
-                    <button className="text-gray-600 dark:text-gray-300">
+                    <button className="text-gray-600 darks:text-gray-300">
                         <span className="material-icons">menu</span>
                     </button>
                     <div className="flex items-center">
@@ -78,8 +92,8 @@ export default function Header() {
                     {filteredLinks.map((link) => {
                         const isActive = link.href === pathname;
                         const baseClasses = "text-sm font-medium";
-                        const activeClasses = "text-primary dark:text-purple-400 rounded-md";
-                        const inactiveClasses = "text-gray-600 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400";
+                        const activeClasses = "text-primary darks:text-purple-400 rounded-md";
+                        const inactiveClasses = "text-gray-600 darks:text-gray-300 hover:text-purple-600 darks:hover:text-purple-400";
 
                         return (
                             <Link
@@ -94,16 +108,60 @@ export default function Header() {
                 </nav>
 
                 <div className="flex items-center space-x-4">
-                    <div className="relative">
-                        <span className="material-icons absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500">search</span>
+                    {/* <div className="relative">
+                        <span className="material-icons absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 darks:text-gray-500">search</span>
                         <input
-                            className="pl-10 pr-4 py-2 text-sm rounded-md border border-border-light dark:border-border-dark bg-background-light dark:bg-gray-700 text-text-light dark:text-text-dark focus:outline-none focus:ring-2 focus:ring-purple-500"
+                            className="pl-10 pr-4 py-2 text-sm rounded-md border border-border-light darks:border-border-dark bg-background-light darks:bg-gray-700 text-text-light darks:text-text-dark focus:outline-none focus:ring-2 focus:ring-purple-500"
                             placeholder="Search"
                             type="text"
                         />
-                    </div>
+                    </div> */}
 
-                    <Popover>
+                  <div className="flex items-center gap-4">
+                                <button
+                                    className="relative p-2 text-slate-500 hover:text-red-600 transition-colors"
+                                    title="Watch Tutorial"
+                                >
+                                    <span className="material-symbols-outlined">
+                                        smart_display
+                                    </span>
+                                </button>
+                                <button
+                                    onClick={() => setIsDark(!isDark)}
+                                    className="relative p-2 text-slate-500 hover:text-amber-500 darks:text-slate-400 darks:hover:text-gold-glow transition-all duration-300 active-pop"
+                                    title={
+                                        isDark ? "Switch to Light Mode" : "Switch to Dark Mode"
+                                    }
+                                >
+                                    <span className="material-symbols-outlined transition-transform duration-500 rotate-0 darks:rotate-[360deg]">
+                                        {isDark ? "light_mode" : "dark_mode"}
+                                    </span>
+
+                                    {/* Optional: Subtle indicator dot */}
+                                    <span
+                                        className={`absolute top-1.5 right-1.5 w-1.5 h-1.5 rounded-full transition-colors ${isDark ? "bg-gold-glow shadow-[0_0_8px_#fbbf24]" : "bg-transparent"}`}
+                                    ></span>
+                                </button>
+                                <button
+                                    className="relative p-2 text-slate-500 hover:text-primary transition-colors"
+                                    title="Notifications"
+                                >
+                                    <span className="material-symbols-outlined">
+                                        notifications
+                                    </span>
+                                    <span className="absolute top-1 right-1 size-2 bg-rose-500 rounded-full border border-white"></span>
+                                </button>
+                                <div className="text-right hidden sm:block">
+                                    <h2 className="text-sm font-bold text-slate-900 font-display">
+                                        10:42 AM
+                                    </h2>
+                                    <p className="text-[10px] text-slate-500 font-mono">
+                                        OCT 24, 2023
+                                    </p>
+                                </div>
+                            </div>
+
+                    {/* <Popover>
                         <PopoverTrigger asChild>
                             <button className="w-10 h-10 rounded-full overflow-hidden focus:outline-none">
                                 <img
@@ -130,7 +188,7 @@ export default function Header() {
                                 </button>
                             </div>
                         </PopoverContent>
-                    </Popover>
+                    </Popover> */}
                 </div>
             </header>
         </>

@@ -184,10 +184,10 @@ export default function EmployeeShortList() {
           onError={(e) => { e.target.onerror = null; e.target.src = `https://placehold.co/40x40/6946dd/ffffff?text=${employee.full_name.charAt(0)}`; }}
         />
         <div>
-          <p className="font-medium text-text-light dark:text-text-dark">
+          <p className="font-medium text-text-light darks:text-text-dark">
             {employee.full_name}
           </p>
-          <p className="text-sm text-subtext-light dark:text-subtext-dark">
+          <p className="text-sm text-subtext-light darks:text-subtext-dark">
             {employee.employee_id || 'N/A'}
           </p>
         </div>
@@ -199,10 +199,10 @@ export default function EmployeeShortList() {
     <>
       <div className="flex flex-1 gap-6">
         <div
-          className="w-80 bg-surface-light dark:bg-surface-dark border-r border-border-light dark:border-border-dark flex flex-col"
+          className="w-80 bg-surface-light darks:bg-surface-dark border-r border-border-light darks:border-border-dark flex flex-col"
         >
           <div
-            className="p-4 border-b border-border-light dark:border-border-dark flex justify-between items-center"
+            className="p-4 border-b border-border-light darks:border-border-dark flex justify-between items-center"
           >
             <h2 className="text-lg font-semibold">Employees</h2>
             <Link href="/employees/create">
@@ -264,11 +264,11 @@ export default function EmployeeShortList() {
 
               <div className="relative flex-grow">
                 <span
-                  className="material-icons absolute left-3 top-1/2 -translate-y-1/2 text-subtext-light dark:text-subtext-dark"
+                  className="material-icons absolute left-3 top-1/2 -translate-y-1/2 text-subtext-light darks:text-subtext-dark"
                 >search</span
                 >
                 <Input
-                  className="w-full  pl-10 pr-4 py-2 rounded-lg border border-border-light dark:border-border-dark   focus:ring-primary focus:border-primary"
+                  className="w-full  pl-10 pr-4 py-2 rounded-lg border border-border-light darks:border-border-dark   focus:ring-primary focus:border-primary"
                   placeholder="Search Employees"
                   type="text"
                   value={searchTerm}
@@ -279,7 +279,7 @@ export default function EmployeeShortList() {
             </div>
           </div>
           <div className="flex-1 overflow-y-auto">
-            <ul className="divide-y divide-border-light dark:divide-border-dark">
+            <ul className="divide-y divide-border-light darks:divide-border-dark">
               {employees.map(renderEmployeeRow)}
             </ul>
           </div>
@@ -288,11 +288,11 @@ export default function EmployeeShortList() {
           <header className="flex justify-between items-center mb-8">
             <div>
               <h1 className="text-2xl font-bold">{selectedEmployee?.full_name || "---"}</h1>
-              <p className="text-subtext-light dark:text-subtext-dark">{selectedEmployee?.employee_id || "---"}</p>
+              <p className="text-subtext-light darks:text-subtext-dark">{selectedEmployee?.employee_id || "---"}</p>
             </div>
             <div className="flex items-center space-x-4">
               <button
-                className="px-4 py-2 rounded-lg border border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark text-text-light dark:text-text-dark flex items-center space-x-2"
+                className="px-4 py-2 rounded-lg border border-border-light darks:border-border-dark bg-surface-light darks:bg-surface-dark text-text-light darks:text-text-dark flex items-center space-x-2"
               >
                 <span className="material-icons text-base">edit</span>
                 <span>Edit</span>
@@ -300,9 +300,9 @@ export default function EmployeeShortList() {
               <EmployeeExtras data={employees} onUploadSuccess={fetchEmployees} />
             </div>
           </header>
-          <div className="bg-surface-light dark:bg-surface-dark p-6 rounded-lg">
+          <div className="bg-surface-light darks:bg-surface-dark p-6 rounded-lg">
             <div
-              className="flex items-center space-x-6 pb-6 border-b border-border-light dark:border-border-dark"
+              className="flex items-center space-x-6 pb-6 border-b border-border-light darks:border-border-dark"
             >
               <div>
                 <img
@@ -329,19 +329,19 @@ export default function EmployeeShortList() {
               <div>
                 <h3 className="text-xl font-semibold">{selectedEmployee?.full_name || "---"}</h3>
                 <div
-                  className="mt-2 flex items-center space-x-2 text-sm text-subtext-light dark:text-subtext-dark"
+                  className="mt-2 flex items-center space-x-2 text-sm text-subtext-light darks:text-subtext-dark"
                 >
                   <span className="material-icons text-base">domain</span>
                   <span>Dept: {selectedEmployee?.department?.name || "---"}</span>
                 </div>
                 <div
-                  className="mt-2 flex items-center space-x-2 text-sm text-subtext-light dark:text-subtext-dark"
+                  className="mt-2 flex items-center space-x-2 text-sm text-subtext-light darks:text-subtext-dark"
                 >
                   <span className="material-icons text-base">email</span>
                   <span>{selectedEmployee?.email || "yourmail@example.com"}</span>
                 </div>
                 <div
-                  className="mt-1 flex items-center space-x-2 text-sm text-subtext-light dark:text-subtext-dark"
+                  className="mt-1 flex items-center space-x-2 text-sm text-subtext-light darks:text-subtext-dark"
                 >
                   <span className="material-icons text-base">phone</span>
                   <span>{selectedEmployee?.phone_number || "---"}</span>

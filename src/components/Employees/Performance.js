@@ -8,13 +8,13 @@ const Performance = () => {
             <div>
               <div className="flex justify-between items-center mb-4">
                 <h3
-                  className="text-lg font-semibold text-text-light dark:text-text-dark"
+                  className="text-lg font-semibold text-text-light darks:text-text-dark"
                 >
                   Last 3 Months Attendance
                 </h3>
                 <div className="flex items-center space-x-2">
                   <select
-                    className="w-full pl-3 pr-8 py-2 rounded-lg border border-border-light dark:border-border-dark bg-background-light dark:bg-background-dark focus:ring-primary focus:border-primary text-sm"
+                    className="w-full pl-3 pr-8 py-2 rounded-lg border border-border-light darks:border-border-dark bg-background-light darks:bg-background-dark focus:ring-primary focus:border-primary text-sm"
                   >
                     <option>Last 3 Months</option>
                     <option>Last 6 Months</option>
@@ -24,43 +24,43 @@ const Performance = () => {
               </div>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
                 <div
-                  className="p-4 rounded-lg bg-background-light dark:bg-background-dark border border-border-light dark:border-border-dark"
+                  className="p-4 rounded-lg bg-background-light darks:bg-background-dark border border-border-light darks:border-border-dark"
                 >
                   <p
-                    className="text-sm text-subtext-light dark:text-subtext-dark"
+                    className="text-sm text-subtext-light darks:text-subtext-dark"
                   >
                     Total Present
                   </p>
                   <p
-                    className="text-2xl font-semibold text-green-600 dark:text-green-400"
+                    className="text-2xl font-semibold text-green-600 darks:text-green-400"
                   >
                     85 Days
                   </p>
                 </div>
                 <div
-                  className="p-4 rounded-lg bg-background-light dark:bg-background-dark border border-border-light dark:border-border-dark"
+                  className="p-4 rounded-lg bg-background-light darks:bg-background-dark border border-border-light darks:border-border-dark"
                 >
                   <p
-                    className="text-sm text-subtext-light dark:text-subtext-dark"
+                    className="text-sm text-subtext-light darks:text-subtext-dark"
                   >
                     Total Absent
                   </p>
                   <p
-                    className="text-2xl font-semibold text-red-600 dark:text-red-400"
+                    className="text-2xl font-semibold text-red-600 darks:text-red-400"
                   >
                     3 Days
                   </p>
                 </div>
                 <div
-                  className="p-4 rounded-lg bg-background-light dark:bg-background-dark border border-border-light dark:border-border-dark"
+                  className="p-4 rounded-lg bg-background-light darks:bg-background-dark border border-border-light darks:border-border-dark"
                 >
                   <p
-                    className="text-sm text-subtext-light dark:text-subtext-dark"
+                    className="text-sm text-subtext-light darks:text-subtext-dark"
                   >
                     Total Late
                   </p>
                   <p
-                    className="text-2xl font-semibold text-yellow-600 dark:text-yellow-400"
+                    className="text-2xl font-semibold text-yellow-600 darks:text-yellow-400"
                   >
                     2 Days
                   </p>
@@ -76,56 +76,56 @@ const Performance = () => {
               </div>
             </div>
             <div
-              className="border-t border-border-light dark:border-border-dark mt-8 pt-8"
+              className="border-t border-border-light darks:border-border-dark mt-8 pt-8"
             >
               <h3
-                className="text-lg font-semibold text-text-light dark:text-text-dark mb-4"
+                className="text-lg font-semibold text-text-light darks:text-text-dark mb-4"
               >
                 Monthly Logs
               </h3>
               <div className="space-y-4">
                 <div
-                  className="border border-border-light dark:border-border-dark rounded-lg"
+                  className="border border-border-light darks:border-border-dark rounded-lg"
                 >
                   <div
-                    className="p-4 flex justify-between items-center cursor-pointer bg-background-light dark:bg-background-dark rounded-t-lg"
+                    className="p-4 flex justify-between items-center cursor-pointer bg-background-light darks:bg-background-dark rounded-t-lg"
                   >
                     <p className="font-medium">March 2024</p>
                     <span
-                      className="material-icons text-subtext-light dark:text-subtext-dark"
+                      className="material-icons text-subtext-light darks:text-subtext-dark"
                     >expand_more</span
                     >
                   </div>
                   <div
-                    className="border-t border-border-light dark:border-border-dark p-4"
+                    className="border-t border-border-light darks:border-border-dark p-4"
                   >
                     <table
-                      className="min-w-full divide-y divide-border-light dark:divide-border-dark"
+                      className="min-w-full divide-y divide-border-light darks:divide-border-dark"
                     >
                       <thead
-                        className="bg-background-light dark:bg-background-dark"
+                        className="bg-background-light darks:bg-background-dark"
                       >
                         <tr>
                           <th
-                            className="px-6 py-3 text-left text-xs font-medium text-subtext-light dark:text-subtext-dark uppercase tracking-wider"
+                            className="px-6 py-3 text-left text-xs font-medium text-subtext-light darks:text-subtext-dark uppercase tracking-wider"
                             scope="col"
                           >
                             Date
                           </th>
                           <th
-                            className="px-6 py-3 text-left text-xs font-medium text-subtext-light dark:text-subtext-dark uppercase tracking-wider"
+                            className="px-6 py-3 text-left text-xs font-medium text-subtext-light darks:text-subtext-dark uppercase tracking-wider"
                             scope="col"
                           >
                             Status
                           </th>
                           <th
-                            className="px-6 py-3 text-left text-xs font-medium text-subtext-light dark:text-subtext-dark uppercase tracking-wider"
+                            className="px-6 py-3 text-left text-xs font-medium text-subtext-light darks:text-subtext-dark uppercase tracking-wider"
                             scope="col"
                           >
                             Check-in
                           </th>
                           <th
-                            className="px-6 py-3 text-left text-xs font-medium text-subtext-light dark:text-subtext-dark uppercase tracking-wider"
+                            className="px-6 py-3 text-left text-xs font-medium text-subtext-light darks:text-subtext-dark uppercase tracking-wider"
                             scope="col"
                           >
                             Check-out
@@ -133,7 +133,7 @@ const Performance = () => {
                         </tr>
                       </thead>
                       <tbody
-                        className="bg-surface-light dark:bg-surface-dark divide-y divide-border-light dark:divide-border-dark"
+                        className="bg-surface-light darks:bg-surface-dark divide-y divide-border-light darks:divide-border-dark"
                       >
                         <tr>
                           <td
@@ -143,17 +143,17 @@ const Performance = () => {
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm">
                             <span
-                              className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300"
+                              className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 darks:bg-green-900 darks:text-green-300"
                             >Present</span
                             >
                           </td>
                           <td
-                            className="px-6 py-4 whitespace-nowrap text-sm text-subtext-light dark:text-subtext-dark"
+                            className="px-6 py-4 whitespace-nowrap text-sm text-subtext-light darks:text-subtext-dark"
                           >
                             09:00 AM
                           </td>
                           <td
-                            className="px-6 py-4 whitespace-nowrap text-sm text-subtext-light dark:text-subtext-dark"
+                            className="px-6 py-4 whitespace-nowrap text-sm text-subtext-light darks:text-subtext-dark"
                           >
                             06:00 PM
                           </td>
@@ -166,17 +166,17 @@ const Performance = () => {
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm">
                             <span
-                              className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300"
+                              className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 darks:bg-green-900 darks:text-green-300"
                             >Present</span
                             >
                           </td>
                           <td
-                            className="px-6 py-4 whitespace-nowrap text-sm text-subtext-light dark:text-subtext-dark"
+                            className="px-6 py-4 whitespace-nowrap text-sm text-subtext-light darks:text-subtext-dark"
                           >
                             09:05 AM
                           </td>
                           <td
-                            className="px-6 py-4 whitespace-nowrap text-sm text-subtext-light dark:text-subtext-dark"
+                            className="px-6 py-4 whitespace-nowrap text-sm text-subtext-light darks:text-subtext-dark"
                           >
                             06:03 PM
                           </td>
@@ -189,17 +189,17 @@ const Performance = () => {
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm">
                             <span
-                              className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300"
+                              className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800 darks:bg-red-900 darks:text-red-300"
                             >Absent</span
                             >
                           </td>
                           <td
-                            className="px-6 py-4 whitespace-nowrap text-sm text-subtext-light dark:text-subtext-dark"
+                            className="px-6 py-4 whitespace-nowrap text-sm text-subtext-light darks:text-subtext-dark"
                           >
                             -
                           </td>
                           <td
-                            className="px-6 py-4 whitespace-nowrap text-sm text-subtext-light dark:text-subtext-dark"
+                            className="px-6 py-4 whitespace-nowrap text-sm text-subtext-light darks:text-subtext-dark"
                           >
                             -
                           </td>
@@ -209,27 +209,27 @@ const Performance = () => {
                   </div>
                 </div>
                 <div
-                  className="border border-border-light dark:border-border-dark rounded-lg"
+                  className="border border-border-light darks:border-border-dark rounded-lg"
                 >
                   <div
                     className="p-4 flex justify-between items-center cursor-pointer"
                   >
                     <p className="font-medium">February 2024</p>
                     <span
-                      className="material-icons text-subtext-light dark:text-subtext-dark"
+                      className="material-icons text-subtext-light darks:text-subtext-dark"
                     >expand_more</span
                     >
                   </div>
                 </div>
                 <div
-                  className="border border-border-light dark:border-border-dark rounded-lg"
+                  className="border border-border-light darks:border-border-dark rounded-lg"
                 >
                   <div
                     className="p-4 flex justify-between items-center cursor-pointer"
                   >
                     <p className="font-medium">January 2024</p>
                     <span
-                      className="material-icons text-subtext-light dark:text-subtext-dark"
+                      className="material-icons text-subtext-light darks:text-subtext-dark"
                     >expand_more</span
                     >
                   </div>
