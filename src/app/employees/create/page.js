@@ -1,552 +1,216 @@
 "use client";
-
-import React, { useEffect, useRef, useState } from 'react';
-import { useForm } from "react-hook-form"; // Used for standard form handling
-import { SuccessDialog } from "@/components/SuccessDialog"; // Import the new component
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import React, { useState } from 'react';
 import {
-    Form,
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
-} from "@/components/ui/form";
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select";
-
-import { User, Briefcase, Phone, ArrowLeft, Upload } from "lucide-react";
-import { convertFileToBase64, parseApiError } from "@/lib/utils";
-import { useRouter } from 'next/navigation';
-
-import { getBranches, getDepartments, storeEmployee } from '@/lib/api';
-
-import DatePicker from '@/components/ui/DatePicker';
-import DropDown from '@/components/ui/DropDown';
-
+    BadgeCheck,
+    Save,
+    X,
+    Play,
+    User,
+    Briefcase,
+    Contact,
+    CreditCard,
+    Lock,
+    RefreshCw,
+    Eye,
+    EyeOff,
+    Camera,
+    CheckCircle2,
+    Info,
+    Smartphone
+} from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import { Label, SectionTitle } from '@/components/ui/label';
+import { SelectOne } from '@/components/ui/select';
+import { Radio } from '@/components/ui/radio';
 
 const EmployeeProfileForm = () => {
-    const router = useRouter();
-    const fileInputRef = useRef(null);
-    const handleUploadClick = () => fileInputRef.current.click();
-    const handleGoBack = () => router.push(`/employees`);
-    const handleCancel = () => router.push(`/employees`);
-    const form = useForm({
-        defaultValues: {
-            // Personal Details
-            title: "Mr.",
-            first_name: null, // Initial value
-            last_name: null, // Initial value
-            full_name: null,
-            display_name: null,
-            // Employment Details
-            employee_id: null,
-            joining_date: null,
-            branch_id: "null", // null for no selection
-            // Contact Information
-            phone_number: "",
-            whatsapp_number: "",
-            // Other payload fields not tied to a visible input
-            system_user_id: null,
-            department_id: null,
-            // Field present in original JSX but not in final payload keys (kept for form use)
-            employee_device_id: null,
-        },
-    });
-    const { watch, setValue, handleSubmit, formState: { isSubmitting } } = form;
+    const [showPassword, setShowPassword] = useState(false);
+    const [password, setPassword] = useState('pass1234');
 
-    const [open, setOpen] = useState(false);
-    const [globalError, setGlobalError] = useState(null);
-    const [departments, setDepartments] = useState([]);
-    const [imagePreview, setImagePreview] = useState(null);
-    const [imageFile, setImageFile] = useState(null);
-
-    const [branches, setBranches] = useState([]);
-
-    const fetchBranches = async () => {
-        try {
-            setBranches(await getBranches());
-        } catch (error) {
-            setGlobalError(parseApiError(error));
+    const generatePassword = () => {
+        const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*";
+        let newPass = "";
+        for (let i = 0; i < 12; i++) {
+            newPass += chars.charAt(Math.floor(Math.random() * chars.length));
         }
-    };
-
-    useEffect(() => {
-        fetchBranches();
-    }, []);
-
-    const selectedBranchId = watch("branch_id");
-
-    useEffect(() => {
-        // Reset departments and department_id if no branch is selected
-        if (!selectedBranchId) {
-            setDepartments([]);
-            setValue("department_id", null);
-            return;
-        }
-
-        const fetchDepartments = async () => {
-            try {
-
-                let data = await getDepartments(selectedBranchId)
-                setDepartments(data);
-
-                const currentDeptId = watch("department_id");
-                if (currentDeptId && !data.some(d => d.id === currentDeptId)) {
-                    setValue("department_id", null);
-                }
-
-            } catch (error) {
-                console.error("Error fetching departments:", error);
-                setDepartments([]); // Clear departments on error
-            }
-        };
-        fetchDepartments();
-    }, [selectedBranchId]); // 👈 Depend on selectedBranchId and setValue
-
-    // 2. Function triggered when a file is selected (on file input change)
-    const handleFileChange = async (event) => {
-        const file = event.target.files[0];
-        if (file) {
-            // Basic file validation
-            if (file.size > 2 * 1024 * 1024) { // 2MB limit
-                setGlobalError("File size exceeds 2MB limit.");
-                return;
-            }
-            if (!['image/jpeg', 'image/png'].includes(file.type)) {
-                setGlobalError("Only JPG and PNG formats are supported.");
-                return;
-            }
-
-            try {
-                const base64String = await convertFileToBase64(file);
-                setImagePreview(base64String); // Set for preview
-                setImageFile(file);           // Store the file object for final payload processing
-            } catch (error) {
-                setGlobalError("Error converting file to Base64.");
-                setImagePreview(null);
-                setImageFile(null);
-            }
-        }
-    };
-
-    const onSubmit = async (data) => {
-
-        setGlobalError(null); // 👈 CRITICAL: Clear previous errors on new submission
-
-        // Map the collected form data to the final required employee payload structure
-        const finalPayload = {
-            title: data.title,
-            joining_date: data.joining_date,
-            // Construct full_name if not explicitly entered
-            full_name: data.full_name || `${data.first_name || ''} ${data.last_name || ''}`.trim(),
-            display_name: data.display_name,
-            first_name: data.first_name,
-            last_name: data.last_name,
-            employee_id: data.employee_id,
-            system_user_id: data.system_user_id, // Empty string if no input field exists
-            phone_number: data.phone_number,
-            whatsapp_number: data.whatsapp_number,
-            branch_id: data.branch_id,
-            department_id: data.department_id,
-        };
-
-        if (imageFile) {
-            finalPayload.profile_image_base64 = await convertFileToBase64(imageFile);
-        }
-
-        try {
-
-            await storeEmployee(finalPayload);
-
-            setOpen(true);
-
-            await new Promise(resolve => setTimeout(resolve, 2000));
-
-            setOpen(false);
-
-            router.push(`/employees`);
-
-        } catch (error) {
-            setGlobalError(parseApiError(error));
-        }
+        setPassword(newPass);
+        setShowPassword(true);
     };
 
     return (
-        <div className="">
-            <div
-                className="relative  dark:bg-card-dark px-13  rounded-lg "
-            >
-                <div className="flex justify-between items-center  px-5">
-                    <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
-                        Employees
-                    </h1>
-                    <Button
-                        onClick={handleGoBack}
-                        variant="default"
-                        className="bg-primary text-white hover:bg-indigo-700 transition-colors"
-                    >
-                        <ArrowLeft className="mr-2 h-4 w-4" />
-                        BACK
-                    </Button>
-                </div>
+         <div className="mt-5 bg-white/90 dark:bg-slate-800/85 backdrop-blur-xl border border-white/50 dark:border-slate-700 w-full  rounded-2xl shadow-2xl flex flex-col lg:flex-row overflow-hidden relative h-[95vh] lg:h-auto lg:max-h-[92vh]">
 
-                <div
-                    className="relative dark:bg-card-dark p-8 pt-20 rounded-lg" // pt-24 provides space for the absolutely positioned image section
-                >
-                    {/* Profile Image and Upload Controls - Absolutely positioned to overlap the top border */}
-                    <div
-                        className="absolute -top-4 left-1/2 -translate-x-1/2 flex flex-col items-center" // Changed -top-2 to -top-4 for slightly more overlap, but -top-2 was also fine.
-                    >
-                        {/* Image Preview Area */}
-                        <div className="w-48 h-48 rounded-full bg-indigo-100 dark:bg-indigo-900 flex items-center justify-center mb-6 border-4 border-dashed border-indigo-200 dark:border-indigo-700 overflow-hidden">
-                            {imagePreview ? (
-                                <img
-                                    src={imagePreview}
-                                    alt="Profile Preview"
-                                    className="w-full h-full object-cover"
-                                />
-                            ) : (
-                                <User className="text-6xl text-primary h-24 w-24" />
-                            )}
+                {/* Left Section: Form */}
+                <div className="flex-1 flex flex-col h-full overflow-hidden order-2 lg:order-1 border-r border-slate-200 dark:border-slate-700">
+
+                    {/* Header */}
+                    <div className="px-6 py-4 border-b border-slate-200 dark:border-slate-700 bg-white/40 dark:bg-slate-800/40 flex items-center justify-between shrink-0">
+                        <div>
+                            <div className="flex items-center gap-2">
+                                <BadgeCheck className="text-indigo-600" size={18} />
+                                <h2 className="text-[10px] font-bold uppercase tracking-widest text-indigo-600">New Enrollment</h2>
+                            </div>
+                            <h1 className="text-xl font-bold text-slate-900 dark:text-white tracking-tight mt-0.5">Add Employee</h1>
                         </div>
-
-                        {/* File Name Display */}
-                        <p className="text-sm text-gray-500 dark:text-gray-400 mb-4 text-center">
-                            {imageFile ? imageFile.name : "No Image Selected"}
-                        </p>
-
-                        {/* Upload Button */}
-                        <Button
-                            onClick={handleUploadClick}
-                            className="bg-primary text-white hover:bg-indigo-700"
-                        >
-                            <Upload className="mr-2 h-4 w-4" />
-                            {imageFile ? "CHANGE IMAGE" : "UPLOAD IMAGE"}
-                        </Button>
-
-                        {/* Hidden File Input */}
-                        <input
-                            type="file"
-                            ref={fileInputRef}
-                            onChange={handleFileChange}
-                            accept=".jpg, .jpeg, .png"
-                            className="hidden"
-                        />
-
-                        {/* Constraints Text */}
-                        <p className="text-xs text-gray-500 dark:text-gray-400 mt-2 text-center">
-                            * Upload JPG or PNG only. <br />
-                            Maximum file size 2MB.
-                        </p>
+                        <div className="hidden md:flex items-center gap-4 pr-20">
+                            <a href="#" className="group flex items-center gap-2 text-xs font-bold text-slate-600 hover:text-red-600 dark:text-slate-400 bg-white dark:bg-slate-800 px-3 py-1.5 rounded-full transition-all border border-slate-200 dark:border-slate-600 shadow-sm">
+                                <span className="w-5 h-5 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center text-red-600 group-hover:bg-red-600 group-hover:text-white transition-colors">
+                                    <Play size={10} fill="currentColor" />
+                                </span>
+                                Watch Tutorial Video
+                            </a>
+                        </div>
                     </div>
 
-                    <div className="bg-white dark:bg-gray-800 p-8 rounded-xl shadow-lg pt-50">
-                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    {/* Form Content */}
+                    <div className="flex-1 overflow-y-auto p-6 space-y-8">
+                        <form className="space-y-6">
 
-                            {/* Columns 2 & 3: Main Form Fields (No separate background/padding) */}
-                            <div className="lg:col-span-2 lg:pl-4"> {/* Added left padding for separation */}
-                                <Form {...form}>
-                                    {/* Use handleSubmit from useForm */}
-                                    <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
+                            {/* Personal Info */}
+                            <SectionTitle icon={<User size={14} />} title="Personal Information" />
+                            <div className="grid grid-cols-12 gap-4">
+                                <div className="col-span-2">
+                                    <Label>Title</Label>
+                                    <SelectOne><option>Mr.</option><option>Ms.</option></SelectOne>
+                                </div>
+                                <div className="col-span-4">
+                                    <Label>First Name</Label>
+                                    <Input placeholder="Jonathan" />
+                                </div>
+                                <div className="col-span-4">
+                                    <Label>Last Name</Label>
+                                    <Input placeholder="Doe" />
+                                </div>
+                                <div className="col-span-2">
+                                    <Label>Display</Label>
+                                    <Input placeholder="John D." />
+                                </div>
+                                <div className="col-span-8">
+                                    <Label>Full Name (System Generated)</Label>
+                                    <Input placeholder="Jonathan Doe" readOnly className="bg-slate-50 dark:bg-slate-800 text-slate-500" />
+                                </div>
+                                <div className="col-span-4">
+                                    <Label>Gender</Label>
+                                    <div className="flex gap-4 mt-2">
+                                        <Radio label="Male" name="gender" />
+                                        <Radio label="Female" name="gender" />
+                                    </div>
+                                </div>
+                            </div>
 
-                                        {/* Personal Details Section */}
-                                        {/* ... (rest of your form fields are here) ... */}
-                                        <section>
-                                            <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-6 flex items-center">
-                                                <User className="mr-3 h-6 w-6 text-primary" />
-                                                Personal Details
-                                            </h2>
+                            {/* Employment Details */}
+                            <SectionTitle icon={<Briefcase size={14} />} title="Employment Details" />
+                            <div className="grid grid-cols-12 gap-4">
+                                <div className="col-span-3">
+                                    <Label>Employee ID</Label>
+                                    <Input placeholder="EMP-001" />
+                                </div>
+                                <div className="col-span-3">
+                                    <Label>Position</Label>
+                                    <SelectOne>
+                                        <option>Software Engineer</option>
+                                        <option>Product Manager</option>
+                                    </SelectOne>
+                                </div>
+                                <div className="col-span-3">
+                                    <Label>Joined Date</Label>
+                                    <Input type="date" />
+                                </div>
+                                <div className="col-span-3">
+                                    <Label>Dept</Label>
+                                    <SelectOne><option>Engineering</option><option>Sales</option></SelectOne>
+                                </div>
+                            </div>
 
-                                            {/* Row 1: Title, First Name, Last Name */}
-                                            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                                                {/* Title Select */}
-                                                <FormField
-                                                    control={form.control}
-                                                    name="title"
-                                                    render={({ field }) => (
-                                                        <FormItem>
-                                                            <FormLabel>Title</FormLabel>
-                                                            <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                                                <FormControl>
-                                                                    <SelectTrigger className="w-full">
-                                                                        <SelectValue placeholder="Select Title" />
-                                                                    </SelectTrigger>
-                                                                </FormControl>
-                                                                <SelectContent>
-                                                                    {['Mr.', 'Mrs.', 'Ms.'].map((option) => (
-                                                                        <SelectItem key={option} value={option}>
-                                                                            {option}
-                                                                        </SelectItem>
-                                                                    ))}
-                                                                </SelectContent>
-                                                            </Select>
-                                                            <FormMessage />
-                                                        </FormItem>
-                                                    )}
-                                                />
+                            {/* Contact Info */}
+                            <SectionTitle icon={<Contact size={14} />} title="Contact Info" />
+                            <div className="grid grid-cols-12 gap-4">
+                                <div className="col-span-4"><Label>Mobile</Label><Input type="tel" placeholder="971xxxxxxxxx" /></div>
+                                <div className="col-span-4"><Label>Email</Label><Input type="email" placeholder="hr@company.com" /></div>
+                            </div>
 
-                                                {/* First Name Input */}
-                                                <FormField
-                                                    control={form.control}
-                                                    name="first_name"
-                                                    render={({ field }) => (
-                                                        <FormItem>
-                                                            <FormLabel>First Name</FormLabel>
-                                                            <FormControl>
-                                                                <Input placeholder="Enter first name" {...field} />
-                                                            </FormControl>
-                                                            <FormMessage />
-                                                        </FormItem>
-                                                    )}
-                                                />
+                        </form>
+                    </div>
 
-                                                {/* Last Name Input */}
-                                                <FormField
-                                                    control={form.control}
-                                                    name="last_name"
-                                                    render={({ field }) => (
-                                                        <FormItem>
-                                                            <FormLabel>Last Name</FormLabel>
-                                                            <FormControl>
-                                                                <Input placeholder="Enter last name" {...field} />
-                                                            </FormControl>
-                                                            <FormMessage />
-                                                        </FormItem>
-                                                    )}
-                                                />
-                                            </div>
+                    {/* Footer Actions */}
+                    <div className="px-6 py-4 border-t border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/50 shrink-0 flex justify-end gap-3">
+                        <button className="px-4 py-2 text-xs font-bold uppercase tracking-wide text-slate-600 dark:text-slate-400 hover:bg-white dark:hover:bg-slate-700 rounded-lg transition-all border border-transparent hover:border-slate-200">
+                            Cancel
+                        </button>
+                        <button className="px-6 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold uppercase tracking-wide rounded-lg shadow-lg shadow-indigo-200 dark:shadow-none flex items-center gap-2">
+                            Complete
+                        </button>
+                    </div>
+                </div>
 
-                                            {/* Row 2: Full Legal Name, Display Name */}
-                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-                                                <FormField
-                                                    control={form.control}
-                                                    name="full_name"
-                                                    render={({ field }) => (
-                                                        <FormItem>
-                                                            <FormLabel>Full Legal Name</FormLabel>
-                                                            <FormControl>
-                                                                <Input placeholder="Enter employee's full legal name" {...field} />
-                                                            </FormControl>
-                                                            <FormMessage />
-                                                        </FormItem>
-                                                    )}
-                                                />
+                {/* Right Section: Biometric Sidebar */}
+                <div className="w-full lg:w-80 xl:w-80 bg-slate-50/90 dark:bg-slate-900/60 p-6 flex flex-col items-center gap-6 order-1 lg:order-2 overflow-y-auto">
+                    <div className="w-full flex justify-between items-center">
+                        <h3 className="font-bold text-sm">Biometric Data</h3>
+                        <span className="px-2 py-0.5 rounded-full bg-indigo-100 dark:bg-indigo-900 text-indigo-700 dark:text-indigo-300 text-[10px] font-bold border border-indigo-200">AI READY</span>
+                    </div>
 
-                                                <FormField
-                                                    control={form.control}
-                                                    name="display_name"
-                                                    render={({ field }) => (
-                                                        <FormItem>
-                                                            <FormLabel>Display Name / Nickname</FormLabel>
-                                                            <FormControl>
-                                                                <Input placeholder="Nickname or preferred display name" {...field} />
-                                                            </FormControl>
-                                                            <FormMessage />
-                                                        </FormItem>
-                                                    )}
-                                                />
-                                            </div>
-                                        </section>
+                    <div className="relative group cursor-pointer" onClick={() => alert('Trigger Camera')}>
+                        <div className="w-40 h-40 rounded-full border-4 border-white dark:border-slate-800 shadow-xl overflow-hidden bg-slate-200 dark:bg-slate-800 flex items-center justify-center ring-1 ring-slate-200 hover:ring-indigo-500 transition-all">
+                            <Camera size={40} className="text-slate-400 group-hover:scale-110 transition-transform" />
+                        </div>
+                    </div>
 
-                                        <hr className="border-gray-200 dark:border-gray-700" />
+                    {/* Quality Check */}
+                    <div className="w-full bg-white dark:bg-slate-800 p-3 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm">
+                        <div className="flex justify-between mb-2">
+                            <span className="text-[10px] font-bold text-slate-500 uppercase">Quality Check</span>
+                            <span className="text-xs font-bold text-emerald-600">Excellent (92%)</span>
+                        </div>
+                        <div className="w-full bg-slate-100 dark:bg-slate-700 h-1.5 rounded-full overflow-hidden">
+                            <div className="bg-emerald-500 h-full w-[92%]" />
+                        </div>
+                    </div>
 
-                                        {/* Employment Details Section */}
-                                        <section>
-                                            <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-6 flex items-center">
-                                                <Briefcase className="mr-3 h-6 w-6 text-primary" />
-                                                Employment Details
-                                            </h2>
-
-                                            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                                                <FormField
-                                                    control={form.control}
-                                                    name="branch_id"
-                                                    render={({ field }) => (
-                                                        <FormItem className="flex flex-col">
-                                                            <FormLabel>Branch</FormLabel>
-
-                                                            <DropDown
-                                                                placeholder="Select Branch"
-                                                                value={field.value}
-                                                                items={branches}
-                                                                onChange={(id) => { setValue("branch_id", id); }}
-                                                            />
-                                                            <FormMessage />
-                                                        </FormItem>
-                                                    )}
-                                                />
-
-                                                {/* Department Select (dependent on Branch) */}
-                                                <FormField
-                                                    control={form.control}
-                                                    name="department_id"
-                                                    render={({ field }) => (
-                                                        <FormItem>
-                                                            <FormLabel>Department</FormLabel>
-                                                            <Select
-                                                                onValueChange={(value) => field.onChange(parseInt(value))}
-                                                                value={field.value !== null ? field.value.toString() : ""}
-                                                                disabled={!selectedBranchId || departments.length === 0}
-                                                            >
-                                                                <FormControl>
-                                                                    <SelectTrigger className="w-full">
-                                                                        <SelectValue placeholder="Select Department" />
-                                                                    </SelectTrigger>
-                                                                </FormControl>
-                                                                <SelectContent>
-                                                                    {departments.map((department) => (
-                                                                        <SelectItem
-                                                                            key={department.id}
-                                                                            value={department.id.toString()}
-                                                                        >
-                                                                            {department.name}
-                                                                        </SelectItem>
-                                                                    ))}
-                                                                </SelectContent>
-                                                            </Select>
-                                                            <FormMessage />
-                                                        </FormItem>
-                                                    )}
-                                                />
-
-                                                {/* Joining Date Input */}
-                                                <FormField
-                                                    control={form.control}
-                                                    name="joining_date"
-                                                    render={({ field }) => (
-                                                        <FormItem className="flex flex-col">
-                                                            <FormLabel>Joining Date</FormLabel>
-                                                            <FormControl>
-                                                                <DatePicker
-                                                                    value={field.value}
-                                                                    onChange={(date) => field.onChange(date)}
-                                                                    placeholder="Pick a date"
-                                                                />
-                                                            </FormControl>
-                                                            <FormMessage />
-                                                        </FormItem>
-                                                    )}
-                                                />
-
-                                                {/* Employee ID Input */}
-                                                <FormField
-                                                    control={form.control}
-                                                    name="employee_id"
-                                                    render={({ field }) => (
-                                                        <FormItem>
-                                                            <FormLabel>Employee ID</FormLabel>
-                                                            <FormControl>
-                                                                <Input placeholder="Unique ID (e.g., EMP001)" {...field} />
-                                                            </FormControl>
-                                                            <FormMessage />
-                                                        </FormItem>
-                                                    )}
-                                                />
-
-                                                {/* System User ID Input (Device ID) */}
-                                                <FormField
-                                                    control={form.control}
-                                                    name="system_user_id"
-                                                    render={({ field }) => (
-                                                        <FormItem className="md:col-span-1">
-                                                            <FormLabel>System User ID (Device Id)</FormLabel>
-                                                            <FormControl>
-                                                                <Input placeholder="Unique ID (e.g., 123456)" {...field} />
-                                                            </FormControl>
-                                                            <FormMessage />
-                                                        </FormItem>
-                                                    )}
-                                                />
-                                            </div>
-                                        </section>
-
-                                        <hr className="border-gray-200 dark:border-gray-700" />
-
-                                        {/* Contact Information Section */}
-                                        <section>
-                                            <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-6 flex items-center">
-                                                <Phone className="mr-3 h-6 w-6 text-primary" />
-                                                Contact Information
-                                            </h2>
-                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                                {/* Primary Mobile Input */}
-                                                <FormField
-                                                    control={form.control}
-                                                    name="phone_number"
-                                                    render={({ field }) => (
-                                                        <FormItem>
-                                                            <FormLabel>Primary Mobile</FormLabel>
-                                                            <FormControl>
-                                                                <Input type="tel" placeholder="e.g., +1 555-123-4567" {...field} />
-                                                            </FormControl>
-                                                            <FormMessage />
-                                                        </FormItem>
-                                                    )}
-                                                />
-
-                                                {/* Whatsapp Number Input */}
-                                                <FormField
-                                                    control={form.control}
-                                                    name="whatsapp_number"
-                                                    render={({ field }) => (
-                                                        <FormItem>
-                                                            <FormLabel>Whatsapp Number</FormLabel>
-                                                            <FormControl>
-                                                                <Input type="tel" placeholder="e.g., same as mobile (Optional)" {...field} />
-                                                            </FormControl>
-                                                            <FormMessage />
-                                                        </FormItem>
-                                                    )}
-                                                />
-                                            </div>
-                                        </section>
-
-                                        {globalError && (
-                                            <div className="mb-4 p-3 border border-red-500 bg-red-50 text-red-700 rounded-lg" role="alert">
-                                                {globalError}
-                                            </div>
-                                        )}
-
-                                        {/* Form Actions */}
-                                        <div className="flex justify-end space-x-4 pt-4">
-                                            <Button
-                                                type="button"
-                                                variant="secondary"
-                                                onClick={handleCancel}
-                                            >
-                                                CANCEL
-                                            </Button>
-                                            <Button
-                                                type="submit"
-                                                className="bg-primary hover:bg-indigo-700"
-                                                disabled={isSubmitting}
-                                            >
-                                                {isSubmitting ? "SUBMITTING..." : "SUBMIT"}
-                                            </Button>
-                                        </div>
-                                    </form>
-                                </Form>
-
-                                <SuccessDialog
-                                    open={open}
-                                    onOpenChange={setOpen}
-                                    title="Employees Uploaded"
-                                    description="All selected employees were uploaded to the selected devices successfully."
-                                />
-
+                    {/* Auth Methods */}
+                    <div className="w-full space-y-4 pt-4 border-t border-slate-200 dark:border-slate-700">
+                        <h4 className="text-xs font-bold flex items-center gap-2"><CreditCard size={14} /> Authentication</h4>
+                        <div>
+                            <Label>RFID Card</Label>
+                            <Input placeholder="Scan Card..." />
+                        </div>
+                        <div>
+                            <Label>System Password</Label>
+                            <div className="flex gap-2">
+                                <div className="relative flex-1">
+                                    <Input
+                                        type={showPassword ? "text" : "password"}
+                                        value={password}
+                                        onChange={(e) => setPassword(e.target.value)}
+                                    />
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowPassword(!showPassword)}
+                                        className="absolute right-2 top-2 text-slate-400 hover:text-indigo-500"
+                                    >
+                                        {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                                    </button>
+                                </div>
+                                <button
+                                    onClick={generatePassword}
+                                    className="p-2 border border-slate-300 dark:border-slate-600 rounded-lg hover:text-indigo-600 transition-colors"
+                                >
+                                    <RefreshCw size={16} />
+                                </button>
                             </div>
                         </div>
                     </div>
+
+                    {/* Guidelines */}
+                    <div className="mt-auto w-full pt-4 border-t border-slate-200 dark:border-slate-700 text-slate-500">
+                        <h4 className="text-[10px] font-bold uppercase mb-2 flex items-center gap-1"><Info size={12} /> Guidelines</h4>
+                        <ul className="text-[10px] space-y-1">
+                            <li>• Neutral expression, eyes open.</li>
+                            <li>• Even lighting, no shadows.</li>
+                        </ul>
+                    </div>
                 </div>
             </div>
-        </div>
     );
 };
 

@@ -154,7 +154,18 @@ function SelectScrollDownButton({
   );
 }
 
+
+const SelectOne = ({ children, className = "", ...props }) => (
+    <select
+        className={`w-full bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-600 rounded-lg px-2 py-1.5 text-sm outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all ${className}`}
+        {...props}
+    >
+        {children}
+    </select>
+);
+
 export {
+  SelectOne,
   Select,
   SelectContent,
   SelectGroup,

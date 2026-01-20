@@ -35,7 +35,7 @@ export default function EmployeeShortList() {
 
   const router = useRouter();
 
-
+  const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
 
   const [employees, setEmployees] = useState([]);
@@ -174,7 +174,7 @@ export default function EmployeeShortList() {
   const renderEmployeeRow = (employee) => {
     return (
       <li key={employee.id}
-        className="p-4 flex items-center space-x-4 hover:bg-primary/10 cursor-pointer bg-white"
+        className="p-3  flex border-b border-gray-100 dark:border-gray-700 items-center space-x-4 hover:bg-primary/10 cursor-pointer text-gray-600 dark:text-gray-300 bg-white dark:bg-gray-900"
         onClick={() => handleRowClick(employee)}
       >
         <img
@@ -197,98 +197,93 @@ export default function EmployeeShortList() {
 
   return (
     <>
-      <div className="flex flex-1 gap-6">
+      <div className="flex flex-1 gap-6 px-5">
         <div
-          className="w-80 bg-surface-light dark:bg-surface-dark border-r border-border-light dark:border-border-dark flex flex-col"
+          className="w-80 border-r border-gray-100 dark:border-gray-700 flex flex-col"
         >
-          <div
+          {/* <div
             className="p-4 border-b border-border-light dark:border-border-dark flex justify-between items-center"
           >
-            <h2 className="text-lg font-semibold">Employees</h2>
+            <h2 className="text-lg font-semibold text-gray-400 dark:text-white">Employees</h2>
             <Link href="/employees/create">
-              <button className="p-2 rounded-lg bg-primary text-white">
+              <button className="text-gray-400 dark:text-white">
                 <span className="material-icons">add</span>
               </button>
             </Link>
-          </div>
-          <div className="p-4 space-y-4">
-            <div className="flex space-x-2">
-              <Popover open={open} onOpenChange={setOpen}>
-                <PopoverTrigger asChild>
-                  <Button
-                    variant="outline"
-                    role="combobox"
-                    aria-expanded={open}
-                    className="w-full justify-between py-4 text-gray-500 border border-gray-300 rounded-lg bg-white hover:bg-gray-100"
-                  >
-                    {selectedBranch
-                      ? branches.find((b) => b.id === selectedBranch)?.name
-                      : "Select Branch"}
-
-                    {/* Arrow icon */}
-                    <span className="material-icons text-gray-400">
-                      expand_more
-                    </span>
-                  </Button>
-                </PopoverTrigger>
-
-                <PopoverContent className="w-[320px] p-0">
-                  <Command>
-                    <CommandInput placeholder="Search branch..." />
-                    <CommandEmpty>No branch found.</CommandEmpty>
-                    <CommandGroup>
-                      <CommandItem
-                        className="text-gray-500"
-                        value="Select All"
-                        onSelect={handleSelectBranch}
-                      >
-                        Select All
-                      </CommandItem>
-                      {branches.map((branch) => (
-                        <CommandItem
-                          className="text-gray-500"
-                          key={branch.id}
-                          value={branch.name}
-                          onSelect={handleSelectBranch}
-                        >
-                          {branch.name}
-                        </CommandItem>
-                      ))}
-                    </CommandGroup>
-                  </Command>
-                </PopoverContent>
-              </Popover>
-            </div>
-            <div className="flex items-center space-x-2">
-
-
-              <div className="relative flex-grow">
+          </div> */}
+          <div className="pb-5 space-y-4">
+            {/* Dropdown Container - Added 'relative' here to anchor the menu */}
+            <div className="relative inline-block w-[300px]">
+              <button
+                onClick={() => setIsOpen(!isOpen)}
+                className="w-full flex items-center justify-between px-4 py-2.5 text-sm font-medium text-slate-700 bg-white border border-slate-200 rounded-xl shadow-sm hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 transition-all dark:bg-slate-900 dark:border-slate-700 dark:text-slate-200"
+              >
+                <span className="truncate">
+                  {selectedBranch
+                    ? branches.find((b) => b.id === selectedBranch)?.name
+                    : "Select Branch"}
+                </span>
                 <span
-                  className="material-icons absolute left-3 top-1/2 -translate-y-1/2 text-subtext-light dark:text-subtext-dark"
-                >search</span
+                  className={`material-symbols-outlined text-slate-400 transition-transform duration-200 ${isOpen ? "rotate-180" : ""
+                    }`}
                 >
+                  expand_more
+                </span>
+              </button>
+
+              {isOpen && (
+                <div className="absolute z-[50] w-full mt-2 origin-top bg-white border border-slate-200 rounded-xl shadow-xl dark:bg-slate-800 dark:border-slate-700 p-1.5 animate-in fade-in zoom-in-95 duration-100">
+                  <div className="max-h-60 overflow-y-auto custom-scrollbar">
+                    {branches.map((opt) => (
+                      <div
+                        key={opt.id}
+                        onClick={() => {
+                          setSelectedBranch(opt.id); // Ensure you pass the ID
+                          setCurrentPage(1);
+                          setIsOpen(false);
+                        }}
+                        className="flex items-center px-3 py-2 text-sm rounded-lg cursor-pointer transition-colors hover:bg-indigo-50 dark:hover:bg-indigo-900/30 hover:text-indigo-600 dark:hover:text-indigo-400 text-slate-600 dark:text-slate-300"
+                      >
+                        {opt.name}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Search Section */}
+            {/* <div className="flex items-center space-x-2">
+              <div className="relative flex-grow">
+                <span className="material-icons absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">
+                  search
+                </span>
                 <Input
-                  className="w-full  pl-10 pr-4 py-2 rounded-lg border border-border-light dark:border-border-dark   focus:ring-primary focus:border-primary"
-                  placeholder="Search Employees"
+                  className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 focus:ring-2 focus:ring-indigo-500/20 transition-all shadow-sm"
+                  placeholder="Search Employees..."
                   type="text"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                 />
               </div>
-
-            </div>
+            </div> */}
           </div>
           <div className="flex-1 overflow-y-auto">
-            <ul className="divide-y divide-border-light dark:divide-border-dark">
+            <ul className="">
               {employees.map(renderEmployeeRow)}
             </ul>
           </div>
         </div>
         <div className="flex-1">
-          <header className="flex justify-between items-center mb-8">
+
+          <EmployeeTabs selectedEmployee={selectedEmployee} />
+
+        
+
+          {/* <header className="flex justify-between items-center mb-8">
             <div>
               <h1 className="text-2xl font-bold">{selectedEmployee?.full_name || "---"}</h1>
-              <p className="text-subtext-light dark:text-subtext-dark">{selectedEmployee?.employee_id || "---"}</p>
+              <p className="text-subtext-light dark:text-subtext-dark">ID: {selectedEmployee?.employee_id || "---"}</p>
             </div>
             <div className="flex items-center space-x-4">
               <button
@@ -299,67 +294,11 @@ export default function EmployeeShortList() {
               </button>
               <EmployeeExtras data={employees} onUploadSuccess={fetchEmployees} />
             </div>
-          </header>
-          <div className="bg-surface-light dark:bg-surface-dark p-6 rounded-lg">
-            <div
-              className="flex items-center space-x-6 pb-6 border-b border-border-light dark:border-border-dark"
-            >
-              <div>
-                <img
-                  onClick={handleUploadClick}
-                  alt="avatar"
-                  className="w-20 h-20 rounded-full cursor-pointer"
-                  src={
-                    selectedEmployee?.profile_picture ||
-                    `https://placehold.co/40x40/6946dd/ffffff?text=${selectedEmployee?.full_name?.charAt(0)}`
-                  }
-                  onError={(e) => {
-                    e.target.onerror = null;
-                    e.target.src = `https://placehold.co/40x40/6946dd/ffffff?text=${selectedEmployee?.full_name?.charAt(0)}`;
-                  }}
-                />
-                {imagePreview && <Save
-                  className={`text-primary mx-auto mt-2 cursor-pointer ${loading ? "opacity-50 pointer-events-none" : ""
-                    }`}
-                  onClick={handleSaveClick}
-                />}
-                <FileInput />
-
-              </div>
-              <div>
-                <h3 className="text-xl font-semibold">{selectedEmployee?.full_name || "---"}</h3>
-                <div
-                  className="mt-2 flex items-center space-x-2 text-sm text-subtext-light dark:text-subtext-dark"
-                >
-                  <span className="material-icons text-base">domain</span>
-                  <span>Dept: {selectedEmployee?.department?.name || "---"}</span>
-                </div>
-                <div
-                  className="mt-2 flex items-center space-x-2 text-sm text-subtext-light dark:text-subtext-dark"
-                >
-                  <span className="material-icons text-base">email</span>
-                  <span>{selectedEmployee?.email || "yourmail@example.com"}</span>
-                </div>
-                <div
-                  className="mt-1 flex items-center space-x-2 text-sm text-subtext-light dark:text-subtext-dark"
-                >
-                  <span className="material-icons text-base">phone</span>
-                  <span>{selectedEmployee?.phone_number || "---"}</span>
-                </div>
-              </div>
-
-              {globalError && (
-                <div
-                  className="mb-4 p-3 border border-red-500 bg-red-50 text-red-700 rounded-lg"
-                  role="alert"
-                >
-                  {globalError}
-                </div>
-              )}
-            </div>
+          </header> */}
+          <div className="p-6 rounded-lg">
             {imageError && <p className="text-red-500 text-sm mt-1">{imageError}</p>}
 
-            <EmployeeTabs selectedEmployee={selectedEmployee} />
+            
           </div>
         </div>
 

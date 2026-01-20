@@ -101,6 +101,14 @@
     --sidebar-accent-foreground: #6946dd;
     --sidebar-border: oklch(0.928 0.006 264.531);
     --sidebar-ring: oklch(0.707 0.022 261.325);
+
+    --primary-light: "#EEF2FF";
+    --accent: "#0D9488";
+    --background-light: "#F9FAFB";
+    --text-main: "#0F172A";
+    --text-secondary: "#64748B";
+    --text-tertiary: "#94A3B8";
+    --border-light: "#E2E8F0";
   }
 
   .dark {
@@ -142,12 +150,11 @@
 }
 
 @layer components {
-
   .dark ::-webkit-scrollbar-thumb {
     background: #334155;
     border-radius: 3px;
   }
-  
+
   ::-webkit-scrollbar-thumb {
     background: #cbd5e1;
     border-radius: 3px;

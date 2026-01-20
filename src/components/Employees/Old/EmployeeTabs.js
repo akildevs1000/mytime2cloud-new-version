@@ -3,7 +3,9 @@ import React, { useState } from "react";
 
 import EmergencyContact from './EmergencyContact';
 import Profile from './Profile';
+import Address from './Address';
 import Document from './Document';
+import VisaPassportEmirate from './VisaPassportEmirate';
 import Qualification from './Qualification';
 import SETTINGRFIDLOGIN from './SETTINGRFIDLOGIN';
 import BANKPAYROLL from './BANKPAYROLL';
@@ -14,11 +16,13 @@ const EmployeeTabs = ({ selectedEmployee }) => {
 
     // Data structure for the tabs
     const TABS = [
-        { id: 'profile', name: 'Personal' },
-        { id: 'emergency', name: 'Contact' },
-        { id: 'bank', name: 'Payroll' },
-        { id: 'documents', name: 'Documents' },
+        { id: 'profile', name: 'Profile' },
+        { id: 'emergency', name: 'Emergency' },
+        { id: 'address', name: 'Address' },
+        { id: 'visa', name: 'Visa' },
         { id: 'qualification', name: 'Qualification', },
+        { id: 'bank', name: 'Bank' },
+        { id: 'documents', name: 'Documents' },
         { id: 'settings', name: 'Settings' },
         // { id: 'performance', name: 'Performance', icon: Briefcase },
     ];
@@ -67,7 +71,14 @@ const EmployeeTabs = ({ selectedEmployee }) => {
                         home_state={home_state}
                         home_country={home_country}
                     />);
-
+            case 'visa':
+                return (
+                    <VisaPassportEmirate
+                        employee_id={id}
+                        visa={visa}
+                        emirate={emirate}
+                        passport={passport} />
+                );
             case 'qualification':
                 return (
                     <Qualification employee_id={id} qualification={qualification} />
