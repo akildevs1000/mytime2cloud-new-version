@@ -6,6 +6,7 @@ import Profile from './Profile';
 import Document from './Document';
 import SETTINGRFIDLOGIN from './SETTINGRFIDLOGIN';
 import Payroll from './Payroll';
+import Leaves from './Leaves';
 
 const EmployeeTabs = ({ selectedEmployee }) => {
 
@@ -17,6 +18,7 @@ const EmployeeTabs = ({ selectedEmployee }) => {
         { id: 'emergency', name: 'Contact' },
         { id: 'payroll', name: 'Payroll' },
         { id: 'documents', name: 'Documents' },
+        { id: 'leaves', name: 'Leaves' },
         { id: 'settings', name: 'Settings' },
         // { id: 'performance', name: 'Performance', icon: Briefcase },
     ];
@@ -37,7 +39,7 @@ const EmployeeTabs = ({ selectedEmployee }) => {
             qualification, bank,
             user,
             payroll
- 
+
         } = selectedEmployee;
 
         switch (activeTab) {
@@ -66,10 +68,14 @@ const EmployeeTabs = ({ selectedEmployee }) => {
                         home_country={home_country}
                     />);
 
-          
+
             case 'payroll':
                 return (
                     <Payroll employee_id={id} bank={bank} payroll={payroll} />
+                );
+            case 'leaves':
+                return (
+                    <Leaves employee_id={id} />
                 );
             case 'settings':
                 return (
