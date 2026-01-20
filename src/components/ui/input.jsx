@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 
 const Input = ({ className = "", ...props }) => (
     <input
-        className={`w-full bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-600 rounded-lg px-3 py-1.5 text-sm outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all ${className}`}
+        className={`w-full text-gray-600 dark:text-gray-300 bg-white dark:bg-slate-900 glass-card rounded-lg px-3 py-1.5  outline-none  transition-all ${className}`}
         {...props}
     />
 );

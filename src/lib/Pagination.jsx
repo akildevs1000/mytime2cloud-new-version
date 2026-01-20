@@ -47,24 +47,24 @@ function Pagination({
 
   return (
     <>
-      <div class="bg-slate-50/50 dark:bg-slate-800/50 px-6 py-4 border-t border-slate-200 dark:border-slate-700 flex items-center justify-between">
-        <span class="text-xs text-slate-500 dark:text-slate-400">
+      <div className="bg-slate-50/50 dark:bg-slate-800/50 px-6 py-4 border-t border-slate-200 dark:border-slate-700 flex items-center justify-between">
+        <span className="text-xs text-slate-500 dark:text-slate-400">
           Showing {start}-{end} of {total}
         </span>
-        <div class="flex gap-2">
+        <div className="flex gap-2">
           <button
             onClick={goPrev}
             disabled={!canPrev}
-            class="p-1 rounded hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-500 dark:text-slate-400 disabled:opacity-50"
+            className="p-1 rounded hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-500 dark:text-slate-400 disabled:opacity-50"
           >
-            <span class="material-icons-outlined text-sm">chevron_left</span>
+            <span className="material-icons-outlined text-sm">chevron_left</span>
           </button>
           <button
             onClick={goNext}
             disabled={!canNext}
-            class="p-1 rounded hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-500 dark:text-slate-400"
+            className="p-1 rounded hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-500 dark:text-slate-400"
           >
-            <span class="material-icons-outlined text-sm">chevron_right</span>
+            <span className="material-icons-outlined text-sm">chevron_right</span>
           </button>
         </div>
       </div>
