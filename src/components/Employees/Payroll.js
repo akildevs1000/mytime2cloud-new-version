@@ -1,295 +1,444 @@
 "use client";
 
-import React, { useEffect, useMemo, useState } from "react";
-import { useForm, useFieldArray } from "react-hook-form";
-
-import { useRouter } from "next/navigation";
-
-// shadcn/ui
+import React, { useState } from "react";
+import { useForm } from "react-hook-form";
+import { SuccessDialog } from "@/components/SuccessDialog";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
     Form,
+    FormControl,
     FormField,
     FormItem,
     FormLabel,
-    FormControl,
     FormMessage,
 } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { storePayroll } from "@/lib/api";
-import DatePicker from "@/components/ui/DatePicker";
-import { SuccessDialog } from "@/components/SuccessDialog";
+import { useRouter } from "next/navigation";
+import { Banknote } from "lucide-react";
+import { updateBank } from "@/lib/api";
 import { parseApiError } from "@/lib/utils";
 
-
-export default function Payroll({ employee_id, payroll }) {
-
+const Bank = ({ employee_id, bank }) => {
     const router = useRouter();
+    const [open, setOpen] = useState(false);
+    const [globalError, setGlobalError] = useState(null);
 
     const form = useForm({
         defaultValues: {
-            effective_date: payroll?.effective_date || null,  // Date or string okay
-            basic_salary: payroll?.basic_salary ?? "",
-            // Corrected line: Use optional chaining on payroll and payroll.earnings,
-            // then provide an empty array as a fallback if payroll.earnings is null/undefined.
-            earnings: payroll?.earnings?.map((e) => ({
-                label: e.label ?? "",
-                value: e.value ?? "",
-            })) ?? [], // Use an empty array if payroll.earnings is null or undefined
+            account_title: bank?.account_title || "",
+            bank_name: bank?.bank_name || "",
+            account_no: bank?.account_no || "",
+            iban: bank?.iban || "",
+            address: bank?.address || "",
         },
     });
 
-    const {
-        control,
-        handleSubmit,
-        setValue,
-        watch,
-        setError,
-        reset,
-        formState: { isSubmitting },
-    } = form;
-
-    const { fields, append, remove } = useFieldArray({
-        control,
-        name: "earnings",
-    });
-
-    const [open, setOpen] = useState(false);
-    const [editForm, setEditForm] = useState(true);
-    const [loading, setLoading] = useState(false);
-    const [globalError, setGlobalError] = useState("");
-
-    useEffect(() => {
-        const initialEarnings = payroll?.earnings?.map((e) => ({
-            label: e.label ?? "",
-            value: e.value ?? "",
-        })) ?? [];
-
-        reset({
-            effective_date: payroll?.effective_date || null,
-            basic_salary: payroll?.basic_salary ?? "",
-            earnings: initialEarnings, // Use the prepared initial data
-        });
-
-        if (initialEarnings.length == 0) {
-            append({ label: "Add Item", value: 100 });
-        }
-
-    }, [reset, payroll, append]);
-
-    // Compute net salary like your Vue computed
-    const net_salary = useMemo(() => {
-        const basic = parseFloat(watch("basic_salary")) || 0;
-        const earnings = watch("earnings") || [];
-        const sum = earnings.reduce((acc, it) => acc + (parseFloat(it.value) || 0), 0);
-        return basic + sum;
-    }, [watch("basic_salary"), watch("earnings")]);
+    const { handleSubmit, formState } = form;
+    const { isSubmitting } = formState;
 
     const handleCancel = () => router.push(`/employees`);
 
-    const onSubmit = async (values) => {
-        setGlobalError("");
-        setLoading(true);
+    const onSubmit = async (data) => {
+        setGlobalError(null);
         try {
-            const payload = {
-                ...values,
-                effective_date: values.effective_date,
-                employee_id: employee_id,
-                net_salary,
+            const finalPayload = {
+                account_title: data.account_title,
+                bank_name: data.bank_name,
+                account_no: data.account_no,
+                iban: data.iban,
+                address: data.address,
+
+                employee_id: employee_id || "",
             };
 
-            await storePayroll(payload);
+            await updateBank(finalPayload);
 
             setOpen(true);
+
             await new Promise(resolve => setTimeout(resolve, 2000));
+
             setOpen(false);
 
             router.push(`/employees`);
-
         } catch (error) {
             setGlobalError(parseApiError(error));
-        } finally {
-            setLoading(false);
         }
     };
 
+    return (<>
+        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-5 auto-rows-[minmax(140px,auto)]">
+            <div
+                className="glass-card col-span-1 md:col-span-2 lg:col-span-2 row-span-2 p-8 flex flex-col relative overflow-hidden">
+                <div
+                    className="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_top_right,_var(--tw-gradient-stops))] from-indigo-500 via-transparent to-transparent pointer-events-none">
+                </div>
+                <div className="flex justify-between items-center mb-6 relative z-10">
+                    <div>
+                        <h2 className="text-xl font-bold text-white tracking-tight">Salary Breakdown</h2>
+                        <p className="text-sm text-[#9db0b9]">Monthly Earnings Structure</p>
+                    </div>
+                    <button
+                        className="p-2 rounded-full hover:bg-white/5 text-[#9db0b9] hover:text-white transition-colors">
+                        <span className="material-symbols-outlined">more_horiz</span>
+                    </button>
+                </div>
+                <div
+                    className="flex flex-col sm:flex-row items-center justify-around gap-8 flex-1 relative z-10">
+                    <div className="relative size-48 shrink-0 rounded-full shadow-[0_0_40px_-10px_rgba(99,102,241,0.3)]"
+                        style={{ background: 'conic-gradient(#6366f1 0% 45%, #2dd4bf 45% 75%, #0ea5e9 75% 100%)' }}
+                        >
+                        <div
+                            className="absolute inset-4 bg-[#162025] rounded-full flex flex-col items-center justify-center">
+                            <span
+                                className="text-xs font-semibold text-[#9db0b9] uppercase tracking-wider">Gross
+                                Pay</span>
+                            <span className="text-3xl font-bold text-white tracking-tight">$8,500</span>
+                            <span className="text-[10px] text-green-400 mt-1 flex items-center gap-0.5">
+                                <span className="material-symbols-outlined text-[12px]">trending_up</span> +2.5%
+                            </span>
+                        </div>
+                    </div>
+                    <div className="flex flex-col gap-4 w-full max-w-[240px]">
+                        <div className="flex items-center justify-between group cursor-pointer">
+                            <div className="flex items-center gap-3">
+                                <div
+                                    className="size-3 rounded-full bg-indigo-500 shadow-[0_0_10px_rgba(99,102,241,0.5)]">
+                                </div>
+                                <div className="flex flex-col">
+                                    <span
+                                        className="text-sm font-medium text-white group-hover:text-indigo-400 transition-colors">Basic
+                                        Salary</span>
+                                    <span className="text-xs text-[#5f717a]">45% of total</span>
+                                </div>
+                            </div>
+                            <span className="text-sm font-bold text-white">$3,825</span>
+                        </div>
+                        <div className="flex items-center justify-between group cursor-pointer">
+                            <div className="flex items-center gap-3">
+                                <div
+                                    className="size-3 rounded-full bg-teal-400 shadow-[0_0_10px_rgba(45,212,191,0.5)]">
+                                </div>
+                                <div className="flex flex-col">
+                                    <span
+                                        className="text-sm font-medium text-white group-hover:text-teal-400 transition-colors">HRA</span>
+                                    <span className="text-xs text-[#5f717a]">30% of total</span>
+                                </div>
+                            </div>
+                            <span className="text-sm font-bold text-white">$2,550</span>
+                        </div>
+                        <div className="flex items-center justify-between group cursor-pointer">
+                            <div className="flex items-center gap-3">
+                                <div
+                                    className="size-3 rounded-full bg-sky-500 shadow-[0_0_10px_rgba(14,165,233,0.5)]">
+                                </div>
+                                <div className="flex flex-col">
+                                    <span
+                                        className="text-sm font-medium text-white group-hover:text-sky-400 transition-colors">Allowances</span>
+                                    <span className="text-xs text-[#5f717a]">25% of total</span>
+                                </div>
+                            </div>
+                            <span className="text-sm font-bold text-white">$2,125</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div
+                className="glass-card col-span-1 md:col-span-1 lg:col-span-2 row-span-2 flex flex-col overflow-hidden relative">
+                <div
+                    className="p-6 pb-2 flex justify-between items-center z-10 ">
+                    <h3 className="text-lg font-bold text-white">Payment History</h3>
+                    <button className="text-xs font-medium text-primary hover:text-white transition-colors">View
+                        All</button>
+                </div>
+                
+                <div className="flex-1 overflow-y-auto custom-scrollbar p-2">
+                    <div className="flex flex-col gap-1">
+                        <div
+                            className="flex items-center justify-between p-3 rounded-lg hover:bg-white/5 transition-colors group">
+                            <div className="flex items-center gap-4">
+                                <div
+                                    className="size-10 rounded-lg bg-[#18242a] border border-[#283339] flex items-center justify-center text-indigo-400 group-hover:border-indigo-500/30 transition-colors">
+                                    <span className="material-symbols-outlined">account_balance</span>
+                                </div>
+                                <div className="flex flex-col">
+                                    <span className="text-sm font-medium text-white">Salary - Oct 2023</span>
+                                    <span className="text-xs text-[#9db0b9]">Oct 30, 2023</span>
+                                </div>
+                            </div>
+                            <div className="flex flex-col items-end gap-1">
+                                <span className="text-sm font-bold text-white">$4,250.00</span>
+                                <span
+                                    className="text-[10px] bg-orange-500/10 text-orange-400 px-2 py-0.5 rounded-full border border-orange-500/20 flex items-center gap-1">
+                                    <div className="size-1 bg-orange-400 rounded-full animate-pulse"></div>
+                                    Processing
+                                </span>
+                            </div>
+                        </div>
+                        <div
+                            className="flex items-center justify-between p-3 rounded-lg hover:bg-white/5 transition-colors group">
+                            <div className="flex items-center gap-4">
+                                <div
+                                    className="size-10 rounded-lg bg-[#18242a] border border-[#283339] flex items-center justify-center text-teal-400 group-hover:border-teal-500/30 transition-colors">
+                                    <span className="material-symbols-outlined">check_circle</span>
+                                </div>
+                                <div className="flex flex-col">
+                                    <span className="text-sm font-medium text-white">Salary - Sep 2023</span>
+                                    <span className="text-xs text-[#9db0b9]">Sep 29, 2023</span>
+                                </div>
+                            </div>
+                            <div className="flex flex-col items-end gap-1">
+                                <span className="text-sm font-bold text-white">$4,250.00</span>
+                                <span
+                                    className="text-[10px] bg-teal-500/10 text-teal-400 px-2 py-0.5 rounded-full border border-teal-500/20 flex items-center gap-1">
+                                    Completed
+                                </span>
+                            </div>
+                        </div>
+                        <div
+                            className="flex items-center justify-between p-3 rounded-lg hover:bg-white/5 transition-colors group">
+                            <div className="flex items-center gap-4">
+                                <div
+                                    className="size-10 rounded-lg bg-[#18242a] border border-[#283339] flex items-center justify-center text-teal-400 group-hover:border-teal-500/30 transition-colors">
+                                    <span className="material-symbols-outlined">check_circle</span>
+                                </div>
+                                <div className="flex flex-col">
+                                    <span className="text-sm font-medium text-white">Perf. Bonus</span>
+                                    <span className="text-xs text-[#9db0b9]">Sep 15, 2023</span>
+                                </div>
+                            </div>
+                            <div className="flex flex-col items-end gap-1">
+                                <span className="text-sm font-bold text-white">$1,500.00</span>
+                                <span
+                                    className="text-[10px] bg-teal-500/10 text-teal-400 px-2 py-0.5 rounded-full border border-teal-500/20 flex items-center gap-1">
+                                    Completed
+                                </span>
+                            </div>
+                        </div>
+                        <div
+                            className="flex items-center justify-between p-3 rounded-lg hover:bg-white/5 transition-colors group">
+                            <div className="flex items-center gap-4">
+                                <div
+                                    className="size-10 rounded-lg bg-[#18242a] border border-[#283339] flex items-center justify-center text-teal-400 group-hover:border-teal-500/30 transition-colors">
+                                    <span className="material-symbols-outlined">check_circle</span>
+                                </div>
+                                <div className="flex flex-col">
+                                    <span className="text-sm font-medium text-white">Salary - Aug 2023</span>
+                                    <span className="text-xs text-[#9db0b9]">Aug 30, 2023</span>
+                                </div>
+                            </div>
+                            <div className="flex flex-col items-end gap-1">
+                                <span className="text-sm font-bold text-white">$4,100.00</span>
+                                <span
+                                    className="text-[10px] bg-teal-500/10 text-teal-400 px-2 py-0.5 rounded-full border border-teal-500/20 flex items-center gap-1">
+                                    Completed
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div
+                className="glass-card col-span-1 p-6 flex flex-col justify-between group relative overflow-hidden">
+                <div
+                    className="absolute -right-4 -bottom-4 w-24 h-24 bg-indigo-500/20 rounded-full blur-[40px] pointer-events-none group-hover:bg-indigo-500/30 transition-colors">
+                </div>
+                <div className="flex justify-between items-start z-10">
+                    <span className="text-sm font-bold text-[#9db0b9] uppercase tracking-wider">Tax
+                        Summary</span>
+                    <span className="material-symbols-outlined text-indigo-400">receipt_long</span>
+                </div>
+                <div className="flex flex-col gap-1 mt-4 z-10">
+                    <div className="flex items-end justify-between">
+                        <span className="text-3xl font-light text-white">$12,400</span>
+                        <span className="text-xs text-[#9db0b9] mb-1.5">YTD Tax</span>
+                    </div>
+                    <div
+                        className="w-full bg-[#111618] h-2 rounded-full mt-3 overflow-hidden border border-white/5">
+                        <div
+                            className="h-full bg-gradient-to-r from-indigo-500 to-purple-500 w-[65%] rounded-full shadow-[0_0_10px_rgba(99,102,241,0.5)]">
+                        </div>
+                    </div>
+                    <div className="flex justify-between mt-2 text-[10px] text-[#5f717a]">
+                        <span>Paid: 65%</span>
+                        <span>Proj: $19k</span>
+                    </div>
+                </div>
+            </div>
+            <div className="glass-card col-span-1 p-6 flex flex-col justify-between group">
+                <div className="flex justify-between items-start">
+                    <span className="text-sm font-bold text-[#9db0b9] uppercase tracking-wider">Net
+                        Earnings</span>
+                    <span className="material-symbols-outlined text-teal-400">savings</span>
+                </div>
+                <div className="mt-4">
+                    <span className="text-3xl font-light text-white block">$54,250</span>
+                    <span className="text-xs text-green-400 mt-1 flex items-center gap-1">
+                        <span className="material-symbols-outlined text-[14px]">trending_up</span>
+                        +12% vs last year
+                    </span>
+                </div>
+            </div>
+            <div
+                className="glass-card col-span-1 md:col-span-2 lg:col-span-2 p-6 flex flex-col justify-between">
+                <div className="flex items-center justify-between mb-4">
+                    <h3 className="font-bold text-white">Deductions &amp; Benefits</h3>
+                    <span className="text-xs text-[#9db0b9]">Active Plans</span>
+                </div>
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                    <div
+                        className="bg-white/5 rounded-lg p-3 border border-white/5 hover:border-indigo-500/30 transition-colors flex flex-col gap-2">
+                        <div className="flex items-center gap-2 text-indigo-300">
+                            <span className="material-symbols-outlined text-[18px]">health_and_safety</span>
+                            <span className="text-xs font-bold uppercase">Health</span>
+                        </div>
+                        <span className="text-lg font-bold text-white">$150<span
+                            className="text-xs font-normal text-[#5f717a]">/mo</span></span>
+                    </div>
+                    <div
+                        className="bg-white/5 rounded-lg p-3 border border-white/5 hover:border-teal-500/30 transition-colors flex flex-col gap-2">
+                        <div className="flex items-center gap-2 text-teal-300">
+                            <span className="material-symbols-outlined text-[18px]">volunteer_activism</span>
+                            <span className="text-xs font-bold uppercase">401k</span>
+                        </div>
+                        <span className="text-lg font-bold text-white">5%<span
+                            className="text-xs font-normal text-[#5f717a]"> match</span></span>
+                    </div>
+                    <div
+                        className="bg-white/5 rounded-lg p-3 border border-white/5 hover:border-sky-500/30 transition-colors flex flex-col gap-2">
+                        <div className="flex items-center gap-2 text-sky-300">
+                            <span className="material-symbols-outlined text-[18px]">directions_car</span>
+                            <span className="text-xs font-bold uppercase">Parking</span>
+                        </div>
+                        <span className="text-lg font-bold text-white">$0<span
+                            className="text-xs font-normal text-[#5f717a]"> covered</span></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </>);
+
     return (
-        <div className="flex flex-col rounded-lg py-4">
-            <Form {...form}>
-                <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-                    {/* Effective Date + Basic Salary */}
-                    <div className="overflow-hidden rounded-lg">
-                        <div className="grid grid-cols-1 gap-6 p-4 md:grid-cols-2">
-                            {/* Effective Date */}
+        <div className="bg-white dark:bg-gray-800 py-8">
+            <div className="">
+                <Form {...form}>
+                    <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
+                        <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-6 flex items-center">
+                            <Banknote className="mr-3 h-6 w-6 text-primary" />
+                            Bank Information
+                        </h2>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+                            {/* Phone Relative Number */}
                             <FormField
-                                control={control}
-                                name="effective_date"
+                                control={form.control}
+                                name="account_title"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Effective Date</FormLabel>
-                                        <DatePicker
-                                            value={field.value}
-                                            onChange={(date) => field.onChange(date)}
-                                            placeholder="Pick a date"
-                                        />
+                                        <FormLabel>Account Name</FormLabel>
+                                        <FormControl>
+                                            <Input placeholder="Enter Account Name" {...field} />
+                                        </FormControl>
                                         <FormMessage />
                                     </FormItem>
                                 )}
                             />
 
-                            {/* Basic Salary */}
+                            {/* Relation */}
                             <FormField
-                                control={control}
-                                name="basic_salary"
+                                control={form.control}
+                                name="bank_name"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Basic Salary</FormLabel>
+                                        <FormLabel>Bank Name</FormLabel>
                                         <FormControl>
-                                            {editForm ? (
-                                                <Input
-                                                    type="number"
-                                                    placeholder="Enter Basic Salary"
-                                                    {...field}
-                                                />
-                                            ) : (
-                                                <div className="rounded-md border bg-background px-3 py-2 text-sm">
-                                                    {field.value}
-                                                </div>
-                                            )}
+                                            <Input placeholder="Enter Bank Name" {...field} />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+
+                            {/* Local Address */}
+                            <FormField
+                                control={form.control}
+                                name="account_no"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>A/C Number</FormLabel>
+                                        <FormControl>
+                                            <Input placeholder="Enter A/C Number" {...field} />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+
+                            {/* Local City */}
+                            <FormField
+                                control={form.control}
+                                name="iban"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Iban Number</FormLabel>
+                                        <FormControl>
+                                            <Input placeholder="Enter Iban Number" {...field} />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+
+                            {/* Local Country */}
+                            <FormField
+                                control={form.control}
+                                name="address"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Address</FormLabel>
+                                        <FormControl>
+                                            <Input placeholder="Enter Address" {...field} />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
                                 )}
                             />
                         </div>
-                    </div>
 
-                    {/* Earnings Table */}
-                    <div className="overflow-hidden rounded-lg border mx-4">
-                        <div className="flex items-center justify-between bg-gray-50 px-3">
-                            <h4 className="text-sm font-medium">Particulars</h4>
-                            <Button
-                                type="button"
-                                variant="ghost"
-                                disabled={!editForm}
-                                onClick={() => append({ label: "Add Item", value: 100 })}
-                                className="inline-flex disabled:opacity-50"
+                        {globalError && (
+                            <div
+                                className="mb-4 p-3 border border-red-500 bg-red-50 text-red-700 rounded-lg"
+                                role="alert"
                             >
-                                <span className="material-icons text-sm text-primary">add_circle</span>
+                                {globalError}
+                            </div>
+                        )}
+
+                        {/* Buttons */}
+                        <div className="flex justify-end space-x-4 pt-4">
+                            <Button type="button" variant="secondary" onClick={handleCancel}>
+                                CANCEL
+                            </Button>
+                            <Button
+                                type="submit"
+                                className="bg-primary hover:bg-indigo-700"
+                                disabled={isSubmitting} a
+                            >
+                                {isSubmitting ? "SUBMITTING..." : "SUBMIT"}
                             </Button>
                         </div>
+                    </form>
+                </Form>
 
-                        <div className="divide-y">
-                            {fields.map((item, index) => (
-                                <div className="flex flex-col md:flex-row md:items-end gap-3 p-3">
-                                    {/* Label */}
-                                    <div className="flex-1">
-                                        <FormField
-                                            control={control}
-                                            name={`earnings.${index}.label`}
-                                            render={({ field }) => (
-                                                <FormItem>
-                                                    <FormLabel className="text-xs">Label</FormLabel>
-                                                    <FormControl>
-                                                        {editForm ? (
-                                                            <Input placeholder="Label" {...field} />
-                                                        ) : (
-                                                            <div className="rounded-md border bg-background px-3 py-2 text-sm">
-                                                                {field.value}
-                                                            </div>
-                                                        )}
-                                                    </FormControl>
-                                                    <FormMessage />
-                                                </FormItem>
-                                            )}
-                                        />
-                                    </div>
-
-                                    {/* Value */}
-                                    <div className="flex-1 md:w-1/3">
-                                        <FormField
-                                            control={control}
-                                            name={`earnings.${index}.value`}
-                                            render={({ field }) => (
-                                                <FormItem>
-                                                    <FormLabel className="text-xs">Value</FormLabel>
-                                                    <FormControl>
-                                                        {editForm ? (
-                                                            <Input type="number" placeholder="0" {...field} />
-                                                        ) : (
-                                                            <div className="rounded-md border bg-background px-3 py-2 text-sm">
-                                                                {field.value}
-                                                            </div>
-                                                        )}
-                                                    </FormControl>
-                                                    <FormMessage />
-                                                </FormItem>
-                                            )}
-                                        />
-                                    </div>
-
-                                    {/* Remove */}
-                                    <div className="flex items-end justify-end">
-                                        <Button
-                                            type="button"
-                                            variant="ghost"
-                                            className="text-red-600 hover:bg-red-50"
-                                            disabled={!editForm}
-                                            onClick={() => remove(index)}
-                                            title="Remove"
-                                        >
-                                            <span className="material-icons text-sm">close</span>
-                                        </Button>
-                                    </div>
-                                </div>
-
-                            ))}
-
-                            {/* Net Salary Row */}
-                            <div className="flex items-center justify-between bg-gray-50 p-3">
-                                <div className="text-sm font-medium">Net Salary</div>
-                                <div className="text-sm">{net_salary}</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Global error */}
-                    {globalError ? (
-                        <div
-                            className="rounded-lg border border-red-500 bg-red-50 p-3 text-red-700"
-                            role="alert"
-                        >
-                            {globalError}
-                        </div>
-                    ) : null}
-
-                    {/* Actions */}
-                    <div className="flex items-center justify-end gap-2 pt-2">
-                        <Button
-                            type="button"
-                            variant="secondary"
-                            disabled={!editForm}
-                            onClick={handleCancel}
-                        >
-                            Cancel
-                        </Button>
-                        <Button
-                            type="submit"
-                            className="bg-primary hover:bg-indigo-700"
-                            disabled={!editForm || isSubmitting || loading}
-                        >
-                            {isSubmitting || loading ? "Submit..." : "Submit"}
-                        </Button>
-                    </div>
-                </form>
-            </Form>
-
-            <SuccessDialog
-                open={open}
-                onOpenChange={setOpen}
-                title="Payroll Info Saved"
-                description="Payroll Info details have been saved successfully."
-            />
+                <SuccessDialog
+                    open={open}
+                    onOpenChange={setOpen}
+                    title="Bank Saved"
+                    description="Bank details have been saved successfully."
+                />
+            </div>
         </div>
     );
-}
+};
+
+export default Bank;

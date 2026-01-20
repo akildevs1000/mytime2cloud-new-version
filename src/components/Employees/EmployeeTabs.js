@@ -4,9 +4,8 @@ import React, { useState } from "react";
 import EmergencyContact from './EmergencyContact';
 import Profile from './Profile';
 import Document from './Document';
-import Qualification from './Qualification';
 import SETTINGRFIDLOGIN from './SETTINGRFIDLOGIN';
-import BANKPAYROLL from './BANKPAYROLL';
+import Payroll from './Payroll';
 
 const EmployeeTabs = ({ selectedEmployee }) => {
 
@@ -16,9 +15,8 @@ const EmployeeTabs = ({ selectedEmployee }) => {
     const TABS = [
         { id: 'profile', name: 'Personal' },
         { id: 'emergency', name: 'Contact' },
-        { id: 'bank', name: 'Payroll' },
+        { id: 'payroll', name: 'Payroll' },
         { id: 'documents', name: 'Documents' },
-        { id: 'qualification', name: 'Qualification', },
         { id: 'settings', name: 'Settings' },
         // { id: 'performance', name: 'Performance', icon: Briefcase },
     ];
@@ -39,7 +37,7 @@ const EmployeeTabs = ({ selectedEmployee }) => {
             qualification, bank,
             user,
             payroll
-
+ 
         } = selectedEmployee;
 
         switch (activeTab) {
@@ -68,13 +66,10 @@ const EmployeeTabs = ({ selectedEmployee }) => {
                         home_country={home_country}
                     />);
 
-            case 'qualification':
+          
+            case 'payroll':
                 return (
-                    <Qualification employee_id={id} qualification={qualification} />
-                );
-            case 'bank':
-                return (
-                    <BANKPAYROLL employee_id={id} bank={bank} payroll={payroll} />
+                    <Payroll employee_id={id} bank={bank} payroll={payroll} />
                 );
             case 'settings':
                 return (
