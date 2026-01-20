@@ -5,6 +5,7 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation'; // Or 'next/navigation' for App Router
 
 import axios from 'axios';
+import { Input } from '@/components/ui/input';
 
 
 // Placeholder components (You would replace these with actual modal/otp/snackbar components)
@@ -252,7 +253,7 @@ const Login = () => {
                                     className="mx-auto" // Tailwind classes still work
                                 />
                             </div>
-                            <h3 className="pb-7 pt-10 text-xl font-medium">
+                            <h3 className="pb-7 pt-10 text-xl font-medium text-gray-600 dark:text-gray-300">
                                 Welcome To <span className="text-2xl font-bold"> Mytime2Cloud </span>
                             </h3>
                         </div>
@@ -261,7 +262,7 @@ const Login = () => {
                                 {/* Email Field */}
                                 <div className="form-outline">
                                     <div className="relative">
-                                        <input
+                                        <Input
                                             type="email"
                                             id="email"
                                             name="email"
@@ -281,7 +282,7 @@ const Login = () => {
                                 {/* Password Field */}
                                 <div className="form-outline">
                                     <div className="relative">
-                                        <input
+                                        <Input
                                             type={showPassword ? 'text' : 'password'}
                                             id="password"
                                             name="password"
@@ -326,7 +327,7 @@ const Login = () => {
                                 </div>
                             </form>
                         </div>
-                        <div className="text-center text-sm mt-4">
+                        <div className="text-center text-sm mt-4 text-gray-600 dark:text-gray-300">
                             Don't Have an Account? Contact Admin
                         </div>
 
@@ -338,14 +339,12 @@ const Login = () => {
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     href="https://wa.me/971529048025?text=Hello MyTime2Cloud. I need your support."
-                                    className="text-black flex items-center"
+                                    className="text-gray-600 dark:text-gray-300 flex items-center"
                                     aria-label="Contact via WhatsApp"
                                 >
                                     {/* WhatsApp Icon - Using 'chat' as a standard placeholder or mdi-whatsapp if using a specific library */}
-                                    For Technical Support : <span className="material-icons text-gray-600 text-base ml-2">
-                                        phone
-                                    </span>
-                                    <span className="text-black hover:underline text-sm">
+                                    For Technical Support :
+                                    <span className=" hover:underline text-sm">
                                         +971 52 904 8025
                                     </span>
                                 </a>
@@ -355,13 +354,11 @@ const Login = () => {
                             <div className="flex justify-center p-1">
                                 <a
                                     href="mailto:support@mytime2cloud.com"
-                                    className="text-black hover:underline flex items-center"
+                                    className="text-gray-600 dark:text-gray-300 hover:underline flex items-center"
                                     aria-label="Email technical support"
                                 >
                                     {/* Mail Icon */}
-                                    <span className="material-icons text-gray-600 text-base mr-1">
-                                        mail
-                                    </span>
+
                                     support@mytime2cloud.com
                                 </a>
                             </div>

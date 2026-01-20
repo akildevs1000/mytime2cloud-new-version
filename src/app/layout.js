@@ -2,7 +2,8 @@ import "./globals.css";
 import LeftMenu from '@/components/leftMenu';
 import Header from "@/components/Header";
 import MainContentWrapper from "@/components/MainContentWrapper";
-import { Space_Grotesk, Noto_Sans } from 'next/font/google';
+import { Noto_Sans } from 'next/font/google';
+import { DarkModeProvider } from "@/context/DarkModeContext";
 
 const notoSans = Noto_Sans({
   subsets: ['latin'],
@@ -19,19 +20,22 @@ export default function RootLayout({ children }) {
           href="https://fonts.googleapis.com/icon?family=Material+Icons"
           rel="stylesheet"
         />
+        <link href="https://fonts.googleapis.com/css2?family=Material+Icons+Outlined" rel="stylesheet"></link>
         <link
           rel="stylesheet"
           href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
         />
       </head>
       <body className="bg-obsidian text-slate-200 font-body overflow-hidden selection:bg-primary/30">
-        <Header />
-        <div className="flex flex-1 overflow-hidden">
-          <LeftMenu />
-          <MainContentWrapper>
-            {children}
-          </MainContentWrapper>
-        </div>
+        <DarkModeProvider>
+          <Header />
+          <div className="flex flex-1 overflow-hidden">
+            <LeftMenu />
+            <MainContentWrapper>
+              {children}
+            </MainContentWrapper>
+          </div>
+        </DarkModeProvider>
 
       </body>
     </html>

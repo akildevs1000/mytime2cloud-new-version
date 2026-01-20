@@ -65,7 +65,7 @@ const Login = ({ employee_id, user}) => {
             <div className="">
                 <Form {...form}>
                     <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
-                        <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-6 flex items-center">
+                        <h2 className="text-xl font-semibold mb-6 flex items-center">
                             <LogIn className="mr-3 h-6 w-6 text-primary" />
                             Login
                         </h2>

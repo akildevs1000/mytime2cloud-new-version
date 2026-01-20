@@ -1,56 +1,77 @@
-function AttendanceCard({}) {
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  Cell,
+} from "recharts";
+
+const data = [
+  { day: "M", value: 60, fill: "#14b8a6" }, // Mon
+  { day: "T", value: 85, fill: "#06b6d4" }, // Tue
+  { day: "W", value: 75, fill: "#10b981" }, // Wed
+  { day: "T", value: 70, fill: "#6366f1" }, // Thu
+  { day: "F", value: 65, fill: "#a855f7" }, // Fri
+  { day: "S", value: 50, fill: "#f59e0b" }, // Sat
+  { day: "S", value: 40, fill: "#ef4444" }, // Sun
+];
+
+function AttendanceCard({ branch_id }) {
   return (
     <>
       <div className="flex justify-between items-start mb-2">
         <div>
-          <h3 className="text-sm font-bold text-slate-900 font-display">
+          <h3 className="text-sm font-bold text-gray-600 dark:text-gray-300 font-display">
             Attendance Volume
           </h3>
           <p className="text-[10px] text-slate-500">Weekly Distribution</p>
         </div>
         <button className="text-slate-400 hover:text-slate-800 transition-colors">
-          <span className="material-symbols-outlined text-sm">more_horiz</span>
+          <span className="material-symbols-outlined text-sm">
+            more_horiz
+          </span>
         </button>
       </div>
-      <div className="flex-1 w-full min-h-0 pt-2 flex items-end justify-between gap-2">
-        <div className="w-full h-full flex items-end justify-between px-2 pb-6 border-b border-slate-200 relative">
-          <div className="absolute left-0 top-0 h-full w-full flex flex-col justify-between pointer-events-none">
-            <div className="w-full h-px bg-slate-100"></div>
-            <div className="w-full h-px bg-slate-100"></div>
-            <div className="w-full h-px bg-slate-100"></div>
-            <div className="w-full h-px bg-slate-100"></div>
-          </div>
-          <div className="group relative flex flex-col items-center gap-1 w-[12%] h-full justify-end z-10">
-            <div className="w-full bg-teal-500 rounded-t-sm h-[60%] chart-bar shadow-sm"></div>
-            <span className="text-[9px] text-slate-500 absolute -bottom-5">
-              M
-            </span>
-          </div>
-          <div className="group relative flex flex-col items-center gap-1 w-[12%] h-full justify-end z-10">
-            <div className="w-full bg-cyan-500 rounded-t-sm h-[85%] chart-bar shadow-sm"></div>
-            <span className="text-[9px] text-slate-500 absolute -bottom-5">
-              T
-            </span>
-          </div>
-          <div className="group relative flex flex-col items-center gap-1 w-[12%] h-full justify-end z-10">
-            <div className="w-full bg-emerald-500 rounded-t-sm h-[75%] chart-bar shadow-sm"></div>
-            <span className="text-[9px] text-slate-900 font-bold absolute -bottom-5">
-              W
-            </span>
-          </div>
-          <div className="group relative flex flex-col items-center gap-1 w-[12%] h-full justify-end z-10">
-            <div className="w-full bg-indigo-500 rounded-t-sm h-[70%] chart-bar shadow-sm"></div>
-            <span className="text-[9px] text-slate-500 absolute -bottom-5">
-              T
-            </span>
-          </div>
-          <div className="group relative flex flex-col items-center gap-1 w-[12%] h-full justify-end z-10">
-            <div className="w-full bg-purple-500 rounded-t-sm h-[65%] chart-bar shadow-sm"></div>
-            <span className="text-[9px] text-slate-500 absolute -bottom-5">
-              F
-            </span>
-          </div>
-        </div>
+
+      <div className="w-full h-full">
+        <ResponsiveContainer width="100%" height="100%">
+          <BarChart
+            data={data}
+            margin={{ top: 10, right: 10, left: 0, bottom: 10 }}
+          >
+            <CartesianGrid
+              vertical={false}
+              stroke="#e5e7eb"
+              strokeDasharray="2 2"
+            />
+            <XAxis
+              dataKey="day"
+              axisLine={false}
+              tickLine={false}
+              tick={{ fontSize: 10, fill: "#64748b" }}
+            />
+            <YAxis hide />
+            <Tooltip
+              cursor={{ fill: "rgba(0,0,0,0.04)" }}
+              contentStyle={{
+                fontSize: "12px",
+                borderRadius: "6px",
+              }}
+            />
+            <Bar
+              dataKey="value"
+              radius={[4, 4, 0, 0]}
+              barSize={18}
+            >
+              {data.map((entry, index) => (
+                <Cell key={`cell-${index}`} fill={entry.fill} />
+              ))}
+            </Bar>
+          </BarChart>
+        </ResponsiveContainer>
       </div>
     </>
   );

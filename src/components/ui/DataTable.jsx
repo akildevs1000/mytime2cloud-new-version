@@ -14,83 +14,40 @@ export default function DataTable({
   className = "",
 }) {
   return (
-    <div
-      className={cn(
-        "bg-white rounded-xl shadow-lg border border-gray-200 min-h-[800px] flex flex-col",
-        className
-      )}
-    >
-      {/* Table wrapper */}
-      <div className="overflow-x-auto overflow-y-auto flex-1">
-        <table className="w-full text-left table-auto">
-          <thead className="bg-gray-50 border-b border-gray-200 sticky top-0 z-10">
-            <tr>
+    <div className="glass-panel rounded-xl shadow-soft overflow-hidden">
+      <div className="overflow-x-auto">
+        <table className="w-full text-left border-collapse">
+          <thead>
+            <tr className="bg-slate-50/80 dark:bg-slate-800/80 border-b border-slate-200 dark:border-slate-700">
               {columns.map((col) => (
                 <th
                   key={col.key}
-                  className="p-4 font-semibold text-xs text-gray-600 uppercase tracking-wider"
+                  className="py-4 px-6 text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider"
                 >
                   {col.header}
                 </th>
               ))}
             </tr>
           </thead>
-
-          <tbody>
-            {isLoading ? (
-              <tr>
-                <td
-                  colSpan={columns.length}
-                  className="p-12 text-center text-primary font-medium"
-                >
-                  <Loader2 className="w-8 h-8 mx-auto mb-2 animate-spin" />
-                  Loading data...
-                </td>
-              </tr>
-            ) : error ? (
-              <tr>
-                <td
-                  colSpan={columns.length}
-                  className="p-12 text-center text-red-600 font-medium bg-red-50"
-                >
-                  <p>Error: {error}</p>
-                  <p className="mt-2 text-sm text-red-500">
-                    Please check the console or refresh the page.
-                  </p>
-                </td>
-              </tr>
-            ) : data.length === 0 ? (
-              <tr>
-                <td
-                  colSpan={columns.length}
-                  className="p-12 text-center text-gray-500 font-medium"
-                >
-                  {emptyMessage}
-                </td>
-              </tr>
-            ) : (
-              data.map((item, i) => (
+          <tbody className="divide-y divide-slate-100 dark:divide-slate-700/50">
+            <>
+              {data.map((item, i) => (
                 <tr
                   key={item.id || i}
-                  className="border-b border-gray-200 hover:bg-indigo-50 transition-colors cursor-pointer"
+                  className="hover:bg-white/50 dark:hover:bg-slate-700/30 transition-colors group cursor-pointer"
                   onClick={() => onRowClick(item)}
                 >
                   {columns.map((col) => (
-                    <td
-                      key={col.key}
-                      className="p-4 whitespace-nowrap text-gray-800"
-                    >
+                    <td key={col.key} className="py-4 px-6">
                       {col.render ? col.render(item) : item[col.key] || "—"}
                     </td>
                   ))}
                 </tr>
-              ))
-            )}
+              ))}
+            </>
           </tbody>
         </table>
       </div>
-
-      {/* Pagination sticky at bottom */}
       {pagination && <div className="">{pagination}</div>}
     </div>
   );

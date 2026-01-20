@@ -1,15 +1,18 @@
-import Stats from "./Stats";
-import AttendanceCard from "./AttendanceCard";
-import WelnessCard from "./WelnessCard";
-import ExecutiveInsights from "./ExecutiveInsights";
-import LiveFeed from "./LiveFeed";
-import { useEffect, useState } from "react";
+"use client";
+
+import AttendanceCard from "@/components/Dashboard/AttendanceCard";
+import EventsAndInsights from "@/components/Dashboard/EventsAndInsights";
+import LiveFeed from "@/components/Dashboard/LiveFeed";
+import Stats from "@/components/Dashboard/Stats";
+import WelnessCard from "@/components/Dashboard/WelnessCard";
 import { getBranches } from "@/lib/api";
 import { parseApiError } from "@/lib/utils";
-import DropDown from "../ui/DropDown";
+import { useEffect, useState } from "react";
 
-const Dashboard = () => {
-  const [selectedBranch, setSelectedBranch] = useState(null);
+const AdminDashboard = () => {
+  const [isOpen, setIsOpen] = useState(false);
+
+  const [selectedBranch, setSelectedBranch] = useState({ name: "", id: "" });
   const [branches, setBranches] = useState([]);
   const [error, setError] = useState(null);
 
@@ -28,62 +31,69 @@ const Dashboard = () => {
   return (
     <>
       <div className="px-2 mb-4 flex justify-between items-center">
-        <h2 className="text-xl font-bold text-slate-900 font-display tracking-tight">
+        <h2 className="text-xl font-bold text-gray-600 dark:text-gray-300 font-display tracking-tight">
           Executive Overview
         </h2>
         <div className="filter-glass px-1 py-1 rounded-xl flex items-center gap-1.5 max-w-sm">
-          <div className="pl-2 pr-1 flex items-center text-slate-500">
-            <span className="material-symbols-outlined text-[18px]">
-              domain
-            </span>
-          </div>
-          <div className="h-6 w-px bg-slate-300"></div>
-          <div className="relative group">
-            <DropDown
-              placeholder="Select Branch"
-              onChange={(id) => {
-                setSelectedBranch(id);
-                setCurrentPage(1);
-              }}
-              value={selectedBranch}
-              items={branches}
-            />
-            {/* <select className="appearance-none bg-transparent border-none text-sm text-slate-700 font-medium pl-2 pr-8 py-1.5 focus:ring-0 cursor-pointer w-40 hover:text-primary transition-colors">
-              <option value="all">Global HQ</option>
-              <option value="engineering">Engineering Wing</option>
-              <option value="sales">Sales Floor</option>
-            </select>
-            <div className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none text-slate-400 group-hover:text-primary transition-colors">
-              <span className="material-symbols-outlined text-[18px]">
+          <div className="relative w-48">
+            {/* The Trigger Button */}
+            <button
+              onClick={() => setIsOpen(!isOpen)}
+              className="w-full flex items-center justify-between px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-200 rounded-xl shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all dark:bg-zinc-900 dark:border-zinc-800 dark:text-gray-200"
+            >
+              <span>
+                {selectedBranch.name}-{selectedBranch?.id}
+              </span>
+              <span
+                className={`material-symbols-outlined transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
+              >
                 expand_more
               </span>
-            </div> */}
+            </button>
+
+            {/* The Styled Options Menu */}
+            {isOpen && (
+              <div className="absolute z-10 w-full mt-2 origin-top-right bg-white border border-gray-100 rounded-xl shadow-xl dark:bg-zinc-900 dark:border-zinc-800 p-1.5 animate-in fade-in zoom-in duration-100">
+                {branches.map((opt) => (
+                  <div
+                    key={opt.id}
+                    onClick={() => {
+                      setSelectedBranch(opt);
+                      setIsOpen(false);
+                    }}
+                    className="flex items-center px-3 py-2 text-sm rounded-lg cursor-pointer transition-colors hover:bg-primary/10 hover:text-primary text-gray-600 dark:text-gray-300"
+                  >
+                    {opt.name}
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </div>
-      <div className="flex-1 overflow-y-auto overflow-x-hidden pr-2 pb-6 custom-scrollbar flex flex-col gap-5">
+      <div className="flex-1 overflow-y-auto overflow-x-hidden pr-2 pb-16 custom-scrollbar flex flex-col gap-5">
         <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-7 gap-3">
-          <Stats />
+          <Stats branch_id={selectedBranch?.id} />
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 h-[340px]">
           <div className="grid grid-cols-2 gap-4 h-full">
             <div className="glass-panel rounded-2xl p-5 relative overflow-hidden flex flex-col h-full">
-              <AttendanceCard />
+              <AttendanceCard branch_id={selectedBranch?.id} />
             </div>
             <div className="glass-panel rounded-2xl p-5 relative overflow-hidden flex flex-col h-full items-center justify-center">
-              <WelnessCard />
+              <WelnessCard branch_id={selectedBranch?.id} />
             </div>
           </div>
           <div className="glass-panel rounded-2xl p-0 relative overflow-hidden flex flex-col h-[340px]">
-            <ExecutiveInsights />
+            <EventsAndInsights branch_id={selectedBranch?.id} />
           </div>
         </div>
-        <div className="glass-panel rounded-2xl flex-1 flex flex-col min-h-[300px]">
-          <LiveFeed />
+        <div className="glass-panel rounded-2xl flex-1 flex flex-col">
+          <LiveFeed branch_id={selectedBranch?.id} />
         </div>
       </div>
     </>
   );
 };
 
-export default Dashboard;
+export default AdminDashboard;

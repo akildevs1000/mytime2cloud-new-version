@@ -17,6 +17,10 @@ import MultiDropDown from '@/components/ui/MultiDropDown';
 
 export default function EmployeeDataTable() {
 
+
+    const [isOpen, setIsOpen] = useState(false);
+
+
     const [employees, setEmployees] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
@@ -27,7 +31,7 @@ export default function EmployeeDataTable() {
     const [total, setTotalEmployees] = useState(0);
     const [searchTerm, setSearchTerm] = useState('');
 
-    const [selectedBranch, setSelectedBranch] = useState(null);
+    const [selectedBranch, setSelectedBranch] = useState({ name: "", id: "" });
     const [selectedDepartments, setSelectedDepartments] = useState([]);
     const [branches, setBranches] = useState([]);
 
@@ -53,7 +57,7 @@ export default function EmployeeDataTable() {
                 page: page,
                 per_page: perPage,
                 sortDesc: 'false',
-                branch_id: selectedBranch,
+                branch_id: selectedBranch.id,
                 department_ids: selectedDepartments,
                 search: searchTerm || null, // Only include search if it's not empty
             };
@@ -83,7 +87,7 @@ export default function EmployeeDataTable() {
 
     const fetchDepartments = async () => {
         try {
-            setDepartments(await getDepartments(selectedBranch));
+            setDepartments(await getDepartments(selectedBranch.id));
         } catch (error) {
             setError(parseApiError(error));
         }
@@ -125,14 +129,47 @@ export default function EmployeeDataTable() {
                 </h1>
                 <div className="flex flex-wrap items-center space-x-3 space-y-2 sm:space-y-0">
                     <div className="relative">
-                        <DropDown
+                        {/* <DropDown
                             placeholder="Select Branch"
                             onChange={(id) => { setSelectedBranch(id); setCurrentPage(1); }}
                             value={selectedBranch}
                             items={branches}
-                        />
+                        /> */}
+
+                        <button
+                            onClick={() => setIsOpen(!isOpen)}
+                            className="w-[300px] flex items-center justify-between px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-200 rounded-xl shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all dark:bg-gray-700 dark:border-none dark:text-gray-200"
+                        >
+                            <span>
+                                {selectedBranch.name}-{selectedBranch?.id}
+                            </span>
+                            <span
+                                className={`material-symbols-outlined transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
+                            >
+                                expand_more
+                            </span>
+                        </button>
+
+                        {isOpen && (
+                            <div className="absolute z-10 w-full mt-2 origin-top-right bg-white border border-gray-100 rounded-xl shadow-xl dark:bg-gray-700 dark:border-gray-800 p-1.5 animate-in fade-in zoom-in duration-100">
+                                {branches.map((opt) => (
+                                    <div
+                                        key={opt.id}
+                                        onClick={() => {
+                                            setSelectedBranch(opt); setCurrentPage(1);
+                                            setIsOpen(false);
+                                        }}
+                                        className="flex items-center px-3 py-2 text-sm rounded-lg cursor-pointer transition-colors hover:bg-primary/10 hover:text-primary text-gray-600 dark:text-gray-300"
+                                    >
+                                        {opt.name}
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+
+
                     </div>
-                    <div className="relative">
+                    {/* <div className="relative">
                         <MultiDropDown
                             placeholder={'Select Departments'}
                             items={departments}
@@ -140,19 +177,17 @@ export default function EmployeeDataTable() {
                             onChange={setSelectedDepartments}
                             badgesCount={1}
                         />
-                    </div>
+                    </div> */}
 
 
                     {/* Search Input */}
                     <div className="relative">
-                        <Input
-                            className="pl-10 bg-white h-9 w-full" // Increased left padding (pl-10) for the icon
+                        <input className="w-[200px] flex items-center justify-between px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-200 rounded-xl shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all dark:bg-gray-700 dark:border-none dark:text-gray-200"
                             placeholder="Search by name or ID"
                             type="text"
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
                         />
-                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
                     </div>
 
                     {/* Refresh Button */}

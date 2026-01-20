@@ -1,274 +1,296 @@
-function LiveFeed({}) {
+import React from "react";
+import { useDarkMode } from "@/context/DarkModeContext";
+
+const feedData = [
+  {
+    id: "8842-A",
+    name: "Sarah Jenkins",
+    dept: "Marketing",
+    location: "Main Lobby",
+    method: "face",
+    methodTitle: "Face Scan",
+    time: "10:41:22",
+    type: "Entry",
+    punctuality: "On Time",
+    punctualityColor: "text-emerald-600",
+    punctualityDot: "bg-emerald-500",
+    status: "Authorized",
+    statusType: "success",
+    initials: "MJ",
+  },
+  {
+    id: "9931-B",
+    name: "David Chen",
+    dept: "IT Infra",
+    location: "Server Room",
+    method: "fingerprint",
+    methodTitle: "Biometric",
+    time: "10:38:45",
+    type: "Entry",
+    punctuality: "Late (+15m)",
+    punctualityColor: "text-amber-600",
+    punctualityDot: "bg-amber-500",
+    status: "Flagged Late",
+    statusType: "warning",
+    initials: "MJ",
+  },
+  {
+    id: "4421-C",
+    name: "Elena Rodriguez",
+    dept: "HR Dept",
+    location: "West Wing",
+    method: "badge",
+    methodTitle: "Smart Card",
+    time: "10:35:12",
+    type: "Entry",
+    punctuality: "Early (-10m)",
+    punctualityColor: "text-cyan-600",
+    punctualityDot: "bg-cyan-500",
+    status: "Authorized",
+    statusType: "success",
+    initials: "MJ",
+  },
+  {
+    id: "1102-X",
+    name: "Michael Jones",
+    dept: "Ops",
+    location: "Load Bay",
+    method: "nfc",
+    methodTitle: "NFC Tag",
+    time: "10:32:05",
+    type: "Exit",
+    punctuality: "On Time",
+    punctualityColor: "text-emerald-600",
+    punctualityDot: "bg-emerald-500",
+    status: "Logged",
+    statusType: "neutral",
+    initials: "MJ",
+  },
+  {
+    id: "1102-X",
+    name: "Michael Jones",
+    dept: "Ops",
+    location: "Load Bay",
+    method: "nfc",
+    methodTitle: "NFC Tag",
+    time: "10:32:05",
+    type: "Exit",
+    punctuality: "On Time",
+    punctualityColor: "text-emerald-600",
+    punctualityDot: "bg-emerald-500",
+    status: "Logged",
+    statusType: "neutral",
+    initials: "MJ",
+  },
+  {
+    id: "1102-X",
+    name: "Michael Jones",
+    dept: "Ops",
+    location: "Load Bay",
+    method: "nfc",
+    methodTitle: "NFC Tag",
+    time: "10:32:05",
+    type: "Exit",
+    punctuality: "On Time",
+    punctualityColor: "text-emerald-600",
+    punctualityDot: "bg-emerald-500",
+    status: "Logged",
+    statusType: "neutral",
+    initials: "MJ",
+  },
+  {
+    id: "1102-X",
+    name: "Michael Jones",
+    dept: "Ops",
+    location: "Load Bay",
+    method: "nfc",
+    methodTitle: "NFC Tag",
+    time: "10:32:05",
+    type: "Exit",
+    punctuality: "On Time",
+    punctualityColor: "text-emerald-600",
+    punctualityDot: "bg-emerald-500",
+    status: "Logged",
+    statusType: "neutral",
+    initials: "MJ",
+  },
+  {
+    id: "1102-X",
+    name: "Michael Jones",
+    dept: "Ops",
+    location: "Load Bay",
+    method: "nfc",
+    methodTitle: "NFC Tag",
+    time: "10:32:05",
+    type: "Exit",
+    punctuality: "On Time",
+    punctualityColor: "text-emerald-600",
+    punctualityDot: "bg-emerald-500",
+    status: "Logged",
+    statusType: "neutral",
+    initials: "MJ",
+  },
+  {
+    id: "1102-X",
+    name: "Michael Jones",
+    dept: "Ops",
+    location: "Load Bay",
+    method: "nfc",
+    methodTitle: "NFC Tag",
+    time: "10:32:05",
+    type: "Exit",
+    punctuality: "On Time",
+    punctualityColor: "text-emerald-600",
+    punctualityDot: "bg-emerald-500",
+    status: "Logged",
+    statusType: "neutral",
+    initials: "MJ",
+  },
+];
+
+function LiveFeed({ branch_id }) {
+  const { isDark } = useDarkMode();
+
+  // Helper to determine Status Badge Styles
+  const getStatusStyles = (type) => {
+    const themes = {
+      success: isDark
+        ? "bg-emerald-500/5 border-emerald-500/20 text-emerald-400"
+        : "bg-emerald-50 border-emerald-200 text-emerald-600",
+      warning: "bg-amber-500/5 border-amber-500/20 text-amber-400",
+      neutral: isDark
+        ? "bg-slate-500/50 border-slate-600/50 text-slate-100"
+        : "bg-slate-100 border-slate-200 text-slate-500",
+    };
+    return themes[type] || themes.neutral;
+  };
+
   return (
-    <>
-      <div className="p-5 border-b border-slate-200 flex justify-between items-center bg-white/40">
+    <div className="flex flex-col h-full">
+      {/* Header */}
+      <div className="p-5 border-b border-white/5 flex justify-between items-center bg-white/[0.01]">
         <div className="flex items-center gap-3">
           <div className="size-2 rounded-full bg-emerald-500 animate-pulse"></div>
-          <h3 className="text-base font-bold text-slate-900 font-display tracking-wide">
+          <h3 className="text-base font-bold text-gray-600 dark:text-gray-300 font-display tracking-wide">
             Live Recognition Feed
           </h3>
         </div>
-        <div className="flex items-center">
-          <div className="hidden md:flex items-center gap-1 bg-slate-100 p-1 rounded-lg border border-slate-200 mr-4">
-            <button className="px-3 py-1 text-[10px] font-bold rounded-md bg-white text-slate-800 shadow-sm border border-slate-200 transition-all">
-              All
-            </button>
-            <button className="px-3 py-1 text-[10px] font-bold rounded-md text-slate-500 hover:text-rose-600 hover:bg-white transition-colors">
-              Late
-            </button>
-            <button className="px-3 py-1 text-[10px] font-bold rounded-md text-slate-500 hover:text-cyan-600 hover:bg-white transition-colors">
-              Early
-            </button>
-          </div>
-          <div className="flex gap-4 items-center pl-4 border-l border-slate-200">
-            <button className="text-xs font-bold text-primary hover:text-blue-700 transition-colors uppercase tracking-wider">
-              View Full Log
-            </button>
-          </div>
+        <div className="flex gap-4 items-center">
+          <span className="text-[11px] text-slate-400 font-mono">
+            Refreshing in 5s...
+          </span>
+          <button className="text-xs font-bold text-primary hover:text-gray-600 dark:text-gray-300 transition-colors uppercase tracking-wider">
+            View Full Log
+          </button>
         </div>
       </div>
-      <div className="grid grid-cols-12 px-6 py-3 border-b border-slate-200 text-[10px] font-bold text-slate-500 uppercase tracking-wider bg-slate-50/50 gap-2">
+
+      {/* Table Header */}
+      <div className="grid grid-cols-12 px-6 py-3 border-y border-gray-200 dark:border-white/5 text-[11px] font-bold text-slate-500 uppercase tracking-wider bg-white/[0.02]">
         <div className="col-span-3 pl-2">Identity</div>
         <div className="col-span-1">Dept</div>
-        <div className="col-span-1">Loc</div>
+        <div className="col-span-2">Loc</div>
         <div className="col-span-1">Method</div>
         <div className="col-span-1">Time</div>
-        <div className="col-span-1 text-center">Act</div>
         <div className="col-span-2">Punctuality</div>
         <div className="col-span-2 text-right pr-2">Status</div>
       </div>
+
+      {/* List Body */}
       <div className="flex-1 overflow-y-auto px-2">
-        <div className="grid grid-cols-12 px-4 py-4 minimal-table-row items-center cursor-pointer group gap-2">
-          <div className="col-span-3 flex items-center gap-3 pl-2">
-            <div className="size-8 rounded-full bg-slate-200 overflow-hidden relative border border-slate-300">
-              <img
-                className="w-full h-full object-cover opacity-90 group-hover:opacity-100 transition-opacity"
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuCVtMhp_XykLj5h5NN1k2TqpsP11CIW25W0Vi7tAxLKwAG1Ll1yu44ufhxY26WC7W9hMgwx2Dc4Whh1MdK4sYUsRUEZ6MfMUhaSDZ8sSBWQdblGwGZvQ_YxLJOtiUJU3lLcQE5GCmofuM5_WWjT-psEJ6TlSs7GMv73SyqYIo1ybgAPo_7FBHPcUBpYIHUaF-QW9Bcrg8J2mAbZFBpy7z36K4ZhpiRmB3Pq9H_NAIsflzQqo4Vz5yBsHY6ykIZLp8hqeF3_QTc5GCGZ"
-              />
-            </div>
-            <div className="flex flex-col">
-              <span className="text-xs font-bold text-slate-800 group-hover:text-slate-950 transition-colors">
-                Sarah Jenkins
-              </span>
-              <span className="text-[9px] text-slate-500">ID: 8842-A</span>
-            </div>
-          </div>
+        {feedData.map((item, index) => (
           <div
-            className="col-span-1 text-[10px] text-slate-500 truncate"
-            title="Marketing"
+            key={index}
+            className={`grid grid-cols-12 py-4 items-center cursor-pointer group gap-2 transition-colors hover:bg-slate-50 dark:hover:bg-white/5 ${
+              index !== feedData.length - 1
+                ? "border-b border-gray-100 dark:border-white/5"
+                : ""
+            }`}
           >
-            Marketing
-          </div>
-          <div
-            className="col-span-1 text-[10px] text-slate-500 truncate"
-            title="Main Lobby"
-          >
-            Main Lobby
-          </div>
-          <div className="col-span-1 flex items-center text-slate-400">
-            <span
-              className="material-symbols-outlined text-[16px]"
-              title="Face Scan"
+            {/* Identity */}
+            <div className="col-span-3 flex items-center gap-3 pl-2">
+              <div className="size-8 rounded-full bg-slate-200 overflow-hidden relative border border-slate-300 flex items-center justify-center">
+                {item.img ? (
+                  <img
+                    className="w-full h-full object-cover opacity-90 group-hover:opacity-100 transition-opacity"
+                    src={`http://googleusercontent.com/profile/picture/${item.img}`}
+                    alt={item.name}
+                  />
+                ) : (
+                  <span className="text-xs font-bold text-slate-500">
+                    {item.initials}
+                  </span>
+                )}
+              </div>
+              <div className="flex flex-col">
+                <span className="text-[11px] font-bold text-gray-600 dark:text-gray-300 group-hover:text-slate-950 dark:group-hover:text-white transition-colors">
+                  {item.name}
+                </span>
+                <span className="text-[9px] text-slate-500">ID: {item.id}</span>
+              </div>
+            </div>
+
+            {/* Dept */}
+            <div
+              className="col-span-1 text-[11px] text-slate-500 truncate"
+              title={item.dept}
             >
-              face
-            </span>
-          </div>
-          <div className="col-span-1 text-[10px] font-mono text-slate-500">
-            10:41:22
-          </div>
-          <div className="col-span-1 text-center flex justify-center">
-            <div className="inline-flex items-center justify-center gap-1 px-1.5 py-0.5 rounded text-[9px] font-bold bg-emerald-100 text-emerald-600 border border-emerald-200 w-16">
-              <span className="material-symbols-outlined text-[10px]">
-                login
-              </span>
-              <span>Entry</span>
+              {item.dept}
             </div>
-          </div>
-          <div className="col-span-2">
-            <span className="inline-flex items-center gap-1.5 text-[10px] font-medium text-emerald-600">
-              <span className="size-1 bg-emerald-500 rounded-full"></span> On
-              Time
-            </span>
-          </div>
-          <div className="col-span-2 text-right pr-2">
-            <span className="inline-flex items-center gap-1.5 px-2 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-[10px] font-medium text-emerald-600">
-              Authorized
-            </span>
-          </div>
-        </div>
-        <div className="grid grid-cols-12 px-4 py-4 minimal-table-row items-center cursor-pointer group gap-2">
-          <div className="col-span-3 flex items-center gap-3 pl-2">
-            <div className="size-8 rounded-full bg-slate-200 overflow-hidden relative border border-slate-300">
-              <img
-                className="w-full h-full object-cover opacity-90 group-hover:opacity-100 transition-opacity"
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuB2O5JDgooB62yd_6-Kf3jYQLoXwhV3DvjsC4I1ri87iTfAeZdkWoJepYeMEx92BYNFPJb4MB4a-XCwt2Ql6e8zXoWpS4Bg8BjuuQmdjCbQiKUIeFVbMVLAq7ZtTCC06s4eQ2lV1gXqs_mJA29AEtxC5T7UUz7cphtlYBtDEPV3SFgbPEtHoHOgRiO6gkPVzDef5Li9HgUp5JGVupezTfcOfx-cvao4eG3LcyK13sz5T62LyYpfFg8RyP9BbDQVz5sPBsG-lMzcXFsN"
-              />
-            </div>
-            <div className="flex flex-col">
-              <span className="text-xs font-bold text-slate-800 group-hover:text-slate-950 transition-colors">
-                David Chen
-              </span>
-              <span className="text-[9px] text-slate-500">ID: 9931-B</span>
-            </div>
-          </div>
-          <div
-            className="col-span-1 text-[10px] text-slate-500 truncate"
-            title="IT Infra"
-          >
-            IT Infra
-          </div>
-          <div
-            className="col-span-1 text-[10px] text-slate-500 truncate"
-            title="Server Room"
-          >
-            Server Room
-          </div>
-          <div className="col-span-1 flex items-center text-slate-400">
-            <span
-              className="material-symbols-outlined text-[16px]"
-              title="Biometric"
+
+            {/* Location */}
+            <div
+              className="col-span-2 text-[11px] text-slate-500 truncate"
+              title={item.location}
             >
-              fingerprint
-            </span>
-          </div>
-          <div className="col-span-1 text-[10px] font-mono text-slate-500">
-            10:38:45
-          </div>
-          <div className="col-span-1 text-center flex justify-center">
-            <div className="inline-flex items-center justify-center gap-1 px-1.5 py-0.5 rounded text-[9px] font-bold bg-emerald-100 text-emerald-600 border border-emerald-200 w-16">
-              <span className="material-symbols-outlined text-[10px]">
-                login
+              {item.location}
+            </div>
+
+            {/* Method */}
+            <div className="col-span-1 flex items-center text-slate-400">
+              <span
+                className="material-symbols-outlined text-[16px]"
+                title={item.methodTitle}
+              >
+                {item.method}
               </span>
-              <span>Entry</span>
             </div>
-          </div>
-          <div className="col-span-2">
-            <span className="inline-flex items-center gap-1.5 text-[10px] font-medium text-amber-600">
-              <span className="size-1 bg-amber-500 rounded-full"></span> Late
-              (+15m)
-            </span>
-          </div>
-          <div className="col-span-2 text-right pr-2">
-            <span className="inline-flex items-center gap-1.5 px-2 py-1 rounded-full bg-rose-50 border border-rose-200 text-[10px] font-medium text-rose-600">
-              Flagged
-            </span>
-          </div>
-        </div>
-        <div className="grid grid-cols-12 px-4 py-4 minimal-table-row items-center cursor-pointer group gap-2">
-          <div className="col-span-3 flex items-center gap-3 pl-2">
-            <div className="size-8 rounded-full bg-slate-200 overflow-hidden relative border border-slate-300">
-              <img
-                className="w-full h-full object-cover opacity-90 group-hover:opacity-100 transition-opacity"
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuB9JEVJfEbjna3nGBIOfQrNlQ0HErlAzZphj4H8HHpYc_qKKAg69zwhAUZGzsk2oCNu57H6WrOGQHegEucKTU360aoeMaDwVqAPEikpzO3wgCRWg9CH6zK6efTeoIKlrHtlko3k7TPjPxO0ifsMul2MV9AozVVGdj6GCo8Li2L92YhUJyoG5JsVf8Z08yc3KdPmoyWNfjcH2v1laJ18y3sO485gK61sdhraOV4-iZTVC26kiVlRYmGz1XMMbEgIJgAtms7XK6nUf6Ta"
-              />
+
+            {/* Time */}
+            <div className="col-span-1 text-[11px] font-mono text-slate-500">
+              {item.time}
             </div>
-            <div className="flex flex-col">
-              <span className="text-xs font-bold text-slate-800 group-hover:text-slate-950 transition-colors">
-                Elena Rodriguez
+           
+
+            {/* Punctuality */}
+            <div className="col-span-2">
+              <span
+                className={`inline-flex items-center gap-1.5 text-[11px] font-medium ${item.punctualityColor}`}
+              >
+                <span
+                  className={`size-1 rounded-full ${item.punctualityDot}`}
+                ></span>
+                {item.punctuality}
               </span>
-              <span className="text-[9px] text-slate-500">ID: 4421-C</span>
             </div>
-          </div>
-          <div
-            className="col-span-1 text-[10px] text-slate-500 truncate"
-            title="HR Dept"
-          >
-            HR Dept
-          </div>
-          <div
-            className="col-span-1 text-[10px] text-slate-500 truncate"
-            title="West Wing"
-          >
-            West Wing
-          </div>
-          <div className="col-span-1 flex items-center text-slate-400">
-            <span
-              className="material-symbols-outlined text-[16px]"
-              title="Smart Card"
-            >
-              badge
-            </span>
-          </div>
-          <div className="col-span-1 text-[10px] font-mono text-slate-500">
-            10:35:12
-          </div>
-          <div className="col-span-1 text-center flex justify-center">
-            <div className="inline-flex items-center justify-center gap-1 px-1.5 py-0.5 rounded text-[9px] font-bold bg-emerald-100 text-emerald-600 border border-emerald-200 w-16">
-              <span className="material-symbols-outlined text-[10px]">
-                login
+
+            {/* Status */}
+            <div className="col-span-2 text-right pr-2">
+              <span
+                className={`inline-flex items-center gap-1.5 px-2 py-1 rounded-full font-medium text-[9px] border ${getStatusStyles(item.statusType)}`}
+              >
+                {item.statusType !== "neutral" && (
+                  <span
+                    className={`w-1.5 h-1.5 rounded-full ${item.statusType === "success" ? "bg-emerald-500" : "bg-amber-500"}`}
+                  ></span>
+                )}
+                {item.status}
               </span>
-              <span>Entry</span>
             </div>
           </div>
-          <div className="col-span-2">
-            <span className="inline-flex items-center gap-1.5 text-[10px] font-medium text-cyan-600">
-              <span className="size-1 bg-cyan-500 rounded-full"></span> Early
-              (-10m)
-            </span>
-          </div>
-          <div className="col-span-2 text-right pr-2">
-            <span className="inline-flex items-center gap-1.5 px-2 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-[10px] font-medium text-emerald-600">
-              Authorized
-            </span>
-          </div>
-        </div>
-        <div className="grid grid-cols-12 px-4 py-4 minimal-table-row items-center cursor-pointer group border-none gap-2">
-          <div className="col-span-3 flex items-center gap-3 pl-2">
-            <div className="size-8 rounded-full bg-slate-100 flex items-center justify-center border border-slate-200 text-xs font-bold text-slate-500">
-              MJ
-            </div>
-            <div className="flex flex-col">
-              <span className="text-xs font-bold text-slate-800 group-hover:text-slate-950 transition-colors">
-                Michael Jones
-              </span>
-              <span className="text-[9px] text-slate-500">ID: 1102-X</span>
-            </div>
-          </div>
-          <div
-            className="col-span-1 text-[10px] text-slate-500 truncate"
-            title="Operations"
-          >
-            Ops
-          </div>
-          <div
-            className="col-span-1 text-[10px] text-slate-500 truncate"
-            title="Loading Bay"
-          >
-            Load Bay
-          </div>
-          <div className="col-span-1 flex items-center text-slate-400">
-            <span
-              className="material-symbols-outlined text-[16px]"
-              title="NFC Tag"
-            >
-              nfc
-            </span>
-          </div>
-          <div className="col-span-1 text-[10px] font-mono text-slate-500">
-            10:32:05
-          </div>
-          <div className="col-span-1 text-center flex justify-center">
-            <div className="inline-flex items-center justify-center gap-1 px-1.5 py-0.5 rounded text-[9px] font-bold bg-slate-100 text-slate-500 border border-slate-200 w-16">
-              <span className="material-symbols-outlined text-[10px]">
-                logout
-              </span>
-              <span>Exit</span>
-            </div>
-          </div>
-          <div className="col-span-2">
-            <span className="inline-flex items-center gap-1.5 text-[10px] font-medium text-emerald-600">
-              <span className="size-1 bg-emerald-500 rounded-full"></span> On
-              Time
-            </span>
-          </div>
-          <div className="col-span-2 text-right pr-2">
-            <span className="inline-flex items-center gap-1.5 px-2 py-1 rounded-full bg-slate-100 border border-slate-200 text-[10px] font-medium text-slate-500">
-              Logged
-            </span>
-          </div>
-        </div>
+        ))}
       </div>
-    </>
+    </div>
   );
 }
 

@@ -3,14 +3,36 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover';
 import { getUser } from "@/config/index";
 import MultiStepDialog from "./Wizard/Page";
+import { useDarkMode } from "@/context/DarkModeContext";
+
 
 export default function Header() {
 
+    const [now, setNow] = useState(new Date());
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setNow(new Date());
+        }, 1000); // update every second
+
+        return () => clearInterval(interval);
+    }, []);
+
+    const time = now.toLocaleTimeString("en-US", {
+        hour: "2-digit",
+        minute: "2-digit",
+    });
+
+    const date = now.toLocaleDateString("en-US", {
+        month: "short",
+        day: "2-digit",
+        year: "numeric",
+    }).toUpperCase();
+
     // Initialize state based on the current presence of the 'dark' class
-    const [isDark, setIsDark] = useState(false);
+    const { isDark, setIsDark } = useDarkMode();
 
     // Sync state with document class on mount and when changed
     useEffect(() => {
@@ -108,15 +130,6 @@ export default function Header() {
                 </nav>
 
                 <div className="flex items-center space-x-4">
-                    {/* <div className="relative">
-                        <span className="material-icons absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500">search</span>
-                        <input
-                            className="pl-10 pr-4 py-2 text-sm rounded-md border border-border-light dark:border-border-dark bg-background-light dark:bg-gray-700 text-text-light dark:text-text-dark focus:outline-none focus:ring-2 focus:ring-purple-500"
-                            placeholder="Search"
-                            type="text"
-                        />
-                    </div> */}
-
                     <div className="flex items-center gap-4">
                         <button
                             className="relative p-2 text-slate-500 hover:text-red-600 transition-colors"
@@ -142,49 +155,12 @@ export default function Header() {
                                 className={`absolute top-1.5 right-1.5 w-1.5 h-1.5 rounded-full transition-colors ${isDark ? "bg-gold-glow shadow-[0_0_8px_#fbbf24]" : "bg-transparent"}`}
                             ></span>
                         </button>
-                        {/* <button
-                                    className="relative p-2 text-slate-500 hover:text-primary transition-colors"
-                                    title="Notifications"
-                                >
-                                    <span className="material-symbols-outlined">
-                                        notifications
-                                    </span>
-                                    <span className="absolute top-1 right-1 size-2 bg-rose-500 rounded-full border border-white"></span>
-                                </button> */}
-                        {/* <Popover>
-                            <PopoverTrigger asChild>
-                                <button className="w-10 h-10 rounded-full overflow-hidden focus:outline-none">
-                                    <img
-                                        alt="User profile"
-                                        className="w-full h-full object-cover"
-                                        src="default.png"
-                                    />
-                                </button>
-                            </PopoverTrigger>
-                            <PopoverContent className="w-40 p-2">
-                                <div className="flex flex-col">
-                                    <button
-                                        onClick={() => {
-                                            if (typeof window !== 'undefined') {
-                                                localStorage.removeItem('token');
-                                                localStorage.removeItem('user');
-                                                window.dispatchEvent(new Event("userUpdated"));
-                                            }
-                                            router.push('/login');
-                                        }}
-                                        className="text-left px-3 py-2 rounded hover:bg-gray-100"
-                                    >
-                                        Logout
-                                    </button>
-                                </div>
-                            </PopoverContent>
-                        </Popover> */}
                         <div className="text-right hidden sm:block">
                             <h2 className="text-sm font-bold text-gray-600 dark:text-gray-300 font-display">
-                                10:42 AM
+                                {time}
                             </h2>
                             <p className="text-[10px] text-gray-600 dark:text-gray-300 font-mono">
-                                OCT 24, 2023
+                                {date}
                             </p>
                         </div>
                     </div>

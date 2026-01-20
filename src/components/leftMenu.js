@@ -1,11 +1,12 @@
 'use client';
 
 import Link from "next/link";
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from "next/navigation";
 import { leftNavLinks } from '../lib/menuData';
 import { LogOutIcon } from "lucide-react";
 
 export default function LeftMenu() {
+  const router = useRouter();
   const pathname = usePathname();
 
   if (pathname === "/login") return null;
@@ -53,11 +54,19 @@ export default function LeftMenu() {
 
       {/* Bottom section */}
 
-      <Link
+      <button
         href="#"
-        className={`ml-3 flex items-center w-14 group-hover:w-[90%] rounded-xl px-0 group-hover:px-4 py-3 
+        className={`ml-3 mt-auto mb-18 flex items-center w-14 group-hover:w-[90%] rounded-xl px-0 group-hover:px-4 py-3 
                            transition-all duration-300 ease-in-out text-gray-500 dark:text-gray-100 hover:bg-gray-700 hover:text-white
              `}
+        onClick={() => {
+          if (typeof window !== 'undefined') {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            window.dispatchEvent(new Event("userUpdated"));
+          }
+          router.push('/login');
+        }}
       >
         {/* Icon container stays centered in collapsed state */}
         <div className="flex justify-center w-full group-hover:w-8 group-hover:justify-start transition-all duration-300">
@@ -71,7 +80,7 @@ export default function LeftMenu() {
         >
           LogOut
         </span>
-      </Link>
+      </button>
 
 
     </aside>

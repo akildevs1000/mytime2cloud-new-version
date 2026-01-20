@@ -21,24 +21,28 @@ export default (deleteEmployee) => [
     key: "employee",
     header: "Name",
     render: (employee) => (
-      <div className="flex items-center space-x-3">
-        <img
-          alt={employee.full_name}
-          className="w-10 h-10 rounded-full object-cover shadow-sm"
-          src={
-            employee.profile_picture ||
-            `https://placehold.co/40x40/6946dd/ffffff?text=${employee.full_name.charAt(0)}`
-          }
-          onError={(e) => {
-            e.target.onerror = null;
-            e.target.src = `https://placehold.co/40x40/6946dd/ffffff?text=${employee.full_name.charAt(0)}`;
-          }}
-        />
+      <div className="flex items-center gap-4">
+        <div className="relative">
+          <img
+            alt={employee.full_name}
+            className="h-10 w-10 rounded-full object-cover ring-2 ring-white dark:ring-slate-700 shadow-sm"
+            src={
+              employee.profile_picture ||
+              `https://placehold.co/40x40/6946dd/ffffff?text=${employee.full_name.charAt(0)}`
+            }
+            onError={(e) => {
+              e.target.onerror = null;
+              e.target.src = `https://placehold.co/40x40/6946dd/ffffff?text=${employee.full_name.charAt(0)}`;
+            }} />
+          <div className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 border-2 border-white dark:border-slate-800 rounded-full"></div>
+        </div>
         <div>
-          <p className="font-medium text-gray-800">{employee.full_name}</p>
-          <p className="text-sm text-gray-500">
+          <div className="font-medium text-slate-800 dark:text-slate-100">
+            {employee.full_name}
+          </div>
+          <div className="text-xs text-slate-400">
             {employee.designation?.title || employee.last_name}
-          </p>
+          </div>
         </div>
       </div>
     ),
@@ -47,49 +51,54 @@ export default (deleteEmployee) => [
     key: "emp_device",
     header: "Emp Id / Device Id",
     render: (employee) => (
-      <>
-        <p className="text-gray-800">{employee.employee_id || "—"}</p>
-        <p className="text-sm text-gray-500">Device ID: {employee.system_user_id || "—"}</p>
-      </>
+      <div className="text-sm text-slate-500 dark:text-slate-400 hidden xl:table-cell font-mono">
+        {employee.system_user_id}
+      </div>
     ),
   },
   {
     key: "branch",
     header: "Branch",
-    render: (employee) => employee.branch?.branch_name || "N/A",
+    render: (employee) => (
+      <div className="text-sm text-slate-500 dark:text-slate-400 hidden xl:table-cell font-mono">
+        {employee.branch?.branch_name || "N/A"}
+      </div>
+    ),
   },
   {
     key: "department",
     header: "Department",
-    render: (employee) => employee.department?.name || "N/A",
+    render: (employee) => (
+      <div className="text-sm text-slate-500 dark:text-slate-400 hidden xl:table-cell font-mono">
+        {employee.department?.name || "N/A"}
+      </div>
+    ),
   },
+
   {
     key: "mobile_email",
     header: "Mobile / Email",
     render: (employee) => (
-      <>
-        <p className="text-gray-800">{employee.phone_number || "—"}</p>
-        <p className="text-sm text-gray-500">{employee.user?.email || "—"}</p>
-      </>
+      <div className="text-sm text-slate-500 dark:text-slate-400 hidden xl:table-cell font-mono">
+        <p className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium">{employee.user?.email || "—"}</p>
+        <br />
+        <p className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium">{employee.phone_number || "—"}</p>
+      </div>
     ),
   },
   {
     key: "timezone",
     header: "Timezone / Join Date",
-    render: (employee) => employee.show_joining_date || "—",
+    render: (employee) => (
+      <div className="text-sm text-slate-500 dark:text-slate-400 hidden xl:table-cell font-mono">
+        {employee.show_joining_date || "N/A"}
+      </div>
+    ),
   },
+
   {
     key: "access",
     header: "Access",
-    render: () => (
-      <span className="inline-flex items-center px-3 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">
-        Full Access
-      </span>
-    ),
-  },
-  {
-    key: "security",
-    header: "Options / Security",
     render: (employee) => {
       const { rfid_card_number, finger_prints, rfid_card_password, palms, profile_picture } = employee;
 
@@ -102,7 +111,7 @@ export default (deleteEmployee) => [
       const isFace = profile_picture;
 
       return (
-        <div className="flex items-center space-x-2 text-gray-500">
+        <div className="flex items-center space-x-2 text-green-500 dark:text-slate-600">
           {isFace && <ScanFace className="w-5 h-5 hover:text-indigo-600 transition-colors" title="Face" />}
           {isCardNumberSet && <QrCode className="w-5 h-5 hover:text-indigo-600 transition-colors" title="Card" />}
           {isFingerPrint && <Fingerprint className="w-5 h-5 hover:text-indigo-600 transition-colors" title="Fingerprint" />}
