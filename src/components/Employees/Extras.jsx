@@ -67,7 +67,7 @@ export function EmployeeExtras({ data, onUploadSuccess }) {
         setSelectedBranch(
           selectedBranchItem.id === selectedBranch
             ? null
-            : selectedBranchItem.id
+            : selectedBranchItem.id,
         );
       }
     }
@@ -84,7 +84,6 @@ export function EmployeeExtras({ data, onUploadSuccess }) {
   };
 
   const handleExportEmployees = async () => {
-
     if (data.length == 0) {
       return;
     }
@@ -93,7 +92,7 @@ export function EmployeeExtras({ data, onUploadSuccess }) {
     let element = document.createElement("a");
     element.setAttribute(
       "href",
-      "data:text/csv;charset=utf-8, " + encodeURIComponent(csvData)
+      "data:text/csv;charset=utf-8, " + encodeURIComponent(csvData),
     );
     element.setAttribute("download", "download.csv");
     document.body.appendChild(element);
@@ -102,28 +101,28 @@ export function EmployeeExtras({ data, onUploadSuccess }) {
   };
 
   const json_to_csv = (json) => {
-      let data = json.map((e) => ({
-        first_name: e.first_name,
-        last_name: e.last_name,
-        branch_name: e.department.branch && e.department.branch.branch_name,
-        email: e.user.email,
-        phone_number: e.phone_number,
-        whatsapp_number: e.whatsapp_number,
-        phone_relative_number: e.phone_relative_number,
-        whatsapp_relative_number: e.whatsapp_relative_number,
-        employee_id: e.employee_id,
-        joining_date: e.show_joining_date,
-        department: e.department.name,
-        sub_department: e.sub_department.name,
-        designation: e.designation.name,
-      }));
-      let header = Object.keys(data[0]).join(",") + "\n";
-      let rows = "";
-      data.forEach((e) => {
-        rows += Object.values(e).join(",").trim() + "\n";
-      });
-      return header + rows;
-    }
+    let data = json.map((e) => ({
+      first_name: e.first_name,
+      last_name: e.last_name,
+      branch_name: e.department.branch && e.department.branch.branch_name,
+      email: e.user.email,
+      phone_number: e.phone_number,
+      whatsapp_number: e.whatsapp_number,
+      phone_relative_number: e.phone_relative_number,
+      whatsapp_relative_number: e.whatsapp_relative_number,
+      employee_id: e.employee_id,
+      joining_date: e.show_joining_date,
+      department: e.department.name,
+      sub_department: e.sub_department.name,
+      designation: e.designation.name,
+    }));
+    let header = Object.keys(data[0]).join(",") + "\n";
+    let rows = "";
+    data.forEach((e) => {
+      rows += Object.values(e).join(",").trim() + "\n";
+    });
+    return header + rows;
+  };
 
   const importEmployee = async () => {
     setSnackbar(null);
@@ -188,37 +187,65 @@ export function EmployeeExtras({ data, onUploadSuccess }) {
       {/* Dropdown Menu */}
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <button className="p-2 bg-white border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-400">
+          <button
+            className="
+      p-2 transition-all duration-200 rounded-xl border glass-card
+      !bg-white border-gray-200 text-slate-600 hover:bg-gray-50
+      dark:!bg-slate-900 dark:border-white/10 dark:text-slate-400 dark:hover:text-slate-100 dark:hover:border-white/20
+      active:scale-95
+    "
+          >
             <MoreVertical className="w-5 h-5" />
           </button>
         </DropdownMenuTrigger>
 
         <DropdownMenuContent
           align="end"
-          className="w-60 bg-white shadow-md rounded-md py-1"
+          className="
+      w-60 mt-2 p-1.5 rounded-xl shadow-2xl animate-toast
+      glass-panel !bg-white border-gray-200
+      dark:!bg-slate-900 dark:border-white/10
+    "
         >
           <DropdownMenuItem
             onClick={handleDownloadSample}
-            className="flex items-center gap-2 px-3 py-2 text-gray-700 hover:bg-gray-100 cursor-pointer"
+            className="
+        flex items-center gap-2 px-3 py-2.5 cursor-pointer rounded-lg transition-all duration-200 font-body text-sm
+        /* Light Hover */
+        text-slate-600 hover:bg-slate-100 hover:text-slate-900 outline-none
+        /* Dark Hover */
+        dark:text-slate-400 dark:hover:bg-white/5 dark:hover:text-slate-100
+      "
           >
-            <Download className="w-4 h-4" /> Download Sample File
+            <Download className="w-4 h-4 opacity-70" />
+            <span>Download Sample File</span>
           </DropdownMenuItem>
 
           <DropdownMenuItem
             onClick={() => setDialogOpen(true)}
-            className="flex items-center gap-2 px-3 py-2 text-gray-700 hover:bg-gray-100 cursor-pointer"
+            className="
+        flex items-center gap-2 px-3 py-2.5 cursor-pointer rounded-lg transition-all duration-200 font-body text-sm
+        text-slate-600 hover:bg-slate-100 hover:text-slate-900 outline-none
+        dark:text-slate-400 dark:hover:bg-white/5 dark:hover:text-slate-100
+      "
           >
-            <Upload className="w-4 h-4" /> Import Employees
+            <Upload className="w-4 h-4 opacity-70" />
+            <span>Import Employees</span>
           </DropdownMenuItem>
+
           <DropdownMenuItem
             onClick={handleExportEmployees}
-            className="flex items-center gap-2 px-3 py-2 text-gray-700 hover:bg-gray-100 cursor-pointer"
+            className="
+        flex items-center gap-2 px-3 py-2.5 cursor-pointer rounded-lg transition-all duration-200 font-body text-sm
+        text-slate-600 hover:bg-slate-100 hover:text-slate-900 outline-none
+        dark:text-slate-400 dark:hover:bg-white/5 dark:hover:text-slate-100
+      "
           >
-            <Download className="w-4 h-4" /> Export Employees
+            <Download className="w-4 h-4 opacity-70" />
+            <span>Export Employees</span>
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
-
       {/* Dialog */}
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogContent className="max-w-md w-[90%] p-6 rounded-2xl">

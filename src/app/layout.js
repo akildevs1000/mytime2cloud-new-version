@@ -26,10 +26,10 @@ export default function RootLayout({ children }) {
           href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
         />
       </head>
-      <body className="bg-obsidian text-slate-200 font-body overflow-hidden selection:bg-primary/30">
+      <body className="bg-obsidian text-slate-200 font-body  selection:bg-primary/30">
         <DarkModeProvider>
           <Header />
-          <div className="flex flex-1 overflow-hidden">
+          <div className="flex flex-1 ">
             <LeftMenu />
             <MainContentWrapper>
               {children}

@@ -4,7 +4,6 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { Search, Plus, RefreshCw } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { Input } from '@/components/ui/input';
 import { getBranches, getDepartments, getEmployees, removeEmployee } from '@/lib/api';
 import { EmployeeExtras } from '@/components/Employees/Extras';
 
@@ -14,12 +13,11 @@ import Pagination from '@/lib/Pagination';
 import { parseApiError } from '@/lib/utils';
 import DropDown from '@/components/ui/DropDown';
 import MultiDropDown from '@/components/ui/MultiDropDown';
+import Dropdown from '@/components/Theme/DropDown';
+import Input from '@/components/Theme/Input';
+import IconButton from '@/components/Theme/IconButton';
 
 export default function EmployeeDataTable() {
-
-
-    const [isOpen, setIsOpen] = useState(false);
-
 
     const [employees, setEmployees] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
@@ -31,13 +29,13 @@ export default function EmployeeDataTable() {
     const [total, setTotalEmployees] = useState(0);
     const [searchTerm, setSearchTerm] = useState('');
 
-    const [selectedBranch, setSelectedBranch] = useState({ name: "", id: "" });
+    const [selectedBranch, setSelectedBranch] = useState({ name: "Select All", id: "" });
     const [selectedDepartments, setSelectedDepartments] = useState([]);
     const [branches, setBranches] = useState([]);
 
     const fetchBranches = async () => {
         try {
-            setBranches(await getBranches());
+            setBranches([{ name: "Select All", id: "" }, ...await getBranches()]);
         } catch (error) {
             setError(parseApiError(error));
         }
@@ -129,45 +127,24 @@ export default function EmployeeDataTable() {
                 </h1>
                 <div className="flex flex-wrap items-center space-x-3 space-y-2 sm:space-y-0">
                     <div className="relative">
-                        {/* <DropDown
-                            placeholder="Select Branch"
-                            onChange={(id) => { setSelectedBranch(id); setCurrentPage(1); }}
-                            value={selectedBranch}
+                        <Dropdown
                             items={branches}
-                        /> */}
-
-                        <button
-                            onClick={() => setIsOpen(!isOpen)}
-                            className="w-[300px] flex items-center justify-between px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-200 rounded-xl shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all dark:bg-gray-700 dark:border-none dark:text-gray-200"
-                        >
-                            <span>
-                                {selectedBranch.name}-{selectedBranch?.id}
-                            </span>
-                            <span
-                                className={`material-symbols-outlined transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
-                            >
-                                expand_more
-                            </span>
-                        </button>
-
-                        {isOpen && (
-                            <div className="absolute z-10 w-full mt-2 origin-top-right bg-white border border-gray-100 rounded-xl shadow-xl dark:bg-gray-700 dark:border-gray-800 p-1.5 animate-in fade-in zoom-in duration-100">
-                                {branches.map((opt) => (
-                                    <div
-                                        key={opt.id}
-                                        onClick={() => {
-                                            setSelectedBranch(opt); setCurrentPage(1);
-                                            setIsOpen(false);
-                                        }}
-                                        className="flex items-center px-3 py-2 text-sm rounded-lg cursor-pointer transition-colors hover:bg-primary/10 hover:text-primary text-gray-600 dark:text-gray-300"
-                                    >
-                                        {opt.name}
-                                    </div>
-                                ))}
-                            </div>
-                        )}
-
-
+                            selectedItem={selectedBranch}
+                            onSelect={(item) => {
+                                setSelectedBranch(item);
+                                setCurrentPage(1); // Any extra logic goes here
+                            }}
+                            placeholder="Select a Branch"
+                            width="w-[320px]"
+                        />
+                    </div>
+                    <div className="relative">
+                        <Input
+                            placeholder="Search by name or ID"
+                            icon="search"
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                        />
                     </div>
                     {/* <div className="relative">
                         <MultiDropDown
@@ -179,36 +156,21 @@ export default function EmployeeDataTable() {
                         />
                     </div> */}
 
-
-                    {/* Search Input */}
-                    <div className="relative">
-                        <input className="w-[200px] flex items-center justify-between px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-200 rounded-xl shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all dark:bg-gray-700 dark:border-none dark:text-gray-200"
-                            placeholder="Search by name or ID"
-                            type="text"
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                        />
-                    </div>
-
-                    {/* Refresh Button */}
-                    <button
+                    <IconButton
+                        icon={RefreshCw}
                         onClick={handleRefresh}
-                        disabled={isLoading}
-                        className="p-2 bg-white border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors disabled:opacity-50"
+                        isLoading={isLoading}
                         title="Refresh Data"
-                    >
-                        <RefreshCw className={`w-4 h-4  ${isLoading ? 'animate-spin' : ''}`} />
-                    </button>
+                    />
 
                     <EmployeeExtras data={employees} onUploadSuccess={fetchEmployees} />
 
-
                     {/* New Employee Button */}
                     <Link href="/employees/create">
-                        <button className="bg-primary text-white px-4 py-1 rounded-lg font-semibold shadow-md hover:bg-indigo-700 transition-all flex items-center space-x-2 whitespace-nowrap">
+                        <div className="bg-primary text-white px-4 py-1 rounded-lg font-semibold shadow-md hover:bg-indigo-700 transition-all flex items-center space-x-2 whitespace-nowrap">
                             <Plus className="w-4 h-4" />
                             <span>New</span>
-                        </button>
+                        </div>
                     </Link>
                 </div>
             </div>

@@ -12,7 +12,7 @@ export default function MainContentWrapper({ children }) {
   const paddingClass = isLoginPage ? '' : 'p-5';
 
   return (
-    <main className={`flex-1 flex flex-col h-screen overflow-hidden relative z-10 ${paddingClass}`}>
+    <main className={`flex-1 flex flex-col h-screen  relative z-10 ${paddingClass}`}>
       {children}
     </main>
   );

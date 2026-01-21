@@ -18,7 +18,7 @@ import { Lock } from "lucide-react";
 import { updateAccessSettings } from "@/lib/api";
 import { parseApiError } from "@/lib/utils";
 
-const RFID = ({ employee_id, rfid_card_number = "",rfid_card_password = "" }) => {
+const RFID = ({ employee_id, rfid_card_number = "", rfid_card_password = "" }) => {
     const router = useRouter();
     const [open, setOpen] = useState(false);
     const [globalError, setGlobalError] = useState(null);
@@ -56,9 +56,93 @@ const RFID = ({ employee_id, rfid_card_number = "",rfid_card_password = "" }) =>
 
             router.push(`/employees`);
         } catch (error) {
-           setGlobalError(parseApiError(error));
+            setGlobalError(parseApiError(error));
         }
     };
+
+    return <><section
+        className="glass-card bg-card-light dark:bg-card-dark border border-white/50 dark:border-slate-700/50 rounded-2xl p-6 md:p-8 scroll-mt-28"
+        id="hardware"
+    >
+        <div
+            className="flex items-center gap-3 mb-6 border-b border-slate-200 dark:border-slate-700 pb-4"
+        >
+            <span
+                className="material-icons text-primary bg-indigo-50 dark:bg-indigo-900/30 p-2 rounded-lg"
+            >badge</span
+            >
+            <h3
+                className="text-xl font-semibold text-slate-800 dark:text-slate-100"
+            >
+                Hardware Access
+            </h3>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="space-y-3">
+                <label
+                    className="block text-sm font-medium text-slate-700 dark:text-slate-300"
+                >RFID Card Number</label
+                >
+                <div className="relative rounded-md shadow-sm">
+                    <div
+                        className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
+                    >
+                        <span className="material-icons text-slate-400 text-lg"
+                        >nfc</span
+                        >
+                    </div>
+                    <input
+                        className="focus:ring-primary focus:border-primary block w-full pl-10 sm:text-sm border-slate-300 dark:border-slate-600 rounded-lg bg-white/50 dark:bg-slate-800/50 py-2.5 text-slate-900 dark:text-white tracking-widest"
+                        placeholder="XXXX-XXXX-XXXX"
+                        type="text"
+                        value="8843-2219-0043"
+                    />
+                    <div
+                        className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                    >
+                        <span
+                            className="material-icons text-green-500 text-lg cursor-help"
+                            title="Active"
+                        >check_circle</span
+                        >
+                    </div>
+                </div>
+                <p className="text-xs text-slate-500 dark:text-slate-400">
+                    Linked to physical access badge #B-102
+                </p>
+            </div>
+            <div className="space-y-3">
+                <label
+                    className="block text-sm font-medium text-slate-700 dark:text-slate-300"
+                >Door Access PIN</label
+                >
+                <div className="relative rounded-md shadow-sm">
+                    <div
+                        className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
+                    >
+                        <span className="material-icons text-slate-400 text-lg"
+                        >dialpad</span
+                        >
+                    </div>
+                    <input
+                        className="focus:ring-primary focus:border-primary block w-full pl-10 sm:text-sm border-slate-300 dark:border-slate-600 rounded-lg bg-white/50 dark:bg-slate-800/50 py-2.5 text-slate-900 dark:text-white tracking-widest"
+                        placeholder="****"
+                        type="password"
+                        value="1234"
+                    />
+                    <button
+                        className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
+                        type="button"
+                    >
+                        <span className="material-icons text-lg">visibility_off</span>
+                    </button>
+                </div>
+                <p className="text-xs text-slate-500 dark:text-slate-400">
+                    Used for keypad entry at main entrances.
+                </p>
+            </div>
+        </div>
+    </section></>;
 
     return (
         <div className="bg-white dark:bg-gray-800 py-8">

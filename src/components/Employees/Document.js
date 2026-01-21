@@ -4,20 +4,6 @@ import { useEffect, useMemo, useState } from "react";
 import { deleteDocument, getDocuments, uploadEmployeeDocument } from "@/lib/api";
 import { getEmployeeDocumentDonwloadLink } from "@/lib/utils";
 
-// shadcn/ui
-import {
-    Dialog,
-    DialogTrigger,
-    DialogContent,
-    DialogHeader,
-    DialogTitle,
-    DialogDescription,
-    DialogFooter,
-    DialogClose,
-} from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 
 const Document = ({ employee_id }) => {
     const [documents, setDocuments] = useState([]);
@@ -77,136 +63,307 @@ const Document = ({ employee_id }) => {
         }
     };
 
-    return (
-        <div className="py-6 space-y-8">
-            <div>
-                <div className="mb-4 flex items-center justify-between">
-                    <h3 className="text-lg font-semibold text-text-light dark:text-text-dark">
-                        All Documents
-                    </h3>
 
-                    <Dialog open={open} onOpenChange={setOpen}>
-                        <DialogTrigger asChild>
-                            <Button className="text-sm font-medium">
-                                <span className="material-icons mr-2 text-base">add</span>
-                                Add Document
-                            </Button>
-                        </DialogTrigger>
-
-                        <DialogContent className="sm:max-w-md">
-                            <DialogHeader>
-                                <DialogTitle>Add Document</DialogTitle>
-                                <DialogDescription>
-                                    Provide a title and attach a file. Supported types depend on your backend validation.
-                                </DialogDescription>
-                            </DialogHeader>
-
-                            <form onSubmit={onSubmit} className="space-y-5">
-                                <div className="space-y-2">
-                                    <Label htmlFor="doc-title">Title</Label>
-                                    <Input
-                                        id="doc-title"
-                                        placeholder="e.g., Passport Copy"
-                                        value={title}
-                                        onChange={(e) => setTitle(e.target.value)}
-                                        required
-                                    />
-                                </div>
-
-                                <div className="space-y-2">
-                                    <Label htmlFor="doc-file">Attachment</Label>
-                                    <Input
-                                        id="doc-file"
-                                        type="file"
-                                        onChange={(e) => setFile(e.target.files?.[0] ?? null)}
-                                        // accept=".pdf,.jpg,.jpeg,.png,.doc,.docx"
-                                        required
-                                    />
-                                    {file && (
-                                        <p className="text-xs text-muted-foreground">
-                                            Selected: {file.name} ({Math.ceil(file.size / 1024)} KB)
-                                        </p>
-                                    )}
-                                </div>
-
-                                <DialogFooter className="gap-2">
-                                    <DialogClose asChild>
-                                        <Button
-                                            type="button"
-                                            variant="outline"
-                                            disabled={submitting}
-                                            onClick={resetForm}
-                                        >
-                                            Cancel
-                                        </Button>
-                                    </DialogClose>
-
-                                    <Button type="submit" disabled={submitting}>
-                                        {submitting ? "Uploading..." : "Save"}
-                                    </Button>
-                                </DialogFooter>
-                            </form>
-                        </DialogContent>
-                    </Dialog>
+    return <>
+        <div
+            className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-5 auto-rows-[minmax(140px,auto)]"
+        >
+            <div
+                className="glass-card col-span-1 md:col-span-2 lg:col-span-2 row-span-2 p-6 flex flex-col rounded-lg relative overflow-hidden group"
+            >
+                <div
+                    className="flex items-center justify-between mb-6 relative z-10"
+                >
+                    <div className="flex items-center gap-4">
+                        <div
+                            className="size-14 rounded-2xl bg-gradient-to-br from-blue-500/20 to-primary/10 flex items-center justify-center text-primary shadow-inner ring-1 ring-white/10"
+                        >
+                            <span
+                                className="material-symbols-outlined text-[32px] icon-fill"
+                            >folder_shared</span
+                            >
+                        </div>
+                        <div>
+                            <h2 className="text-xl font-bold text-white tracking-tight">
+                                Personal ID
+                            </h2>
+                            <div
+                                className="flex items-center gap-2 text-sm text-[#9db0b9] mt-0.5"
+                            >
+                                <span>4 Files</span>
+                                <span className="size-1 bg-[#5f717a] rounded-full"></span>
+                                <span>8.2 MB</span>
+                            </div>
+                        </div>
+                    </div>
+                    <button
+                        className="size-10 rounded-lg bg-white/5 hover:bg-white/10 flex items-center justify-center text-white transition-colors border border-white/5"
+                    >
+                        <span className="material-symbols-outlined">add</span>
+                    </button>
                 </div>
-
-                <div className="overflow-hidden rounded-lg border border-border-light dark:border-border-dark">
-                    <table className="min-w-full divide-y divide-border-light dark:divide-border-dark">
-                        <thead className="bg-background-light dark:bg-background-dark">
-                            <tr>
-                                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-subtext-light dark:text-subtext-dark">
-                                    Document Title
-                                </th>
-                                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-subtext-light dark:text-subtext-dark">
-                                    Document Attachment
-                                </th>
-                                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-subtext-light dark:text-subtext-dark">
-                                    Action
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody className="divide-y divide-border-light bg-surface-light dark:divide-border-dark dark:bg-surface-dark">
-                            {documents.map((e, index) => (
-                                <tr key={e?.id ?? index}>
-                                    <td className="whitespace-nowrap px-6 py-4 text-sm font-medium text-text-light dark:text-text-dark">
-                                        {e.title}
-                                    </td>
-                                    <td className="whitespace-nowrap px-6 py-4 text-sm text-subtext-light dark:text-subtext-dark">
-                                        <a
-                                            title="Download Attachment"
-                                            target="_blank"
-                                            href={getEmployeeDocumentDonwloadLink(e.employee_id, e.attachment)}
-                                            className="inline-flex items-center text-violet-600 hover:text-violet-800"
-                                        >
-                                            <span className="material-icons align-middle text-sm">download</span>
-                                        </a>
-                                    </td>
-
-                                    <td className="whitespace-nowrap px-6 py-4 text-sm text-subtext-light dark:text-subtext-dark">
-                                        <a
-                                            title="Delete Attachment"
-                                            onClick={() => onDelete(e.id)}
-                                            className="inline-flex items-center text-violet-600 hover:text-violet-800 cursor-pointer"
-                                        >
-                                            <span className="material-icons align-middle text-sm">delete</span>
-                                        </a>
-                                    </td>
-
-                                </tr>
-                            ))}
-                            {documents.length === 0 && (
-                                <tr>
-                                    <td colSpan={2} className="px-6 py-10 text-center text-sm text-muted-foreground">
-                                        No documents yet.
-                                    </td>
-                                </tr>
-                            )}
-                        </tbody>
-                    </table>
+                <div
+                    className="flex flex-col gap-2 relative z-10 flex-1 overflow-y-auto custom-scrollbar pr-1"
+                >
+                    <div
+                        className="flex items-center p-3 rounded-lg bg-[#18242a]/60 hover:bg-[#18242a] border border-transparent hover:border-white/5 transition-all group/file cursor-pointer"
+                    >
+                        <div
+                            className="size-10 rounded-lg bg-red-500/10 flex items-center justify-center text-red-400 mr-4 shrink-0 shadow-sm"
+                        >
+                            <span className="material-symbols-outlined"
+                            >picture_as_pdf</span
+                            >
+                        </div>
+                        <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-2">
+                                <h4
+                                    className="text-sm font-medium text-white truncate group-hover/file:text-primary transition-colors"
+                                >
+                                    Passport_Scan_2024.pdf
+                                </h4>
+                                <span
+                                    className="hidden group-hover/file:block text-[10px] bg-primary/20 text-primary px-1.5 rounded uppercase font-bold tracking-wider"
+                                >New</span
+                                >
+                            </div>
+                            <p className="text-xs text-[#9db0b9] mt-0.5">
+                                2.4 MB • Uploaded Jan 12, 2024
+                            </p>
+                        </div>
+                        <button
+                            className="p-2 text-[#5f717a] hover:text-white transition-colors opacity-0 group-hover/file:opacity-100 transform translate-x-2 group-hover/file:translate-x-0 duration-200"
+                        >
+                            <span className="material-symbols-outlined">download</span>
+                        </button>
+                    </div>
+                    <div
+                        className="flex items-center p-3 rounded-lg bg-[#18242a]/60 hover:bg-[#18242a] border border-transparent hover:border-white/5 transition-all group/file cursor-pointer"
+                    >
+                        <div
+                            className="size-10 rounded-lg bg-blue-500/10 flex items-center justify-center text-blue-400 mr-4 shrink-0 shadow-sm"
+                        >
+                            <span className="material-symbols-outlined">image</span>
+                        </div>
+                        <div className="flex-1 min-w-0">
+                            <h4
+                                className="text-sm font-medium text-white truncate group-hover/file:text-primary transition-colors"
+                            >
+                                Drivers_License_Front.jpg
+                            </h4>
+                            <p className="text-xs text-[#9db0b9] mt-0.5">
+                                4.1 MB • Uploaded Feb 10, 2023
+                            </p>
+                        </div>
+                        <button
+                            className="p-2 text-[#5f717a] hover:text-white transition-colors opacity-0 group-hover/file:opacity-100 transform translate-x-2 group-hover/file:translate-x-0 duration-200"
+                        >
+                            <span className="material-symbols-outlined">download</span>
+                        </button>
+                    </div>
+                    <div
+                        className="flex items-center p-3 rounded-lg bg-[#18242a]/60 hover:bg-[#18242a] border border-transparent hover:border-white/5 transition-all group/file cursor-pointer"
+                    >
+                        <div
+                            className="size-10 rounded-lg bg-purple-500/10 flex items-center justify-center text-purple-400 mr-4 shrink-0 shadow-sm"
+                        >
+                            <span className="material-symbols-outlined">description</span>
+                        </div>
+                        <div className="flex-1 min-w-0">
+                            <h4
+                                className="text-sm font-medium text-white truncate group-hover/file:text-primary transition-colors"
+                            >
+                                Social_Security_Card.pdf
+                            </h4>
+                            <p className="text-xs text-[#9db0b9] mt-0.5">
+                                850 KB • Uploaded Mar 05, 2023
+                            </p>
+                        </div>
+                        <button
+                            className="p-2 text-[#5f717a] hover:text-white transition-colors opacity-0 group-hover/file:opacity-100 transform translate-x-2 group-hover/file:translate-x-0 duration-200"
+                        >
+                            <span className="material-symbols-outlined">download</span>
+                        </button>
+                    </div>
+                </div>
+                <div
+                    className="absolute -right-8 -bottom-10 opacity-[0.03] pointer-events-none rotate-12"
+                >
+                    <span className="material-symbols-outlined text-[240px]"
+                    >folder_shared</span
+                    >
+                </div>
+            </div>
+            <div
+                className="glass-card col-span-1 md:col-span-1 lg:col-span-1 row-span-1 p-5 flex flex-col rounded-lg relative overflow-hidden group hover:border-primary/30"
+            >
+                <div className="flex items-start justify-between mb-2">
+                    <div
+                        className="size-12 rounded-xl bg-orange-500/10 flex items-center justify-center text-orange-400 mb-3 group-hover:bg-orange-500/20 transition-colors"
+                    >
+                        <span
+                            className="material-symbols-outlined text-[28px] icon-fill"
+                        >work_history</span
+                        >
+                    </div>
+                    <span
+                        className="text-xs font-bold text-[#5f717a] uppercase tracking-wider bg-[#18242a] px-2 py-1 rounded"
+                    >2 Files</span
+                    >
+                </div>
+                <h3 className="text-lg font-bold text-white mb-4">Employment</h3>
+                <div className="flex flex-col gap-2 mt-auto">
+                    <div
+                        className="flex items-center gap-3 p-2 rounded hover:bg-white/5 cursor-pointer transition-colors"
+                    >
+                        <span
+                            className="material-symbols-outlined text-sm text-[#9db0b9]"
+                        >description</span
+                        >
+                        <span className="text-sm text-white truncate"
+                        >Contract_2024.pdf</span
+                        >
+                    </div>
+                    <div
+                        className="flex items-center gap-3 p-2 rounded hover:bg-white/5 cursor-pointer transition-colors"
+                    >
+                        <span
+                            className="material-symbols-outlined text-sm text-[#9db0b9]"
+                        >description</span
+                        >
+                        <span className="text-sm text-white truncate"
+                        >Offer_Letter.docx</span
+                        >
+                    </div>
+                </div>
+            </div>
+            <div
+                className="glass-card col-span-1 md:col-span-3 lg:col-span-1 row-span-2 p-0 flex flex-col rounded-lg border-l-0 lg:border-l-4 border-orange-500/50 relative overflow-hidden bg-gradient-to-b from-[rgba(24,36,42,0.8)] to-[rgba(16,28,34,0.95)]"
+            >
+                <div
+                    className="p-6 pb-4 border-b border-white/5 bg-white/5 flex justify-between items-center relative z-10"
+                >
+                    <h3
+                        className="text-white font-bold text-lg flex items-center gap-2"
+                    >
+                        Alerts
+                        <span className="flex h-2.5 w-2.5 relative ml-1">
+                            <span
+                                className="animate-ping absolute inline-flex h-full w-full rounded-full bg-orange-400 opacity-75"
+                            ></span>
+                            <span
+                                className="relative inline-flex rounded-full h-2.5 w-2.5 bg-orange-500"
+                            ></span>
+                        </span>
+                    </h3>
+                    <span
+                        className="text-xs font-medium text-orange-400 bg-orange-500/10 px-2 py-1 rounded border border-orange-500/20"
+                    >Action Req</span
+                    >
+                </div>
+                <div className="p-5 flex flex-col gap-4 relative z-10 flex-1">
+                    <div
+                        className="bg-[#18242a] p-4 rounded-xl border border-orange-500/30 shadow-[0_4px_20px_-5px_rgba(249,115,22,0.15)] relative overflow-hidden group"
+                    >
+                        <div
+                            className="absolute left-0 top-0 bottom-0 w-1 bg-orange-500"
+                        ></div>
+                        <div className="flex items-start gap-3 relative z-10">
+                            <div
+                                className="mt-0.5 bg-orange-500/20 p-1.5 rounded text-orange-400"
+                            >
+                                <span className="material-symbols-outlined text-[20px]"
+                                >warning</span
+                                >
+                            </div>
+                            <div className="flex-1">
+                                <p className="text-sm font-bold text-white">
+                                    Passport Expiry
+                                </p>
+                                <p className="text-xs text-[#9db0b9] mt-1 leading-relaxed">
+                                    Your passport document is set to expire in
+                                    <span className="text-orange-300 font-bold">14 days</span
+                                    >.
+                                </p>
+                                <button
+                                    className="mt-3 text-xs font-semibold bg-orange-500 text-black px-4 py-2 rounded-lg hover:bg-orange-400 transition-colors w-full shadow-lg shadow-orange-500/20"
+                                >
+                                    Update Now
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div
+                        className="bg-[#18242a]/50 p-4 rounded-xl border border-dashed border-[#5f717a]/30 hover:border-white/20 transition-colors"
+                    >
+                        <div className="flex items-center gap-3">
+                            <div className="bg-[#283339] p-1.5 rounded text-[#9db0b9]">
+                                <span className="material-symbols-outlined text-[20px]"
+                                >event_repeat</span
+                                >
+                            </div>
+                            <div className="flex-1">
+                                <p className="text-sm font-medium text-white opacity-80">
+                                    Safety Compliance
+                                </p>
+                                <p className="text-xs text-[#5f717a] mt-0.5">
+                                    Expires Dec 12
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div
+                    className="absolute top-0 right-0 w-full h-1/2 bg-orange-500/5 blur-3xl pointer-events-none"
+                ></div>
+            </div>
+            <div
+                className="glass-card col-span-1 md:col-span-1 lg:col-span-1 row-span-1 p-5 flex flex-col rounded-lg relative overflow-hidden group hover:border-primary/30"
+            >
+                <div className="flex items-start justify-between mb-2">
+                    <div
+                        className="size-12 rounded-xl bg-purple-500/10 flex items-center justify-center text-purple-400 mb-3 group-hover:bg-purple-500/20 transition-colors"
+                    >
+                        <span
+                            className="material-symbols-outlined text-[28px] icon-fill"
+                        >workspace_premium</span
+                        >
+                    </div>
+                    <span
+                        className="text-xs font-bold text-[#5f717a] uppercase tracking-wider bg-[#18242a] px-2 py-1 rounded"
+                    >3 Files</span
+                    >
+                </div>
+                <h3 className="text-lg font-bold text-white mb-4">
+                    Certifications
+                </h3>
+                <div className="flex flex-col gap-2 mt-auto">
+                    <div
+                        className="flex items-center gap-3 p-2 rounded hover:bg-white/5 cursor-pointer transition-colors"
+                    >
+                        <span
+                            className="material-symbols-outlined text-sm text-[#9db0b9]"
+                        >picture_as_pdf</span
+                        >
+                        <span className="text-sm text-white truncate"
+                        >AWS_Solutions_Architect.pdf</span
+                        >
+                    </div>
+                    <div
+                        className="flex items-center gap-3 p-2 rounded hover:bg-white/5 cursor-pointer transition-colors"
+                    >
+                        <span
+                            className="material-symbols-outlined text-sm text-[#9db0b9]"
+                        >picture_as_pdf</span
+                        >
+                        <span className="text-sm text-white truncate"
+                        >PMP_Certificate_2023.pdf</span
+                        >
+                    </div>
                 </div>
             </div>
         </div>
-    );
+    </>
 };
 
 export default Document;
