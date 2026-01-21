@@ -68,26 +68,28 @@ const EmergencyContact = ({ id, phone_relative_number, relation, local_address, 
 
 
   return (<>
-    <div
-      className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8"
-    >
-      <div>
-        <h2 className="text-3xl font-bold text-slate-900 dark:text-white">
-          Contact Details
-        </h2>
-        <p className="text-slate-500 dark:text-slate-400 mt-1">
-          Maintain employee primary communication channels and emergency contact information.
-        </p>
+   <div
+        className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8"
+      >
+        <div>
+          <h2 className="text-3xl font-bold text-slate-900 dark:text-white">
+            Contact Details
+          </h2>
+          <p className="text-slate-500 dark:text-slate-400 mt-1">
+            Maintain employee primary communication channels and emergency contact information.
+          </p>
+        </div>
       </div>
-    </div>
+  
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 auto-rows-[minmax(140px,auto)]">
+      
       <div
         className="glass-card col-span-1 md:col-span-2 lg:col-span-2 p-6 flex flex-col rounded-lg relative overflow-hidden group min-h-[260px]">
         <div
           className="absolute inset-0 opacity-[0.03] pointer-events-none bg-[radial-gradient(circle_at_center,_#ffffff_1px,_transparent_1px)] bg-[length:24px_24px]">
         </div>
         <div
-          className="absolute right-0 top-0 w-2/3 h-full bg-gradient-to-l from-primary/5 to-transparent pointer-events-none">
+          className="absolute right-0 top-0 w-2/3 h-full  pointer-events-none">
         </div>
         <div className="flex items-center justify-between mb-6 z-10 relative">
           <div className="flex items-center gap-3">
@@ -96,7 +98,7 @@ const EmergencyContact = ({ id, phone_relative_number, relation, local_address, 
               <span className="material-symbols-outlined">location_on</span>
             </div>
             <div>
-              <h3 className="text-lg font-bold text-white leading-tight">Current Address</h3>
+              <h3 className="text-lg font-bold text-gray-600 dark:text-gray-300 leading-tight">Current Address</h3>
               <span className="text-xs text-[#9db0b9]">Primary residence</span>
             </div>
           </div>
@@ -110,19 +112,19 @@ const EmergencyContact = ({ id, phone_relative_number, relation, local_address, 
           <div className="flex flex-col gap-1.5">
             <span className="text-xs font-bold text-[#5f717a] uppercase tracking-wider">Street
               Address</span>
-            <span className="text-white text-lg font-medium">4521 Innovation Loop</span>
+            <span className="text-gray-600 dark:text-gray-300 text-lg font-medium">4521 Innovation Loop</span>
             <span className="text-[#9db0b9] text-sm">Apartment 4B</span>
           </div>
           <div className="flex flex-col gap-4">
             <div className="flex flex-col gap-1.5">
               <span className="text-xs font-bold text-[#5f717a] uppercase tracking-wider">City
                 &amp; State</span>
-              <span className="text-white font-medium">San Francisco, CA</span>
+              <span className="text-gray-600 dark:text-gray-300 font-medium">San Francisco, CA</span>
             </div>
             <div className="flex flex-col gap-1.5">
               <span className="text-xs font-bold text-[#5f717a] uppercase tracking-wider">Postal
                 Code</span>
-              <span className="text-white font-medium">94103</span>
+              <span className="text-gray-600 dark:text-gray-300 font-medium">94103</span>
             </div>
           </div>
         </div>
@@ -130,7 +132,7 @@ const EmergencyContact = ({ id, phone_relative_number, relation, local_address, 
           className="mt-6 pt-5 border-t border-white/5 z-10 relative flex justify-between items-center">
           <span className="text-xs text-[#5f717a]">Last updated: Oct 04, 2024</span>
           <button
-            className="text-sm text-primary hover:text-white transition-colors flex items-center gap-2 group/btn">
+            className="text-sm text-primary hover:text-gray-600 dark:text-gray-300 transition-colors flex items-center gap-2 group/btn">
             <span
               className="material-symbols-outlined text-[18px] group-hover/btn:scale-110 transition-transform">edit</span>
             Edit Details
@@ -149,7 +151,7 @@ const EmergencyContact = ({ id, phone_relative_number, relation, local_address, 
               <span className="material-symbols-outlined">cottage</span>
             </div>
             <div>
-              <h3 className="text-lg font-bold text-white leading-tight">Permanent Address</h3>
+              <h3 className="text-lg font-bold text-gray-600 dark:text-gray-300 leading-tight">Permanent Address</h3>
               <span className="text-xs text-[#9db0b9]">Legal domicile</span>
             </div>
           </div>
@@ -158,25 +160,25 @@ const EmergencyContact = ({ id, phone_relative_number, relation, local_address, 
           <div className="flex flex-col gap-1.5">
             <span className="text-xs font-bold text-[#5f717a] uppercase tracking-wider">Street
               Address</span>
-            <span className="text-white text-lg font-medium">892 Lakeview Estate</span>
+            <span className="text-gray-600 dark:text-gray-300 text-lg font-medium">892 Lakeview Estate</span>
             <span className="text-[#9db0b9] text-sm">Building C</span>
           </div>
           <div className="flex flex-col gap-4">
             <div className="flex flex-col gap-1.5">
               <span className="text-xs font-bold text-[#5f717a] uppercase tracking-wider">City
                 &amp; State</span>
-              <span className="text-white font-medium">Austin, TX</span>
+              <span className="text-gray-600 dark:text-gray-300 font-medium">Austin, TX</span>
             </div>
             <div className="flex flex-col gap-1.5">
               <span className="text-xs font-bold text-[#5f717a] uppercase tracking-wider">Postal
                 Code</span>
-              <span className="text-white font-medium">78701</span>
+              <span className="text-gray-600 dark:text-gray-300 font-medium">78701</span>
             </div>
           </div>
         </div>
         <div className="mt-6 pt-5 border-t border-white/5 z-10 relative flex justify-end items-center">
           <button
-            className="text-sm text-[#9db0b9] hover:text-white transition-colors flex items-center gap-2 group/btn">
+            className="text-sm text-[#9db0b9] hover:text-gray-600 dark:text-gray-300 transition-colors flex items-center gap-2 group/btn">
             <span className="material-symbols-outlined text-[18px]">content_copy</span>
             Copy as Current
           </button>
@@ -188,7 +190,7 @@ const EmergencyContact = ({ id, phone_relative_number, relation, local_address, 
             className="size-8 rounded-lg bg-blue-500/10 flex items-center justify-center text-blue-400">
             <span className="material-symbols-outlined text-[20px]">contact_phone</span>
           </div>
-          <h3 className="font-bold text-white">Contact Info</h3>
+          <h3 className="font-bold text-gray-600 dark:text-gray-300">Contact Info</h3>
         </div>
         <div className="flex flex-col gap-4">
           <div className="group cursor-pointer">
@@ -196,7 +198,7 @@ const EmergencyContact = ({ id, phone_relative_number, relation, local_address, 
               className="text-xs font-bold text-[#5f717a] uppercase tracking-wider mb-1 block">Work
               Email</span>
             <div className="flex items-center justify-between">
-              <span className="text-white text-sm truncate pr-2">alex.morgan@elitehr.com</span>
+              <span className="text-gray-600 dark:text-gray-300 text-sm truncate pr-2">alex.morgan@elitehr.com</span>
               <span
                 className="material-symbols-outlined text-[16px] text-[#5f717a] opacity-0 group-hover:opacity-100 transition-opacity">content_copy</span>
             </div>
@@ -206,7 +208,7 @@ const EmergencyContact = ({ id, phone_relative_number, relation, local_address, 
               className="text-xs font-bold text-[#5f717a] uppercase tracking-wider mb-1 block">Work
               Phone</span>
             <div className="flex items-center justify-between">
-              <span className="text-white text-sm truncate pr-2">+1 (555) 019-2834</span>
+              <span className="text-gray-600 dark:text-gray-300 text-sm truncate pr-2">+1 (555) 019-2834</span>
               <span
                 className="material-symbols-outlined text-[16px] text-[#5f717a] opacity-0 group-hover:opacity-100 transition-opacity">call</span>
             </div>
@@ -215,7 +217,7 @@ const EmergencyContact = ({ id, phone_relative_number, relation, local_address, 
             <span
               className="text-xs font-bold text-[#5f717a] uppercase tracking-wider mb-1 block">Mobile</span>
             <div className="flex items-center justify-between">
-              <span className="text-white text-sm truncate pr-2">+1 (555) 982-1122</span>
+              <span className="text-gray-600 dark:text-gray-300 text-sm truncate pr-2">+1 (555) 982-1122</span>
               <span
                 className="material-symbols-outlined text-[16px] text-[#5f717a] opacity-0 group-hover:opacity-100 transition-opacity">sms</span>
             </div>
@@ -235,12 +237,12 @@ const EmergencyContact = ({ id, phone_relative_number, relation, local_address, 
               <span className="material-symbols-outlined">health_and_safety</span>
             </div>
             <div>
-              <h3 className="text-lg font-bold text-white">Emergency Contact</h3>
+              <h3 className="text-lg font-bold text-gray-600 dark:text-gray-300">Emergency Contact</h3>
               <span className="text-xs text-[#9db0b9]">Primary contact for emergencies</span>
             </div>
           </div>
           <button
-            className="px-3 py-1.5 rounded-md bg-[#283339] hover:bg-[#3a4b53] text-xs font-medium text-white transition-colors border border-white/5">
+            className="px-3 py-1.5 rounded-md bg-[#283339] hover:bg-[#3a4b53] text-xs font-medium text-gray-600 dark:text-gray-300 transition-colors border border-white/5">
             + Add Secondary
           </button>
         </div>
@@ -253,9 +255,9 @@ const EmergencyContact = ({ id, phone_relative_number, relation, local_address, 
             <div className="flex flex-col gap-1">
               <span className="text-xs font-bold text-[#5f717a] uppercase tracking-wider">Name
                 &amp; Relationship</span>
-              <span className="text-white font-bold text-lg">Sarah Jenkins</span>
+              <span className="text-gray-600 dark:text-gray-300 font-bold text-lg">Sarah Jenkins</span>
               <span
-                className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-white/10 text-white w-fit">
+                className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-white/10 text-gray-600 dark:text-gray-300 w-fit">
                 Spouse
               </span>
             </div>
@@ -265,7 +267,7 @@ const EmergencyContact = ({ id, phone_relative_number, relation, local_address, 
               <span
                 className="text-xs font-bold text-[#5f717a] uppercase tracking-wider">Emergency
                 Phone</span>
-              <span className="text-white font-medium text-base">+1 (555) 234-5678</span>
+              <span className="text-gray-600 dark:text-gray-300 font-medium text-base">+1 (555) 234-5678</span>
             </div>
             <div className="flex gap-2">
               <button
@@ -273,7 +275,7 @@ const EmergencyContact = ({ id, phone_relative_number, relation, local_address, 
                 <span className="material-symbols-outlined text-[14px]">call</span> Call
               </button>
               <button
-                className="flex-1 py-1.5 rounded bg-[#283339] hover:bg-[#3a4b53] text-white text-xs font-bold transition-colors flex items-center justify-center gap-1">
+                className="flex-1 py-1.5 rounded bg-[#283339] hover:bg-[#3a4b53] text-gray-600 dark:text-gray-300 text-xs font-bold transition-colors flex items-center justify-center gap-1">
                 <span className="material-symbols-outlined text-[14px]">sms</span> Message
               </button>
             </div>
