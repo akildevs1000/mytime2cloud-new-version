@@ -2,7 +2,7 @@ import React from "react";
 
 const IconButton = ({
   icon: Icon, // Expects a Lucide icon component
-  onClick,
+  onClick = () => {},
   isLoading = false,
   title = "Action",
   disabled = false,

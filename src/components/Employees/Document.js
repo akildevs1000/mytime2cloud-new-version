@@ -84,7 +84,7 @@ const Document = ({ employee_id }) => {
                             >
                         </div>
                         <div>
-                            <h2 className="text-xl font-bold text-white tracking-tight">
+                            <h2 className="text-xl font-bold text-gray-600 dark:text-gray-300 tracking-tight">
                                 Personal ID
                             </h2>
                             <div
@@ -96,17 +96,22 @@ const Document = ({ employee_id }) => {
                             </div>
                         </div>
                     </div>
+
                     <button
-                        className="size-10 rounded-lg bg-white/5 hover:bg-white/10 flex items-center justify-center text-white transition-colors border border-white/5"
-                    >
-                        <span className="material-symbols-outlined">add</span>
+                        className="h-10 w-10 pt-1
+      transition-all duration-200 rounded-xl border glass-card
+      !bg-primary border-gray-200 text-white hover:bg-gray-50
+      dark:!bg-slate-900 dark:border-white/10 dark:text-slate-400 dark:hover:text-slate-100 dark:hover:border-white/20
+      active:scale-95
+    "
+                    > <span className="material-symbols-outlined">add</span>
                     </button>
                 </div>
                 <div
                     className="flex flex-col gap-2 relative z-10 flex-1 overflow-y-auto custom-scrollbar pr-1"
                 >
                     <div
-                        className="flex items-center p-3 rounded-lg bg-[#18242a]/60 hover:bg-[#18242a] border border-transparent hover:border-white/5 transition-all group/file cursor-pointer"
+                        className="text-gray-600 dark:text-gray-300 flex items-center p-3 rounded-lg hover:bg-slate-100 dark:hover:bg-white/5 border border-transparent hover:border-white/5 transition-all group/file cursor-pointer"
                     >
                         <div
                             className="size-10 rounded-lg bg-red-500/10 flex items-center justify-center text-red-400 mr-4 shrink-0 shadow-sm"
@@ -118,27 +123,27 @@ const Document = ({ employee_id }) => {
                         <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-2">
                                 <h4
-                                    className="text-sm font-medium text-white truncate group-hover/file:text-primary transition-colors"
+                                    className="text-sm font-medium text-gray-600 dark:text-gray-300 truncate group-hover/file:text-primary transition-colors"
                                 >
                                     Passport_Scan_2024.pdf
                                 </h4>
-                                <span
+                                {/* <span
                                     className="hidden group-hover/file:block text-[10px] bg-primary/20 text-primary px-1.5 rounded uppercase font-bold tracking-wider"
                                 >New</span
-                                >
+                                > */}
                             </div>
                             <p className="text-xs text-[#9db0b9] mt-0.5">
                                 2.4 MB • Uploaded Jan 12, 2024
                             </p>
                         </div>
                         <button
-                            className="p-2 text-[#5f717a] hover:text-white transition-colors opacity-0 group-hover/file:opacity-100 transform translate-x-2 group-hover/file:translate-x-0 duration-200"
+                            className="p-2  text-gray-600 dark:text-gray-300"
                         >
                             <span className="material-symbols-outlined">download</span>
                         </button>
                     </div>
                     <div
-                        className="flex items-center p-3 rounded-lg bg-[#18242a]/60 hover:bg-[#18242a] border border-transparent hover:border-white/5 transition-all group/file cursor-pointer"
+                        className="flex items-center p-3 rounded-lg hover:bg-slate-100 dark:hover:bg-white/5 border border-transparent hover:border-white/5 transition-all group/file cursor-pointer"
                     >
                         <div
                             className="size-10 rounded-lg bg-blue-500/10 flex items-center justify-center text-blue-400 mr-4 shrink-0 shadow-sm"
@@ -147,7 +152,7 @@ const Document = ({ employee_id }) => {
                         </div>
                         <div className="flex-1 min-w-0">
                             <h4
-                                className="text-sm font-medium text-white truncate group-hover/file:text-primary transition-colors"
+                                className="text-sm font-medium text-gray-600 dark:text-gray-300 truncate group-hover/file:text-primary transition-colors"
                             >
                                 Drivers_License_Front.jpg
                             </h4>
@@ -156,13 +161,13 @@ const Document = ({ employee_id }) => {
                             </p>
                         </div>
                         <button
-                            className="p-2 text-[#5f717a] hover:text-white transition-colors opacity-0 group-hover/file:opacity-100 transform translate-x-2 group-hover/file:translate-x-0 duration-200"
+                            className="p-2  text-gray-600 dark:text-gray-300"
                         >
                             <span className="material-symbols-outlined">download</span>
                         </button>
                     </div>
                     <div
-                        className="flex items-center p-3 rounded-lg bg-[#18242a]/60 hover:bg-[#18242a] border border-transparent hover:border-white/5 transition-all group/file cursor-pointer"
+                        className="flex items-center p-3 rounded-lg hover:bg-slate-100 dark:hover:bg-white/5 border border-transparent hover:border-white/5 transition-all group/file cursor-pointer"
                     >
                         <div
                             className="size-10 rounded-lg bg-purple-500/10 flex items-center justify-center text-purple-400 mr-4 shrink-0 shadow-sm"
@@ -171,7 +176,7 @@ const Document = ({ employee_id }) => {
                         </div>
                         <div className="flex-1 min-w-0">
                             <h4
-                                className="text-sm font-medium text-white truncate group-hover/file:text-primary transition-colors"
+                                className="text-sm font-medium text-gray-600 dark:text-gray-300 truncate group-hover/file:text-primary transition-colors"
                             >
                                 Social_Security_Card.pdf
                             </h4>
@@ -180,7 +185,7 @@ const Document = ({ employee_id }) => {
                             </p>
                         </div>
                         <button
-                            className="p-2 text-[#5f717a] hover:text-white transition-colors opacity-0 group-hover/file:opacity-100 transform translate-x-2 group-hover/file:translate-x-0 duration-200"
+                            className="p-2 text-gray-600 dark:text-gray-300"
                         >
                             <span className="material-symbols-outlined">download</span>
                         </button>
@@ -237,7 +242,7 @@ const Document = ({ employee_id }) => {
                     </div>
                 </div>
             </div>
-         
+
             <div
                 className="glass-card col-span-1 md:col-span-1 lg:col-span-1 row-span-1 p-5 flex flex-col rounded-lg relative overflow-hidden group hover:border-primary/30"
             >
