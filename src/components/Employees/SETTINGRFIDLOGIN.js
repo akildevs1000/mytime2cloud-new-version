@@ -8,7 +8,7 @@ import LeaveAndReporting from './LeaveAndReporting';
 export default function SETTINGRFIDLOGIN({ employee_id, user, rfid_card_number, rfid_card_password, leave_group_id, reporting_manager_id, status }) {
 
     return (
-        <div className="space-y-8 bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-6">
+        <div className="space-y-8 bg-white dark:bg-slate-900 rounded-2xl">
             
             {/* these settings and login section should  be in one line  */}
             <LeaveAndReporting

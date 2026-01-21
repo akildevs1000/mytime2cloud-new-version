@@ -69,7 +69,7 @@ const Document = ({ employee_id }) => {
             className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-5 auto-rows-[minmax(140px,auto)]"
         >
             <div
-                className="glass-card col-span-1 md:col-span-2 lg:col-span-2 row-span-2 p-6 flex flex-col rounded-lg relative overflow-hidden group"
+                className="glass-card col-span-3 md:col-span-3 lg:col-span-3 row-span-2 p-6 flex flex-col rounded-lg relative overflow-hidden group"
             >
                 <div
                     className="flex items-center justify-between mb-6 relative z-10"
@@ -237,86 +237,7 @@ const Document = ({ employee_id }) => {
                     </div>
                 </div>
             </div>
-            <div
-                className="glass-card col-span-1 md:col-span-3 lg:col-span-1 row-span-2 p-0 flex flex-col rounded-lg border-l-0 lg:border-l-4 border-orange-500/50 relative overflow-hidden bg-gradient-to-b from-[rgba(24,36,42,0.8)] to-[rgba(16,28,34,0.95)]"
-            >
-                <div
-                    className="p-6 pb-4 border-b border-white/5 bg-white/5 flex justify-between items-center relative z-10"
-                >
-                    <h3
-                        className="text-white font-bold text-lg flex items-center gap-2"
-                    >
-                        Alerts
-                        <span className="flex h-2.5 w-2.5 relative ml-1">
-                            <span
-                                className="animate-ping absolute inline-flex h-full w-full rounded-full bg-orange-400 opacity-75"
-                            ></span>
-                            <span
-                                className="relative inline-flex rounded-full h-2.5 w-2.5 bg-orange-500"
-                            ></span>
-                        </span>
-                    </h3>
-                    <span
-                        className="text-xs font-medium text-orange-400 bg-orange-500/10 px-2 py-1 rounded border border-orange-500/20"
-                    >Action Req</span
-                    >
-                </div>
-                <div className="p-5 flex flex-col gap-4 relative z-10 flex-1">
-                    <div
-                        className="bg-[#18242a] p-4 rounded-xl border border-orange-500/30 shadow-[0_4px_20px_-5px_rgba(249,115,22,0.15)] relative overflow-hidden group"
-                    >
-                        <div
-                            className="absolute left-0 top-0 bottom-0 w-1 bg-orange-500"
-                        ></div>
-                        <div className="flex items-start gap-3 relative z-10">
-                            <div
-                                className="mt-0.5 bg-orange-500/20 p-1.5 rounded text-orange-400"
-                            >
-                                <span className="material-symbols-outlined text-[20px]"
-                                >warning</span
-                                >
-                            </div>
-                            <div className="flex-1">
-                                <p className="text-sm font-bold text-white">
-                                    Passport Expiry
-                                </p>
-                                <p className="text-xs text-[#9db0b9] mt-1 leading-relaxed">
-                                    Your passport document is set to expire in
-                                    <span className="text-orange-300 font-bold">14 days</span
-                                    >.
-                                </p>
-                                <button
-                                    className="mt-3 text-xs font-semibold bg-orange-500 text-black px-4 py-2 rounded-lg hover:bg-orange-400 transition-colors w-full shadow-lg shadow-orange-500/20"
-                                >
-                                    Update Now
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    <div
-                        className="bg-[#18242a]/50 p-4 rounded-xl border border-dashed border-[#5f717a]/30 hover:border-white/20 transition-colors"
-                    >
-                        <div className="flex items-center gap-3">
-                            <div className="bg-[#283339] p-1.5 rounded text-[#9db0b9]">
-                                <span className="material-symbols-outlined text-[20px]"
-                                >event_repeat</span
-                                >
-                            </div>
-                            <div className="flex-1">
-                                <p className="text-sm font-medium text-white opacity-80">
-                                    Safety Compliance
-                                </p>
-                                <p className="text-xs text-[#5f717a] mt-0.5">
-                                    Expires Dec 12
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div
-                    className="absolute top-0 right-0 w-full h-1/2 bg-orange-500/5 blur-3xl pointer-events-none"
-                ></div>
-            </div>
+         
             <div
                 className="glass-card col-span-1 md:col-span-1 lg:col-span-1 row-span-1 p-5 flex flex-col rounded-lg relative overflow-hidden group hover:border-primary/30"
             >
