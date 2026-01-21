@@ -86,7 +86,7 @@ const Bank = ({ employee_id, bank }) => {
                 </div>
                 <div className="flex justify-between items-center mb-6 relative z-10">
                     <div>
-                        <h2 className="text-xl font-bold text-white tracking-tight">Salary Breakdown</h2>
+                        <h2 className="text-xl font-bold text-gray-600 dark:text-gray-300 tracking-tight">Salary Breakdown</h2>
                         <p className="text-sm text-[#9db0b9]">Monthly Earnings Structure</p>
                     </div>
                     <button
@@ -118,12 +118,12 @@ const Bank = ({ employee_id, bank }) => {
                                 </div>
                                 <div className="flex flex-col">
                                     <span
-                                        className="text-sm font-medium text-white group-hover:text-indigo-400 transition-colors">Basic
+                                        className="text-sm font-medium text-gray-600 dark:text-gray-300 group-hover:text-indigo-400 transition-colors">Basic
                                         Salary</span>
                                     <span className="text-xs text-[#5f717a]">45% of total</span>
                                 </div>
                             </div>
-                            <span className="text-sm font-bold text-white">$3,825</span>
+                            <span className="text-sm font-bold text-gray-600 dark:text-gray-300">$3,825</span>
                         </div>
                         <div className="flex items-center justify-between group cursor-pointer">
                             <div className="flex items-center gap-3">
@@ -132,11 +132,11 @@ const Bank = ({ employee_id, bank }) => {
                                 </div>
                                 <div className="flex flex-col">
                                     <span
-                                        className="text-sm font-medium text-white group-hover:text-teal-400 transition-colors">HRA</span>
+                                        className="text-sm font-medium text-gray-600 dark:text-gray-300 group-hover:text-teal-400 transition-colors">HRA</span>
                                     <span className="text-xs text-[#5f717a]">30% of total</span>
                                 </div>
                             </div>
-                            <span className="text-sm font-bold text-white">$2,550</span>
+                            <span className="text-sm font-bold text-gray-600 dark:text-gray-300">$2,550</span>
                         </div>
                         <div className="flex items-center justify-between group cursor-pointer">
                             <div className="flex items-center gap-3">
@@ -145,11 +145,11 @@ const Bank = ({ employee_id, bank }) => {
                                 </div>
                                 <div className="flex flex-col">
                                     <span
-                                        className="text-sm font-medium text-white group-hover:text-sky-400 transition-colors">Allowances</span>
+                                        className="text-sm font-medium text-gray-600 dark:text-gray-300 group-hover:text-sky-400 transition-colors">Allowances</span>
                                     <span className="text-xs text-[#5f717a]">25% of total</span>
                                 </div>
                             </div>
-                            <span className="text-sm font-bold text-white">$2,125</span>
+                            <span className="text-sm font-bold text-gray-600 dark:text-gray-300">$2,125</span>
                         </div>
                     </div>
                 </div>
@@ -158,7 +158,7 @@ const Bank = ({ employee_id, bank }) => {
                 className="glass-card col-span-1 md:col-span-1 lg:col-span-2 row-span-2 flex flex-col overflow-hidden relative">
                 <div
                     className="p-6 pb-2 flex justify-between items-center z-10 ">
-                    <h3 className="text-lg font-bold text-white">Payment History</h3>
+                    <h3 className="text-lg font-bold text-gray-600 dark:text-gray-300">Payment History</h3>
                     <button className="text-xs font-medium text-primary hover:text-white transition-colors">View
                         All</button>
                 </div>
@@ -169,16 +169,16 @@ const Bank = ({ employee_id, bank }) => {
                             className="flex items-center justify-between p-3 rounded-lg hover:bg-white/5 transition-colors group">
                             <div className="flex items-center gap-4">
                                 <div
-                                    className="size-10 rounded-lg bg-[#18242a] border border-[#283339] flex items-center justify-center text-indigo-400 group-hover:border-indigo-500/30 transition-colors">
+                                    className="size-10 rounded-lg glass-card border border-gray-300 dark:border-[#283339] flex items-center justify-center text-indigo-400 group-hover:border-indigo-500/30 transition-colors">
                                     <span className="material-symbols-outlined">account_balance</span>
                                 </div>
                                 <div className="flex flex-col">
-                                    <span className="text-sm font-medium text-white">Salary - Oct 2023</span>
+                                    <span className="text-sm font-medium text-gray-600 dark:text-gray-300">Salary - Oct 2023</span>
                                     <span className="text-xs text-[#9db0b9]">Oct 30, 2023</span>
                                 </div>
                             </div>
                             <div className="flex flex-col items-end gap-1">
-                                <span className="text-sm font-bold text-white">$4,250.00</span>
+                                <span className="text-sm font-bold text-gray-600 dark:text-gray-300">$4,250.00</span>
                                 <span
                                     className="text-[10px] bg-orange-500/10 text-orange-400 px-2 py-0.5 rounded-full border border-orange-500/20 flex items-center gap-1">
                                     <div className="size-1 bg-orange-400 rounded-full animate-pulse"></div>
@@ -190,16 +190,16 @@ const Bank = ({ employee_id, bank }) => {
                             className="flex items-center justify-between p-3 rounded-lg hover:bg-white/5 transition-colors group">
                             <div className="flex items-center gap-4">
                                 <div
-                                    className="size-10 rounded-lg bg-[#18242a] border border-[#283339] flex items-center justify-center text-teal-400 group-hover:border-teal-500/30 transition-colors">
+                                    className="size-10 rounded-lg glass-card border border-gray-300 dark:border-[#283339] flex items-center justify-center text-teal-400 group-hover:border-teal-500/30 transition-colors">
                                     <span className="material-symbols-outlined">check_circle</span>
                                 </div>
                                 <div className="flex flex-col">
-                                    <span className="text-sm font-medium text-white">Salary - Sep 2023</span>
+                                    <span className="text-sm font-medium text-gray-600 dark:text-gray-300">Salary - Sep 2023</span>
                                     <span className="text-xs text-[#9db0b9]">Sep 29, 2023</span>
                                 </div>
                             </div>
                             <div className="flex flex-col items-end gap-1">
-                                <span className="text-sm font-bold text-white">$4,250.00</span>
+                                <span className="text-sm font-bold text-gray-600 dark:text-gray-300">$4,250.00</span>
                                 <span
                                     className="text-[10px] bg-teal-500/10 text-teal-400 px-2 py-0.5 rounded-full border border-teal-500/20 flex items-center gap-1">
                                     Completed
@@ -210,16 +210,16 @@ const Bank = ({ employee_id, bank }) => {
                             className="flex items-center justify-between p-3 rounded-lg hover:bg-white/5 transition-colors group">
                             <div className="flex items-center gap-4">
                                 <div
-                                    className="size-10 rounded-lg bg-[#18242a] border border-[#283339] flex items-center justify-center text-teal-400 group-hover:border-teal-500/30 transition-colors">
+                                    className="size-10 rounded-lg glass-card border border-gray-300 dark:border-[#283339] flex items-center justify-center text-teal-400 group-hover:border-teal-500/30 transition-colors">
                                     <span className="material-symbols-outlined">check_circle</span>
                                 </div>
                                 <div className="flex flex-col">
-                                    <span className="text-sm font-medium text-white">Perf. Bonus</span>
+                                    <span className="text-sm font-medium text-gray-600 dark:text-gray-300">Perf. Bonus</span>
                                     <span className="text-xs text-[#9db0b9]">Sep 15, 2023</span>
                                 </div>
                             </div>
                             <div className="flex flex-col items-end gap-1">
-                                <span className="text-sm font-bold text-white">$1,500.00</span>
+                                <span className="text-sm font-bold text-gray-600 dark:text-gray-300">$1,500.00</span>
                                 <span
                                     className="text-[10px] bg-teal-500/10 text-teal-400 px-2 py-0.5 rounded-full border border-teal-500/20 flex items-center gap-1">
                                     Completed
@@ -230,16 +230,16 @@ const Bank = ({ employee_id, bank }) => {
                             className="flex items-center justify-between p-3 rounded-lg hover:bg-white/5 transition-colors group">
                             <div className="flex items-center gap-4">
                                 <div
-                                    className="size-10 rounded-lg bg-[#18242a] border border-[#283339] flex items-center justify-center text-teal-400 group-hover:border-teal-500/30 transition-colors">
+                                    className="size-10 rounded-lg glass-card border border-gray-300 dark:border-[#283339] flex items-center justify-center text-teal-400 group-hover:border-teal-500/30 transition-colors">
                                     <span className="material-symbols-outlined">check_circle</span>
                                 </div>
                                 <div className="flex flex-col">
-                                    <span className="text-sm font-medium text-white">Salary - Aug 2023</span>
+                                    <span className="text-sm font-medium text-gray-600 dark:text-gray-300">Salary - Aug 2023</span>
                                     <span className="text-xs text-[#9db0b9]">Aug 30, 2023</span>
                                 </div>
                             </div>
                             <div className="flex flex-col items-end gap-1">
-                                <span className="text-sm font-bold text-white">$4,100.00</span>
+                                <span className="text-sm font-bold text-gray-600 dark:text-gray-300">$4,100.00</span>
                                 <span
                                     className="text-[10px] bg-teal-500/10 text-teal-400 px-2 py-0.5 rounded-full border border-teal-500/20 flex items-center gap-1">
                                     Completed
@@ -261,11 +261,11 @@ const Bank = ({ employee_id, bank }) => {
                 </div>
                 <div className="flex flex-col gap-1 mt-4 z-10">
                     <div className="flex items-end justify-between">
-                        <span className="text-3xl font-light text-white">$12,400</span>
+                        <span className="text-3xl font-light text-gray-600 dark:text-gray-300">$12,400</span>
                         <span className="text-xs text-[#9db0b9] mb-1.5">YTD Tax</span>
                     </div>
                     <div
-                        className="w-full bg-[#111618] h-2 rounded-full mt-3 overflow-hidden border border-white/5">
+                        className="w-full bg-gray-300 dark:bg-gray-900 h-2 rounded-full mt-3 overflow-hidden border border-white/5">
                         <div
                             className="h-full bg-gradient-to-r from-indigo-500 to-purple-500 w-[65%] rounded-full shadow-[0_0_10px_rgba(99,102,241,0.5)]">
                         </div>
@@ -283,7 +283,7 @@ const Bank = ({ employee_id, bank }) => {
                     <span className="material-symbols-outlined text-teal-400">savings</span>
                 </div>
                 <div className="mt-4">
-                    <span className="text-3xl font-light text-white block">$54,250</span>
+                    <span className="text-3xl font-light text-gray-600 dark:text-gray-300 block">$54,250</span>
                     <span className="text-xs text-green-400 mt-1 flex items-center gap-1">
                         <span className="material-symbols-outlined text-[14px]">trending_up</span>
                         +12% vs last year
@@ -293,12 +293,12 @@ const Bank = ({ employee_id, bank }) => {
             <div
                 className="glass-card col-span-1 md:col-span-2 lg:col-span-2 p-6 flex flex-col justify-between">
                 <div className="flex items-center justify-between mb-4">
-                    <h3 className="font-bold text-white">Deductions &amp; Benefits</h3>
+                    <h3 className="font-bold text-gray-600 dark:text-gray-300">Deductions &amp; Benefits</h3>
                     <span className="text-xs text-[#9db0b9]">Active Plans</span>
                 </div>
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
                     <div
-                        className="bg-white/5 rounded-lg p-3 border border-white/5 hover:border-indigo-500/30 transition-colors flex flex-col gap-2">
+                        className="dark:bg-white/5 rounded-lg p-3 border dark:border-white/5 border-gray-300 hover:border-indigo-500/30 transition-colors flex flex-col gap-2">
                         <div className="flex items-center gap-2 text-indigo-300">
                             <span className="material-symbols-outlined text-[18px]">health_and_safety</span>
                             <span className="text-xs font-bold uppercase">Health</span>
@@ -307,7 +307,7 @@ const Bank = ({ employee_id, bank }) => {
                             className="text-xs font-normal text-[#5f717a]">/mo</span></span>
                     </div>
                     <div
-                        className="bg-white/5 rounded-lg p-3 border border-white/5 hover:border-teal-500/30 transition-colors flex flex-col gap-2">
+                        className="dark:bg-white/5 rounded-lg p-3 border dark:border-white/5 border-gray-300 hover:border-teal-500/30 transition-colors flex flex-col gap-2">
                         <div className="flex items-center gap-2 text-teal-300">
                             <span className="material-symbols-outlined text-[18px]">volunteer_activism</span>
                             <span className="text-xs font-bold uppercase">401k</span>
@@ -316,7 +316,7 @@ const Bank = ({ employee_id, bank }) => {
                             className="text-xs font-normal text-[#5f717a]"> match</span></span>
                     </div>
                     <div
-                        className="bg-white/5 rounded-lg p-3 border border-white/5 hover:border-sky-500/30 transition-colors flex flex-col gap-2">
+                        className="dark:bg-white/5 rounded-lg p-3 border dark:border-white/5 border-gray-300 hover:border-sky-500/30 transition-colors flex flex-col gap-2">
                         <div className="flex items-center gap-2 text-sky-300">
                             <span className="material-symbols-outlined text-[18px]">directions_car</span>
                             <span className="text-xs font-bold uppercase">Parking</span>

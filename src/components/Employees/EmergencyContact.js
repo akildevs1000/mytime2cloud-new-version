@@ -242,14 +242,14 @@ const EmergencyContact = ({ id, phone_relative_number, relation, local_address, 
             </div>
           </div>
           <button
-            className="px-3 py-1.5 rounded-md bg-[#283339] hover:bg-[#3a4b53] text-xs font-medium text-gray-600 dark:text-gray-300 transition-colors border border-white/5">
+            className="px-3 py-1.5 rounded-md bg-primary hover:bg-[#3a4b53] text-xs font-medium text-gray-100 dark:text-gray-300 transition-colors border border-white/5">
             + Add Secondary
           </button>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="flex items-start gap-4 col-span-1">
             <div
-              className="size-12 rounded-full bg-[#283339] border border-white/10 flex items-center justify-center text-[#9db0b9]">
+              className="size-12 rounded-full bg-primary border border-white/10 flex items-center justify-center text-[#9db0b9]">
               <span className="material-symbols-outlined">person</span>
             </div>
             <div className="flex flex-col gap-1">
@@ -275,7 +275,7 @@ const EmergencyContact = ({ id, phone_relative_number, relation, local_address, 
                 <span className="material-symbols-outlined text-[14px]">call</span> Call
               </button>
               <button
-                className="flex-1 py-1.5 rounded bg-[#283339] hover:bg-[#3a4b53] text-gray-600 dark:text-gray-300 text-xs font-bold transition-colors flex items-center justify-center gap-1">
+                className="flex-1 py-1.5 rounded bg-primary hover:bg-[#3a4b53] text-gray-100 dark:text-gray-300 text-xs font-bold transition-colors flex items-center justify-center gap-1">
                 <span className="material-symbols-outlined text-[14px]">sms</span> Message
               </button>
             </div>
