@@ -119,7 +119,7 @@ export default function EmployeeDataTable() {
     }
 
     return (
-        <>
+        <div className='p-5'>
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6  sm:space-y-0">
                 <h1 className="text-2xl font-extrabold text-gray-900 flex items-center">
                     {/* <User className="w-7 h-7 mr-3 text-indigo-600" /> */}
@@ -195,6 +195,6 @@ export default function EmployeeDataTable() {
                     />
                 }
             />
-        </>
+        </div>
     );
 }

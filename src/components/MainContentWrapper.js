@@ -9,7 +9,7 @@ export default function MainContentWrapper({ children }) {
   const isLoginPage = pathname === '/login';
 
   // Apply padding unless it's the login page
-  const paddingClass = isLoginPage ? '' : 'p-5';
+  const paddingClass = isLoginPage ? '' : '';
 
   return (
     <main className={`flex-1 flex flex-col h-screen  relative z-10 ${paddingClass}`}>

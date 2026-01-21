@@ -11,7 +11,7 @@
   --font-body: "Noto Sans", "sans-serif";
 
   /* Colors - Mapping your specific dashboard palette */
-  --color-primary: #3b82f6;
+  --color-primary: #6946dd;
   --color-obsidian: #0f172a;
   --color-midnight: #1e293b;
   --color-glass: rgba(30, 41, 59, 0.7);
@@ -76,7 +76,7 @@
     --card-foreground: oklch(0.13 0.028 261.692);
     --popover: oklch(1 0 0);
     --popover-foreground: oklch(0.13 0.028 261.692);
-    --primary: #3b82f6;
+    --primary: #6946dd;
     --primary-foreground: oklch(0.985 0.002 247.839);
     --secondary: oklch(0.967 0.003 264.542);
     --secondary-foreground: #6946dd;

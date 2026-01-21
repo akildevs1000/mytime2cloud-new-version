@@ -3,30 +3,8 @@
 import useImageUpload from "@/hooks/useImageUpload";
 
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { Save } from 'lucide-react';
-import Link from 'next/link';
-
-// NOTE: For live execution, this external API might require authentication headers (like an API Key or Authorization token) not provided here.
-// The fetch logic includes retry/backoff but may still fail without proper authorization.
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-} from "@/components/ui/command";
-
-import { Button } from '@/components/ui/button';
-
 
 import { getBranches, getEmployees, updateProfilePicture } from '@/lib/api';
-import { EmployeeExtras } from '@/components/Employees/Extras';
-import { Input } from '@/components/ui/input';
 import { convertFileToBase64 } from '@/lib/utils';
 import EmployeeTabs from "@/components/Employees/EmployeeTabs";
 import { useRouter } from "next/navigation";
@@ -54,8 +32,6 @@ export default function EmployeeShortList() {
 
   const [selectedEmployee, setSelectedEmployee] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
-
-
 
 
   const { FileInput, handleUploadClick, imageError } = useImageUpload({
@@ -172,10 +148,18 @@ export default function EmployeeShortList() {
   }
 
   const renderEmployeeRow = (employee) => {
+
+    const isSelected = selectedEmployee && selectedEmployee.id === employee.id;
+
     return (
       <li key={employee.id}
-        className="p-3  flex border-b border-gray-100 dark:border-gray-700 items-center space-x-4 hover:bg-primary/10 cursor-pointer text-gray-600 dark:text-gray-300 bg-white dark:bg-gray-900"
-        onClick={() => handleRowClick(employee)}
+        className={`
+        p-3 flex border border-gray-100 dark:border-gray-700 items-center space-x-4 cursor-pointer transition-colors
+        ${isSelected
+            ? 'bg-white/10' // Styles for selected state
+            : 'bg-white dark:bg-gray-900 hover:bg-primary/10 text-gray-600 dark:text-gray-300' // Styles for normal state
+          }
+      `} onClick={() => handleRowClick(employee)}
       >
         <img
           alt="avatar of jane cooper"
@@ -185,7 +169,7 @@ export default function EmployeeShortList() {
         />
         <div>
           <p className="font-medium text-text-light dark:text-text-dark">
-            {employee.full_name}
+            {employee.first_name}
           </p>
           <p className="text-sm text-subtext-light dark:text-subtext-dark">
             {employee.employee_id || 'N/A'}
@@ -197,7 +181,7 @@ export default function EmployeeShortList() {
 
   return (
     <>
-      <div className="flex flex-1 gap-6 px-5">
+      <div className="flex flex-1 gap-6">
         <div
           className="w-80 border-r border-gray-100 dark:border-gray-700 flex flex-col"
         >
@@ -211,9 +195,9 @@ export default function EmployeeShortList() {
               </button>
             </Link>
           </div> */}
-          <div className="pb-5 space-y-4">
+          <div className="p-5 space-y-4">
             {/* Dropdown Container - Added 'relative' here to anchor the menu */}
-            <div className="relative inline-block w-[300px]">
+            <div className="relative inline-block w-full">
               <button
                 onClick={() => setIsOpen(!isOpen)}
                 className="w-full flex items-center justify-between px-4 py-2.5 text-sm font-medium text-slate-700 bg-white border border-slate-200 rounded-xl shadow-sm hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 transition-all dark:bg-slate-900 dark:border-slate-700 dark:text-slate-200"
@@ -274,31 +258,12 @@ export default function EmployeeShortList() {
             </ul>
           </div>
         </div>
-        <div className="flex-1">
-
+        <div className="flex-1 pt-5 pr-5">
           <EmployeeTabs selectedEmployee={selectedEmployee} />
 
-        
-
-          {/* <header className="flex justify-between items-center mb-8">
-            <div>
-              <h1 className="text-2xl font-bold">{selectedEmployee?.full_name || "---"}</h1>
-              <p className="text-subtext-light dark:text-subtext-dark">ID: {selectedEmployee?.employee_id || "---"}</p>
-            </div>
-            <div className="flex items-center space-x-4">
-              <button
-                className="px-4 py-2 rounded-lg border border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark text-text-light dark:text-text-dark flex items-center space-x-2"
-              >
-                <span className="material-icons text-base">edit</span>
-                <span>Edit</span>
-              </button>
-              <EmployeeExtras data={employees} onUploadSuccess={fetchEmployees} />
-            </div>
-          </header> */}
           <div className="p-6 rounded-lg">
             {imageError && <p className="text-red-500 text-sm mt-1">{imageError}</p>}
 
-            
           </div>
         </div>
 
