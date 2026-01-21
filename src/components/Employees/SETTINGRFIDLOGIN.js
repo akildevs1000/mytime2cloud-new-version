@@ -7,6 +7,23 @@ import LeaveAndReporting from './LeaveAndReporting';
 
 export default function SETTINGRFIDLOGIN({ employee_id, user, rfid_card_number, rfid_card_password, leave_group_id, reporting_manager_id, status }) {
 
+
+    const handleValueChange = (data) => {
+        console.log("Received debounced data:", data);
+        // data contains: { rfid_card_number, rfid_card_password }
+
+        // Example: Update your database or state here
+        // updateEmployeeHardware(employee_id, data);
+    };
+
+    const handleSave = () => {
+        console.log("Changes saved!");
+    };
+
+    const handleCancel = () => {
+        console.log("Action cancelled");
+    };
+
     return (
         <>
             <div
@@ -22,7 +39,7 @@ export default function SETTINGRFIDLOGIN({ employee_id, user, rfid_card_number, 
                     </p>
                 </div>
             </div>
-            <div className="space-y-8 bg-white dark:bg-slate-900 rounded-2xl">
+            <div className="space-y-8 dark:bg-slate-900 rounded-2xl">
                 {/* these settings and login section should  be in one line  */}
                 <LeaveAndReporting
                     employee_id={employee_id}
@@ -51,9 +68,35 @@ export default function SETTINGRFIDLOGIN({ employee_id, user, rfid_card_number, 
                 />
                 <Login employee_id={employee_id} user={user} />
 
+                <RFID
+                    employee_id={employee_id}
+                    rfid_card_number={rfid_card_number}
+                    rfid_card_password={rfid_card_password}
+                    onUpdate={handleValueChange}
+                />
 
-                {/* and this should be after that */}
-                <RFID employee_id={employee_id} rfid_card_number={rfid_card_number} rfid_card_password={rfid_card_password} />
+
+                <div className="w-full mx-auto flex justify-end gap-3">
+                    {/* Cancel Button */}
+                    <button
+                        onClick={handleCancel}
+                        className="px-6 py-2.5 rounded-lg border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 font-medium hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500"
+                        type="button"
+                    >
+                        Cancel
+                    </button>
+
+                    {/* Save Button */}
+                    <button
+                        onClick={handleSave}
+                        className="px-6 py-2.5 rounded-lg bg-indigo-600 text-white font-medium shadow-lg hover:bg-indigo-700 transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 flex items-center gap-2"
+                        type="button"
+                    >
+                        {/* Using a standard span for the icon - ensure Material Icons font is loaded in your project */}
+                        <span className="material-icons text-sm">save</span>
+                        Save All Changes
+                    </button>
+                </div>
             </div>
         </>
 

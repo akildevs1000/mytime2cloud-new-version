@@ -32,7 +32,7 @@ export default (handleRowClick) => {
                         }}
                     />
                     <div>
-                        <p className="font-medium text-gray-800">{employee.full_name}</p>
+                        <p className="font-medium text-sm text-slate-500 dark:text-slate-400 hidden xl:table-cell font-mono">{employee.full_name}</p>
                         <p className="text-sm text-gray-500">
                             {employee.designation?.title || employee.last_name}
                         </p>
@@ -45,7 +45,7 @@ export default (handleRowClick) => {
             header: "Emp Id / Device Id",
             render: (employee) => (
                 <>
-                    <p onClick={() => handleRowClick(employee)} className="text-gray-800">{employee.employee_id || "—"}</p>
+                    <p onClick={() => handleRowClick(employee)} className="text-sm text-slate-500 dark:text-slate-400 hidden xl:table-cell font-mono">{employee.employee_id || "—"}</p>
                     <p className="text-sm text-gray-500">
                         Device ID: {employee.system_user_id || "—"}
                     </p>
@@ -56,14 +56,14 @@ export default (handleRowClick) => {
             key: "branch",
             header: "Branch",
             render: (employee) => (
-                <p onClick={() => handleRowClick(employee)} className="text-gray-800">{employee.branch?.name || "N/A"}</p>
+                <p onClick={() => handleRowClick(employee)} className="text-sm text-slate-500 dark:text-slate-400 hidden xl:table-cell font-mono">{employee.branch?.name || "N/A"}</p>
             ),
         },
         {
             key: "department",
             header: "Department",
             render: (employee) => (
-                <p onClick={() => handleRowClick(employee)} className="text-gray-800">{employee.department?.name || "N/A"}</p>
+                <p onClick={() => handleRowClick(employee)} className="text-sm text-slate-500 dark:text-slate-400 hidden xl:table-cell font-mono">{employee.department?.name || "N/A"}</p>
             ),
         },
         {
@@ -71,7 +71,7 @@ export default (handleRowClick) => {
             header: "Mobile / Email",
             render: (employee) => (
                 <div onClick={() => handleRowClick(employee)}>
-                    <p className="text-gray-800">{employee.phone_number || "—"}</p>
+                    <p className="text-sm text-slate-500 dark:text-slate-400 hidden xl:table-cell font-mono">{employee.phone_number || "—"}</p>
                     <p className="text-sm text-gray-500">{employee.user?.email || "—"}</p>
                 </div>
             ),

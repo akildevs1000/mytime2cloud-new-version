@@ -22,12 +22,13 @@ import License from "@/components/Company/License";
 
 import Document from "@/components/Company/Document";
 import Password from "@/components/Company/Password";
-import AttendanceRating from "@/components/Company/AttendanceRating";
+import BranchManagement from "@/components/Company/BranchManagement";
 import DoorPin from "@/components/Company/DoorPin";
 import ChangeLogo from "@/components/Company/ChangeLogo";
 import { getCompanyInfo, getVisitorLink } from "@/lib/api";
 import VisitorAppLink from "@/components/Company/VisitorAppLink";
 import { parseApiError } from "@/lib/utils";
+import WorkingSchedule from "@/components/Company/WorkingSchedule";
 
 
 const Company = () => {
@@ -37,6 +38,28 @@ const Company = () => {
   const [contactData, setContactData] = useState(null);
   const [licenseData, setLicenseData] = useState(null);
   const [pin, setPin] = useState(null);
+
+
+
+  const [formData, setFormData] = useState({
+    companyName: "MYTIME CLOUD",
+    legalName: "MyTime Solutions Inc.",
+    registrationNo: "REG-8842-XJ9",
+    industry: "Technology & Software",
+    website: "mytime.cloud",
+    address: "101 Innovation Dr, Suite 500, San Francisco, CA 94103",
+    primaryContact: {
+      name: "Sarah Connor",
+      designation: "HR Director",
+      email: "sarah@mytime.cloud",
+      phone: "+1 (555) 012-3456"
+    }
+  });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
 
   useEffect(() => {
 
@@ -77,136 +100,105 @@ const Company = () => {
 
   const router = useRouter();
 
+  // const tabs = [
+  //   {
+  //     label: "Info",
+  //     value: "company",
+  //     component: <Profile profile={profileData} isLoading={isLoading} />,
+  //   },
+  //   {
+  //     label: "Contact",
+  //     value: "contact",
+  //     component: <Contact contact={contactData} isLoading={isLoading} />,
+  //   },
+  //   {
+  //     label: "License",
+  //     value: "license",
+  //     component: <License license={licenseData} isLoading={isLoading} />,
+  //   },
+  //   {
+  //     label: "Documents",
+  //     value: "documents",
+  //     component: <Document />,
+  //   },
+  //   {
+  //     label: "Password",
+  //     value: "password",
+  //     component: <Password />,
+  //   },
+  //   {
+  //     label: "Door Pin",
+  //     value: "door_pin",
+  //     component: <DoorPin pin={pin} isLoading={isLoading} />,
+  //   },
+  // ];
+
+
+
+  // 1. Initialize state with the ID of the default tab
+  const [activeTab, setActiveTab] = useState('tab-gen');
+
+  // 2. Data structure for the tabs to keep the JSX clean
   const tabs = [
-    {
-      label: "Info",
-      value: "company",
-      component: <Profile profile={profileData} isLoading={isLoading} />,
-    },
-    {
-      label: "Contact",
-      value: "contact",
-      component: <Contact contact={contactData} isLoading={isLoading} />,
-    },
-    {
-      label: "License",
-      value: "license",
-      component: <License license={licenseData} isLoading={isLoading} />,
-    },
-    {
-      label: "Documents",
-      value: "documents",
-      component: <Document />,
-    },
-    {
-      label: "Password",
-      value: "password",
-      component: <Password />,
-    },
-    {
-      label: "Door Pin",
-      value: "door_pin",
-      component: <DoorPin pin={pin} isLoading={isLoading} />,
-    },
+    { id: 'tab-gen', label: 'General Information' },
+    { id: 'tab-branch', label: 'Branch Management' },
+    { id: 'tab-schedule', label: 'Working Schedule' },
+    { id: 'tab-docs', label: 'Documents' },
   ];
 
   const handleGoBack = () => router.push(`/`);
 
   return (
-    <>
-      {/* Page header */}
-      <div className="flex items-center justify-between px-1">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
-            Company Information
-          </h1>
-          <p className="text-sm text-muted-foreground mt-1">
-            Manage your company profile, contact, license, documents, password and door pin settings.
-          </p>
-        </div>
-        <Button
-          onClick={handleGoBack}
-          className="bg-primary text-white hover:bg-indigo-700"
-        >
-          <ArrowLeft className="mr-2 h-4 w-4" />
-          Back to Home
-        </Button>
-      </div>
+    <div className="p-15">
+      <div className="w-full">
 
-      {/* Single card with left image + right tabs */}
-      <div className="rounded-2xl bg-white  shadow-lg p-6 lg:p-8 flex flex-col lg:flex-row gap-8">
-        {/* Left: image / logo section */}
-        <div>
+        <div className="flex items-center gap-4 mb-10">
+          <button className="md:hidden text-slate-500">
+            <span className="material-symbols-outlined">menu</span>
+          </button>
           <div>
-            <ChangeLogo />
-          </div>
-
-          {/* Divider */}
-          <div className="my-6 h-px w-full bg-gradient-to-r from-transparent via-slate-300 to-transparent" />
-
-          <div className="mt-5">
-            <VisitorAppLink />
-          </div>
-        </div>
-
-
-        {/* Right: tabs section inside same card */}
-        <div className="flex-1">
-          {/* Heading above tabs */}
-          <div className="mb-4">
-            <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
-              Company Settings
-            </h2>
-            <p className="text-sm text-muted-foreground">
-              Switch between different sections to configure your company settings.
+            <h1 className="text-xl font-bold text-slate-800 tracking-tight">
+              Company Profile
+            </h1>
+            <p className="text-xs text-slate-500 font-medium hidden sm:block">
+              Manage your organization identity and settings
             </p>
           </div>
-
-          <Tabs defaultValue="company" className="w-full">
-            {/* Tabs header */}
-            <TabsList className="flex w-full justify-start  rounded-xl p-1 mb-4 overflow-x-auto">
-              {tabs.map((tab) => (
-                <TabsTrigger
-                  key={tab.value}
-                  value={tab.value}
-                  className="
-                      px-4 py-2 text-xs sm:text-sm font-medium rounded-lg
-                      text-gray-600 dark:text-gray-200
-                      whitespace-nowrap
-                      transition-all duration-200
-                      data-[state=active]:bg-white
-                      data-[state=active]:text-primary
-                      data-[state=active]:shadow-sm
-                      hover:bg-white/70
-                    "
-                >
-                  {tab.label}
-                </TabsTrigger>
-              ))}
-            </TabsList>
-
-            {/* Tabs content */}
-            {tabs.map((tab) => (
-              <TabsContent
-                key={tab.value}
-                value={tab.value}
-                className="
-                    rounded-xl
-                    bg-slate-50/80 dark:bg-slate-900/60
-                    p-5
-                    transition-all
-                    duration-300
-                    animate-in
-                    fade-in-50
-                    slide-in-from-top-2
-                  "
-              >
-                {tab.component}
-              </TabsContent>
-            ))}
-          </Tabs>
         </div>
-      </div></>
+        {/* Tab Headers */}
+        <div className="flex border-b border-slate-200">
+          {tabs.map((tab) => (
+            <label
+              key={tab.id}
+              className={`
+              cursor-pointer mr-8 pb-3 border-b-2 font-medium text-sm transition-all
+              ${activeTab === tab.id
+                  ? 'text-indigo-600 border-indigo-600'
+                  : 'text-slate-500 border-transparent hover:text-slate-700'}
+            `}
+            >
+              <input
+                type="radio"
+                name="tabs"
+                className="hidden"
+                checked={activeTab === tab.id}
+                onChange={() => setActiveTab(tab.id)}
+              />
+              {tab.label}
+            </label>
+          ))}
+        </div>
+
+
+        {/* Tab Content Area */}
+        <div className="py-6">
+          {activeTab === 'tab-gen' && <Profile /> }
+          {activeTab === 'tab-branch' && <BranchManagement />}
+          {activeTab === 'tab-schedule' && <WorkingSchedule />}
+          {activeTab === 'tab-docs' && <Document />}
+        </div>
+      </div>
+    </div>
   );
 };
 

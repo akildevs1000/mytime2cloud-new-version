@@ -11,6 +11,7 @@ import { Input } from '@/components/ui/input';
 import { getShifts, removeShift } from '@/lib/api';
 import Pagination from '@/lib/Pagination';
 import DataTable from '@/components/ui/DataTable';
+import IconButton from '@/components/Theme/IconButton';
 
 export default function ShiftPage() {
 
@@ -86,33 +87,30 @@ export default function ShiftPage() {
     }
 
     return (
-        <>
+        <div className='p-10'>
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6  sm:space-y-0">
-                <h1 className="text-2xl font-extrabold text-gray-900 flex items-center">
+                <h1 className="text-2xl font-extrabold text-gray-600 dark:text-gray-300 flex items-center">
                     {/* <User className="w-7 h-7 mr-3 text-indigo-600" /> */}
                     Shifts
                 </h1>
                 <div className="flex flex-wrap items-center space-x-3 space-y-2 sm:space-y-0">
                     <div className="relative">
                         <Input
-                            className="pl-10 bg-white h-9 w-full" // Increased left padding (pl-10) for the icon
-                            placeholder="Search by name or ID"
-                            type="text"
+                            placeholder="Search...."
+                            icon="search"
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
+
                         />
-                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
                     </div>
 
-                    {/* Refresh Button */}
-                    <button
+                    <IconButton
+                        icon={RefreshCw}
                         onClick={handleRefresh}
-                        disabled={isLoading}
-                        className="p-2 bg-white border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors disabled:opacity-50"
+                        isLoading={isLoading}
                         title="Refresh Data"
-                    >
-                        <RefreshCw className={`w-4 h-4  ${isLoading ? 'animate-spin' : ''}`} />
-                    </button>
+                    />
+                 
 
                     <Link href="/shift/create">
                         <button className="bg-primary text-white px-4 py-1 rounded-lg font-semibold shadow-md hover:bg-indigo-700 transition-all flex items-center space-x-2 whitespace-nowrap">
@@ -142,6 +140,6 @@ export default function ShiftPage() {
                     />
                 }
             />
-        </>
+        </div>
     );
 }

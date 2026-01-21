@@ -15,7 +15,7 @@ export default function(handleRowClick, onEdit, onDelete) {
       key: "name",
       header: "Shift Name",
       render: (shift) => (
-        <p onClick={() => handleRowClick(shift)} className="text-gray-800">
+        <p onClick={() => handleRowClick(shift)} className="text-sm text-slate-500 dark:text-slate-400 hidden xl:table-cell font-mono">
           {safe(shift?.name)}
         </p>
       ),
@@ -24,7 +24,7 @@ export default function(handleRowClick, onEdit, onDelete) {
       key: "shift_type",
       header: "Type",
       render: (shift) => (
-        <p onClick={() => handleRowClick(shift)} className="text-gray-800">
+        <p onClick={() => handleRowClick(shift)} className="text-sm text-slate-500 dark:text-slate-400 hidden xl:table-cell font-mono">
           {safe(shift?.shift_type?.name)}
         </p>
       ),
@@ -33,7 +33,7 @@ export default function(handleRowClick, onEdit, onDelete) {
       key: "duty",
       header: "On / Off Duty",
       render: (shift) => (
-        <p onClick={() => handleRowClick(shift)} className="text-gray-800">
+        <p onClick={() => handleRowClick(shift)} className="text-sm text-slate-500 dark:text-slate-400 hidden xl:table-cell font-mono">
           {safe(shift?.on_duty_time)}{shift?.off_duty_time ? " - " : ""}{safe(shift?.off_duty_time, "")}
         </p>
       ),
@@ -42,7 +42,7 @@ export default function(handleRowClick, onEdit, onDelete) {
       key: "auto",
       header: "Auto Shift",
       render: (shift) => (
-        <p onClick={() => handleRowClick(shift)} className="text-gray-800">
+        <p onClick={() => handleRowClick(shift)} className="text-sm text-slate-500 dark:text-slate-400 hidden xl:table-cell font-mono">
           {shift?.isAutoShift ? "Yes" : "No"}
         </p>
       ),
@@ -51,7 +51,7 @@ export default function(handleRowClick, onEdit, onDelete) {
       key: "halfday",
       header: "Halfday",
       render: (shift) => (
-        <p onClick={() => handleRowClick(shift)} className="text-gray-800">
+        <p onClick={() => handleRowClick(shift)} className="text-sm text-slate-500 dark:text-slate-400 hidden xl:table-cell font-mono">
           {safe(shift?.halfday)}
         </p>
       ),
@@ -60,7 +60,7 @@ export default function(handleRowClick, onEdit, onDelete) {
       key: "halfday_working_hours",
       header: "Halfday Hours",
       render: (shift) => (
-        <p onClick={() => handleRowClick(shift)} className="text-gray-800">
+        <p onClick={() => handleRowClick(shift)} className="text-sm text-slate-500 dark:text-slate-400 hidden xl:table-cell font-mono">
           {safe(shift?.halfday_working_hours)}
         </p>
       ),

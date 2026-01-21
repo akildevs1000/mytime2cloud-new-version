@@ -1,12 +1,6 @@
-import React from 'react';
+import React from "react";
 
-const Input = ({ 
-  label, 
-  icon, 
-  error, 
-  className = "", 
-  ...props 
-}) => {
+const Input = ({ label, icon, error, className = "", ...props }) => {
   return (
     <div className={`flex flex-col gap-1.5 w-full ${className}`}>
       {/* Label */}
@@ -19,7 +13,7 @@ const Input = ({
       <div className="relative group">
         {/* Leading Icon */}
         {icon && (
-          <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-600 dark:text-gray-300  transition-colors text-[20px]">
+          <span className="z-10 material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-700 dark:text-gray-400 transition-colors text-[20px] pointer-events-none">
             {icon}
           </span>
         )}

@@ -5,7 +5,7 @@ import { Search, Plus, RefreshCw } from 'lucide-react';
 import Link from 'next/link';
 
 import { Input } from '@/components/ui/input';
-import { getScheduleEmployees } from '@/lib/api';
+import { getBranches, getScheduleEmployees } from '@/lib/api';
 
 import DataTable from '@/components/ui/DataTable';
 import Pagination from '@/lib/Pagination';
@@ -13,7 +13,8 @@ import { useRouter } from "next/navigation";
 
 import Columns from "./columns";
 import { parseApiError } from '@/lib/utils';
-import DropDown from '@/components/ui/DropDown';
+import Dropdown from '@/components/Theme/DropDown';
+import IconButton from '@/components/Theme/IconButton';
 
 export default function List() {
 
@@ -36,14 +37,14 @@ export default function List() {
     const [total, setTotalPages] = useState(1);
     const [searchTerm, setSearchTerm] = useState('');
 
-    const [selectedBranch, setSelectedBranch] = useState(null);
+    const [selectedBranch, setSelectedBranch] = useState({ name: "Select All", id: "" });
 
 
     const [branches, setBranches] = useState([]);
 
     const fetchBranches = async () => {
         try {
-            setBranches(await getBranches());
+            setBranches([{ name: "Select All", id: "" }, ...await getBranches()]);
         } catch (error) {
             setError(parseApiError(error));
         }
@@ -62,7 +63,7 @@ export default function List() {
                 page: page,
                 per_page: perPage,
                 sortDesc: 'false',
-                branch_id: selectedBranch,
+                branch_id: selectedBranch.id,
                 common_search: searchTerm || null, // Only include search if it's not empty
             };
             const result = await getScheduleEmployees(params);
@@ -95,7 +96,7 @@ export default function List() {
     }
 
     return (
-        <>
+        <div className='p-10'>
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6  sm:space-y-0">
                 <h1 className="text-2xl font-extrabold text-gray-900 flex items-center">
                     {/* <User className="w-7 h-7 mr-3 text-indigo-600" /> */}
@@ -103,11 +104,15 @@ export default function List() {
                 </h1>
                 <div className="flex flex-wrap items-center space-x-3 space-y-2 sm:space-y-0">
                     <div className="relative">
-                        <DropDown
-                            placeholder="Select Branch"
-                            onChange={(id) => { setSelectedBranch(id); setCurrentPage(1); }}
-                            value={selectedBranch}
+                         <Dropdown
                             items={branches}
+                            selectedItem={selectedBranch}
+                            onSelect={(item) => {
+                                setSelectedBranch(item);
+                                setCurrentPage(1); // Any extra logic goes here
+                            }}
+                            placeholder="Select a Branch"
+                            width="w-[320px]"
                         />
                     </div>
 
@@ -124,15 +129,12 @@ export default function List() {
                         <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
                     </div>
 
-                    {/* Refresh Button */}
-                    <button
+                     <IconButton
+                        icon={RefreshCw}
                         onClick={handleRefresh}
-                        disabled={isLoading}
-                        className="p-2 bg-white border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors disabled:opacity-50"
+                        isLoading={isLoading}
                         title="Refresh Data"
-                    >
-                        <RefreshCw className={`w-4 h-4  ${isLoading ? 'animate-spin' : ''}`} />
-                    </button>
+                    />
 
                     {/* <EmployeeExtras data={records} onUploadSuccess={fetchRecords} /> */}
 
@@ -166,6 +168,6 @@ export default function List() {
                     />
                 }
             />
-        </>
+        </div>
     );
 }

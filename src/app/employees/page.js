@@ -11,7 +11,6 @@ import Columns from "./columns";
 import DataTable from '@/components/ui/DataTable';
 import Pagination from '@/lib/Pagination';
 import { parseApiError } from '@/lib/utils';
-import DropDown from '@/components/ui/DropDown';
 import MultiDropDown from '@/components/ui/MultiDropDown';
 import Dropdown from '@/components/Theme/DropDown';
 import Input from '@/components/Theme/Input';
@@ -121,7 +120,7 @@ export default function EmployeeDataTable() {
     return (
         <div className='p-5'>
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6  sm:space-y-0">
-                <h1 className="text-2xl font-extrabold text-gray-900 flex items-center">
+                <h1 className="text-2xl font-extrabold text-gray-600 dark:text-gray-300 flex items-center">
                     {/* <User className="w-7 h-7 mr-3 text-indigo-600" /> */}
                     Employees
                 </h1>

@@ -110,11 +110,7 @@ const Document = ({ employee_id }) => {
                     </div>
 
                     <button
-                        className="h-10 w-10 pt-1
-      transition-all duration-200 rounded-xl border glass-card
-      !bg-primary border-gray-200 text-white hover:bg-gray-50
-      dark:!bg-slate-900 dark:border-white/10 dark:text-slate-400 dark:hover:text-slate-100 dark:hover:border-white/20
-      active:scale-95
+                        className="h-8 w-8 pt-1 rounded-xl bg-primary
     "
                     > <span className="material-symbols-outlined">add</span>
                     </button>
@@ -214,7 +210,7 @@ const Document = ({ employee_id }) => {
             <div
                 className="glass-card col-span-1 md:col-span-1 lg:col-span-1 row-span-1 p-5 flex flex-col rounded-lg relative overflow-hidden group hover:border-primary/30"
             >
-                <div className="flex items-start justify-between mb-2">
+                <div className="flex items-start justify-between mb-2 ">
                     <div
                         className="size-12 rounded-xl bg-orange-500/10 flex items-center justify-center text-orange-400 mb-3 group-hover:bg-orange-500/20 transition-colors"
                     >
@@ -224,7 +220,7 @@ const Document = ({ employee_id }) => {
                         >
                     </div>
                     <span
-                        className="text-xs font-bold text-[#5f717a] uppercase tracking-wider bg-[#18242a] px-2 py-1 rounded"
+                        className="bg-primary text-xs uppercase tracking-wider px-2 py-1 rounded"
                     >2 Files</span
                     >
                 </div>
@@ -268,7 +264,7 @@ const Document = ({ employee_id }) => {
                         >
                     </div>
                     <span
-                        className="text-xs font-bold text-[#5f717a] uppercase tracking-wider bg-[#18242a] px-2 py-1 rounded"
+                        className="bg-primary text-xs uppercase tracking-wider px-2 py-1 rounded"
                     >3 Files</span
                     >
                 </div>

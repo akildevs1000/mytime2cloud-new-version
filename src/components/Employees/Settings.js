@@ -4,34 +4,31 @@ import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { SuccessDialog } from "@/components/SuccessDialog";
 import { Button } from "@/components/ui/button";
-import {
-    Form,
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
-} from "@/components/ui/form";
+
 import { useRouter } from "next/navigation";
 import { Settings2 } from "lucide-react";
 import { updateSettings, getLeaveManagers, getLeaveGroups } from "@/lib/api";
-import { Switch } from "@/components/ui/switch";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { parseApiError } from "@/lib/utils";
 
-const Settings = ({ employee_id, leave_group_id, reporting_manager_id, status, web_login_access, mobile_app_login_access, tracking_status, user_id }) => {
+const Settings = ({ employee_id, status, web_login_access, mobile_app_login_access, tracking_status, user_id }) => {
     const router = useRouter();
     const [open, setOpen] = useState(false);
     const [globalError, setGlobalError] = useState(null);
-    const [leaveGroups, setLeaveGroups] = useState([]);
-    const [leaveManagers, setLeaveManagers] = useState([]);
+
+    const [employeeStatus, setEmployeeStatus] = useState(true);
+    const [webAccess, setWebAccess] = useState(false);
+    const [mobileAccess, setMobileAccess] = useState(true);
+    const [overtime, setOvertime] = useState(false);
+    const [whatsapp, setWhatsapp] = useState(false);
+    const [location, setLocation] = useState(false);
+
+    // Common classes to keep the code cleaner
+    const toggleTrackClass = "block overflow-hidden h-6 rounded-full cursor-pointer transition-colors duration-300";
+    const toggleKnobClass = "absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer transition-all duration-300 ease-in-out left-0 z-10";
 
     const form = useForm({
         defaultValues: {
-            leave_group_id: leave_group_id || "",
-            reporting_manager_id: reporting_manager_id || "",
             status: status || "",
-
             web_login_access: web_login_access || "",
             mobile_app_login_access: mobile_app_login_access || "",
             tracking_status: tracking_status || "",
@@ -42,29 +39,7 @@ const Settings = ({ employee_id, leave_group_id, reporting_manager_id, status, w
     const { handleSubmit, formState } = form;
     const { isSubmitting } = formState;
 
-    const handleCancel = () => router.push(`/employees`);
 
-    useEffect(() => {
-        const fetchLeaveManagers = async () => {
-            try {
-                setLeaveManagers(await getLeaveManagers());
-            } catch (error) {
-                setLeaveManagers([]);
-            }
-        };
-        fetchLeaveManagers();
-    }, []);
-
-    useEffect(() => {
-        const fetchLeaveGroups = async () => {
-            try {
-                setLeaveGroups(await getLeaveGroups());
-            } catch (error) {
-                setLeaveGroups([]);
-            }
-        };
-        fetchLeaveGroups();
-    }, []);
 
     const onSubmit = async (data) => {
         console.log("🚀 ~ onSubmit ~ data:", data)
@@ -116,191 +91,133 @@ const Settings = ({ employee_id, leave_group_id, reporting_manager_id, status, w
             </h3>
         </div>
         <div className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-2">
-                    <label
-                        className="block text-sm font-medium text-slate-700 dark:text-slate-300"
-                    >Leave Group</label
-                    >
-                    <div className="relative">
-                        <select
-                            className="block w-full rounded-lg border-slate-300 dark:border-slate-600 bg-white/50 dark:bg-slate-800/50 text-slate-900 dark:text-white shadow-sm focus:border-primary focus:ring-primary sm:text-sm py-2.5"
-                        >
-                            <option>Engineering - Team Alpha</option>
-                            <option>Design - Creative Unit</option>
-                            <option>Marketing - Growth</option>
-                        </select>
-                    </div>
-                </div>
-                <div className="space-y-2">
-                    <label
-                        className="block text-sm font-medium text-slate-700 dark:text-slate-300"
-                    >Reporting Manager</label
-                    >
-                    <div className="relative">
-                        <select
-                            className="block w-full rounded-lg border-slate-300 dark:border-slate-600 bg-white/50 dark:bg-slate-800/50 text-slate-900 dark:text-white shadow-sm focus:border-primary focus:ring-primary sm:text-sm py-2.5"
-                        >
-                            <option>Sarah Connor</option>
-                            <option>John Doe</option>
-                            <option>Jane Smith</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
+
             <div
                 className="grid grid-cols-1 md:grid-cols-2 gap-y-6 gap-x-12 pt-4"
             >
+                {/* 1. Employee Status */}
                 <div className="flex items-center justify-between">
                     <div className="flex flex-col">
-                        <span
-                            className="text-sm font-medium text-slate-900 dark:text-white"
-                        >Employee Status</span
-                        >
-                        <span className="text-xs text-slate-500 dark:text-slate-400"
-                        >Active account status</span
-                        >
+                        <span className="text-sm font-medium text-slate-900 dark:text-white">Employee Status</span>
+                        <span className="text-xs text-slate-500 dark:text-slate-400">Active account status</span>
                     </div>
-                    <div
-                        className="relative inline-block w-12 mr-2 align-middle select-none transition duration-200 ease-in"
-                    >
+                    <div className="relative inline-block w-12 mr-2 align-middle select-none">
                         <input
-                            checked=""
-                            className="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer border-gray-300 checked:border-secondary transition-all duration-300 ease-in-out left-0"
+                            type="checkbox"
                             id="toggle1"
-                            name="toggle"
-                            type="checkbox"
+                            checked={employeeStatus}
+                            onChange={() => setEmployeeStatus(!employeeStatus)}
+                            className={`${toggleKnobClass} ${employeeStatus ? 'translate-x-6 border-blue-600' : 'border-gray-300'}`}
                         />
                         <label
-                            className="toggle-label block overflow-hidden h-6 rounded-full bg-secondary cursor-pointer"
-                            for="toggle1"
-                        ></label>
+                            htmlFor="toggle1"
+                            className={`${toggleTrackClass} ${employeeStatus ? 'bg-blue-600' : 'bg-gray-300 dark:bg-slate-600'}`}
+                        />
                     </div>
                 </div>
+
+                {/* 2. Web Login Access */}
                 <div className="flex items-center justify-between">
                     <div className="flex flex-col">
-                        <span
-                            className="text-sm font-medium text-slate-900 dark:text-white"
-                        >Web Login Access</span
-                        >
-                        <span className="text-xs text-slate-500 dark:text-slate-400"
-                        >Allow browser dashboard access</span
-                        >
+                        <span className="text-sm font-medium text-slate-900 dark:text-white">Web Login Access</span>
+                        <span className="text-xs text-slate-500 dark:text-slate-400">Allow browser dashboard access</span>
                     </div>
-                    <div
-                        className="relative inline-block w-12 mr-2 align-middle select-none transition duration-200 ease-in"
-                    >
+                    <div className="relative inline-block w-12 mr-2 align-middle select-none">
                         <input
-                            className="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer border-gray-300 checked:border-secondary transition-all duration-300 ease-in-out left-0"
+                            type="checkbox"
                             id="toggle2"
-                            name="toggle"
-                            type="checkbox"
+                            checked={webAccess}
+                            onChange={() => setWebAccess(!webAccess)}
+                            className={`${toggleKnobClass} ${webAccess ? 'translate-x-6 border-blue-600' : 'border-gray-300'}`}
                         />
                         <label
-                            className="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 dark:bg-slate-600 cursor-pointer"
-                            for="toggle2"
-                        ></label>
+                            htmlFor="toggle2"
+                            className={`${toggleTrackClass} ${webAccess ? 'bg-blue-600' : 'bg-gray-300 dark:bg-slate-600'}`}
+                        />
                     </div>
                 </div>
+
+                {/* 3. Mobile App Login Access */}
                 <div className="flex items-center justify-between">
                     <div className="flex flex-col">
-                        <span
-                            className="text-sm font-medium text-slate-900 dark:text-white"
-                        >Mobile App Login Access</span
-                        >
-                        <span className="text-xs text-slate-500 dark:text-slate-400"
-                        >Allow iOS/Android app access</span
-                        >
+                        <span className="text-sm font-medium text-slate-900 dark:text-white">Mobile App Login Access</span>
+                        <span className="text-xs text-slate-500 dark:text-slate-400">Allow iOS/Android app access</span>
                     </div>
-                    <div
-                        className="relative inline-block w-12 mr-2 align-middle select-none transition duration-200 ease-in"
-                    >
+                    <div className="relative inline-block w-12 mr-2 align-middle select-none">
                         <input
-                            checked=""
-                            className="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer border-gray-300 checked:border-secondary transition-all duration-300 ease-in-out left-0"
+                            type="checkbox"
                             id="toggle3"
-                            name="toggle"
-                            type="checkbox"
+                            checked={mobileAccess}
+                            onChange={() => setMobileAccess(!mobileAccess)}
+                            className={`${toggleKnobClass} ${mobileAccess ? 'translate-x-6 border-blue-600' : 'border-gray-300'}`}
                         />
                         <label
-                            className="toggle-label block overflow-hidden h-6 rounded-full bg-secondary cursor-pointer"
-                            for="toggle3"
-                        ></label>
+                            htmlFor="toggle3"
+                            className={`${toggleTrackClass} ${mobileAccess ? 'bg-blue-600' : 'bg-gray-300 dark:bg-slate-600'}`}
+                        />
                     </div>
                 </div>
+
+                {/* 4. Overtime Calculation */}
                 <div className="flex items-center justify-between">
                     <div className="flex flex-col">
-                        <span
-                            className="text-sm font-medium text-slate-900 dark:text-white"
-                        >Overtime Calculation</span
-                        >
-                        <span className="text-xs text-slate-500 dark:text-slate-400"
-                        >Include extra hours in payroll</span
-                        >
+                        <span className="text-sm font-medium text-slate-900 dark:text-white">Overtime Calculation</span>
+                        <span className="text-xs text-slate-500 dark:text-slate-400">Include extra hours in payroll</span>
                     </div>
-                    <div
-                        className="relative inline-block w-12 mr-2 align-middle select-none transition duration-200 ease-in"
-                    >
+                    <div className="relative inline-block w-12 mr-2 align-middle select-none">
                         <input
-                            className="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer border-gray-300 checked:border-secondary transition-all duration-300 ease-in-out left-0"
+                            type="checkbox"
                             id="toggle4"
-                            name="toggle"
-                            type="checkbox"
+                            checked={overtime}
+                            onChange={() => setOvertime(!overtime)}
+                            className={`${toggleKnobClass} ${overtime ? 'translate-x-6 border-blue-600' : 'border-gray-300'}`}
                         />
                         <label
-                            className="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 dark:bg-slate-600 cursor-pointer"
-                            for="toggle4"
-                        ></label>
+                            htmlFor="toggle4"
+                            className={`${toggleTrackClass} ${overtime ? 'bg-blue-600' : 'bg-gray-300 dark:bg-slate-600'}`}
+                        />
                     </div>
                 </div>
+
+                {/* 5. WhatsApp OTP */}
                 <div className="flex items-center justify-between">
                     <div className="flex flex-col">
-                        <span
-                            className="text-sm font-medium text-slate-900 dark:text-white"
-                        >WhatsApp OTP</span
-                        >
-                        <span className="text-xs text-slate-500 dark:text-slate-400"
-                        >Send login codes via WhatsApp</span
-                        >
+                        <span className="text-sm font-medium text-slate-900 dark:text-white">WhatsApp OTP</span>
+                        <span className="text-xs text-slate-500 dark:text-slate-400">Send login codes via WhatsApp</span>
                     </div>
-                    <div
-                        className="relative inline-block w-12 mr-2 align-middle select-none transition duration-200 ease-in"
-                    >
+                    <div className="relative inline-block w-12 mr-2 align-middle select-none">
                         <input
-                            className="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer border-gray-300 checked:border-secondary transition-all duration-300 ease-in-out left-0"
+                            type="checkbox"
                             id="toggle5"
-                            name="toggle"
-                            type="checkbox"
+                            checked={whatsapp}
+                            onChange={() => setWhatsapp(!whatsapp)}
+                            className={`${toggleKnobClass} ${whatsapp ? 'translate-x-6 border-blue-600' : 'border-gray-300'}`}
                         />
                         <label
-                            className="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 dark:bg-slate-600 cursor-pointer"
-                            for="toggle5"
-                        ></label>
+                            htmlFor="toggle5"
+                            className={`${toggleTrackClass} ${whatsapp ? 'bg-blue-600' : 'bg-gray-300 dark:bg-slate-600'}`}
+                        />
                     </div>
                 </div>
+
+                {/* 6. Location Tracking */}
                 <div className="flex items-center justify-between">
                     <div className="flex flex-col">
-                        <span
-                            className="text-sm font-medium text-slate-900 dark:text-white"
-                        >Location Tracking</span
-                        >
-                        <span className="text-xs text-slate-500 dark:text-slate-400"
-                        >GPS tracking for mobile punch-in</span
-                        >
+                        <span className="text-sm font-medium text-slate-900 dark:text-white">Location Tracking</span>
+                        <span className="text-xs text-slate-500 dark:text-slate-400">GPS tracking for mobile punch-in</span>
                     </div>
-                    <div
-                        className="relative inline-block w-12 mr-2 align-middle select-none transition duration-200 ease-in"
-                    >
+                    <div className="relative inline-block w-12 mr-2 align-middle select-none">
                         <input
-                            className="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer border-gray-300 checked:border-secondary transition-all duration-300 ease-in-out left-0"
-                            id="toggle6"
-                            name="toggle"
                             type="checkbox"
+                            id="toggle6"
+                            checked={location}
+                            onChange={() => setLocation(!location)}
+                            className={`${toggleKnobClass} ${location ? 'translate-x-6 border-blue-600' : 'border-gray-300'}`}
                         />
                         <label
-                            className="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 dark:bg-slate-600 cursor-pointer"
-                            for="toggle6"
-                        ></label>
+                            htmlFor="toggle6"
+                            className={`${toggleTrackClass} ${location ? 'bg-blue-600' : 'bg-gray-300 dark:bg-slate-600'}`}
+                        />
                     </div>
                 </div>
             </div>

@@ -18,6 +18,7 @@ import { updateSettings, getLeaveManagers, getLeaveGroups } from "@/lib/api";
 import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { parseApiError } from "@/lib/utils";
+import Dropdown from "../Theme/DropDown";
 
 const LeaveAndReporting = ({ employee_id, leave_group_id, reporting_manager_id, status, web_login_access, mobile_app_login_access, tracking_status, user_id }) => {
     const router = useRouter();
@@ -115,13 +116,25 @@ const LeaveAndReporting = ({ employee_id, leave_group_id, reporting_manager_id, 
                         >Leave Group</label
                         >
                         <div className="relative">
-                            <select
-                                className="block w-full rounded-lg border-slate-300 dark:border-slate-600 bg-white/50 dark:bg-slate-800/50 text-slate-900 dark:text-white shadow-sm focus:border-primary focus:ring-primary sm:text-sm py-2.5"
-                            >
-                                <option>Engineering - Team Alpha</option>
-                                <option>Design - Creative Unit</option>
-                                <option>Marketing - Growth</option>
-                            </select>
+                            <Dropdown
+                                items={[
+                                    {
+                                        "id": 1,
+                                        "name": "Engineering - Team Alpha"
+                                    },
+                                    {
+                                        "id": 2,
+                                        "name": "Design - Creative Unit"
+                                    },
+                                    {
+                                        "id": 3,
+                                        "name": "Marketing - Growth"
+                                    }
+                                ]}
+                                onSelect={(item) => {}}
+                                placeholder="Select a Leave Group"
+                                width="w-full"
+                            />
                         </div>
                     </div>
                     <div className="space-y-2">
@@ -130,13 +143,26 @@ const LeaveAndReporting = ({ employee_id, leave_group_id, reporting_manager_id, 
                         >Reporting Manager</label
                         >
                         <div className="relative">
-                            <select
-                                className="block w-full rounded-lg border-slate-300 dark:border-slate-600 bg-white/50 dark:bg-slate-800/50 text-slate-900 dark:text-white shadow-sm focus:border-primary focus:ring-primary sm:text-sm py-2.5"
-                            >
-                                <option>Sarah Connor</option>
-                                <option>John Doe</option>
-                                <option>Jane Smith</option>
-                            </select>
+
+                              <Dropdown
+                                items={[
+                                    {
+                                        "id": 1,
+                                        "name": "Sarah Connor"
+                                    },
+                                    {
+                                        "id": 2,
+                                        "name": "John Doe"
+                                    },
+                                    {
+                                        "id": 3,
+                                        "name": "Jane Smith"
+                                    }
+                                ]}
+                                onSelect={(item) => {}}
+                                placeholder="Select a Reporting Manager"
+                                width="w-full"
+                            />
                         </div>
                     </div>
                 </div>
