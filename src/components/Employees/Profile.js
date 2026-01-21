@@ -202,8 +202,7 @@ const Profile = ({ payload }) => {
             Employee Profile
           </h2>
           <p className="text-slate-500 dark:text-slate-400 mt-1">
-            Manage general preferences, security credentials, and hardware
-            access.
+            Employee personal information and contacts, document etc.
           </p>
         </div>
       </div>

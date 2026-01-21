@@ -76,8 +76,7 @@ const EmergencyContact = ({ id, phone_relative_number, relation, local_address, 
           Contact Details
         </h2>
         <p className="text-slate-500 dark:text-slate-400 mt-1">
-          Manage general preferences, security credentials, and hardware
-          access.
+          Maintain employee primary communication channels and emergency contact information.
         </p>
       </div>
     </div>
