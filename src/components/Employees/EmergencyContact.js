@@ -68,6 +68,19 @@ const EmergencyContact = ({ id, phone_relative_number, relation, local_address, 
 
 
   return (<>
+    <div
+      className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8"
+    >
+      <div>
+        <h2 className="text-3xl font-bold text-slate-900 dark:text-white">
+          Contact Details
+        </h2>
+        <p className="text-slate-500 dark:text-slate-400 mt-1">
+          Manage general preferences, security credentials, and hardware
+          access.
+        </p>
+      </div>
+    </div>
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 auto-rows-[minmax(140px,auto)]">
       <div
         className="glass-card col-span-1 md:col-span-2 lg:col-span-2 p-6 flex flex-col rounded-lg relative overflow-hidden group min-h-[260px]">
@@ -278,129 +291,6 @@ const EmergencyContact = ({ id, phone_relative_number, relation, local_address, 
         </div>
       </div>
     </div></>)
-
-  return (
-    <div className="bg-white dark:bg-gray-800 py-8">
-      <div className="">
-        <Form {...form}>
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
-            <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-6 flex items-center">
-              <PhoneCall className="mr-3 h-6 w-6 text-primary" />
-              Emergency Contact Information
-            </h2>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-
-              {/* Phone Relative Number */}
-              <FormField
-                control={form.control}
-                name="phone_relative_number"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Relative Contact</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Enter relative contact phone number" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              {/* Relation */}
-              <FormField
-                control={form.control}
-                name="relation"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Relation</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Enter relation (e.g. Brother, Friend)" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              {/* Local Address */}
-              <FormField
-                control={form.control}
-                name="local_address"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Address</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Enter local address" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              {/* Local City */}
-              <FormField
-                control={form.control}
-                name="local_city"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>City</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Enter local city" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              {/* Local Country */}
-              <FormField
-                control={form.control}
-                name="local_country"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Country</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Enter local country" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-
-            {globalError && (
-              <div
-                className="mb-4 p-3 border border-red-500 bg-red-50 text-red-700 rounded-lg"
-                role="alert"
-              >
-                {globalError}
-              </div>
-            )}
-
-            {/* Buttons */}
-            <div className="flex justify-end space-x-4 pt-4">
-              <Button type="button" variant="secondary" onClick={handleCancel}>
-                CANCEL
-              </Button>
-              <Button
-                type="submit"
-                className="bg-primary hover:bg-indigo-700"
-                disabled={isSubmitting} a
-              >
-                {isSubmitting ? "SUBMITTING..." : "SUBMIT"}
-              </Button>
-            </div>
-          </form>
-        </Form>
-
-        <SuccessDialog
-          open={open}
-          onOpenChange={setOpen}
-          title="Emergency Contact Saved"
-          description="Contact details have been saved successfully."
-        />
-      </div>
-    </div>
-  );
 };
 
 export default EmergencyContact;

@@ -156,7 +156,7 @@ export default function EmployeeShortList() {
         className={`
         p-3 flex border border-gray-100 dark:border-gray-700 items-center space-x-4 cursor-pointer transition-colors
         ${isSelected
-            ? 'bg-white/10' // Styles for selected state
+            ? 'bg-gray-300 dark:bg-white/10 text-gray-600 dark:text-gray-300' // Styles for selected state
             : 'bg-white dark:bg-gray-900 hover:bg-primary/10 text-gray-600 dark:text-gray-300' // Styles for normal state
           }
       `} onClick={() => handleRowClick(employee)}
@@ -183,18 +183,8 @@ export default function EmployeeShortList() {
     <>
       <div className="flex flex-1 gap-6">
         <div
-          className="w-80 border-r border-gray-100 dark:border-gray-700 flex flex-col"
+          className="w-80 border-r border-gray-200 dark:border-gray-700 flex flex-col"
         >
-          {/* <div
-            className="p-4 border-b border-border-light dark:border-border-dark flex justify-between items-center"
-          >
-            <h2 className="text-lg font-semibold text-gray-400 dark:text-white">Employees</h2>
-            <Link href="/employees/create">
-              <button className="text-gray-400 dark:text-white">
-                <span className="material-icons">add</span>
-              </button>
-            </Link>
-          </div> */}
           <div className="p-5 space-y-4">
             {/* Dropdown Container - Added 'relative' here to anchor the menu */}
             <div className="relative inline-block w-full">

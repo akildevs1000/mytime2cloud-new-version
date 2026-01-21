@@ -66,6 +66,19 @@ const Bank = ({ employee_id, bank }) => {
     };
 
     return (<>
+        <div
+            className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8"
+        >
+            <div>
+                <h2 className="text-3xl font-bold text-slate-900 dark:text-white">
+                    Payroll Details
+                </h2>
+                <p className="text-slate-500 dark:text-slate-400 mt-1">
+                    Manage general preferences, security credentials, and hardware
+                    access.
+                </p>
+            </div>
+        </div>
         <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-5 auto-rows-[minmax(140px,auto)]">
             <div
                 className="glass-card col-span-1 md:col-span-2 lg:col-span-2 row-span-2 p-8 flex flex-col relative overflow-hidden">
@@ -86,7 +99,7 @@ const Bank = ({ employee_id, bank }) => {
                     className="flex flex-col sm:flex-row items-center justify-around gap-8 flex-1 relative z-10">
                     <div className="relative size-48 shrink-0 rounded-full shadow-[0_0_40px_-10px_rgba(99,102,241,0.3)]"
                         style={{ background: 'conic-gradient(#6366f1 0% 45%, #2dd4bf 45% 75%, #0ea5e9 75% 100%)' }}
-                        >
+                    >
                         <div
                             className="absolute inset-4 bg-[#162025] rounded-full flex flex-col items-center justify-center">
                             <span
@@ -150,7 +163,7 @@ const Bank = ({ employee_id, bank }) => {
                     <button className="text-xs font-medium text-primary hover:text-white transition-colors">View
                         All</button>
                 </div>
-                
+
                 <div className="flex-1 overflow-y-auto custom-scrollbar p-2">
                     <div className="flex flex-col gap-1">
                         <div
@@ -316,129 +329,6 @@ const Bank = ({ employee_id, bank }) => {
             </div>
         </div>
     </>);
-
-    return (
-        <div className="bg-white dark:bg-gray-800 py-8">
-            <div className="">
-                <Form {...form}>
-                    <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
-                        <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-6 flex items-center">
-                            <Banknote className="mr-3 h-6 w-6 text-primary" />
-                            Bank Information
-                        </h2>
-
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-
-                            {/* Phone Relative Number */}
-                            <FormField
-                                control={form.control}
-                                name="account_title"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Account Name</FormLabel>
-                                        <FormControl>
-                                            <Input placeholder="Enter Account Name" {...field} />
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-
-                            {/* Relation */}
-                            <FormField
-                                control={form.control}
-                                name="bank_name"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Bank Name</FormLabel>
-                                        <FormControl>
-                                            <Input placeholder="Enter Bank Name" {...field} />
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-
-                            {/* Local Address */}
-                            <FormField
-                                control={form.control}
-                                name="account_no"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>A/C Number</FormLabel>
-                                        <FormControl>
-                                            <Input placeholder="Enter A/C Number" {...field} />
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-
-                            {/* Local City */}
-                            <FormField
-                                control={form.control}
-                                name="iban"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Iban Number</FormLabel>
-                                        <FormControl>
-                                            <Input placeholder="Enter Iban Number" {...field} />
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-
-                            {/* Local Country */}
-                            <FormField
-                                control={form.control}
-                                name="address"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Address</FormLabel>
-                                        <FormControl>
-                                            <Input placeholder="Enter Address" {...field} />
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-                        </div>
-
-                        {globalError && (
-                            <div
-                                className="mb-4 p-3 border border-red-500 bg-red-50 text-red-700 rounded-lg"
-                                role="alert"
-                            >
-                                {globalError}
-                            </div>
-                        )}
-
-                        {/* Buttons */}
-                        <div className="flex justify-end space-x-4 pt-4">
-                            <Button type="button" variant="secondary" onClick={handleCancel}>
-                                CANCEL
-                            </Button>
-                            <Button
-                                type="submit"
-                                className="bg-primary hover:bg-indigo-700"
-                                disabled={isSubmitting} a
-                            >
-                                {isSubmitting ? "SUBMITTING..." : "SUBMIT"}
-                            </Button>
-                        </div>
-                    </form>
-                </Form>
-
-                <SuccessDialog
-                    open={open}
-                    onOpenChange={setOpen}
-                    title="Bank Saved"
-                    description="Bank details have been saved successfully."
-                />
-            </div>
-        </div>
-    );
 };
 
 export default Bank;
