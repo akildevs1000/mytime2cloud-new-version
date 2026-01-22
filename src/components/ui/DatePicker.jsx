@@ -41,8 +41,8 @@ export default function DatePicker({
       <PopoverTrigger asChild>
         <Button
           variant="outline"
-          className={`w-full pl-3 text-left font-normal ${
-            !value ? "text-muted-foreground" : ""
+          className={`w-full text-slate-700 dark:text-slate-300 bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/10 rounded-xl p-5 ${
+            !value ? "" : ""
           } ${className}`}
           disabled={disabled}
         >
@@ -51,7 +51,7 @@ export default function DatePicker({
         </Button>
       </PopoverTrigger>
 
-      <PopoverContent className="w-auto p-0" align="start">
+      <PopoverContent className="w-auto p-0 text-slate-700 dark:text-slate-300 bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/10" align="start">
         <Calendar
           mode="single"
           selected={displayDate}

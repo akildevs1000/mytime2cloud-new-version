@@ -3,7 +3,6 @@
 
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import {
   Dialog,
   DialogContent,
@@ -16,6 +15,7 @@ import DropDown from "@/components/ui/DropDown";
 import { getBranches, createDepartment } from "@/lib/api";
 import { SuccessDialog } from "@/components/SuccessDialog";
 import { parseApiError } from "@/lib/utils";
+import Input from "../Theme/Input";
 
 let defaultPayload = {
   name: "",
@@ -80,7 +80,7 @@ const Create = ({ onSuccess = () => { } }) => {
       <Button onClick={() => setOpen(true)}>Add Department</Button>
 
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="max-w-lg">
+        <DialogContent className="max-w-lg bg-white dark:bg-slate-900 border-gray-200 dark:border-white/5">
           <DialogHeader>
             <DialogTitle>New Department</DialogTitle>
           </DialogHeader>

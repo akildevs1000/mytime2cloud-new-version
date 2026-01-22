@@ -159,7 +159,7 @@ export default function AttendanceTable() {
 
 
     return (
-        <>
+        <div className='p-10'>
             <div className="flex flex-wrap items-center space-x-3 space-y-2 mb-6 sm:space-y-0">
                 <h1 className="text-2xl font-extrabold text-gray-900 flex items-center">
                     {/* <User className="w-7 h-7 mr-3 text-indigo-600" /> */}
@@ -289,6 +289,6 @@ export default function AttendanceTable() {
             </div>
 
 
-        </>
+        </div>
     );
 }

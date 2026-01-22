@@ -1,7 +1,7 @@
 export default function CompanyProfile() {
     return (
         <>
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
                 <div className="lg:col-span-7 flex flex-col gap-8">
                     {/* ===== Company Identity ===== */}
                     <section className="bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl border border-slate-200 dark:border-slate-700 rounded-2xl shadow-sm p-6 md:p-8 relative overflow-hidden">

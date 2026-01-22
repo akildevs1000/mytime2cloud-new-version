@@ -85,7 +85,7 @@ export default function Header() {
         { name: 'ATTENDANCE', href: '/attendance' },
         { name: 'PAYROLL', href: '/payroll-tabs' },
         { name: 'ACCESS CONTROL', href: '/access_control_logs' },
-        { name: 'VISITORS', href: '/visitors' },
+        { name: 'VISITORS', href: '/visitor' },
         { name: 'REPORTS', href: '/attendance' },
         { name: 'SETTINGS', href: '/setup' },
     ];
