@@ -64,6 +64,7 @@ function OptionsMenu({ item, onSuccess = () => { } }) {
   );
 }
 
+// 	City	Phone	Status	Actions
 export default function Columns({ handleRowClick, onSuccess = () => { } } = {}) {
   return [
     {
@@ -71,98 +72,69 @@ export default function Columns({ handleRowClick, onSuccess = () => { } } = {}) 
       header: "Name",
       render: (item) => (
         <span onClick={() => handleRowClick(item)}
-          className="text-gray-800 cursor-pointer block max-w-[150px] truncate"
-          title={item.branch_name || "—"}
+          className="text-sm text-slate-500 dark:text-slate-400 hidden xl:table-cell font-mono"
         >
           {item.branch_name || "—"}
         </span>
       ),
     },
+
     {
-      key: "licence_number",
-      header: "Licence",
+      key: "branch_code",
+      header: "Short Name",
       render: (item) => (
-        <span
-          className="text-gray-800 cursor-pointer block max-w-[150px] truncate"
-          title={item.licence_number || "—"}
+        <span onClick={() => handleRowClick(item)}
+          className="text-sm text-slate-500 dark:text-slate-400 hidden xl:table-cell font-mono"
         >
-          {item.licence_number || "—"}
-        </span>
-      ),
-    },
-    {
-      key: "licence_issue_by_department",
-      header: "Licence Issued By Department",
-      render: (item) => (
-        <span
-          className="text-gray-800 cursor-pointer block max-w-[150px] truncate"
-          title={item.licence_issue_by_department || "—"}
-        >
-          {item.licence_issue_by_department || "—"}
-        </span>
-      ),
-    },
-    {
-      key: "licence_expiry",
-      header: "Licence Expiry",
-      render: (item) => (
-        <span
-          className="text-gray-800 cursor-pointer block max-w-[150px] truncate"
-          title={item.licence_expiry || "—"}
-        >
-          {item.licence_expiry || "—"}
-        </span>
-      ),
-    },
-    {
-      key: "lat",
-      header: "Lat",
-      render: (item) => (
-        <span
-          className="text-gray-800 cursor-pointer block max-w-[150px] truncate"
-          title={item.lat || "—"}
-        >
-          {item.lat || "—"}
-        </span>
-      ),
-    },
-    {
-      key: "lon",
-      header: "Lon",
-      render: (item) => (
-        <span
-          className="text-gray-800 cursor-pointer block max-w-[150px] truncate"
-          title={item.lon || "—"}
-        >
-          {item.lon || "—"}
+          {item.branch_code || "—"}
         </span>
       ),
     },
     {
       key: "address",
-      header: "Address",
+      header: "Location",
       render: (item) => (
         <span
-          className="text-gray-800 cursor-pointer block max-w-[150px] truncate"
-          title={item.address || "—"}
+          className="text-sm text-slate-500 dark:text-slate-400 hidden xl:table-cell font-mono"
         >
           {item.address || "—"}
         </span>
       ),
     },
     {
+      key: "city",
+      header: "City",
+      render: (item) => (
+        <span
+          className="text-sm text-slate-500 dark:text-slate-400 hidden xl:table-cell font-mono"
+        >
+          {item.address || "—"}
+        </span>
+      ),
+    },
+
+    {
       key: "created_date",
       header: "Since",
       render: (item) => (
         <span
-          className="text-gray-800 cursor-pointer block max-w-[150px] truncate"
-          title={item.created_date || "—"}
+          className="text-sm text-slate-500 dark:text-slate-400 hidden xl:table-cell font-mono"
         >
           {item.created_date || "—"}
         </span>
       ),
     },
-
+    {
+      key: "status",
+      header: "Status",
+      render: (item) => (
+        <span
+          className="text-sm text-slate-500 dark:text-slate-400 hidden xl:table-cell font-mono"
+        >
+          {item.address || "—"}
+        </span>
+      ),
+    },
 
     {
       key: "options",

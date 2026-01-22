@@ -4,7 +4,9 @@ import Branch from "@/components/Branch/Page";
 
 const BranchPage = () => {
   return (
-    <Branch />
+    <div className="p-10">
+      <Branch />
+    </div>
   );
 };
 

@@ -20,9 +20,9 @@ import Profile from "@/components/Company/Profile";
 import Contact from "@/components/Company/Contact";
 import License from "@/components/Company/License";
 
-import Document from "@/components/Company/Document";
+import Document from "@/components/Company/Document/Index";
 import Password from "@/components/Company/Password";
-import BranchManagement from "@/components/Company/BranchManagement";
+import Branch from "@/components/Branch/Page";
 import DoorPin from "@/components/Company/DoorPin";
 import ChangeLogo from "@/components/Company/ChangeLogo";
 import { getCompanyInfo, getVisitorLink } from "@/lib/api";
@@ -149,7 +149,7 @@ const Company = () => {
   const handleGoBack = () => router.push(`/`);
 
   return (
-    <div className="p-15">
+    <div className="p-15  overflow-y-auto height-[800px]">
       <div className="w-full">
 
         <div className="flex items-center gap-4 mb-10">
@@ -157,7 +157,7 @@ const Company = () => {
             <span className="material-symbols-outlined">menu</span>
           </button>
           <div>
-            <h1 className="text-xl font-bold text-slate-800 tracking-tight">
+            <h1 className="text-xl font-bold text-slate-600 dark:text-slate-300  tracking-tight">
               Company Profile
             </h1>
             <p className="text-xs text-slate-500 font-medium hidden sm:block">
@@ -166,14 +166,14 @@ const Company = () => {
           </div>
         </div>
         {/* Tab Headers */}
-        <div className="flex border-b border-slate-200">
+        <div className="flex ">
           {tabs.map((tab) => (
             <label
               key={tab.id}
               className={`
               cursor-pointer mr-8 pb-3 border-b-2 font-medium text-sm transition-all
               ${activeTab === tab.id
-                  ? 'text-indigo-600 border-indigo-600'
+                  ? 'text-primary border-indigo-600'
                   : 'text-slate-500 border-transparent hover:text-slate-700'}
             `}
             >
@@ -193,7 +193,7 @@ const Company = () => {
         {/* Tab Content Area */}
         <div className="py-6">
           {activeTab === 'tab-gen' && <Profile /> }
-          {activeTab === 'tab-branch' && <BranchManagement />}
+          {activeTab === 'tab-branch' && <Branch />}
           {activeTab === 'tab-schedule' && <WorkingSchedule />}
           {activeTab === 'tab-docs' && <Document />}
         </div>

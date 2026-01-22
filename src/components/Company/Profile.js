@@ -1,270 +1,358 @@
-// @ts-nocheck
-"use client";
-
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-
-import { SuccessDialog } from "@/components/SuccessDialog";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-
-import { User, ArrowLeft, Upload, Image, Briefcase, Badge, BaggageClaim, Building, Building2, Building2Icon, Info, Settings } from "lucide-react";
-import { convertFileToBase64 } from "@/lib/utils";
-import { getCompanyInfo } from "@/lib/api";
-import { set } from "date-fns";
-import { ca } from "date-fns/locale";
-
-const CompanyProfile = ({ profile, isLoading }) => {
-
-    if (isLoading) {
-        return <p className="text-sm text-gray-500">Loading company info...</p>;
-    }
-
-    if (!profile) {
-        return <p className="text-sm text-gray-500">No company data available.</p>;
-    }
-
-    return (<>
-
-        <div className="w-full bg-white animate-fade-in">
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-
-                {/* LEFT COLUMN: Identity & Contact */}
+export default function CompanyProfile() {
+    return (
+        <>
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
                 <div className="lg:col-span-7 flex flex-col gap-8">
+                    {/* ===== Company Identity ===== */}
+                    <section className="bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl border border-slate-200 dark:border-slate-700 rounded-2xl shadow-sm p-6 md:p-8 relative overflow-hidden">
+                        <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-500/10 dark:bg-indigo-400/10 rounded-full blur-3xl -mr-16 -mt-16 pointer-events-none" />
 
-                    {/* Company Identity Card */}
-                    <section className="bg-glass-bg backdrop-blur-xl border border-glass-border rounded-2xl shadow-glass p-6 md:p-8 relative overflow-hidden group hover:shadow-soft transition-all">
-                        <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-500/5 rounded-full blur-3xl -mr-16 -mt-16 pointer-events-none" />
-
-                        <div className="flex items-center gap-4 mb-8">
-                            <div className="p-3 bg-indigo-50 text-indigo-600 rounded-xl">
-                                <span className="material-symbols-outlined">badge</span>
-                            </div>
-                            <div>
-                                <h2 className="text-lg font-bold text-slate-800">Company Identity</h2>
-                                <p className="text-sm text-slate-500">Legal information and public profile</p>
-                            </div>
-                        </div>
+                        <Header
+                            icon="badge"
+                            title="Company Identity"
+                            description="Legal information and public profile"
+                            color="indigo"
+                        />
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div className="md:col-span-2">
-                                <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Company Name</label>
-                                <input
-                                    type="text"
-                                    name="companyName"
-                                    value={formData.companyName}
-                                    onChange={handleChange}
-                                    className="w-full bg-white/60 border border-slate-200 rounded-lg px-4 py-3 text-slate-800 font-semibold focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
+                            <Field label="Company Name" span>
+                                <Input value="MYTIME CLOUD" bold />
+                            </Field>
+
+                            <Field label="Legal Name">
+                                <Input value="MyTime Solutions Inc." />
+                            </Field>
+
+                            <Field label="Registration No.">
+                                <Input value="REG-8842-XJ9" />
+                            </Field>
+
+                            <Field label="Industry">
+                                <Select
+                                    options={[
+                                        "Technology & Software",
+                                        "Manufacturing",
+                                        "Healthcare",
+                                        "Retail",
+                                    ]}
                                 />
-                            </div>
-                            {/* ... other identity inputs ... */}
-                            <div>
-                                <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Industry</label>
-                                <select className="w-full bg-white/60 border border-slate-200 rounded-lg px-4 py-3 text-slate-700 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all">
-                                    <option>Technology & Software</option>
-                                    <option>Manufacturing</option>
-                                    <option>Healthcare</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Website</label>
+                            </Field>
+
+                            <Field label="Website">
                                 <div className="flex">
-                                    <span className="inline-flex items-center px-3 rounded-l-lg border border-r-0 border-slate-200 bg-slate-50/50 text-slate-500 text-sm font-medium">https://</span>
-                                    <input type="text" value={formData.website} className="w-full bg-white/60 border border-slate-200 rounded-r-lg px-4 py-3 text-slate-700 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all" />
+                                    <span className="inline-flex items-center px-3 rounded-l-lg border border-r-0 border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-500 dark:text-slate-400 text-sm font-medium">
+                                        https://
+                                    </span>
+                                    <Input value="mytime.cloud" rounded="r" />
                                 </div>
-                            </div>
+                            </Field>
                         </div>
                     </section>
 
-                    {/* Location & Contact Card */}
-                    <section className="bg-glass-bg backdrop-blur-xl border border-glass-border rounded-2xl shadow-glass p-6 md:p-8 hover:shadow-soft transition-all">
-                        <div className="flex items-center gap-4 mb-8">
-                            <div className="p-3 bg-emerald-50 text-emerald-600 rounded-xl">
-                                <span className="material-symbols-outlined">business</span>
-                            </div>
-                            <div>
-                                <h2 className="text-lg font-bold text-slate-800">Location & Contact</h2>
-                                <p className="text-sm text-slate-500">Headquarters and contact points</p>
-                            </div>
+                    {/* ===== Location & Contact ===== */}
+                    <section className="bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl border border-slate-200 dark:border-slate-700 rounded-2xl shadow-sm p-6 md:p-8">
+                        <Header
+                            icon="business"
+                            title="Location & Contact"
+                            description="Headquarters and contact points"
+                            color="emerald"
+                        />
+
+                        {/* Map */}
+                        <div className="rounded-xl overflow-hidden border border-slate-200 dark:border-slate-700 h-48 bg-slate-100 dark:bg-slate-800 relative">
+
+                            <iframe allowFullScreen=""
+                                className="grayscale-[20%] group-hover:grayscale-0 transition-all duration-500"
+                                height="100%" loading="lazy"
+                                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3153.063663717258!2d-122.4194154846819!3d37.77492927975974!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8085809c6c8f4459%3A0xb10ed6d9b5050fa5!2sTwitter+HQ!5e0!3m2!1sen!2sus!4v1530650950346"
+                                style={{ border: '0', width: "100%" }}>
+
+                            </iframe>
+
                         </div>
 
-                        <div className="space-y-6">
-                            {/* Map Placeholder */}
-                            <div>
-                                <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">HQ Location</label>
-                                <div className="rounded-xl overflow-hidden border border-slate-200 h-48 w-full bg-slate-100 relative group">
-                                    <iframe
-                                        title="HQ Map"
-                                        className="grayscale-[20%] group-hover:grayscale-0 transition-all duration-500 w-full h-full"
-                                        src="about:blank" // Replace with actual maps integration
-                                    />
-                                    <div className="absolute top-3 right-3 flex gap-2">
-                                        <button className="bg-white/90 hover:bg-white text-slate-600 text-xs font-semibold py-1.5 px-3 rounded-lg shadow-sm border border-slate-200 backdrop-blur-md flex items-center gap-2">
-                                            <span className="material-symbols-outlined text-[16px]">pin_drop</span> Copy Code
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
+                        <Field label="Full Address" className="mt-4">
+                            <Textarea value="101 Innovation Dr, Suite 500, San Francisco, CA 94103" />
+                        </Field>
 
-                            <textarea
-                                className="w-full bg-white/60 border border-slate-200 rounded-lg px-4 py-3 text-slate-700 focus:ring-2 focus:ring-indigo-500/20 transition-all resize-none"
-                                rows="2"
-                                value={formData.address}
-                                readOnly
-                            />
-                        </div>
+                        <Divider title="Primary Manager Contact" icon="person" />
+                        <ContactGrid
+                            values={{
+                                name: "Sarah Connor",
+                                designation: "HR Director",
+                                email: "sarah@mytime.cloud",
+                                phone: "+1 (555) 012-3456",
+                            }}
+                        />
+
+                        <Divider title="Secondary Manager Contact" icon="supervisor_account" />
+                        <ContactGrid />
                     </section>
                 </div>
-
-                {/* RIGHT COLUMN: Branding & Settings */}
                 <div className="lg:col-span-5 flex flex-col gap-8">
 
-                    {/* QR Code Card */}
-                    <section className="bg-glass-bg backdrop-blur-xl border border-glass-border rounded-2xl shadow-glass p-6 md:p-8">
-                        <div className="flex items-center gap-4 mb-6">
-                            <div className="p-3 bg-indigo-50 text-indigo-600 rounded-xl">
-                                <span className="material-symbols-outlined">qr_code_2</span>
-                            </div>
-                            <div>
-                                <h2 className="text-lg font-bold text-slate-800">Company QR Code</h2>
-                                <p className="text-sm text-slate-500">Scan for mobile access</p>
-                            </div>
-                        </div>
-                        <div className="flex flex-col items-center justify-center p-6 bg-white/50 border border-slate-200 rounded-xl group cursor-pointer transition-all">
-                            <div className="w-32 h-32 bg-slate-200 rounded-lg mb-4 flex items-center justify-center">
-                                <span className="text-slate-400">QR Image</span>
-                            </div>
-                            <button className="text-xs font-bold text-indigo-600 flex items-center gap-1">
-                                <span className="material-symbols-outlined text-sm">download</span> Download QR
+                    {/* ===== QR Code ===== */}
+                    <section className="bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl border border-slate-200 dark:border-slate-700 rounded-2xl shadow-sm p-6 md:p-8 hover:shadow-md transition-shadow">
+                        <Header
+                            icon="qr_code_2"
+                            title="Company QR Code"
+                            description="Scan for mobile app access"
+                        />
+
+                        <div className="flex flex-col items-center justify-center p-6 bg-white/60 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 rounded-xl relative group cursor-pointer">
+                            <div className="absolute inset-0 bg-indigo-600/10 opacity-0 group-hover:opacity-100 transition rounded-xl" />
+
+                            <img
+                                src="https://lh3.googleusercontent.com/aida-public/AB6AXuCT2Rbmgd9WmVCwQAJOXil7FgbqKPaBIZmde7z5wXu8DrCydk1rRL-A31dv4XGy59yObYv1BKlLTGbfY1vnQLKplqdTCoCWn_PQcTKDLpM7e8clKfBvayyqSOFUTOzOZ4CYPsHgmVj0Ijky6pUXFsxTQrpjSUN34qwkl73sVUuvvJY_zYesPiuIOgyWRinAL-bKCZsjy7rVzgyxVB7uGegxEtLM-PcMDlccevPJEV4a9RGDOpeDjGyyiHxR6fAc27UKdHMJybt2fEIK"
+                                alt="Company QR"
+                                className="w-32 h-32 rounded-lg opacity-90 mb-4 group-hover:scale-105 transition-transform"
+                            />
+
+                            <p className="text-xs font-semibold text-slate-500 dark:text-slate-400">
+                                Standard Access Token
+                            </p>
+
+                            <button className="mt-4 text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:underline flex items-center gap-1 z-10">
+                                <span className="material-symbols-outlined text-sm">download</span>
+                                Download QR
                             </button>
                         </div>
                     </section>
 
-                    {/* Branding Card */}
-                    <section className="bg-glass-bg backdrop-blur-xl border border-glass-border rounded-2xl shadow-glass p-6 md:p-8">
-                        <div className="flex items-center gap-4 mb-8">
-                            <div className="p-3 bg-indigo-50 text-indigo-600 rounded-xl">
-                                <span className="material-symbols-outlined">palette</span>
-                            </div>
-                            <h2 className="text-lg font-bold text-slate-800">Corporate Branding</h2>
-                        </div>
+                    {/* ===== Branding ===== */}
+                    <section className="bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl border border-slate-200 dark:border-slate-700 rounded-2xl shadow-sm p-6 md:p-8">
+                        <Header
+                            icon="palette"
+                            title="Corporate Branding"
+                            description="Look and feel customization"
+                        />
 
                         {/* Logo Upload */}
-                        <div className="border-2 border-dashed border-slate-300 rounded-xl bg-slate-50/50 hover:bg-white transition-all cursor-pointer p-8 flex flex-col items-center gap-3">
-                            <div className="w-16 h-16 bg-white shadow-md rounded-lg flex items-center justify-center text-indigo-600">
-                                <span className="material-symbols-outlined text-4xl">cloud_circle</span>
+                        <div className="mb-8">
+                            <Label>Company Logo</Label>
+                            <div className="border-2 border-dashed border-slate-300 dark:border-slate-600 rounded-xl bg-slate-50 dark:bg-slate-800 hover:bg-white dark:hover:bg-slate-700 transition p-8 flex flex-col items-center gap-3 cursor-pointer">
+                                <div className="w-20 h-20 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg flex items-center justify-center">
+                                    <span className="material-symbols-outlined text-indigo-600 dark:text-indigo-400 text-4xl">
+                                        cloud_circle
+                                    </span>
+                                </div>
+                                <div className="text-center text-sm">
+                                    <span className="font-semibold text-indigo-600 dark:text-indigo-400">
+                                        Click to upload
+                                    </span>
+                                    <span className="text-slate-500 dark:text-slate-400"> or drag & drop</span>
+                                    <p className="text-xs text-slate-400 mt-1">SVG, PNG, JPG (max 2MB)</p>
+                                </div>
                             </div>
-                            <p className="text-sm text-center">
-                                <span className="text-indigo-600 font-semibold">Click to upload</span> or drag and drop
-                            </p>
+                        </div>
+
+                        {/* Colors */}
+                        <div className="grid grid-cols-2 gap-4 mb-8">
+                            <ColorPicker label="Primary" value="#4F46E5" />
+                            <ColorPicker label="Secondary" value="#10B981" />
+                        </div>
+
+                        {/* Favicon */}
+                        <div>
+                            <Label>Favicon</Label>
+                            <div className="flex items-center gap-4 p-3 border border-slate-200 dark:border-slate-700 rounded-lg bg-white/60 dark:bg-slate-800/60">
+                                <div className="size-8 rounded bg-slate-100 dark:bg-slate-700 flex items-center justify-center">
+                                    <span className="material-symbols-outlined text-sm text-slate-400">
+                                        star
+                                    </span>
+                                </div>
+                                <p className="flex-1 text-xs text-slate-500 dark:text-slate-400 truncate">
+                                    favicon.ico
+                                </p>
+                                <button className="text-xs font-semibold text-indigo-600 dark:text-indigo-400">
+                                    Update
+                                </button>
+                            </div>
                         </div>
                     </section>
 
+                    {/* ===== Regional Settings ===== */}
+                    <section className="bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl border border-slate-200 dark:border-slate-700 rounded-2xl shadow-sm p-6 md:p-8">
+                        <Header
+                            icon="public"
+                            title="Regional Settings"
+                            description="Localization and standards"
+                        />
+
+                        <div className="space-y-5">
+                            <SelectSideBar label="Timezone" />
+                            <div className="grid grid-cols-2 gap-5">
+                                <SelectSideBar label="Currency" />
+                                <SelectSideBar label="Language" />
+                            </div>
+                        </div>
+                    </section>
                 </div>
             </div>
-        </div>
-    </>)
 
+            <div className="w-full mt-10">
+                <div
+                    className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl
+    rounded-2xl p-4 px-6
+    flex flex-col sm:flex-row items-center justify-between gap-4
+    shadow-sm"
+                >
+                    {/* Last saved */}
+                    <div className="text-sm text-slate-400 dark:text-slate-500 hidden sm:block">
+                        {/* Last saved:
+                        <span className="ml-1 font-medium text-slate-600 dark:text-slate-300">
+                            Today at 09:42 AM
+                        </span> */}
+                    </div>
+
+                    {/* Actions */}
+                    <div className="flex gap-3 w-full sm:w-auto justify-end">
+                        <button
+                            className="px-6 py-2.5 rounded-lg font-medium
+          text-slate-500 dark:text-slate-400
+          hover:text-slate-700 dark:hover:text-slate-200
+          hover:bg-slate-100/70 dark:hover:bg-slate-800/70 dark:bg-slate-800
+          transition"
+                        >
+                            Cancel
+                        </button>
+
+                        <button
+                            className="px-8 py-2.5 rounded-lg font-bold
+          bg-gradient-to-r from-indigo-600 to-indigo-700
+          hover:from-indigo-700 hover:to-indigo-800
+          text-white
+          shadow-lg shadow-indigo-500/20
+          flex items-center gap-2 transition"
+                        >
+                            <span className="material-symbols-outlined text-[20px]">
+                                check
+                            </span>
+                            Save Changes
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </>
+    );
+}
+
+/* ===================== Reusable Components ===================== */
+
+function Header({ icon, title, description, color }) {
     return (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <div className="lg:col-span-2 lg:pl-4">
-                <form className="space-y-8">
-                    <section>
-                        <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-6 flex items-center">
-                            <Building2Icon className="mr-3 h-6 w-6 text-primary" />
-                            Profile Information
-                        </h2>
-
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                            <div className="flex flex-col">
-                                <label className="mb-1 text-sm font-medium text-gray-700 dark:text-gray-200">
-                                    Company Code
-                                </label>
-                                <Input className="bg-white"
-                                    name="company_code"
-                                    value={profile.company_code}
-                                    readOnly
-                                />
-                            </div>
-                            <div className="flex flex-col">
-                                <label className="mb-1 text-sm font-medium text-gray-700 dark:text-gray-200">
-                                    Name
-                                </label>
-                                <Input className="bg-white"
-                                    name="name"
-                                    value={profile.name}
-                                    readOnly
-                                />
-                            </div>
-                            <div className="flex flex-col">
-                                <label className="mb-1 text-sm font-medium text-gray-700 dark:text-gray-200">
-                                    Email
-                                </label>
-                                <Input className="bg-white"
-                                    name="email"
-                                    value={profile.email}
-                                    readOnly
-                                />
-                            </div>
-
-                            <div className="flex flex-col">
-                                <label className="mb-1 text-sm font-medium text-gray-700 dark:text-gray-200">
-                                    Max Branches
-                                </label>
-                                <Input className="bg-white"
-                                    name="max_branches"
-                                    value={profile.max_branches}
-                                    readOnly
-                                />
-                            </div>
-                            <div className="flex flex-col">
-                                <label className="mb-1 text-sm font-medium text-gray-700 dark:text-gray-200">
-                                    Max Employees
-                                </label>
-                                <Input className="bg-white"
-                                    name="max_employee"
-                                    value={profile.max_employee}
-                                    readOnly
-                                />
-                            </div>
-                            <div className="flex flex-col">
-                                <label className="mb-1 text-sm font-medium text-gray-700 dark:text-gray-200">
-                                    Max Devices
-                                </label>
-                                <Input className="bg-white"
-                                    name="max_devices"
-                                    value={profile.max_devices}
-                                    readOnly
-                                />
-                            </div>
-                            <div className="flex flex-col">
-                                <label className="mb-1 text-sm font-medium text-gray-700 dark:text-gray-200">
-                                    Memeber From
-                                </label>
-                                <Input className="bg-white"
-                                    name="member_from"
-                                    value={profile.member_from}
-                                    readOnly
-                                />
-                            </div>
-                            <div className="flex flex-col">
-                                <label className="mb-1 text-sm font-medium text-gray-700 dark:text-gray-200">
-                                    Expiry Date
-                                </label>
-                                <Input className="bg-white"
-                                    name="expiry"
-                                    value={profile.expiry}
-                                    readOnly
-                                />
-                            </div>
-                        </div>
-                    </section>
-                </form>
-
-
+        <div className="flex items-center gap-4 mb-8">
+            <div
+                className={`p-3 rounded-xl bg-${color}-50 text-${color}-600 dark:bg-${color}-500/10 dark:text-${color}-400`}
+            >
+                <span className="material-symbols-outlined">{icon}</span>
+            </div>
+            <div>
+                <h2 className="text-lg font-bold text-slate-800 dark:text-slate-100">
+                    {title}
+                </h2>
+                <p className="text-sm text-slate-500 dark:text-slate-400">
+                    {description}
+                </p>
             </div>
         </div>
     );
-};
+}
 
-export default CompanyProfile;
+function Field({ label, children, span, className }) {
+    return (
+        <div className={`${span ? "md:col-span-2" : ""} ${className || ""}`}>
+            <label className="block text-xs font-bold uppercase tracking-wider mb-2 text-slate-500 dark:text-slate-400">
+                {label}
+            </label>
+            {children}
+        </div>
+    );
+}
+
+function Input({ value, bold, rounded }) {
+    return (
+        <input
+            defaultValue={value}
+            className={`w-full px-4 py-3 rounded-${rounded || "lg"} border
+      bg-white/70 dark:bg-slate-900
+      border-slate-200 dark:border-slate-700
+      text-slate-800 dark:text-slate-200
+      ${bold ? "font-semibold" : ""}
+      focus:ring-2 focus:ring-indigo-500/20`}
+        />
+    );
+}
+
+const Label = ({ children }) => (
+    <label className="block text-xs font-bold uppercase tracking-wider mb-2 text-slate-500 dark:text-slate-400">
+        {children}
+    </label>
+);
+
+
+const SelectSideBar = ({ label }) => (
+    <div>
+        <Label>{label}</Label>
+        <select className="w-full bg-white/60 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-4 py-3 text-slate-700 dark:text-slate-200 focus:ring-2 focus:ring-indigo-500/20">
+            <option>Option 1</option>
+        </select>
+    </div>
+);
+
+function Select({ options }) {
+    return (
+        <select className="w-full px-4 py-3 rounded-lg border bg-white/70 dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 focus:ring-2 focus:ring-indigo-500/20">
+            {options.map((o) => (
+                <option key={o}>{o}</option>
+            ))}
+        </select>
+    );
+}
+
+function Textarea({ value }) {
+    return (
+        <textarea
+            rows={2}
+            defaultValue={value}
+            className="w-full px-4 py-3 rounded-lg border bg-white/70 dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 focus:ring-2 focus:ring-indigo-500/20 resize-none"
+        />
+    );
+}
+
+function Divider({ title, icon }) {
+    return (
+        <div className="flex items-center gap-2 my-6 border-b border-slate-200 dark:border-slate-700 pb-2">
+            <span className="material-symbols-outlined text-slate-400 text-sm">
+                {icon}
+            </span>
+            <h3 className="text-sm font-bold uppercase tracking-wide text-slate-700 dark:text-slate-300">
+                {title}
+            </h3>
+        </div>
+    );
+}
+
+function ContactGrid({ values = {} }) {
+    return (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <Input placeholder="Contact Name" value={values.name} />
+            <Input placeholder="Designation" value={values.designation} />
+            <Input placeholder="Email" value={values.email} />
+            <Input placeholder="Phone" value={values.phone} />
+        </div>
+    );
+}
+
+const ColorPicker = ({ label, value }) => (
+    <div>
+        <Label>{label}</Label>
+        <div className="flex items-center gap-2 p-2 bg-white/60 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg">
+            <input type="color" defaultValue={value} className="w-8 h-8 rounded" />
+            <span className="text-xs font-mono text-slate-600 dark:text-slate-300">
+                {value}
+            </span>
+        </div>
+    </div>
+);

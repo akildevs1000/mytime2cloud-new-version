@@ -7,7 +7,7 @@ const DarkModeContext = createContext();
 
 // 2. Provider component
 export function DarkModeProvider({ children }) {
-  const [isDark, setIsDark] = useState(false);
+  const [isDark, setIsDark] = useState(true);
 
   // Sync with document class
   useEffect(() => {

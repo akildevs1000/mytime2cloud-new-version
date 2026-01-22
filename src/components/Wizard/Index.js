@@ -7,9 +7,9 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 
-import Branch from "./Branch/Index";
-import Department from "./Department/Index";
-import Device from "./Device/Index";
+import Branch from "@/components/Branch/Page";
+import Department from "@/components/Department/Page";
+import Device from "@/components/Device/Page";
 import Shift from "./Shift/Index";
 import Employee from "./Employee/Index";
 import Schedule from "./Schedule/Index";
@@ -24,7 +24,11 @@ export default function Index() {
             sidebarTitle: "Branch Info",
             title: "Branch Information",
             subtitle: "Create branch Info",
-            content: <Branch />,
+            content: (
+                <div className="p-10">
+                    <Branch />
+                </div>
+            ),
         },
         {
             id: 2,
@@ -32,7 +36,10 @@ export default function Index() {
             sidebarTitle: "Department Info",
             title: "Department Information",
             subtitle: "Now, add your departments.",
-            content: <Department />,
+            content: (
+                <div className="p-10">
+                    <Department />
+                </div>),
         },
         {
             id: 3,
@@ -40,7 +47,10 @@ export default function Index() {
             sidebarTitle: "Device Info",
             title: "Department Information",
             subtitle: "Now, add your departments.",
-            content: <Device />,
+            content: (
+                <div className="p-10">
+                    <Device />
+                </div>),
         },
         {
             id: 4,
@@ -87,51 +97,33 @@ export default function Index() {
     return (
         <Card className="flex flex-col md:flex-row border-none shadow-none rounded-none h-full">
             {/* Sidebar Stepper */}
-            <CardContent className="w-full md:w-[260px] border-b md:border-b-0  dark:border-border-dark shrink-0">
-                <div className="flex md:flex-col gap-8">
+            <CardContent className="w-full md:w-[260px] shrink-0 border-b md:border-b-0 md:border-r border-slate-200 dark:border-slate-700 p-4">
+                <nav className="flex md:flex-col gap-1">
                     {steps.map((step, index) => {
                         const isActive = index === stepIndex;
-                        const isCompleted = index < stepIndex;
 
                         return (
-                            <div key={step.id} className="flex items-start gap-4">
-                                <div className="flex flex-col items-center">
-                                    <div
-                                        className={[
-                                            "flex h-8 w-8 items-center justify-center rounded-full text-sm font-bold",
-                                            isActive
-                                                ? "bg-primary text-white"
-                                                : isCompleted
-                                                    ? "bg-primary/10 border-2 border-primary text-primary"
-                                                    : "border-2 border-border-light dark:border-border-dark text-text-light/60 dark:text-text-dark/60",
-                                        ].join(" ")}
-                                    >
-                                        {step.id}
-                                    </div>
-                                    {index < steps.length - 1 && (
-                                        <div className="h-10 w-0.5 bg-border-light dark:bg-border-dark md:block hidden" />
-                                    )}
-                                </div>
-                                <div>
-                                    <p className="text-sm text-text-light/60 dark:text-text-dark/60">
-                                        {step.label}
-                                    </p>
-                                    <p
-                                        className={[
-                                            "font-semibold",
-                                            isActive
-                                                ? "text-primary"
-                                                : "text-text-light/60 dark:text-text-dark/60",
-                                        ].join(" ")}
-                                    >
-                                        {step.sidebarTitle}
-                                    </p>
-                                </div>
-                            </div>
+                            <button
+                                key={step.id}
+                                className={[
+                                    "w-full text-left rounded-lg px-4 py-3 transition-colors flex flex-col gap-1",
+                                    isActive
+                                        ? "bg-indigo-50 text-indigo-600 dark:bg-indigo-500/10 dark:text-indigo-400"
+                                        : "text-slate-600 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800",
+                                ].join(" ")}
+                            >
+                                <span className="text-xs uppercase tracking-wide opacity-70">
+                                    {step.label}
+                                </span>
+                                <span className="font-semibold text-sm">
+                                    {step.sidebarTitle}
+                                </span>
+                            </button>
                         );
                     })}
-                </div>
+                </nav>
             </CardContent>
+
 
             {/* Step Content with Framer Motion */}
             <div className="flex-1">
@@ -153,7 +145,9 @@ export default function Index() {
 
                     <div className="flex justify-end mr-5 gap-5">
                         {stepIndex > 0 && <Button
-                            className="rounded-xl flex items-center justify-end bg-gray-200 text-gray-500 hover:bg-gray-300 hover:text-gray-500"
+                            className="rounded-xl flex items-center justify-end 
+bg-gray-200 text-gray-500 hover:bg-gray-300 hover:text-gray-500
+dark:bg-slate-700 dark:text-slate-400 dark:hover:bg-slate-600 dark:hover:text-slate-300"
                             type="button"
                             onClick={handleBack}
                         >
