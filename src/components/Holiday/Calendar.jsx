@@ -5,7 +5,7 @@ const Calendar = () => {
     <>
       <div className="flex flex-col sm:flex-row items-center justify-between gap-4 bg-white dark:bg-slate-900 backdrop-blur-xl border border-gray-200 dark:border-glass-border rounded-2xl p-4 shadow-glass">
         <div className="flex items-center gap-4">
-          <div className="flex items-center gap-1 bg-obsidian-950 rounded-lg p-1 border border-gray-200 dark:border-white/10 shadow-sm">
+          <div className="flex items-center gap-1 bg-white dark:bg-slate-900 rounded-lg p-1 border border-gray-200 dark:border-white/10 shadow-sm">
             <button className="p-1.5 hover:bg-white/10 rounded-md text-slate-400 hover:text-white transition-colors">
               <span className="material-symbols-outlined text-xl">
                 chevron_left
@@ -88,7 +88,7 @@ const Calendar = () => {
       </div>
       <div className="flex-1 bg-white dark:bg-slate-900 rounded-2xl shadow-glass border border-gray-200 dark:border-white/10 overflow-hidden flex flex-col min-h-[600px] relative">
         <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-[0.03] pointer-events-none mix-blend-overlay"></div>
-        <div className="grid grid-cols-7 border-b border-white/10 bg-obsidian-950/80">
+        <div className="grid grid-cols-7 border-b border-white/10 bg-white dark:bg-slate-900">
           <div className="py-3 text-center text-xs font-bold text-slate-500 uppercase tracking-widest">
             Sun
           </div>
@@ -112,19 +112,19 @@ const Calendar = () => {
           </div>
         </div>
         <div className="flex-1 grid grid-cols-7 grid-rows-5 divide-white/5">
-          <div className="p-2 min-h-[100px] border border-gray-100 dark:border-white/5 bg-obsidian-950/40">
+          <div className="p-2 min-h-[100px] border border-gray-100 dark:border-white/5 bg-white dark:bg-slate-900">
             <span className="text-sm font-medium text-slate-600">26</span>
           </div>
-          <div className="p-2 min-h-[100px] border border-gray-100 dark:border-white/5 bg-obsidian-950/40">
+          <div className="p-2 min-h-[100px] border border-gray-100 dark:border-white/5 bg-white dark:bg-slate-900">
             <span className="text-sm font-medium text-slate-600">27</span>
           </div>
-          <div className="p-2 min-h-[100px] border border-gray-100 dark:border-white/5 bg-obsidian-950/40">
+          <div className="p-2 min-h-[100px] border border-gray-100 dark:border-white/5 bg-white dark:bg-slate-900">
             <span className="text-sm font-medium text-slate-600">28</span>
           </div>
-          <div className="p-2 min-h-[100px] border border-gray-100 dark:border-white/5 bg-obsidian-950/40">
+          <div className="p-2 min-h-[100px] border border-gray-100 dark:border-white/5 bg-white dark:bg-slate-900">
             <span className="text-sm font-medium text-slate-600">29</span>
           </div>
-          <div className="p-2 min-h-[100px] border border-gray-100 dark:border-white/5 bg-obsidian-950/40">
+          <div className="p-2 min-h-[100px] border border-gray-100 dark:border-white/5 bg-white dark:bg-slate-900">
             <span className="text-sm font-medium text-slate-600">30</span>
           </div>
           <div className="p-2 min-h-[100px] border border-gray-100 dark:border-white/5 hover:bg-white/5 hover:border-neon-cyan/40 hover:shadow-[inset_0_0_15px_rgba(34,211,238,0.1)] transition-all group relative cursor-pointer">

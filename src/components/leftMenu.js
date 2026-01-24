@@ -16,7 +16,7 @@ export default function LeftMenu() {
 
   return (
     <aside
-      className="group relative w-20 hover:w-56 dark:border-r dark:border-gray-700  bg-white dark:bg-obsidian 
+      className="group relative w-20 hover:w-56 dark:border-r dark:border-gray-700  bg-white dark:bg-slate-900 
                  flex flex-col py-4 transition-all duration-300 ease-in-out overflow-hidden"
     >
       <nav className="flex flex-col items-center gap-3 mt-2">
@@ -31,8 +31,8 @@ export default function LeftMenu() {
               className={`flex items-center w-14 group-hover:w-[90%] rounded-xl px-0 group-hover:px-4 py-3 
                            transition-all duration-300 ease-in-out
                 ${isActive
-                  ? "bg-gray-700 text-white rounded-xl"
-                  : "text-gray-500 dark:text-gray-100 hover:bg-gray-700 hover:text-white"
+                  ? "bg-primary text-white rounded-xl"
+                  : "text-gray-600 dark:text-gray-300 hover:bg-primary hover:text-white"
                 }`}
             >
               {/* Icon container stays centered in collapsed state */}

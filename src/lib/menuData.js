@@ -58,7 +58,7 @@ const visitorMenu = [
 ];
 
 const dashboardMenu = [
-  { href: "#", icon: Home, label: "Dashboard" },
+  { href: "/", icon: Home, label: "Dashboard" },
   { href: "/employees", icon: Users, label: "Employees" },
   { href: "/shift", icon: FileText, label: "Attendance" },
   { href: "/attendance", icon: Calendar, label: "Reports" },

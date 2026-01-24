@@ -4,7 +4,7 @@ const Upcoming = () => {
   return (
     <>
       <div className="flex-1 bg-white dark:bg-slate-900 backdrop-blur-xl border border-gray-200 dark:border-white/5 rounded-2xl shadow-glass flex flex-col overflow-hidden">
-        <div className="p-5 border-b border-white/5 flex items-center justify-between bg-obsidian-950/30">
+        <div className="p-5 border-b border-white/5 flex items-center justify-between bg-white dark:bg-slate-900">
           <h3 className="font-bold text-slate-600 dark:text-slate-300 flex items-center gap-2">
             <span className="material-symbols-outlined text-neon-cyan">
               event_list
@@ -16,7 +16,7 @@ const Upcoming = () => {
           </span>
         </div>
         <div className="overflow-y-auto flex-1 p-2 space-y-2">
-          <div className="p-3 rounded-xl bg-obsidian-800/50 border border-white/5  transition-all group cursor-pointer backdrop-blur-sm">
+          <div className="p-3 rounded-xl bg-white dark:bg-slate-900 border border-white/5  transition-all group cursor-pointer backdrop-blur-sm">
             <div className="flex justify-between items-start mb-2">
               <div className="flex flex-col">
                 <span className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-0.5 ">
@@ -48,7 +48,7 @@ const Upcoming = () => {
               <span className="truncate">HQ Only</span>
             </div>
           </div>
-          <div className="p-3 rounded-xl bg-obsidian-800/50 border border-white/5  transition-all group cursor-pointer backdrop-blur-sm">
+          <div className="p-3 rounded-xl bg-white dark:bg-slate-900 border border-white/5  transition-all group cursor-pointer backdrop-blur-sm">
             <div className="flex justify-between items-start mb-2">
               <div className="flex flex-col">
                 <span className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-0.5 ">
@@ -80,7 +80,7 @@ const Upcoming = () => {
               <span className="truncate">All Branches</span>
             </div>
           </div>
-          <div className="p-3 rounded-xl bg-obsidian-800/50 border border-white/5  transition-all group cursor-pointer backdrop-blur-sm">
+          <div className="p-3 rounded-xl bg-white dark:bg-slate-900 border border-white/5  transition-all group cursor-pointer backdrop-blur-sm">
             <div className="flex justify-between items-start mb-2">
               <div className="flex flex-col">
                 <span className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-0.5 ">
@@ -112,7 +112,7 @@ const Upcoming = () => {
               <span className="truncate">All Branches</span>
             </div>
           </div>
-          <div className="p-3 rounded-xl bg-obsidian-800/50 border border-white/5 transition-all group cursor-pointer backdrop-blur-sm">
+          <div className="p-3 rounded-xl bg-white dark:bg-slate-900 border border-white/5 transition-all group cursor-pointer backdrop-blur-sm">
             <div className="flex justify-between items-start mb-2">
               <div className="flex flex-col">
                 <span className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-0.5 ">
@@ -144,7 +144,7 @@ const Upcoming = () => {
               <span className="truncate">NY, Israel</span>
             </div>
           </div>
-          <div className="p-3 rounded-xl bg-obsidian-800/50 border border-white/5  transition-all group cursor-pointer backdrop-blur-sm">
+          <div className="p-3 rounded-xl bg-white dark:bg-slate-900 border border-white/5  transition-all group cursor-pointer backdrop-blur-sm">
             <div className="flex justify-between items-start mb-2">
               <div className="flex flex-col">
                 <span className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-0.5 ">

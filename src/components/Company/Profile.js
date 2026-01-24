@@ -61,13 +61,15 @@ export default function CompanyProfile() {
                         {/* Map */}
                         <div className="rounded-xl overflow-hidden border border-slate-200 dark:border-slate-700 h-48 bg-slate-100 dark:bg-slate-800 relative">
 
-                            <iframe allowFullScreen=""
+                            <iframe
+                                allowFullScreen=""
                                 className="grayscale-[20%] group-hover:grayscale-0 transition-all duration-500"
-                                height="100%" loading="lazy"
-                                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3153.063663717258!2d-122.4194154846819!3d37.77492927975974!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8085809c6c8f4459%3A0xb10ed6d9b5050fa5!2sTwitter+HQ!5e0!3m2!1sen!2sus!4v1530650950346"
-                                style={{ border: '0', width: "100%" }}>
+                                height="100%"
+                                loading="lazy"
+                                src="https://www.google.com/maps?q=25.2650,55.2889&hl=en&z=15&output=embed"
+                                style={{ border: '0', width: "100%" }}
+                            ></iframe>
 
-                            </iframe>
 
                         </div>
 

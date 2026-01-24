@@ -15,7 +15,7 @@ export default function DataTable({
 }) {
   return (
     <div className="glass-panel rounded-xl shadow-soft overflow-hidden">
-      <div className="overflow-x-auto">
+      <div className="overflow-x-auto h-full max-h-[700px]">
         <table className="w-full text-left border-collapse">
           <thead>
             <tr className="bg-slate-50/80 dark:bg-slate-800/80 border-b border-slate-200 dark:border-slate-700">

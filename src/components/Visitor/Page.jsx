@@ -213,7 +213,7 @@ const VisitorHub = () => {
                       </span>
                     </div>
                     <select className="block w-full pl-10 pr-10 border border-slate-200 dark:border-slate-700 rounded-lg bg-white dark:bg-slate-900/80 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 text-sm h-11 text-slate-900 dark:text-white transition-all appearance-none">
-                      <option disabled selected value="">
+                      <option defaultValue="">
                         Select ID Type...
                       </option>
                       <option>National ID</option>

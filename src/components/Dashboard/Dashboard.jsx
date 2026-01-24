@@ -29,7 +29,7 @@ const AdminDashboard = () => {
   }, []);
 
   return (
-    <>
+    <div className="overflow-y-auto h-full max-h-[99vh]">
       <div className="px-2 mb-4 flex justify-between items-center">
         <h2 className="text-xl font-bold text-gray-600 dark:text-gray-300 font-display tracking-tight">
           Executive Overview
@@ -92,7 +92,7 @@ const AdminDashboard = () => {
           <LiveFeed branch_id={selectedBranch?.id} />
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

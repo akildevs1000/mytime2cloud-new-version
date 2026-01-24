@@ -1,47 +1,50 @@
-// SuccessDialog.jsx
+"use client";
+
 import React from "react";
-import {
-  Dialog,
-  DialogContent,
-  DialogTitle,
-  DialogDescription,
-} from "@/components/ui/dialog";
-import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 
-// Note: Removed 'SuccessDialogProps' interface and type annotations
-export function SuccessDialog({ open, onOpenChange, title, description }) {
+export const SuccessDialog = ({
+  successOpen,
+  onOpenChange,
+  title,
+  description,
+}) => {
+  if (!successOpen) return null;
+
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent
-        className="
-          fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 
-          border-none shadow-xl bg-white dark:bg-gray-900
-          max-w-sm w-[90%] rounded-2xl p-8 text-center flex flex-col items-center justify-center
-        "
-      >
-        {/* Hidden title for accessibility */}
-        <VisuallyHidden>
-          <DialogTitle>{title}</DialogTitle>
-        </VisuallyHidden>
+    <div
+      aria-modal="true"
+      role="dialog"
+      className="fixed inset-0 z-[60] flex items-center justify-center px-4"
+    >
+      {/* Backdrop - slightly darker to distinguish from the previous modal */}
+      <div
+        className="absolute inset-0 bg-black/80 frosted-glass transition-opacity animate-in fade-in duration-300"
+        onClick={() => onOpenChange(false)}
+      ></div>
 
-        {/* Visible custom content (Icon, Title, Description) */}
-        <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-green-500">
-          <span
-            className="material-icons text-white"
-            style={{ fontSize: "48px" }}
+      {/* Modal Card */}
+      <div className="relative bg-white dark:bg-slate-800 rounded-2xl shadow-2xl border border-gray-100 dark:border-white/10 w-full max-w-sm overflow-hidden transform transition-all animate-in fade-in zoom-in duration-300">
+        <div className="p-8 text-center">
+          {/* Animated Success Icon */}
+          <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-green-100 dark:bg-green-500/20 mb-4">
+            <span className="material-symbols-outlined text-green-600 dark:text-green-400 text-[32px]">
+              check_circle
+            </span>
+          </div>
+
+          <h3 className="text-xl font-bold text-gray-700 dark:text-gray-200">
+            {title}
+          </h3>
+          <p className="text-sm text-slate-400 mt-2">{description}</p>
+
+          <button
+            onClick={() => onOpenChange(false)}
+            className="mt-6 w-full py-2.5 rounded-lg bg-primary text-white transition-all text-sm font-bold shadow-lg shadow-primary/20"
           >
-            check
-          </span>
+            Close
+          </button>
         </div>
-
-        <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-2">
-          {title}
-        </h1>
-
-        <DialogDescription asChild>
-          <p className="text-gray-600 dark:text-gray-300">{description}</p>
-        </DialogDescription>
-      </DialogContent>
-    </Dialog>
+      </div>
+    </div>
   );
-}
+};
