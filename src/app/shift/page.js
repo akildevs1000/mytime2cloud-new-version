@@ -7,7 +7,7 @@ import Link from 'next/link';
 
 import Columns from "./columns";
 
-import { Input } from '@/components/ui/input';
+import Input from '@/components/Theme/Input';
 import { getShifts, removeShift } from '@/lib/api';
 import Pagination from '@/lib/Pagination';
 import DataTable from '@/components/ui/DataTable';

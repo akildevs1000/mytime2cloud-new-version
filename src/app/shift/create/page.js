@@ -5,7 +5,7 @@ import { SuccessDialog } from "@/components/SuccessDialog"; // Import the new co
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import Input from "@/components/Theme/Input";
 
 import {
     BadgeCheck, ArrowLeft, Clock,
@@ -36,14 +36,21 @@ import {
 
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
-import TimePicker from '@/components/ui/TimePicker';
+import TimePicker from '@/components/Theme/TimePicker';
 
 
 import DaysSelector from "@/components/DaysSelector";
 import LiveInsightSidebar from '@/components/Shift/LiveInsightSidebar';
+import Dropdown from '@/components/Theme/DropDown';
 
 
 const ShiftCreate = () => {
+
+    const [selectedBranch, setSelectedBranch] = useState({ name: "Select All", id: "" });
+    const [currentPage, setCurrentPage] = useState({ name: "Select All", id: "" });
+
+
+    const [shiftType, selectedShiftType] = useState({ id: "", name: "" });
 
     const [validDays, setValidDays] = useState(['F', 'S']);
     const days = [
@@ -148,9 +155,10 @@ const ShiftCreate = () => {
         }
     };
 
+
     return (
         <>
-            <div className="p-5 overflow-y-auto  max-h-[800px]">
+            <div className="p-5 overflow-y-auto  max-h-[900px]">
                 <header className="h-16 border-b border-gray-200 dark:border-white/20 bg-white dark:bg-slate-900 backdrop-blur-md flex items-center justify-between px-6 shrink-0 z-10">
                     <div>
                         <h2 className="text-xl font-bold text-gray-600 dark:text-gray-300 tracking-tight">
@@ -161,11 +169,11 @@ const ShiftCreate = () => {
                         </p>
                     </div>
                     <div className="flex items-center gap-3">
-                        <button className="flex items-center justify-center gap-2 h-9 px-4 rounded-lg border border-gray-200 dark:border-white/20 bg-slate-800 text-gray-400 text-sm font-medium transition-all hover:bg-slate-700">
+                        <button className="flex items-center justify-center gap-2 h-9 px-4 rounded-lg border border-gray-200 dark:border-white/20 bg-white dark:bg-slate-900 text-gray-600 dark:text-gray-300 text-sm font-medium transition-all hover:bg-primary dark:hover:bg-primary hover:text-white dark:text-white">
                             <span className="material-symbols-outlined text-[18px]">history</span>
                             <span className="hidden sm:inline">History</span>
                         </button>
-                        <button className="flex items-center justify-center gap-2 h-9 px-4 rounded-lg bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 text-sm font-bold hover:bg-emerald-500/20 transition-all">
+                        <button className="flex items-center justify-center gap-2 h-9 px-4 rounded-lg border border-gray-200 dark:border-white/20 bg-white dark:bg-slate-900 text-gray-600 dark:text-gray-300 text-sm font-medium transition-all hover:bg-primary dark:hover:bg-primary hover:text-white dark:text-white">
                             <span className="material-symbols-outlined text-[18px]">ios_share</span>
                             <span className="hidden sm:inline">Export</span>
                         </button>
@@ -173,28 +181,54 @@ const ShiftCreate = () => {
                 </header>
 
                 {/* Main Content Wrapper - Set to flex-row on lg screens */}
-                <div className="flex flex-col lg:flex-row min-h-[calc(100vh-80px)]">
+                <div className="flex flex-col lg:flex-row min-h-[calc(100vh-80px)] bg-white dark:bg-slate-900">
 
                     {/* LEFT AREA: 70% Width */}
                     <div className="w-full lg:w-[70%] p-6 pb-24">
                         <div className="mx-auto lg:mx-0 space-y-8">
+
                             <section className="space-y-4">
-                                <h3 className="text-lg font-bold text-white flex items-center gap-2">
-                                    <BadgeCheck className="w-5 h-5 text-emerald-400" />
+                                <h3 className="text-lg font-bold text-gray-600 dark:text-slate-300 flex items-center gap-2">
+                                    <BadgeCheck className="w-5 h-5 text-primary" />
                                     Shift Identity
                                 </h3>
 
-                                <div className="bg-[#1e293b]/50 border border-white/10 rounded-xl p-5 shadow-lg backdrop-blur-sm">
-                                    <div className="flex flex-col sm:flex-row gap-5 items-start sm:items-center justify-between">
+                                <div className="border dark:border-white/10 rounded-xl p-5">
+                                    <label className="flex flex-col w-full gap-2">
+                                        <span className="text-sm font-medium text-slate-400">Shift Type</span>
+                                    </label>
+
+                                    <div className='mt-3'>
+                                        <Dropdown
+                                            items={[
+                                                { "id": "1", "name": "Flexible" },
+                                                { "id": "6", "name": "Single" },
+                                                { "id": "2", "name": "Multi" },
+                                                { "id": "4", "name": "Night" },
+                                                { "id": "5", "name": "Dual" }
+                                            ]
+                                            }
+                                            selectedItem={shiftType}
+                                            onSelect={(item) => {
+                                                selectedShiftType(item);
+                                            }}
+                                            placeholder="Select Shift Type"
+                                            width="w-full"
+                                        />
+                                    </div>
+
+                                    <div className="mt-5 flex flex-col sm:flex-row gap-5 items-start sm:items-center justify-between">
+
+
                                         {/* Shift Name Input */}
                                         <label className="flex flex-col w-full sm:w-2/3 gap-2">
                                             <span className="text-sm font-medium text-slate-400">Shift Name</span>
-                                            <input
+
+                                            <Input
                                                 type="text"
                                                 value={shiftName}
                                                 onChange={(e) => setShiftName(e.target.value)}
                                                 placeholder="Enter shift name"
-                                                className="w-full rounded-lg bg-[#0f172a] border border-white/10 text-white p-2.5 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 outline-none transition-all placeholder:text-slate-600"
                                             />
                                         </label>
 
@@ -218,143 +252,126 @@ const ShiftCreate = () => {
                             <section className="space-y-4">
                                 {/* Section Header */}
                                 <div className="flex items-center justify-between">
-                                    <h3 className="text-lg font-bold text-white flex items-center gap-2">
-                                        <Clock className="w-5 h-5 text-emerald-400" />
+                                    <h3 className="text-lg font-bold text-gray-600 dark:text-slate-300 flex items-center gap-2">
+                                        <Clock className="w-5 h-5 text-primary" />
                                         Flexible Work Window
                                     </h3>
-                                    <span className="text-xs font-mono bg-[#1e293b] border border-white/10 px-2 py-1 rounded text-slate-400">
+                                    {/* <span className="text-xs font-mono bg-[#1e293b] border border-white/10 px-2 py-1 rounded text-slate-400">
                                         Open Window
-                                    </span>
+                                    </span> */}
                                 </div>
 
-                                <div className="bg-[#1e293b]/50 border border-white/10 rounded-xl p-5 shadow-lg flex flex-col gap-6 backdrop-blur-sm">
+                                <div className="border dark:border-white/10 rounded-xl p-5">
 
-                                    {/* Global Availability Range Card */}
-                                    <div className="p-4 bg-[#0f172a]/50 border border-white/5 rounded-lg relative overflow-hidden">
-                                        {/* Background Decorative Icon */}
-                                        <div className="absolute top-0 right-0 p-3 opacity-5 pointer-events-none">
-                                            <TimerIcon size={96} className="text-emerald-400" />
+                                    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 relative z-10">
+                                        <div>
+                                            <h4 className="text-gray-600 dark:text-slate-900 font-semibold text-lg tracking-tight">Global Availability Range</h4>
+                                            <p className="text-sm text-slate-400 mt-1 max-w-md">
+                                                Define the operational window for staff clock-in and clock-out activities.
+                                            </p>
                                         </div>
-
-                                        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 relative z-10">
-                                            <div>
-                                                <h4 className="text-white font-semibold text-base">Global Availability Range</h4>
-                                                <p className="text-sm text-slate-400 mt-1">
-                                                    Define the open window during which staff can clock in and out.
-                                                </p>
-                                            </div>
-                                            <div className="flex items-center gap-2 mt-2 sm:mt-0">
-                                                <span className="flex h-2 w-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                                                <span className="text-xs font-medium text-emerald-400 uppercase tracking-wide">
-                                                    Active Window
-                                                </span>
-                                            </div>
-                                        </div>
-
-                                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 relative z-10">
-                                            {/* Window Open */}
-                                            <div className="space-y-2">
-                                                <label className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-emerald-400">
-                                                    <Sunrise size={16} /> Window Open
-                                                </label>
-                                                <div className="relative group">
-                                                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                                        <Clock size={18} className="text-slate-500 group-focus-within:text-white transition-colors" />
-                                                    </div>
-                                                    <input
-                                                        type="time"
-                                                        defaultValue="03:00"
-                                                        className="w-full rounded-lg bg-[#1e293b] border border-white/10 text-white py-3 pl-10 pr-3 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 text-base font-mono shadow-sm transition-all outline-none"
-                                                    />
-                                                </div>
-                                                <p className="text-[10px] text-slate-500 pl-1">Earliest allowed start time</p>
-                                            </div>
-
-                                            {/* Window Close */}
-                                            <div className="space-y-2">
-                                                <label className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-400">
-                                                    <Moon size={16} /> Window Close
-                                                </label>
-                                                <div className="relative group">
-                                                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                                        <Clock size={18} className="text-slate-500 group-focus-within:text-white transition-colors" />
-                                                    </div>
-                                                    <input
-                                                        type="time"
-                                                        defaultValue="23:59"
-                                                        className="w-full rounded-lg bg-[#1e293b] border border-white/10 text-white py-3 pl-10 pr-3 focus:border-red-400 focus:ring-1 focus:ring-red-400 text-base font-mono shadow-sm transition-all outline-none"
-                                                    />
-                                                </div>
-                                                <p className="text-[10px] text-slate-500 pl-1">Latest allowed end time</p>
-                                            </div>
+                                        <div className="flex items-center gap-2 mt-4 sm:mt-0 px-3 py-1 bg-emerald-500/10 border border-emerald-500/20 rounded-full">
+                                            <span className="flex h-2 w-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                                            <span className="text-[10px] font-bold text-emerald-400 uppercase tracking-widest">
+                                                System Active
+                                            </span>
                                         </div>
                                     </div>
+                                    {/* Added "gap-8" for spacing and "items-start" for alignment */}
+                                    <div className="flex w-full gap-8">
 
-                                    {/* Multi-Punch Policy Card */}
-                                    <div className="bg-[#0f172a]/30 border border-white/5 rounded-lg p-5">
-                                        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-4">
-                                            <h4 className="text-white font-semibold flex items-center gap-2">
-                                                <Fingerprint size={20} className="text-emerald-400" />
-                                                Multi-Punch Policy
-                                            </h4>
-
-                                            {/* Toggle Switch */}
-                                            <label className="relative flex items-center cursor-pointer gap-2 p-1.5 pr-3 rounded-full bg-[#1e293b] border border-white/10 hover:border-slate-500 transition-colors">
-                                                <div className="relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out bg-slate-700">
-                                                    <input
-                                                        type="checkbox"
-                                                        className="peer sr-only"
-                                                        checked={isUnlimited}
-                                                        onChange={() => setIsUnlimited(!isUnlimited)}
-                                                    />
-                                                    <span className={`pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow transition duration-200 ease-in-out ${isUnlimited ? 'translate-x-4 bg-emerald-400' : 'translate-x-0'} ${isUnlimited ? 'bg-white' : 'bg-slate-400'}`} />
-                                                </div>
-                                                <span className="text-xs text-white font-medium select-none">Allow Unlimited In/Out</span>
+                                        {/* Each child gets "flex-1" to consume exactly 50% of the available space */}
+                                        <div className="space-y-3 flex-1">
+                                            <label className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-primary/80">
+                                                <Sunrise size={16} className="text-primary" /> Window Open
                                             </label>
+                                            <div className="relative group">
+                                                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                                    <Clock size={18} className="text-slate-500 group-focus-within:text-primary transition-colors" />
+                                                </div>
+                                                <TimePicker
+                                                    value={schedule.on_duty_time}
+                                                    onChange={(val) => handleChange("on_duty_time", val)}
+                                                />
+                                            </div>
+                                            <p className="text-[10px] text-slate-500 italic">Earliest allowed start time for shifts</p>
                                         </div>
 
-                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-5 pt-2">
-                                            {/* Target Daily Hours */}
-                                            <div className="space-y-2">
-                                                <label className="text-xs font-medium text-slate-400 block">Target Daily Hours</label>
-                                                <div className="relative">
-                                                    <input
-                                                        type="number"
-                                                        defaultValue="8"
-                                                        className="w-full rounded-lg bg-[#0f172a] border border-white/10 text-white p-2.5 pr-12 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 font-mono text-sm outline-none"
-                                                    />
-                                                    <span className="absolute right-3 top-2.5 text-xs text-slate-500 font-medium">HRS</span>
+                                        <div className="space-y-3 flex-1">
+                                            <label className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-slate-400">
+                                                <Moon size={16} /> Window Close
+                                            </label>
+                                            <div className="relative group">
+                                                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                                    <Clock size={18} className="text-slate-500 group-focus-within:text-white transition-colors" />
                                                 </div>
-                                                <p className="text-[10px] text-slate-500">Expected total duration per day</p>
+                                                <TimePicker
+                                                    value={schedule.off_duty_time}
+                                                    onChange={(val) => handleChange("off_duty_time", val)}
+                                                />
                                             </div>
-
-                                            {/* Min Session Duration */}
-                                            <div className="space-y-2">
-                                                <label className="text-xs font-medium text-slate-400 block">Minimum Session Duration</label>
-                                                <div className="relative">
-                                                    <input
-                                                        type="number"
-                                                        defaultValue="30"
-                                                        className="w-full rounded-lg bg-[#0f172a] border border-white/10 text-white p-2.5 pr-12 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 font-mono text-sm outline-none"
-                                                    />
-                                                    <span className="absolute right-3 top-2.5 text-xs text-slate-500 font-medium">MIN</span>
-                                                </div>
-                                                <p className="text-[10px] text-slate-500">Prevent accidental short punches</p>
-                                            </div>
+                                            <p className="text-[10px] text-slate-500 italic">Latest allowed end time for shifts</p>
                                         </div>
                                     </div>
 
+
+
+                                </div>
+
+                                <div className="border dark:border-white/10 rounded-xl p-5  flex flex-col gap-6">
+                                    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-4">
+                                        <h4 className="text-gray-600 dark:text-slate-300 font-semibold flex items-center gap-2">
+                                            <Fingerprint size={20} className="text-primary" />
+                                            Multi-Punch Policy
+                                        </h4>
+
+                                        {/* Toggle Switch */}
+                                        <label className="relative flex items-center cursor-pointer gap-2 p-1.5 pr-3 rounded-full  border border-gray-200 dark:border-white/10 hover:border-slate-500 transition-colors">
+                                            <div className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out ${isUnlimited ? 'bg-primary' : 'bg-gray-400'}`}>
+                                                <Input
+                                                    type="checkbox"
+                                                    className="peer sr-only"
+                                                    checked={isUnlimited}
+                                                    onChange={() => setIsUnlimited(!isUnlimited)}
+                                                />
+                                                <span className={`pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow transition duration-200 ease-in-out ${isUnlimited ? 'translate-x-4 bg-emerald-400' : 'translate-x-0'} ${isUnlimited ? 'bg-white' : 'bg-slate-400'}`} />
+                                            </div>
+                                            <span className="text-xs text-gray-600 dark:text-slate-300 font-medium select-none">Allow Unlimited In/Out</span>
+                                        </label>
+                                    </div>
+
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-5 pt-2">
+                                        {/* Target Daily Hours */}
+                                        <div className="space-y-2">
+                                            <label className="text-xs font-medium text-slate-400 block">Target Daily Hours</label>
+                                            <div className="relative">
+                                                <Input defaultValue="8" />
+                                                <span className="absolute right-3 top-2.5 text-xs text-slate-500 font-medium">HRS</span>
+                                            </div>
+                                            <p className="text-[10px] text-slate-500">Expected total duration per day</p>
+                                        </div>
+
+                                        {/* Min Session Duration */}
+                                        <div className="space-y-2">
+                                            <label className="text-xs font-medium text-slate-400 block">Minimum Session Duration</label>
+                                            <div className="relative">
+                                                <Input defaultValue="30" />
+                                                <span className="absolute right-3 top-2.5 text-xs text-slate-500 font-medium">MIN</span>
+                                            </div>
+                                            <p className="text-[10px] text-slate-500">Prevent accidental short punches</p>
+                                        </div>
+                                    </div>
                                 </div>
                             </section>
                             <section className="space-y-4">
                                 {/* Header */}
-                                <h3 className="text-lg font-bold text-white flex items-center gap-2">
-                                    <Settings2 className="w-5 h-5 text-emerald-400" />
+                                <h3 className="text-lg font-bold text-gray-600 dark:text-slate-300 flex items-center gap-2">
+                                    <Settings2 className="w-5 h-5 text-primary" />
                                     Policies & Exceptions
                                 </h3>
 
                                 {/* Main Container */}
-                                <div className="bg-[#1e293b]/50 border border-white/10 rounded-xl overflow-hidden shadow-lg backdrop-blur-sm">
+                                <div className="border border-gray-200 dark:border-white/10 rounded-xl overflow-hidden">
 
                                     {/* Row 1: Half Day */}
                                     <div className="p-4 border-b border-white/5 hover:bg-white/5 transition-colors group">
@@ -364,19 +381,46 @@ const ShiftCreate = () => {
                                                     <Contrast size={20} />
                                                 </div>
                                                 <div>
-                                                    <p className="text-sm font-semibold text-white">Half Day</p>
+                                                    <p className="text-sm font-semibold text-gray-600 dark:text-slate-300">Half Day</p>
                                                     <p className="text-xs text-slate-400">Weekly short duration</p>
                                                 </div>
                                             </div>
 
                                             <div className="flex-1 grid grid-cols-1 sm:grid-cols-3 gap-3">
-                                                <select className="w-full rounded-lg bg-[#0f172a] border border-white/10 text-white text-sm p-2 outline-none focus:border-emerald-500">
-                                                    <option>Saturday</option>
-                                                    <option>Friday</option>
-                                                    <option>Sunday</option>
-                                                </select>
-                                                <input type="time" defaultValue="09:00" className="w-full rounded-lg bg-[#0f172a] border border-white/10 text-slate-300 text-sm p-2 outline-none" />
-                                                <input type="time" defaultValue="13:00" className="w-full rounded-lg bg-[#0f172a] border border-white/10 text-slate-300 text-sm p-2 outline-none" />
+                                                <Dropdown
+                                                    items={[
+                                                        { "id": "1", "name": "Saturday" },
+                                                        { "id": "2", "name": "Friday" },
+                                                        { "id": "3", "name": "Sunday" },
+                                                    ]
+                                                    }
+                                                    selectedItem={shiftType}
+                                                    onSelect={(item) => {
+                                                        selectedShiftType(item);
+                                                    }}
+                                                    placeholder="Select Shift Type"
+                                                    width="w-full"
+                                                />
+
+                                                <Input
+                                                    type="text"
+                                                    value={"09:00"}
+                                                    onChange={(e) => setShiftName(e.target.value)}
+                                                    placeholder="Enter shift name"
+                                                />
+
+
+
+                                                <TimePicker
+                                                    value={"09:00"}
+                                                    onChange={(val) => handleChange("off_duty_time", val)}
+                                                />
+
+                                                <TimePicker
+                                                    value={"13:00"}
+                                                    onChange={(val) => handleChange("off_duty_time", val)}
+                                                />
+
                                             </div>
                                         </div>
                                     </div>
@@ -389,19 +433,31 @@ const ShiftCreate = () => {
                                                     <PartyPopper size={20} />
                                                 </div>
                                                 <div>
-                                                    <p className="text-sm font-semibold text-white">Flexi-Holidays</p>
+                                                    <p className="text-sm font-semibold text-gray-600 dark:text-slate-300">Flexi-Holidays</p>
                                                     <p className="text-xs text-slate-400">Allowance & Validity</p>
                                                 </div>
                                             </div>
 
                                             <div className="flex-1 flex flex-col lg:flex-row gap-4 lg:items-center">
                                                 <div className="flex items-center gap-3">
-                                                    <input type="number" defaultValue="2" className="w-16 rounded-lg bg-[#0f172a] border border-white/10 text-white text-sm p-2 text-center outline-none" />
+                                                    <Input width="w-[80px]" type="number" defaultValue="2" />
                                                     <span className="text-sm text-slate-400">days /</span>
-                                                    <select className="w-28 rounded-lg bg-[#0f172a] border border-white/10 text-white text-sm p-2 outline-none">
-                                                        <option>Monthly</option>
-                                                        <option>Weekly</option>
-                                                    </select>
+
+                                                    <Dropdown
+                                                        items={[
+                                                            { "id": "1", "name": "Monthly" },
+                                                            { "id": "2", "name": "Weekly" },
+                                                        ]
+                                                        }
+                                                        selectedItem={shiftType}
+                                                        onSelect={(item) => {
+                                                            selectedShiftType(item);
+                                                        }}
+                                                        placeholder="Select Shift Type"
+                                                        width="w-full"
+                                                    />
+
+
                                                 </div>
 
                                                 <div className="hidden lg:block w-px h-6 bg-white/10 mx-2"></div>
@@ -436,7 +492,7 @@ const ShiftCreate = () => {
                                                     <Hourglass size={20} />
                                                 </div>
                                                 <div>
-                                                    <p className="text-sm font-semibold text-white">Late Threshold</p>
+                                                    <p className="text-sm font-semibold text-gray-600 dark:text-slate-300">Late Threshold</p>
                                                     <p className="text-xs text-slate-400">Action after grace period</p>
                                                 </div>
                                             </div>
@@ -463,11 +519,11 @@ const ShiftCreate = () => {
                                     <div className="p-4 hover:bg-white/5 transition-colors">
                                         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                                             <div className="flex items-center gap-3 min-w-[200px]">
-                                                <div className="size-9 rounded bg-emerald-500/20 text-emerald-400 flex items-center justify-center">
+                                                <div className="size-9 rounded bg-emerald-500/20 text-primary flex items-center justify-center">
                                                     <CircleDollarSign size={20} />
                                                 </div>
                                                 <div>
-                                                    <p className="text-sm font-semibold text-white">Overtime Rules</p>
+                                                    <p className="text-sm font-semibold text-gray-600 dark:text-slate-300">Overtime Rules</p>
                                                     <p className="text-xs text-slate-400">Eligible hours</p>
                                                 </div>
                                             </div>
@@ -476,7 +532,7 @@ const ShiftCreate = () => {
                                                 {['Pre-shift', 'After Duty'].map((label) => (
                                                     <label key={label} className="flex-1 sm:flex-none cursor-pointer flex items-center justify-center gap-2 px-4 py-2 rounded-lg border border-white/10 bg-[#0f172a] transition-all has-[:checked]:border-emerald-500/50 has-[:checked]:bg-emerald-500/10 group">
                                                         <input type="checkbox" defaultChecked className="hidden" />
-                                                        {label === 'Pre-shift' ? <ChevronLeft size={16} className="text-slate-500 group-has-[:checked]:text-emerald-400" /> : <ChevronRight size={16} className="text-slate-500 group-has-[:checked]:text-emerald-400" />}
+                                                        {label === 'Pre-shift' ? <ChevronLeft size={16} className="text-slate-500 group-has-[:checked]:text-primary" /> : <ChevronRight size={16} className="text-slate-500 group-has-[:checked]:text-primary" />}
                                                         <span className="text-sm font-medium text-slate-300 group-has-[:checked]:text-white">{label}</span>
                                                     </label>
                                                 ))}

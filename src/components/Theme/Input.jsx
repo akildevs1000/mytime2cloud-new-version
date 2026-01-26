@@ -1,6 +1,13 @@
 import React from "react";
 
-const Input = ({ label, icon, error, className = "", ...props }) => {
+const Input = ({
+  width = "w-full",
+  label,
+  icon,
+  error,
+  className = "",
+  ...props
+}) => {
   return (
     <div className={`flex flex-col gap-1.5 w-full ${className}`}>
       {/* Label */}
@@ -22,7 +29,7 @@ const Input = ({ label, icon, error, className = "", ...props }) => {
         <input
           {...props}
           className={`
-            w-full flex items-center px-4 py-2.5 text-sm font-medium transition-all duration-200 
+            ${width} flex items-center px-4 py-2.5 text-sm font-medium transition-all duration-200 
             glass-card rounded-xl border outline-none
             
             /* Light Mode */
