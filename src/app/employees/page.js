@@ -166,10 +166,10 @@ export default function EmployeeDataTable() {
 
                     {/* New Employee Button */}
                     <Link href="/employees/create">
-                        <div className="bg-primary text-white px-4 py-1 rounded-lg font-semibold shadow-md hover:bg-indigo-700 transition-all flex items-center space-x-2 whitespace-nowrap">
+                        <button className="bg-primary text-white px-4 py-1 rounded-lg font-semibold shadow-md hover:bg-indigo-700 transition-all flex items-center space-x-2 whitespace-nowrap">
                             <Plus className="w-4 h-4" />
                             <span>New</span>
-                        </div>
+                        </button>
                     </Link>
                 </div>
             </div>

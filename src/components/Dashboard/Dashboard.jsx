@@ -8,11 +8,10 @@ import WelnessCard from "@/components/Dashboard/WelnessCard";
 import { getBranches } from "@/lib/api";
 import { parseApiError } from "@/lib/utils";
 import { useEffect, useState } from "react";
+import Dropdown from "../Theme/DropDown";
 
 const AdminDashboard = () => {
-  const [isOpen, setIsOpen] = useState(false);
-
-  const [selectedBranch, setSelectedBranch] = useState({ name: "", id: "" });
+  const [selectedBranch, setSelectedBranch] = useState({ name: "Select Branch", id: null });
   const [branches, setBranches] = useState([]);
   const [error, setError] = useState(null);
 
@@ -29,46 +28,20 @@ const AdminDashboard = () => {
   }, []);
 
   return (
-    <div className="overflow-y-auto h-full max-h-[99vh]">
+    <div className="overflow-y-auto max-h-[95vh]">
       <div className="px-2 mb-4 flex justify-between items-center">
         <h2 className="text-xl font-bold text-gray-600 dark:text-gray-300 font-display tracking-tight">
           Executive Overview
         </h2>
         <div className="filter-glass px-1 py-1 rounded-xl flex items-center gap-1.5 max-w-sm">
-          <div className="relative w-48">
-            {/* The Trigger Button */}
-            <button
-              onClick={() => setIsOpen(!isOpen)}
-              className="w-full flex items-center justify-between px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-200 rounded-xl shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all dark:bg-zinc-900 dark:border-zinc-800 dark:text-gray-200"
-            >
-              <span>
-                {selectedBranch.name}-{selectedBranch?.id}
-              </span>
-              <span
-                className={`material-symbols-outlined transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
-              >
-                expand_more
-              </span>
-            </button>
-
-            {/* The Styled Options Menu */}
-            {isOpen && (
-              <div className="absolute z-10 w-full mt-2 origin-top-right bg-white border border-gray-100 rounded-xl shadow-xl dark:bg-zinc-900 dark:border-zinc-800 p-1.5 animate-in fade-in zoom-in duration-100">
-                {branches.map((opt) => (
-                  <div
-                    key={opt.id}
-                    onClick={() => {
-                      setSelectedBranch(opt);
-                      setIsOpen(false);
-                    }}
-                    className="flex items-center px-3 py-2 text-sm rounded-lg cursor-pointer transition-colors hover:bg-primary/10 hover:text-primary text-gray-600 dark:text-gray-300"
-                  >
-                    {opt.name}
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
+          <Dropdown
+                items={branches}
+                selectedItem={selectedBranch}
+                onSelect={(item) => {
+                  setSelectedBranch(item);
+                }}
+                placeholder="Select a Branch"
+              />
         </div>
       </div>
       <div className="flex-1 overflow-y-auto overflow-x-hidden pr-2 pb-16 custom-scrollbar flex flex-col gap-5">
