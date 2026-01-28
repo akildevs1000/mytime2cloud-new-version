@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { X, CheckIcon } from "lucide-react";
+import { X } from "lucide-react";
 import {
   Popover,
   PopoverContent,
@@ -16,6 +16,7 @@ import {
   CommandInput,
   CommandItem,
 } from "@/components/ui/command";
+import { Checkbox } from "@/components/ui/checkbox"; // Ensure this import exists
 import { cn } from "@/lib/utils";
 
 export default function MultiDropDown({
@@ -40,14 +41,12 @@ export default function MultiDropDown({
     let newSelection = [];
 
     if (id === "Select All") {
-      newSelection =
-        value.length === items.length ? [] : items.map((d) => d.id);
+      newSelection = value.length === items.length ? [] : items.map((d) => d.id);
     } else if (isSelected) {
       newSelection = value.filter((v) => v !== id);
     } else {
       newSelection = [...value, id];
     }
-
     onChange(newSelection);
   };
 
@@ -60,16 +59,20 @@ export default function MultiDropDown({
   const itemsToDisplay = selectedItems.slice(0, badgesCount);
   const overflowCount = selectedItems.length - badgesCount;
 
+  // Logic for the Select All Checkbox state
+  const isAllSelected = value.length === items.length && items.length > 0;
+  const isSomeSelected = value.length > 0 && value.length < items.length;
+
   const getDisplayContent = () => {
     if (selectedItems.length === 0) {
-      return <span>{placeholder}</span>;
+      return <span className="text-muted-foreground">{placeholder}</span>;
     }
 
     const badges = itemsToDisplay.map((item) => (
-      <Badge key={item.id}>
+      <Badge key={item.id} variant="secondary" className="flex items-center gap-1">
         {item.name}
         <X
-          className="ml-1 h-3 w-3 cursor-pointer"
+          className="h-3 w-3 cursor-pointer hover:text-destructive"
           onClick={(e) => {
             e.stopPropagation();
             handleRemove(item.id);
@@ -79,7 +82,7 @@ export default function MultiDropDown({
     ));
 
     if (overflowCount > 0) {
-      badges.push(<Badge key="overflow">+{overflowCount} more</Badge>);
+      badges.push(<Badge key="overflow" variant="secondary">+{overflowCount} more</Badge>);
     }
 
     return <div className="flex flex-wrap gap-1">{badges}</div>;
@@ -93,10 +96,10 @@ export default function MultiDropDown({
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className="border border-gray-300 flex justify-between"
+          className="border border-gray-300 flex justify-between h-auto min-h-10 px-3 py-2"
         >
           {getDisplayContent()}
-          <span className="material-icons  ml-2  shrink-0">expand_more</span>
+          <span className="material-icons ml-2 shrink-0 opacity-50">expand_more</span>
         </Button>
       </PopoverTrigger>
 
@@ -107,37 +110,36 @@ export default function MultiDropDown({
           <CommandGroup>
             {/* Select All Option */}
             <CommandItem
-              className="flex justify-between"
-              value="Select All"
+              className="flex items-center gap-2 px-2 py-2 cursor-pointer"
               onSelect={() => handleSelect("Select All")}
             >
-              Select All ({items.length})
-              <CheckIcon
-                className={cn(
-                  "h-4 w-4",
-                  value.length === items.length && items.length > 0
-                    ? "opacity-100"
-                    : "opacity-0",
-                )}
+              <Checkbox
+                checked={isAllSelected ? true : isSomeSelected ? "indeterminate" : false}
+                onCheckedChange={() => handleSelect("Select All")}
               />
+              <span className="font-medium">Select All ({items.length})</span>
             </CommandItem>
 
-            {items.map((item) => (
-              <CommandItem
-                key={item.id}
-                value={item.name}
-                className="flex justify-between"
-                onSelect={() => handleSelect(item.id)}
-              >
-                {item.name}
-                <CheckIcon
-                  className={cn(
-                    "h-4 w-4",
-                    value.includes(item.id) ? "opacity-100" : "opacity-0",
-                  )}
-                />
-              </CommandItem>
-            ))}
+            <div className="h-[1px] bg-muted my-1" />
+
+            {/* Individual Items */}
+            {items.map((item) => {
+              const isSelected = value.includes(item.id);
+              return (
+                <CommandItem
+                  key={item.id}
+                  value={item.name}
+                  className="flex items-center gap-2 px-2 py-2 cursor-pointer"
+                  onSelect={() => handleSelect(item.id)}
+                >
+                  <Checkbox
+                    checked={isSelected}
+                    onCheckedChange={() => handleSelect(item.id)}
+                  />
+                  <span className="flex-1">{item.name}</span>
+                </CommandItem>
+              );
+            })}
           </CommandGroup>
         </Command>
       </PopoverContent>
