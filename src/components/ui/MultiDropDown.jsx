@@ -48,8 +48,6 @@ export default function MultiDropDown({
       newSelection = [...value, id];
     }
 
-    console.log("🚀 ~ handleSelect ~ newSelection:", newSelection);
-
     onChange(newSelection);
   };
 
