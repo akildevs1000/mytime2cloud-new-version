@@ -56,7 +56,7 @@ const Dropdown = ({
       {isOpen && (
         <div
           onClick={(e) => e.stopPropagation()}
-          className="absolute z-50 w-full mt-2 glass-panel rounded-xl shadow-2xl 
+          className="absolute z-10 w-full mt-2 glass-panel rounded-xl shadow-2xl 
                      !bg-white border-gray-200 
                      dark:!bg-midnight dark:border-white/10 p-1.5 animate-toast"
         >

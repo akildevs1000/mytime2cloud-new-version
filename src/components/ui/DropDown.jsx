@@ -38,10 +38,10 @@ export default function DropDown({
           variant="outline"
           role="combobox"
           aria-expanded={itemOpen}
-          className="w-full justify-between text-gray-500 border border-gray-300 rounded-lg bg-white hover:bg-gray-100"
+          className="w-full justify-between"
         >
           {itemName}
-          <span className="material-icons text-gray-400 ml-2 text-base">
+          <span className="material-icons ml-2">
             expand_more
           </span>
         </Button>
@@ -56,7 +56,6 @@ export default function DropDown({
               <CommandItem
                 key={item.id}
                 value={item.name}
-                className="text-gray-600"
                 onSelect={handleSelect}
               >
                 {item.name}

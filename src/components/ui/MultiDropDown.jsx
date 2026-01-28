@@ -23,7 +23,7 @@ export default function MultiDropDown({
   value = [],
   onChange,
   placeholder = "Select...",
-  badgesCount = 2
+  badgesCount = 2,
 }) {
   const [open, setOpen] = useState(false);
   const triggerRef = useRef(null);
@@ -64,15 +64,11 @@ export default function MultiDropDown({
 
   const getDisplayContent = () => {
     if (selectedItems.length === 0) {
-      return <span className="text-gray-500">{placeholder}</span>;
+      return <span>{placeholder}</span>;
     }
 
     const badges = itemsToDisplay.map((item) => (
-      <Badge
-        key={item.id}
-        variant="secondary"
-        className="mr-1 hover:bg-gray-200"
-      >
+      <Badge key={item.id}>
         {item.name}
         <X
           className="ml-1 h-3 w-3 cursor-pointer"
@@ -85,15 +81,7 @@ export default function MultiDropDown({
     ));
 
     if (overflowCount > 0) {
-      badges.push(
-        <Badge
-          key="overflow"
-          variant="outline"
-          className="ml-1 bg-gray-100 text-gray-700"
-        >
-          +{overflowCount} more
-        </Badge>
-      );
+      badges.push(<Badge key="overflow">+{overflowCount} more</Badge>);
     }
 
     return <div className="flex flex-wrap gap-1">{badges}</div>;
@@ -110,9 +98,7 @@ export default function MultiDropDown({
           className="border border-gray-300 flex justify-between"
         >
           {getDisplayContent()}
-          <span className="material-icons text-gray-400 ml-2 text-base shrink-0">
-            expand_more
-          </span>
+          <span className="material-icons  ml-2  shrink-0">expand_more</span>
         </Button>
       </PopoverTrigger>
 
@@ -123,7 +109,7 @@ export default function MultiDropDown({
           <CommandGroup>
             {/* Select All Option */}
             <CommandItem
-              className="text-gray-600 flex justify-between"
+              className="flex justify-between"
               value="Select All"
               onSelect={() => handleSelect("Select All")}
             >
@@ -133,7 +119,7 @@ export default function MultiDropDown({
                   "h-4 w-4",
                   value.length === items.length && items.length > 0
                     ? "opacity-100"
-                    : "opacity-0"
+                    : "opacity-0",
                 )}
               />
             </CommandItem>
@@ -142,14 +128,14 @@ export default function MultiDropDown({
               <CommandItem
                 key={item.id}
                 value={item.name}
-                className="text-gray-600 flex justify-between"
+                className="flex justify-between"
                 onSelect={() => handleSelect(item.id)}
               >
                 {item.name}
                 <CheckIcon
                   className={cn(
                     "h-4 w-4",
-                    value.includes(item.id) ? "opacity-100" : "opacity-0"
+                    value.includes(item.id) ? "opacity-100" : "opacity-0",
                   )}
                 />
               </CommandItem>

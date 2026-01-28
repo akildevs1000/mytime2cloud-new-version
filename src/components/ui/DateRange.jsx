@@ -64,7 +64,7 @@ export default function DateRangeSelect({ className, onChange = () => {} }) {
             id="date"
             variant={"outline"}
             className={cn(
-              "w-full justify-start text-left font-normal",
+              "w-full justify-start text-left font-normal border border-gray-200 dark:border-white/5",
               !date && "text-muted-foreground"
             )}
           >
@@ -85,7 +85,7 @@ export default function DateRangeSelect({ className, onChange = () => {} }) {
           </Button>
         </PopoverTrigger>
         <PopoverContent
-          className="w-auto p-0"
+          className="w-auto p-0 text-gray-600 dark:text-slate-300 bg-white dark:bg-slate-900 border border-gray-200 dark:border-white/30"
           align="start" // Ensures the popover's left edge aligns with the button's left edge
           side="bottom" // Ensures the popover opens below the button
         >
@@ -100,14 +100,14 @@ export default function DateRangeSelect({ className, onChange = () => {} }) {
           />
 
           {/* Action Buttons Container */}
-          <div className="flex justify-end space-x-2 border-t p-2">
+          <div className="flex justify-end space-x-2 border-t border-gray-200 dark:border-white/30 p-2">
             <Button
               variant="secondary"
               size="sm"
               onClick={handleCancel}
-              className="hover:text-red-600"
+              className="bg-white dark:bg-slate-700"
             >
-              <X className="mr-2 h-4 w-4" />
+              <X className="h-4 w-4" />
               Cancel
             </Button>
             <Button
@@ -116,7 +116,7 @@ export default function DateRangeSelect({ className, onChange = () => {} }) {
               // The Apply button is disabled unless both the 'from' and 'to' dates are selected.
               disabled={!draftDate?.from || !draftDate.to}
             >
-              <Check className="mr-2 h-4 w-4" />
+              <Check className="h-4 w-4" />
               Apply
             </Button>
           </div>

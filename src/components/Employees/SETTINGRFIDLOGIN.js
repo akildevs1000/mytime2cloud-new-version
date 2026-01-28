@@ -39,7 +39,7 @@ export default function SETTINGRFIDLOGIN({ employee_id, user, rfid_card_number, 
                     </p>
                 </div>
             </div>
-            <div className="space-y-8 dark:bg-slate-900 rounded-2xl">
+            <div className="space-y-8 dark:bg-slate-900 rounded-2xl overflow-y-auto h-[700px] px-3 py-10">
                 {/* these settings and login section should  be in one line  */}
                 <LeaveAndReporting
                     employee_id={employee_id}

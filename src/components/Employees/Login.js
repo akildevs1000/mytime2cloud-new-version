@@ -97,7 +97,7 @@ const Login = ({ employee_id, user }) => {
                         </span>
                         <input
                             className="flex-1 min-w-0 block w-full px-3 py-2.5 rounded-none rounded-r-md border border-slate-300 dark:border-slate-600 bg-slate-100 dark:bg-slate-800/50 text-slate-500 dark:text-slate-400 sm:text-sm focus:ring-0 focus:border-slate-300"
-                            readonly=""
+                            readOnly=""
                             type="email"
                             value="alex.morris@enterprise.com"
                         />

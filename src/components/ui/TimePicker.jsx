@@ -122,7 +122,7 @@ const TimePicker = forwardRef(function TimePicker(
               disabled={disabled}
               required={required}
               autoComplete={autoComplete}
-              className={`w-full rounded-lg border-border-light dark:border-border-dark bg-background-light dark:bg-gray-800/50 text-text-strong-light dark:text-text-strong-dark focus:ring-2 focus:ring-[var(--primary)] focus:border-[var(--primary)] pr-10 text-sm transition-all ${inputClassName}`}
+              className={`w-full rounded-lg h-12 border border-gray-200 dark:border-white/10 bg-background-light dark:bg-slate-900 text-text-strong-light dark:text-text-strong-dark focus:ring-2 focus:ring-[var(--primary)] focus:border-[var(--primary)] pr-10 text-sm transition-all ${inputClassName}`}
               {...rest}
             />
             <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3 text-gray-500 dark:text-gray-400">
@@ -142,7 +142,7 @@ const TimePicker = forwardRef(function TimePicker(
 
         <PopoverContent
           align="start"
-          className="w-50 rounded-lg p-4 shadow-lg border border-border-light dark:border-border-dark bg-background-light dark:bg-gray-800/90"
+          className="w-50 rounded-lg p-4 shadow-lg border border-gray-200 dark:border-white/10 bg-background-light dark:bg-slate-900"
         >
           <div className="flex justify-between mb-3">
             <div className="text-sm font-medium text-muted-foreground">Select Time</div>
