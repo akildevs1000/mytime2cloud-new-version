@@ -3,28 +3,41 @@
 
 import { useEffect, useState } from "react";
 
-import { createDesignations } from "@/lib/api";
+import { createDesignations, getBranches, getDepartments } from "@/lib/api";
 import { SuccessDialog } from "@/components/SuccessDialog";
 import { parseApiError } from "@/lib/utils";
 import Input from "../Theme/Input";
 import TextArea from "../Theme/TextArea";
 import Dropdown from "../Theme/DropDown";
+import MultiDropDown from "../ui/MultiDropDown";
+import DateRangeSelect from "../ui/DateRange";
+import { Checkbox } from "../ui/checkbox";
 
 // Reusable Toggle Component
 const ToggleItem = ({ title, desc, checked, onChange }) => (
-    <div className="flex items-center justify-between  rounded-xl hover:bg-surface-variant/30 transition-colors">
-        <div className="flex flex-col">
-            <p className="text-sm font-bold text-slate-dark dark:text-white">{title}</p>
-            <p className="text-xs text-slate-500">{desc}</p>
+    <label className="relative inline-flex items-center cursor-pointer shrink-0">
+        <input
+            type="checkbox"
+            className="sr-only peer"
+            checked={checked}
+            onChange={onChange}
+        />
+        {/* Track */}
+        <div className="w-11 h-6 bg-slate-200 dark:bg-slate-700 rounded-full peer 
+        peer-checked:bg-slate-300 dark:peer-checked:bg-slate-600 border border-transparent 
+        transition-all duration-300 ease-in-out">
         </div>
-        <label className="relative inline-flex items-center cursor-pointer">
-            <input type="checkbox" className="sr-only peer" checked={checked} onChange={onChange} />
-            <div className="w-[52px] h-8 bg-surface-variant rounded-full peer dark:bg-gray-700 peer-checked:bg-primary border border-slate-300 dark:border-slate-600 transition-colors"></div>
-            <div className="absolute left-[4px] top-[4px] bg-slate-500 w-6 h-6 rounded-full transition-transform peer-checked:translate-x-6 peer-checked:bg-white shadow-sm flex items-center justify-center">
-                {checked && <span className="material-symbols-outlined text-primary text-[14px] font-bold">check</span>}
-            </div>
-        </label>
-    </div>
+
+        {/* Thumb (Circle) */}
+        <div className="absolute left-[2px] top-[2px] w-5 h-5 rounded-full 
+        shadow-md transition-all duration-300 ease-in-out 
+        
+        /* State-based Colors */
+        bg-white peer-checked:bg-primary 
+        
+        peer-checked:translate-x-5">
+        </div>
+    </label>
 );
 
 let defaultPayload = {
@@ -40,9 +53,11 @@ const Create = ({ onSuccess = () => { } }) => {
     const [error, setError] = useState(null);
 
     const [selectedBranch, setSelectedBranch] = useState({ name: "Select Branch", id: "" });
-    const [selectedDepartment, setSelectedDepartment] = useState({ name: "Select Department", id: "" });
+    const [selectedDepartmentIds, setSelectedDepartment] = useState([]);
     const [selectedShiftStatus, setSelectedShiftStatus] = useState({ name: "Select Scheduled / Un Scheduled", id: "" });
     const [selectedEmployee, setSelectedEmployee] = useState({ name: "Select Employee", id: "" });
+    const [from, setFrom] = useState(null);
+    const [to, setTo] = useState(null);
 
     const [branches, setBranches] = useState([]);
     const [departments, setDepartments] = useState([]);
@@ -50,6 +65,9 @@ const Create = ({ onSuccess = () => { } }) => {
         { id: 'EMP-2024-042', name: 'Sarah Jenkins', email: 'sarah.j@company.com', dept: 'Engineering', role: 'Senior Developer', img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDDX4U7iiTK5ShudUldj9tzZfxOtUmjJi58np4sSrz4a-2sCDOu0b7kDd2SOeEM-fxruzRcK0PgUTlbXYSEtfZvWkL0-DWVO5O4wnwC2HDqk5dfcmInS9mYaNcbArigElI7-VsQ3-wmmz8RCMgziNFHtXGmogHhSUK0SW6ScL84LLI3TOpH5ZOcS2I2dBjLH_pBZZFCMkfCt-mesd7wYf2ZtvsCAjI4fR24Nb0d3c01SuSVVG45iTEMIN2cj-WssK891xigUWNh9t6p', color: 'blue' },
         { id: 'EMP-2024-089', name: 'Emily Davis', email: 'emily.d@company.com', dept: 'Design', role: 'Product Designer', img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBoYgaOzt6eR8qNSkBhbzjwXQ_so6sw9GgsNJOZgBM3C0idBhbYZLA1ZEvkizJuxjaMWJEBK7e4Z51RYFMtrvHttbvM-mSMTihBRn4KmrN36dxYtve2h0y_pusxYIjuBcZnnJe-1ZipLow3Wg2by21KW_NLZ5aBCG7rMSSmLIg5xOt4W2LY5S--1NgwWoOTUCEJVUhGfaU_D9wdHw6WzkcB1LHaa-uaSxGy9C2dP3eS5d2T9pM3EeED2Tq5QJNixvsetkIoII0J88Jh', color: 'purple' },
         { id: 'EMP-2024-103', name: 'Michael Brown', email: 'michael.b@company.com', dept: 'Marketing', role: 'Marketing Lead', img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBF-9sFBl0giPF8I1rgRDanyFo3HIkZcuEI_ipiNEU1TbD0mrfw63VPDJTJ4Wr8RavZ3twI4d3S8ZffG0TomE_bdVTAusnUkwx5JcXv2AAcLIGqYNxJcPlWln9XGxdwOy4qPFqZ8aYIhJkiFJjKxWU0fEMizV2IESoUxD05RqC16R0_4AKcprZ6SuWoehl1lOyfphOg0xyQSw4yNNeiNTGPmEUqqtBtT8fS59YsVaNQZOvsxm_yN3bLqGbYHdAOEWsX3eZMTZ2ZCOxf', color: 'orange' },
+        { id: 'EMP-2024-104', name: 'Michael Brown', email: 'michael.b@company.com', dept: 'Marketing', role: 'Marketing Lead', img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBF-9sFBl0giPF8I1rgRDanyFo3HIkZcuEI_ipiNEU1TbD0mrfw63VPDJTJ4Wr8RavZ3twI4d3S8ZffG0TomE_bdVTAusnUkwx5JcXv2AAcLIGqYNxJcPlWln9XGxdwOy4qPFqZ8aYIhJkiFJjKxWU0fEMizV2IESoUxD05RqC16R0_4AKcprZ6SuWoehl1lOyfphOg0xyQSw4yNNeiNTGPmEUqqtBtT8fS59YsVaNQZOvsxm_yN3bLqGbYHdAOEWsX3eZMTZ2ZCOxf', color: 'orange' },
+        { id: 'EMP-2024-105', name: 'Michael Brown', email: 'michael.b@company.com', dept: 'Marketing', role: 'Marketing Lead', img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBF-9sFBl0giPF8I1rgRDanyFo3HIkZcuEI_ipiNEU1TbD0mrfw63VPDJTJ4Wr8RavZ3twI4d3S8ZffG0TomE_bdVTAusnUkwx5JcXv2AAcLIGqYNxJcPlWln9XGxdwOy4qPFqZ8aYIhJkiFJjKxWU0fEMizV2IESoUxD05RqC16R0_4AKcprZ6SuWoehl1lOyfphOg0xyQSw4yNNeiNTGPmEUqqtBtT8fS59YsVaNQZOvsxm_yN3bLqGbYHdAOEWsX3eZMTZ2ZCOxf', color: 'orange' },
+        { id: 'EMP-2024-106', name: 'Michael Brown', email: 'michael.b@company.com', dept: 'Marketing', role: 'Marketing Lead', img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBF-9sFBl0giPF8I1rgRDanyFo3HIkZcuEI_ipiNEU1TbD0mrfw63VPDJTJ4Wr8RavZ3twI4d3S8ZffG0TomE_bdVTAusnUkwx5JcXv2AAcLIGqYNxJcPlWln9XGxdwOy4qPFqZ8aYIhJkiFJjKxWU0fEMizV2IESoUxD05RqC16R0_4AKcprZ6SuWoehl1lOyfphOg0xyQSw4yNNeiNTGPmEUqqtBtT8fS59YsVaNQZOvsxm_yN3bLqGbYHdAOEWsX3eZMTZ2ZCOxf', color: 'orange' },
     ]);
 
     const fetchDropdowns = async () => {
@@ -109,13 +127,31 @@ const Create = ({ onSuccess = () => { } }) => {
         }
     };
 
+    const [selectedIds, setSelectedIds] = useState([]);
+
+    // Toggle single selection
+    const toggleSelect = (id) => {
+        setSelectedIds(prev =>
+            prev.includes(id) ? prev.filter(item => item !== id) : [...prev, id]
+        );
+    };
+
+    // Toggle select all
+    const toggleAll = () => {
+        if (selectedIds.length === employees.length) {
+            setSelectedIds([]);
+        } else {
+            setSelectedIds(employees.map(emp => emp.id));
+        }
+    };
+
     return (
         <>
             <button onClick={() => setOpen(true)}
                 className="bg-primary hover:bg-blue-600 text-white text-sm font-semibold py-2 px-3 rounded-lg flex items-center gap-1 transition-all shadow-lg shadow-primary/20"
             >
                 <span className="material-symbols-outlined text-[18px]">add</span>
-                Add Designation
+                Add Schedule
             </button>
 
             {/* Modal Portal Logic */}
@@ -137,7 +173,7 @@ const Create = ({ onSuccess = () => { } }) => {
                         {/* Header */}
                         <div className="px-6 py-5 border-b border-gray-200 dark:border-white/10 flex justify-between items-center">
                             <div>
-                                <h3 className="text-lg font-bold text-gray-600 dark:text-gray-300">Add Designation</h3>
+                                <h3 className="text-lg font-bold text-gray-600 dark:text-gray-300">Add Schedule</h3>
                                 <p className="text-xs text-slate-400 mt-0.5">
                                     Create a new job role in the system
                                 </p>
@@ -155,16 +191,11 @@ const Create = ({ onSuccess = () => { } }) => {
                         <div className="flex-1 overflow-y-auto p-6 lg:p-8 custom-scrollbar bg-surface-variant/30 dark:bg-black/20">
                             <div className="flex flex-col gap-6 pb-24">
 
-                                {/* SECTION 1: TARGET EMPLOYEES */}
-                                <section className="bg-surface-light dark:bg-surface-dark rounded-3xl p-6 shadow-elevation-1 border border-white/50 dark:border-white/5">
+                                <section className="bg-surface-light dark:bg-surface-dark rounded-3xl p-6 shadow-elevation-1 border border-gray-200 dark:border-white/5">
                                     <div className="flex justify-between items-center mb-6">
-                                        <h2 className="text-lg font-bold text-slate-dark dark:text-white flex items-center gap-3">
-                                            <span className="flex items-center justify-center w-8 h-8 rounded-full bg-primary-container text-on-primary-container text-sm font-bold shadow-sm">1</span>
-                                            Target Employees
+                                        <h2 className="text-lg font-bold text-gray-600 dark:text-white flex items-center gap-3">
+                                            Select Employees
                                         </h2>
-                                        <span className="text-xs font-medium text-primary bg-primary-container px-3 py-1.5 rounded-full">
-                                            {selectedCount} Selected
-                                        </span>
                                     </div>
 
                                     <div className="flex flex-col gap-6">
@@ -181,15 +212,13 @@ const Create = ({ onSuccess = () => { } }) => {
                                                 width="w-[320px]"
                                             />
 
-                                            <Dropdown
+
+                                            <MultiDropDown
+                                                placeholder={'Select Department'}
                                                 items={departments}
-                                                selectedItem={selectedDepartment}
-                                                onSelect={(item) => {
-                                                    setSelectedDepartment(item);
-                                                    setCurrentPage(1); // Any extra logic goes here
-                                                }}
-                                                placeholder="Select Department"
-                                                width="w-[320px]"
+                                                value={selectedDepartmentIds}
+                                                onChange={setSelectedDepartment}
+                                                badgesCount={1}
                                             />
 
                                             <Dropdown
@@ -216,11 +245,21 @@ const Create = ({ onSuccess = () => { } }) => {
 
 
                                         {/* Employee Table */}
-                                        <div className="overflow-hidden rounded-3xl border border-stone-200 dark:border-white/10 shadow-elevation-1">
+                                        <div className="overflow-y-auto max-h-[400px] rounded-3xl border border-stone-200 dark:border-white/10 shadow-elevation-1">
                                             <table className="w-full text-left border-collapse">
                                                 <thead>
                                                     <tr className="bg-[#efece5] dark:bg-white/5 text-slate-600 dark:text-slate-300 text-xs uppercase tracking-wider font-semibold border-b border-stone-200 dark:border-white/5">
-                                                        <th className="px-6 py-4 font-bold">Employee Name</th>
+                                                        {/* Checkbox Header */}
+                                                        <th className="pl-6 py-4">
+
+
+                                                            <Checkbox
+                                                                checked={employees.length > 0 && selectedIds.length === employees.length}
+                                                                onCheckedChange={toggleAll}
+                                                            />
+
+                                                        </th>
+                                                        <th className="pr-6 py-4 font-bold">Employee Name</th>
                                                         <th className="px-6 py-4 font-bold">Employee ID</th>
                                                         <th className="px-6 py-4 font-bold">Department</th>
                                                         <th className="px-6 py-4 font-bold">Designation</th>
@@ -228,8 +267,22 @@ const Create = ({ onSuccess = () => { } }) => {
                                                 </thead>
                                                 <tbody className="divide-y divide-stone-100 dark:divide-white/5 bg-surface-light dark:bg-surface-dark">
                                                     {employees.map((emp) => (
-                                                        <tr key={emp.id} className="hover:bg-[#f8f6f1] dark:hover:bg-white/5 transition-colors group">
-                                                            <td className="px-6 py-4">
+                                                        <tr
+                                                            key={emp.id}
+                                                            className={`transition-colors group hover:bg-[#f8f6f1] dark:hover:bg-white/5 ${selectedIds.includes(emp.id) ? 'bg-[#fcfaf6] dark:bg-white/[0.02]' : ''
+                                                                }`}
+                                                        >
+                                                            {/* Checkbox Cell */}
+                                                            <td className="pl-6 py-4">
+
+                                                                <Checkbox
+                                                                    checked={selectedIds.includes(emp.id)}
+                                                                    onCheckedChange={() => toggleSelect(emp.id)}
+                                                                />
+
+
+                                                            </td>
+                                                            <td className="pr-6 py-4">
                                                                 <div className="flex items-center gap-3">
                                                                     <img
                                                                         src={emp.img}
@@ -243,11 +296,7 @@ const Create = ({ onSuccess = () => { } }) => {
                                                                 </div>
                                                             </td>
                                                             <td className="px-6 py-4 text-sm text-slate-600 dark:text-slate-400 font-mono">{emp.id}</td>
-                                                            <td className="px-6 py-4">
-                                                                <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border bg-${emp.color}-50 text-${emp.color}-700 dark:bg-${emp.color}-900/30 dark:text-${emp.color}-300 dark:border-${emp.color}-800`}>
-                                                                    {emp.dept}
-                                                                </span>
-                                                            </td>
+                                                            <td className="px-6 py-4 text-sm text-slate-600 dark:text-slate-400">{emp.dept}</td>
                                                             <td className="px-6 py-4 text-sm text-slate-600 dark:text-slate-400">{emp.role}</td>
                                                         </tr>
                                                     ))}
@@ -257,55 +306,84 @@ const Create = ({ onSuccess = () => { } }) => {
                                     </div>
                                 </section>
 
+                                <section className="xl:col-span-1 bg-surface-light dark:bg-surface-dark rounded-3xl p-6 shadow-elevation-1 border border-gray-200 dark:border-white/5 h-full flex flex-col">
+                                    <div className="space-y-6">
+                                        <div
+                                            className="flex items-center justify-between p-2 rounded-xl hover:bg-surface-variant/30 transition-colors"
+                                        >
+                                            <div className="flex flex-col">
+                                                <p className="text-sm font-bold text-gray-600 dark:text-white">
+                                                    Enable Overtime
+                                                </p>
+                                                <p className="text-xs text-slate-500">
+                                                    Allow employees to clock in extra hours.
+                                                </p>
+                                            </div>
+                                            <ToggleItem checked={isOvertimeEnabled} onChange={() => setIsOvertimeEnabled(!isOvertimeEnabled)} />
+                                        </div>
+                                    </div>
+                                </section>
+
                                 {/* BOTTOM GRID */}
                                 <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
 
                                     {/* SECTION 2: CONFIGURATION */}
-                                    <section className="xl:col-span-1 bg-surface-light dark:bg-surface-dark rounded-3xl p-6 shadow-elevation-1 border border-white/50 dark:border-white/5 h-full flex flex-col">
-                                        <h2 className="text-lg font-bold text-slate-dark dark:text-white flex items-center gap-3 mb-6">
-                                            <span className="flex items-center justify-center w-8 h-8 rounded-full bg-primary-container text-on-primary-container text-sm font-bold shadow-sm">2</span>
+                                    <section className="xl:col-span-1 bg-surface-light dark:bg-surface-dark rounded-3xl p-6 shadow-elevation-1 border border-gray-200 dark:border-white/5 h-full flex flex-col">
+                                        <h2 className="text-lg font-bold text-gray-600 dark:text-white flex items-center gap-3 mb-6">
                                             Configuration
                                         </h2>
                                         <div className="flex flex-col gap-5 flex-1">
                                             <div className="space-y-2">
                                                 <label className="text-sm font-semibold text-slate-700 dark:text-gray-200 ml-1">Shift Profile</label>
                                                 <div className="relative">
-                                                    <select className="w-full bg-surface-variant dark:bg-white/5 border-0 rounded-2xl py-3.5 px-4 text-sm text-slate-dark dark:text-white focus:ring-2 focus:ring-primary/50 cursor-pointer appearance-none">
-                                                        <option>General Shift (09:00 - 18:00)</option>
-                                                        <option>Morning Shift (06:00 - 15:00)</option>
-                                                        <option>Night Shift (22:00 - 07:00)</option>
-                                                    </select>
-                                                    <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-slate-500">
-                                                        <span className="material-symbols-outlined">expand_more</span>
-                                                    </div>
+                                                    <Dropdown
+                                                        items={[
+                                                            { id: "General Shift (09:00 - 18:00)", name: "General Shift (09:00 - 18:00)" },
+                                                            { id: "Morning Shift (06:00 - 15:00)", name: "Morning Shift (06:00 - 15:00)" },
+                                                            { id: "Night Shift (22:00 - 07:00)", name: "Night Shift (22:00 - 07:00)" },
+                                                        ]}
+                                                        selectedItem={selectedShiftStatus}
+                                                        onSelect={(item) => {
+                                                            setSelectedShiftStatus(item);
+                                                        }}
+                                                        placeholder="Select Schedule/Un Schedule"
+                                                        width="w-full"
+                                                    />
+
                                                 </div>
                                             </div>
+
+                                            <div className="flex flex-col gap-2 w-full sm:w-auto">
+                                                <span className="text-sm font-medium text-slate-400">Auto-Shift Mode</span>
+
+                                            </div>
+
+
+
                                             {/* <div className="space-y-2">
                                                 <div className="relative">
-                                                    <ToggleItem
-                                                        title="Enable Overtime"
-                                                        desc=""
-                                                        checked={isOvertimeEnabled}
-                                                        onChange={() => setIsOvertimeEnabled(!isOvertimeEnabled)}
-                                                    />
+                                                  
 
                                                 </div>
                                             </div> */}
                                             <div className="space-y-2">
                                                 <label className="text-sm font-semibold text-slate-700 dark:text-gray-200 ml-1">Effective Range</label>
                                                 <div className="flex flex-col gap-3">
-                                                    <input type="date" className="w-full bg-surface-variant dark:bg-white/5 border-0 rounded-2xl py-3 px-4 text-sm text-slate-dark dark:text-white focus:ring-2 focus:ring-primary/50" defaultValue="2023-10-23" />
-                                                    <input type="date" className="w-full bg-surface-variant dark:bg-white/5 border-0 rounded-2xl py-3 px-4 text-sm text-slate-dark dark:text-white focus:ring-2 focus:ring-primary/50" defaultValue="2023-11-23" />
-                                                </div>
+                                                    <DateRangeSelect
+                                                        value={{ from, to }}
+                                                        onChange={({ from, to }) => {
+                                                            setFrom(from);
+                                                            setTo(to);
+                                                        }
+                                                        } /> </div>
                                             </div>
                                         </div>
                                     </section>
 
                                     {/* SECTION 3: PATTERN PREVIEW */}
-                                    <section className="xl:col-span-2 bg-surface-light dark:bg-surface-dark rounded-3xl shadow-elevation-1 border border-white/50 dark:border-white/5 overflow-hidden flex flex-col">
+                                    <section className="xl:col-span-2 bg-surface-light dark:bg-surface-dark rounded-xl shadow-elevation-1 border border-gray-200 dark:border-white/5  flex flex-col">
                                         <div className="px-6 py-5 border-b border-gray-100 dark:border-white/5 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 bg-white/40 dark:bg-white/5 backdrop-blur-sm">
-                                            <h2 className="text-lg font-bold text-slate-dark dark:text-white flex items-center gap-3">
-                                                <span className="flex items-center justify-center w-8 h-8 rounded-full bg-primary-container text-on-primary-container text-sm font-bold shadow-sm">3</span>
+                                            <h2 className="text-lg font-bold text-gray-600 dark:text-white flex items-center gap-3">
                                                 Pattern Preview
                                             </h2>
                                             <div className="flex items-center gap-4 text-xs font-medium text-slate-500">
@@ -333,6 +411,7 @@ const Create = ({ onSuccess = () => { } }) => {
                                 </div>
 
 
+
                             </div>
                         </div>
 
@@ -350,18 +429,18 @@ const Create = ({ onSuccess = () => { } }) => {
                                 onClick={onSubmit}
                                 className="px-4 py-2 rounded-lg bg-primary text-white hover:bg-blue-600 transition-all text-sm font-bold shadow-lg shadow-primary/20"
                             >
-                                {loading ? "Saving..." : "Save Designation"}
+                                {loading ? "Saving..." : "Save Schedule"}
                             </button>
                         </div>
-                    </div>
-                </div>
+                    </div >
+                </div >
             )}
 
             <SuccessDialog
                 successOpen={successOpen}
                 onOpenChange={setSuccessOpen}
-                title="Designation Saved"
-                description="Designation Saved successfully."
+                title="Schedule Saved"
+                description="Schedule Saved successfully."
             />
         </>
     );

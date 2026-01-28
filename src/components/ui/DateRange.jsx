@@ -65,7 +65,7 @@ export default function DateRangeSelect({ className, onChange = () => {} }) {
             variant={"outline"}
             className={cn(
               "w-full justify-start text-left font-normal border border-gray-200 dark:border-white/5",
-              !date && "text-muted-foreground"
+              !date && "text-muted-foreground",
             )}
           >
             <CalendarIcon className="h-4 w-4" />
@@ -85,7 +85,7 @@ export default function DateRangeSelect({ className, onChange = () => {} }) {
           </Button>
         </PopoverTrigger>
         <PopoverContent
-          className="w-auto p-0 text-gray-600 dark:text-slate-300 bg-white dark:bg-slate-900 border border-gray-200 dark:border-white/30"
+          className="w-auto p-0 text-gray-600 dark:text-slate-300 bg-white dark:bg-slate-900 border border-gray-200 dark:border-white/20"
           align="start" // Ensures the popover's left edge aligns with the button's left edge
           side="bottom" // Ensures the popover opens below the button
         >
@@ -111,6 +111,7 @@ export default function DateRangeSelect({ className, onChange = () => {} }) {
               Cancel
             </Button>
             <Button
+              className="bg-white dark:bg-primary"
               size="sm"
               onClick={handleApply}
               // The Apply button is disabled unless both the 'from' and 'to' dates are selected.

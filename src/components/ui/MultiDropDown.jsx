@@ -25,6 +25,7 @@ export default function MultiDropDown({
   onChange,
   placeholder = "Select...",
   badgesCount = 2,
+  width = "w-full",
 }) {
   const [open, setOpen] = useState(false);
   const triggerRef = useRef(null);
@@ -41,7 +42,8 @@ export default function MultiDropDown({
     let newSelection = [];
 
     if (id === "Select All") {
-      newSelection = value.length === items.length ? [] : items.map((d) => d.id);
+      newSelection =
+        value.length === items.length ? [] : items.map((d) => d.id);
     } else if (isSelected) {
       newSelection = value.filter((v) => v !== id);
     } else {
@@ -65,11 +67,17 @@ export default function MultiDropDown({
 
   const getDisplayContent = () => {
     if (selectedItems.length === 0) {
-      return <span className="text-muted-foreground">{placeholder}</span>;
+      return (
+        <span className="text-gray-600 dark:text-slate-300">{placeholder}</span>
+      );
     }
 
     const badges = itemsToDisplay.map((item) => (
-      <Badge key={item.id} variant="secondary" className="flex items-center gap-1">
+      <Badge
+        key={item.id}
+        variant="secondary"
+        className="flex items-center gap-1"
+      >
         {item.name}
         <X
           className="h-3 w-3 cursor-pointer hover:text-destructive"
@@ -82,7 +90,11 @@ export default function MultiDropDown({
     ));
 
     if (overflowCount > 0) {
-      badges.push(<Badge key="overflow" variant="secondary">+{overflowCount} more</Badge>);
+      badges.push(
+        <Badge key="overflow" variant="secondary">
+          +{overflowCount} more
+        </Badge>,
+      );
     }
 
     return <div className="flex flex-wrap gap-1">{badges}</div>;
@@ -96,10 +108,12 @@ export default function MultiDropDown({
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className="border border-gray-300 flex justify-between h-auto min-h-10 px-3 py-2"
+          className={`${width} borderborder-gray-300 flex justify-between h-auto min-h-10 px-3 py-2`}
         >
           {getDisplayContent()}
-          <span className="material-icons ml-2 shrink-0 opacity-50">expand_more</span>
+          <span className="material-icons ml-2 shrink-0  text-gray-700 dark:text-slate-300">
+            expand_more
+          </span>
         </Button>
       </PopoverTrigger>
 
@@ -114,7 +128,13 @@ export default function MultiDropDown({
               onSelect={() => handleSelect("Select All")}
             >
               <Checkbox
-                checked={isAllSelected ? true : isSomeSelected ? "indeterminate" : false}
+                checked={
+                  isAllSelected
+                    ? true
+                    : isSomeSelected
+                      ? "indeterminate"
+                      : false
+                }
                 onCheckedChange={() => handleSelect("Select All")}
               />
               <span className="font-medium">Select All ({items.length})</span>

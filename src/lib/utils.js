@@ -140,5 +140,9 @@ export const getTextColor = (status) => {
     return colors[status] || "#111827";
 };
 
-
-
+export const getRandomItem = (array) => {
+    if (!array || array.length === 0) return null;
+    
+    const randomIndex = Math.floor(Math.random() * array.length);
+    return array[randomIndex];
+};
