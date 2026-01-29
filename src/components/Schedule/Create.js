@@ -151,7 +151,7 @@ const Create = ({ onSuccess = () => { } }) => {
                 className="bg-primary hover:bg-blue-600 text-white text-sm font-semibold py-2 px-3 rounded-lg flex items-center gap-1 transition-all shadow-lg shadow-primary/20"
             >
                 <span className="material-symbols-outlined text-[18px]">add</span>
-                Add Schedule
+                Add
             </button>
 
             {/* Modal Portal Logic */}
@@ -354,7 +354,7 @@ const Create = ({ onSuccess = () => { } }) => {
                                             </div>
 
                                             <div className="flex flex-col gap-2 w-full sm:w-auto">
-                                                <span className="text-sm font-medium text-slate-400">Auto-Shift Mode</span>
+                                                <span className="text-sm font-medium text-gray-600 dark:text-slate-300">Auto-Shift Mode</span>
 
                                             </div>
 

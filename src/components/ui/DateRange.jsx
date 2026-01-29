@@ -64,7 +64,7 @@ export default function DateRangeSelect({ className, onChange = () => {} }) {
             id="date"
             variant={"outline"}
             className={cn(
-              "w-full justify-start text-left font-normal border border-gray-200 dark:border-white/5",
+              "w-full justify-start text-left font-normal border border-border text-gray-600 dark:text-slate-300",
               !date && "text-muted-foreground",
             )}
           >
