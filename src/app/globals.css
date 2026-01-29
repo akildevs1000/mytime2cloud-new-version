@@ -21,6 +21,9 @@
   --color-rose-glow: #f43f5e;
   --color-cyan-glow: #06b6d4;
 
+  /* i added this  */
+  --color-border: var(--color-gray-200);
+
   /* Custom Animations */
   --animate-pulsing: pulsing 3s infinite cubic-bezier(0.66, 0, 0, 1);
   --animate-toast: slide-up-fade 0.5s cubic-bezier(0.2, 0.9, 0.3, 1) forwards;
@@ -71,11 +74,14 @@
     --accent: "#0D9488";
     --background-light: "#F9FAFB";
     --border-light: "#E2E8F0";
+
+    --color-border: #e2e8f0; /* Fallback for raw CSS if needed */
   }
 
   .dark {
     --gauge-bg: rgba(255, 255, 255, 0.1);
     --color-obsidian: #0f172a;
+    --color-border: oklch(1 0 0 / 10%); /* This is white/10 in v4 */
   }
 }
 

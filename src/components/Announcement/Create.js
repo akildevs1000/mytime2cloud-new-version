@@ -30,10 +30,12 @@ import {
     Clock,
     Send
 } from 'lucide-react';
+import DatePicker from "../ui/DatePicker";
+import TimePicker from "../ui/TimePicker";
 
 const ToolbarButton = ({ icon, title }) => (
     <button
-        className="p-1.5 rounded hover:bg-white/10 text-gray-400 hover:text-white transition-colors"
+        className="p-1.5 rounded hover:bg-white/10 text-gray-500 hover:text-white transition-colors"
         title={title}
     >
         {icon}
@@ -48,7 +50,7 @@ const RadioButton = ({ label, checked, onChange, name }) => (
                 name={name}
                 checked={checked}
                 onChange={onChange}
-                className="peer size-5 cursor-pointer appearance-none rounded-full border border-gray-500 checked:border-indigo-500 checked:bg-indigo-500 transition-all bg-[#0d1117]"
+                className="peer size-5 cursor-pointer appearance-none rounded-full border border-gray-500 checked:border-indigo-500 checked:bg-indigo-500 transition-all"
             />
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none opacity-0 peer-checked:opacity-100 text-white">
                 <svg className="h-3 w-3" fill="currentColor" viewBox="0 0 20 20">
@@ -56,7 +58,7 @@ const RadioButton = ({ label, checked, onChange, name }) => (
                 </svg>
             </div>
         </div>
-        <span className="text-gray-300 font-medium group-hover:text-white transition-colors">{label}</span>
+        <span className="text-gray-600 dark:text-slate-300 font-medium group-hover:text-white transition-colors">{label}</span>
     </label>
 );
 
@@ -218,7 +220,7 @@ const Create = ({ onSuccess = () => { } }) => {
                     ></div>
 
                     {/* Modal Card */}
-                    <div className="relative w-[900px]  overflow-y-auto max-h-[calc(100vh-130px)]  bg-white dark:bg-slate-800 rounded-2xl shadow-2xl border border-gray-100 dark:border-white/10  overflow-hidden transform transition-all animate-in fade-in zoom-in duration-200">
+                    <div className="relative w-[900px]    bg-white dark:bg-slate-800 rounded-2xl shadow-2xl border border-gray-100 dark:border-white/10  overflow-hidden transform transition-all animate-in fade-in zoom-in duration-200">
 
                         {/* Header */}
                         <div className="px-6 py-5 border-b border-gray-200 dark:border-white/10 flex justify-between items-center">
@@ -238,7 +240,7 @@ const Create = ({ onSuccess = () => { } }) => {
 
 
 
-                        <div className="flex-1 overflow-y-auto p-0   custom-scrollbar bg-surface-variant/30 dark:bg-black/20">
+                        <div className="flex-1 overflow-y-auto max-h-[calc(90vh-130px)] p-0   custom-scrollbar bg-surface-variant/30 dark:bg-black/20">
                             <div className="flex flex-col gap-2 pb-24">
                                 <section className="bg-surface-light dark:bg-surface-dark rounded-3xl p-6 shadow-elevation-1">
                                     <div className="space-y-1.5">
@@ -298,8 +300,8 @@ const Create = ({ onSuccess = () => { } }) => {
                                         <label className="block text-sm font-medium text-slate-400">
                                             Content
                                         </label>
-                                        <div className="border border-gray-700 rounded-lg overflow-hidden flex flex-col focus-within:ring-2 focus-within:ring-indigo-500/30 focus-within:border-indigo-500 transition-all bg-[#0d1117]/30 shadow-inner">
-                                            <div className="flex items-center gap-1 p-2 border-b border-gray-700 bg-[#161b22]/50">
+                                        <div className="border border-border  rounded-lg overflow-hidden flex flex-col focus-within:ring-2 focus-within:ring-indigo-500/30 focus-within:border-indigo-500 transition-all  shadow-inner">
+                                            <div className="flex items-center gap-1 p-2 border-b border-border ">
                                                 <ToolbarButton icon={<Bold size={18} />} title="Bold" />
                                                 <ToolbarButton icon={<Italic size={18} />} title="Italic" />
                                                 <ToolbarButton icon={<Underline size={18} />} title="Underline" />
@@ -322,19 +324,19 @@ const Create = ({ onSuccess = () => { } }) => {
                                         <label className="block text-sm font-medium text-slate-400">
                                             Attachments
                                         </label>
-                                        <div className="border-2 border-dashed border-gray-700 rounded-lg p-8 flex flex-col items-center justify-center gap-3 text-center bg-[#0d1117]/20 hover:bg-[#0d1117]/40 hover:border-indigo-500/50 transition-all cursor-pointer group">
-                                            <div className="bg-[#161b22] p-3 rounded-full shadow-lg group-hover:scale-110 group-hover:shadow-indigo-500/20 group-hover:shadow-xl transition-all border border-white/5">
+                                        <div className="border-2 border-dashed dark:border-gray-700 rounded-lg p-8 flex flex-col items-center justify-center gap-3 text-center hover:border-indigo-500/50 transition-all cursor-pointer group">
+                                            <div className="bg-obsidian  p-3 rounded-full shadow-lg group-hover:scale-110 group-hover:shadow-indigo-500/20 group-hover:shadow-xl transition-all border border-border">
                                                 <UploadCloud className="text-indigo-500" size={30} />
                                             </div>
                                             <div className="flex flex-col gap-1">
-                                                <p className="text-gray-200 font-medium group-hover:text-indigo-400 transition-colors">
+                                                <p className="text-gray-600 dark:text-slate-300 font-medium group-hover:text-indigo-400 transition-colors">
                                                     Click to upload or drag and drop
                                                 </p>
                                                 <p className="text-gray-500 text-sm">SVG, PNG, JPG or PDF (max. 10MB)</p>
                                             </div>
                                         </div>
                                     </div>
-                                    <div className="flex mt-5 items-center justify-between p-3 rounded-lg border border-gray-700 bg-[#0d1117]/40 mt-2 hover:border-gray-600 transition-colors">
+                                    <div className="flex mt-5 items-center justify-between p-3 rounded-lg border border-border  mt-2 hover:border-gray-600 transition-colors">
                                         <div className="flex items-center gap-3">
                                             <div className="bg-red-500/10 text-red-400 p-2 rounded ring-1 ring-red-500/20">
                                                 <FileText size={20} />
@@ -349,11 +351,11 @@ const Create = ({ onSuccess = () => { } }) => {
                                         </button>
                                     </div>
 
-                                    <div className="h-px w-full bg-gray-800 my-2"></div>
+                                    <div className="h-px w-full bg-gray-200 dark:bg-gray-800 my-2"></div>
 
                                     {/* Publishing Options */}
                                     <div className="flex flex-col gap-4">
-                                        <label className="text-gray-300 text-sm font-semibold leading-normal">Publishing Options</label>
+                                        <label className="text-gray-600 dark:text-slate-300 text-sm font-semibold leading-normal">Publishing Options</label>
                                         <div className="flex flex-col md:flex-row gap-6">
                                             <div className="flex flex-col gap-3 min-w-[200px]">
                                                 <RadioButton
@@ -371,27 +373,17 @@ const Create = ({ onSuccess = () => { } }) => {
                                             </div>
 
                                             {/* Date/Time Pickers (Enabled when 'later' is selected) */}
-                                            <div className={`flex flex-1 flex-wrap gap-4 items-center bg-[#0d1117]/30 p-4 rounded-lg border border-gray-800 transition-opacity ${publishType === 'later' ? 'opacity-100' : 'opacity-40 pointer-events-none'}`}>
+                                            <div className={`flex flex-1 flex-wrap gap-4 items-center p-4 rounded-lg border border-border transition-opacity ${publishType === 'later' ? 'opacity-100' : 'opacity-40 pointer-events-none'}`}>
                                                 <div className="flex flex-col gap-1.5 flex-1 min-w-[200px] group">
                                                     <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider group-hover:text-indigo-400 transition-colors">Date</label>
                                                     <div className="relative">
-                                                        <input
-                                                            type="text"
-                                                            defaultValue="Oct 24, 2023"
-                                                            className="w-full rounded-lg border border-gray-700 bg-[#161b22] text-white pl-10 h-10 text-sm focus:ring-indigo-500 focus:border-indigo-500 outline-none"
-                                                        />
-                                                        <Calendar className="absolute left-3 top-2.5 text-gray-500 group-hover:text-indigo-400 transition-colors" size={18} />
+                                                        <DatePicker />
                                                     </div>
                                                 </div>
                                                 <div className="flex flex-col gap-1.5 flex-1 min-w-[150px] group">
                                                     <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider group-hover:text-indigo-400 transition-colors">Time</label>
                                                     <div className="relative">
-                                                        <input
-                                                            type="text"
-                                                            defaultValue="09:00 AM"
-                                                            className="w-full rounded-lg border border-gray-700 bg-[#161b22] text-white pl-10 h-10 text-sm focus:ring-indigo-500 focus:border-indigo-500 outline-none"
-                                                        />
-                                                        <Clock className="absolute left-3 top-2.5 text-gray-500 group-hover:text-indigo-400 transition-colors" size={18} />
+                                                    <TimePicker />
                                                     </div>
                                                 </div>
                                             </div>

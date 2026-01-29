@@ -37,7 +37,7 @@ export default function Home({ employee_id, visa, emirate, passport }) {
         <>
             <div className="bg-surface-light dark:bg-surface-dark px-6 py-4 rounded-lg flex shadow-sm">
                 {/* Left Tabs */}
-                <div className="flex flex-col w-48 border-r border-border-light dark:border-border-dark">
+                <div className="flex flex-col w-48 border-r border-border">
                     {TABS.map((tab) => {
                         const isCurrent = activeTab === tab.id;
                         const classes = isCurrent

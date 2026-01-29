@@ -86,7 +86,7 @@ const LiveInsightSidebar = () => {
                             <span className={`text-xs font-medium w-7 ${item.type === 'half' ? 'text-blue-400' : 'text-gray-600 dark:text-slate-300'}`}>
                                 {item.day}
                             </span>
-                            <div className="flex-1 h-2.5 bg-slate-800 rounded-full overflow-hidden relative border border-slate-700/50">
+                            <div className="flex-1 h-2.5 bg-obsidian dark:bg-slate-800 rounded-full overflow-hidden relative border border-border">
                                 {item.dutySlots.map((leftPos, idx) => (
                                     <div
                                         key={idx}

@@ -220,7 +220,7 @@ export default function Home() {
     <>
       <div className="flex flex-1 gap-6">
         <div
-          className="w-80 bg-surface-light dark:bg-surface-dark border-r border-border-light dark:border-border-dark flex flex-col"
+          className="w-80 bg-surface-light dark:bg-surface-dark border-r border-border flex flex-col"
         >
           <div
             className="p-4 border-b border-border-light dark:border-border-dark flex justify-between items-center"

@@ -9,6 +9,8 @@ import {
   ChevronLeft,
   ChevronRight,
 } from "lucide-react";
+import TimePicker from "../ui/TimePicker";
+import Dropdown from "../Theme/DropDown";
 const AttendanceRules = ({
   value = "",
   onChange = () => {},
@@ -37,8 +39,8 @@ const AttendanceRules = ({
   return (
     <section className="space-y-4">
       {/* Header */}
-      <h3 className="text-lg font-bold text-white flex items-center gap-2">
-        <Settings2 className="w-5 h-5 text-emerald-400" />
+      <h3 className="text-lg font-bold text-gray-600 dark:text-slate-300 flex items-center gap-2">
+        <Settings2 className="w-5 h-5 " />
         Policies & Exceptions
       </h3>
 
@@ -52,27 +54,25 @@ const AttendanceRules = ({
                 <Contrast size={20} />
               </div>
               <div>
-                <p className="text-sm font-semibold text-white">Half Day</p>
+                <p className="text-sm font-semibold text-gray-600 dark:text-slate-300">
+                  Half Day
+                </p>
                 <p className="text-xs text-slate-400">Weekly short duration</p>
               </div>
             </div>
 
             <div className="flex-1 grid grid-cols-1 sm:grid-cols-3 gap-3">
-              <select className="w-full rounded-lg bg-[#0f172a] border border-white/10 text-white text-sm p-2 outline-none focus:border-emerald-500">
-                <option>Saturday</option>
-                <option>Friday</option>
-                <option>Sunday</option>
-              </select>
-              <input
-                type="time"
-                defaultValue="09:00"
-                className="w-full rounded-lg bg-[#0f172a] border border-white/10 text-slate-300 text-sm p-2 outline-none"
+              <Dropdown
+                items={[
+                  { id: "Saturday", name: "Saturday" },
+                  { id: "Friday", name: "Friday" },
+                  { id: "Sunday", name: "Sunday" },
+                ]}
+                placeholder="Select Shift Type"
+                width="w-full"
               />
-              <input
-                type="time"
-                defaultValue="13:00"
-                className="w-full rounded-lg bg-[#0f172a] border border-white/10 text-slate-300 text-sm p-2 outline-none"
-              />
+              <TimePicker />
+              <TimePicker />
             </div>
           </div>
         </div>
@@ -85,7 +85,7 @@ const AttendanceRules = ({
                 <PartyPopper size={20} />
               </div>
               <div>
-                <p className="text-sm font-semibold text-white">
+                <p className="text-sm font-semibold text-gray-600 dark:text-slate-300">
                   Flexi-Holidays
                 </p>
                 <p className="text-xs text-slate-400">Allowance & Validity</p>
@@ -95,15 +95,19 @@ const AttendanceRules = ({
             <div className="flex-1 flex flex-col lg:flex-row gap-4 lg:items-center">
               <div className="flex items-center gap-3">
                 <input
-                  type="number"
                   defaultValue="2"
-                  className="w-16 rounded-lg bg-[#0f172a] border border-white/10 text-white text-sm p-2 text-center outline-none"
+                  className="w-16 rounded-lg bg-white dark:bg-slate-900 border border-border text-gray-600 dark:text-slate-300 text-sm p-2 text-center outline-none"
                 />
                 <span className="text-sm text-slate-400">days /</span>
-                <select className="w-28 rounded-lg bg-[#0f172a] border border-white/10 text-white text-sm p-2 outline-none">
-                  <option>Monthly</option>
-                  <option>Weekly</option>
-                </select>
+                <Dropdown
+                  items={[
+                    { id: "Monthly", name: "Monthly" },
+                    { id: "Weekly", name: "Weekly" },
+                  ]}
+                  placeholder="Select Shift Type"
+                  width="w-[200px]"
+                />
+             
               </div>
 
               <div className="hidden lg:block w-px h-6 bg-white/10 mx-2"></div>
@@ -120,7 +124,7 @@ const AttendanceRules = ({
                       className={`size-7 flex items-center justify-center rounded border text-[10px] font-bold transition-all ${
                         validDays.includes(day.label)
                           ? "border-purple-500 bg-purple-500/20 text-purple-400"
-                          : "border-white/10 bg-[#0f172a] text-slate-500 hover:border-slate-400"
+                          : "border-border text-slate-500 hover:border-slate-400"
                       }`}
                       title={day.full}
                     >
@@ -141,7 +145,7 @@ const AttendanceRules = ({
                 <Hourglass size={20} />
               </div>
               <div>
-                <p className="text-sm font-semibold text-white">
+                <p className="text-sm font-semibold text-gray-600 dark:text-slate-300">
                   Late Threshold
                 </p>
                 <p className="text-xs text-slate-400">
@@ -154,9 +158,8 @@ const AttendanceRules = ({
               <div className="flex items-center gap-2">
                 <span className="text-sm text-slate-400">After</span>
                 <input
-                  type="number"
                   defaultValue="15"
-                  className="w-16 rounded-lg bg-[#0f172a] border border-white/10 text-white text-sm p-2 text-center outline-none"
+                  className="w-16 rounded-lg bg-white dark:bg-slate-900 border border-border text-gray-600 dark:text-slate-300 text-sm p-2 text-center outline-none"
                 />
                 <span className="text-sm text-slate-400">mins</span>
               </div>
@@ -164,11 +167,15 @@ const AttendanceRules = ({
                 <span className="text-sm text-slate-400 whitespace-nowrap">
                   Mark as
                 </span>
-                <select className="w-full max-w-[200px] rounded-lg bg-[#0f172a] border border-white/10 text-white text-sm p-2 outline-none">
-                  <option>Late In</option>
-                  <option>Absent</option>
-                  <option>Half Day</option>
-                </select>
+                  <Dropdown
+                  items={[
+                    { id: "Late In", name: "Late In" },
+                    { id: "Absent", name: "Absent" },
+                    { id: "Half Day", name: "Half Day" },
+                  ]}
+                  placeholder="Select Shift Type"
+                  width="w-[200px]"
+                />
               </div>
             </div>
           </div>
@@ -182,7 +189,7 @@ const AttendanceRules = ({
                 <CircleDollarSign size={20} />
               </div>
               <div>
-                <p className="text-sm font-semibold text-white">
+                <p className="text-sm font-semibold text-gray-600 dark:text-slate-300">
                   Overtime Rules
                 </p>
                 <p className="text-xs text-slate-400">Eligible hours</p>
@@ -207,7 +214,7 @@ const AttendanceRules = ({
                       className="text-slate-500 group-has-[:checked]:text-emerald-400"
                     />
                   )}
-                  <span className="text-sm font-medium text-slate-300 group-has-[:checked]:text-white">
+                  <span className="text-sm font-medium text-slate-300 group-has-[:checked]:text-gray-600 dark:text-slate-300">
                     {label}
                   </span>
                 </label>

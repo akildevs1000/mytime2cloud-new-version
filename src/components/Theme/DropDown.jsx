@@ -29,11 +29,11 @@ const Dropdown = ({
         onClick={() => setIsOpen((prev) => !prev)}
         className={`
           w-full flex items-center justify-between px-4 py-2 text-sm font-medium transition-all duration-200 
-          glass-card rounded-xl border
+          glass-card rounded-xl border border-border
           /* Light Mode */
-          !bg-white border-gray-200 text-slate-700
+          !bg-white  text-slate-700
           /* Dark Mode */
-          dark:!bg-slate-900 dark:border-white/10 dark:text-slate-300
+          dark:!bg-slate-900  dark:text-slate-300
           /* Interaction */
           focus:outline-none focus:ring-2 focus:ring-primary/20 active:scale-[0.97]
         `}
@@ -42,7 +42,7 @@ const Dropdown = ({
           {selectedItem ? (
             <>{selectedItem.name}</>
           ) : (
-            <span className="text-slate-400">{placeholder}</span>
+            <span className="text-slate-600 dark:text-slate-300">{placeholder}</span>
           )}
         </span>
         <span

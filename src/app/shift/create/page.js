@@ -126,18 +126,18 @@ const ShiftCreate = () => {
                 description="Your Shift information has been inserted successfully."
             />
 
-            <div className="p-5 overflow-y-auto max-h-[calc(100vh-30px)]">
-                <header className="h-16 border-b border-gray-200 dark:border-white/20 bg-white dark:bg-slate-900 backdrop-blur-md flex items-center justify-between px-6 shrink-0 z-10">
+            <div className="p-5">
+                <header className="h-16 border-b border-border  dark:bg-slate-900 backdrop-blur-md flex items-center justify-between px-6 shrink-0 z-10">
                     <div>
                         <h2 className="text-xl font-bold text-gray-600 dark:text-gray-300 tracking-tight">
                             Shift Configuration
                         </h2>
-                        <p className="text-xs text-gray-400 hidden sm:block">
+                        <p className="text-xs text-gray-600 dark:text-slate-300 hidden sm:block">
                             Manage timings, policies, and attendance rules for "General Shift A"
                         </p>
                     </div>
                     <div className="flex items-center gap-3">
-                        <button className="flex items-center justify-center gap-2 h-9 px-4 rounded-lg border border-gray-200 dark:border-white/20 bg-slate-800 text-gray-400 text-sm font-medium transition-all hover:bg-slate-700">
+                        <button className="flex items-center justify-center gap-2 h-9 px-4 rounded-lg border border-border  text-gray-600 dark:text-slate-300 text-sm font-medium transition-all hover:bg-slate-700">
                             <span className="material-symbols-outlined text-[18px]">history</span>
                             <span className="hidden sm:inline">History</span>
                         </button>
@@ -152,7 +152,7 @@ const ShiftCreate = () => {
                 <div className="flex flex-col lg:flex-row">
 
                     {/* LEFT AREA: 70% Width */}
-                    <div className="w-full lg:w-[70%] p-6 pb-24">
+                    <div className="w-full lg:w-[70%] p-6 pb-24 overflow-y-auto max-h-[calc(100vh-100px)]">
                         <div className="mx-auto lg:mx-0 space-y-8">
                             <section className="space-y-4">
                                 <h3 className="text-lg font-bold text-gray-600 dark:text-slate-300 flex items-center gap-2">
@@ -163,7 +163,7 @@ const ShiftCreate = () => {
                                 <div className="relative z-30  bg-white dark:bg-[#1e293b]/50 border dark:border-white/10 rounded-xl p-5 shadow-lg backdrop-blur-sm">
                                     <div className="flex flex-col sm:flex-row gap-5 items-start sm:items-center justify-between">
                                         <div className='w-full'>
-                                            <span className="text-sm font-medium text-slate-400">Shift Type</span>
+                                            <span className="text-sm font-medium text-slate-600 dark:text-slate-300">Shift Type</span>
                                             <div className="relative z-20">
                                                 <Dropdown
                                                     items={[
@@ -192,7 +192,7 @@ const ShiftCreate = () => {
                                     <div className="flex flex-col sm:flex-row gap-5 items-start sm:items-center justify-between">
                                         {/* Shift Name Input */}
                                         <label className="flex flex-col w-full sm:w-2/3 gap-2">
-                                            <span className="text-sm font-medium text-slate-400">Shift Name</span>
+                                            <span className="text-sm font-medium text-slate-600 dark:text-slate-300">Shift Name</span>
                                             <Input
                                                 defaultValue={schedule.name}
                                                 onChange={(e) => handleChange("name", e.target.value)} // ✅ fixed
@@ -202,8 +202,8 @@ const ShiftCreate = () => {
 
                                         {/* Auto-Shift Toggle */}
                                         <div className="flex flex-col gap-2 w-full sm:w-auto">
-                                            <span className="text-sm font-medium text-slate-400">Auto-Shift Mode</span>
-                                            <label className="relative flex items-center cursor-pointer gap-3 p-2 rounded-lg bg-[#0f172a] border dark:border-white/10 w-full sm:w-auto hover:bg-[#161e31] transition-colors">
+                                            <span className="text-sm font-medium text-slate-600 dark:text-slate-300">Auto-Shift Mode</span>
+                                            <label className="relative flex items-center cursor-pointer gap-3 p-2 rounded-lg  border border-border w-full sm:w-auto hover:bg-[#161e31] transition-colors">
                                                 <div
                                                     onClick={() => setIsAutoShift(!isAutoShift)}
                                                     className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out ${isAutoShift ? 'bg-emerald-500' : 'bg-slate-700'}`}
@@ -243,7 +243,7 @@ const ShiftCreate = () => {
                                                         <h4 className="text-gray-600 dark:text-slate-300 font-semibold text-base">
                                                             Global Availability Range
                                                         </h4>
-                                                        <p className="text-sm text-slate-400 mt-1">
+                                                        <p className="text-sm text-slate-600 dark:text-slate-300 mt-1">
                                                             Define the open window during which staff can clock in and out.
                                                         </p>
                                                     </div>
@@ -277,7 +277,7 @@ const ShiftCreate = () => {
 
                                                     {/* Window Close */}
                                                     <div className="space-y-2">
-                                                        <label className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-400">
+                                                        <label className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300">
                                                             <Moon size={16} /> Window Close
                                                         </label>
                                                         <div className="relative group">
@@ -326,7 +326,7 @@ const ShiftCreate = () => {
                                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5 pt-2">
                                                     {/* Target Daily Hours */}
                                                     <div className="space-y-2">
-                                                        <label className="text-xs font-medium text-slate-400 block">
+                                                        <label className="text-xs font-medium text-slate-600 dark:text-slate-300 block">
                                                             Target Daily Hours
                                                         </label>
                                                         <div className="relative">
@@ -344,7 +344,7 @@ const ShiftCreate = () => {
 
                                                     {/* Min Session Duration */}
                                                     <div className="space-y-2">
-                                                        <label className="text-xs font-medium text-slate-400 block">
+                                                        <label className="text-xs font-medium text-slate-600 dark:text-slate-300 block">
                                                             Minimum Session Duration
                                                         </label>
                                                         <div className="relative">
@@ -411,18 +411,18 @@ const ShiftCreate = () => {
                                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                                 <div className="space-y-3">
                                                     <span
-                                                        className="text-xs uppercase tracking-wider font-bold text-subtle-text"
+                                                        className="text-xs uppercase tracking-wider font-bold text-gray-600 dark:text-slate-300"
                                                     >Beginning Window</span
                                                     >
                                                     <div className="grid grid-cols-2 gap-3 mt-5">
                                                         <div>
-                                                            <span className="text-xs text-subtle-text mb-1 block"
+                                                            <span className="text-xs text-gray-600 dark:text-slate-300 mb-1 block"
                                                             >Start</span
                                                             >
                                                             <TimePicker defaultValue={"07:00"} />
                                                         </div>
                                                         <div>
-                                                            <span className="text-xs text-subtle-text mb-1 block"
+                                                            <span className="text-xs text-gray-600 dark:text-slate-300 mb-1 block"
                                                             >End</span
                                                             >
                                                             <TimePicker defaultValue={"10:00"} />
@@ -431,19 +431,19 @@ const ShiftCreate = () => {
                                                 </div>
                                                 <div className="space-y-3">
                                                     <span
-                                                        className="text-xs uppercase tracking-wider font-bold text-subtle-text"
+                                                        className="text-xs uppercase tracking-wider font-bold text-gray-600 dark:text-slate-300"
                                                     >Ending Window</span
                                                     >
                                                     <div className="grid grid-cols-2 gap-3 mt-5">
                                                         <div>
-                                                            <span className="text-xs text-subtle-text mb-1 block"
+                                                            <span className="text-xs text-gray-600 dark:text-slate-300 mb-1 block"
                                                             >Start</span
                                                             >
 
                                                             <TimePicker defaultValue={"17:00"} />
                                                         </div>
                                                         <div>
-                                                            <span className="text-xs text-subtle-text mb-1 block"
+                                                            <span className="text-xs text-gray-600 dark:text-slate-300 mb-1 block"
                                                             >End</span
                                                             >
                                                             <TimePicker defaultValue={"23:00"} />
@@ -470,7 +470,7 @@ const ShiftCreate = () => {
                                                 Session Schedule
                                             </h3>
                                             <span
-                                                className="text-xs font-mono bg-surface-dark border border-gray-200 dark:dark:border-white/10 px-2 py-1 rounded text-subtle-text"
+                                                className="text-xs font-mono bg-surface-dark border border-gray-200 dark:dark:border-white/10 px-2 py-1 rounded text-gray-600 dark:text-slate-300"
                                             >Multiple IN/OUT</span
                                             >
                                         </div>
@@ -491,7 +491,7 @@ const ShiftCreate = () => {
                                                         </div>
                                                         <div className="flex flex-col w-full">
                                                             <label
-                                                                className="text-[10px] uppercase font-bold text-subtle-text tracking-wider"
+                                                                className="text-[10px] uppercase font-bold text-gray-600 dark:text-slate-300 tracking-wider"
                                                             >Session Name</label
                                                             >
                                                             <Input
@@ -517,7 +517,7 @@ const ShiftCreate = () => {
                                                     </div>
                                                     <div className="space-y-1">
                                                         <label
-                                                            className="flex items-center gap-1.5 text-xs font-medium text-subtle-text"
+                                                            className="flex items-center gap-1.5 text-xs font-medium text-gray-600 dark:text-slate-300"
                                                         >
                                                             <span className="material-symbols-outlined text-[14px]"
                                                             >logout</span
@@ -529,7 +529,7 @@ const ShiftCreate = () => {
                                                 </div>
                                                 <details className="mt-4 group/details">
                                                     <summary
-                                                        className="flex items-center gap-2 text-xs font-medium text-subtle-text cursor-pointer select-none hover:text-gray-600 dark:text-slate-300 transition-colors py-1"
+                                                        className="flex items-center gap-2 text-xs font-medium text-gray-600 dark:text-slate-300 cursor-pointer select-none hover:text-gray-600 dark:text-slate-300 transition-colors py-1"
                                                     >
                                                         <span
                                                             className="material-symbols-outlined text-[16px] transition-transform group-open/details:rotate-90"
@@ -542,20 +542,20 @@ const ShiftCreate = () => {
                                                     >
                                                         <div className="space-y-2">
                                                             <span
-                                                                className="text-[10px] uppercase font-bold text-subtle-text block"
+                                                                className="text-[10px] uppercase font-bold text-gray-600 dark:text-slate-300 block"
                                                             >Clock-In Window</span
                                                             >
                                                             <div className="flex gap-2">
                                                                 <div className="w-full">
                                                                     <span
-                                                                        className="text-[10px] text-subtle-text block mb-0.5"
+                                                                        className="text-[10px] text-gray-600 dark:text-slate-300 block mb-0.5"
                                                                     >Start</span
                                                                     >
                                                                     <TimePicker value="08:30" />
                                                                 </div>
                                                                 <div className="w-full">
                                                                     <span
-                                                                        className="text-[10px] text-subtle-text block mb-0.5"
+                                                                        className="text-[10px] text-gray-600 dark:text-slate-300 block mb-0.5"
                                                                     >End</span
                                                                     >
                                                                     <TimePicker value="09:30" />
@@ -564,20 +564,20 @@ const ShiftCreate = () => {
                                                         </div>
                                                         <div className="space-y-2">
                                                             <span
-                                                                className="text-[10px] uppercase font-bold text-subtle-text block"
+                                                                className="text-[10px] uppercase font-bold text-gray-600 dark:text-slate-300 block"
                                                             >Clock-Out Window</span
                                                             >
                                                             <div className="flex gap-2">
                                                                 <div className="w-full">
                                                                     <span
-                                                                        className="text-[10px] text-subtle-text block mb-0.5"
+                                                                        className="text-[10px] text-gray-600 dark:text-slate-300 block mb-0.5"
                                                                     >Start</span
                                                                     >
                                                                     <TimePicker value="12:30" />
                                                                 </div>
                                                                 <div className="w-full">
                                                                     <span
-                                                                        className="text-[10px] text-subtle-text block mb-0.5"
+                                                                        className="text-[10px] text-gray-600 dark:text-slate-300 block mb-0.5"
                                                                     >End</span
                                                                     >
                                                                     <TimePicker value="13:30" />
@@ -601,7 +601,7 @@ const ShiftCreate = () => {
                                                         </div>
                                                         <div className="flex flex-col w-full">
                                                             <label
-                                                                className="text-[10px] uppercase font-bold text-subtle-text tracking-wider"
+                                                                className="text-[10px] uppercase font-bold text-gray-600 dark:text-slate-300 tracking-wider"
                                                             >Session Name</label
                                                             >
                                                             <Input
@@ -627,7 +627,7 @@ const ShiftCreate = () => {
                                                     </div>
                                                     <div className="space-y-1">
                                                         <label
-                                                            className="flex items-center gap-1.5 text-xs font-medium text-subtle-text"
+                                                            className="flex items-center gap-1.5 text-xs font-medium text-gray-600 dark:text-slate-300"
                                                         >
                                                             <span className="material-symbols-outlined text-[14px]"
                                                             >logout</span
@@ -639,7 +639,7 @@ const ShiftCreate = () => {
                                                 </div>
                                                 <details className="mt-4 group/details">
                                                     <summary
-                                                        className="flex items-center gap-2 text-xs font-medium text-subtle-text cursor-pointer select-none hover:text-gray-600 dark:text-slate-300 transition-colors py-1"
+                                                        className="flex items-center gap-2 text-xs font-medium text-gray-600 dark:text-slate-300 cursor-pointer select-none hover:text-gray-600 dark:text-slate-300 transition-colors py-1"
                                                     >
                                                         <span
                                                             className="material-symbols-outlined text-[16px] transition-transform group-open/details:rotate-90"
@@ -652,20 +652,20 @@ const ShiftCreate = () => {
                                                     >
                                                         <div className="space-y-2">
                                                             <span
-                                                                className="text-[10px] uppercase font-bold text-subtle-text block"
+                                                                className="text-[10px] uppercase font-bold text-gray-600 dark:text-slate-300 block"
                                                             >Clock-In Window</span
                                                             >
                                                             <div className="flex gap-2">
                                                                 <div className="w-full">
                                                                     <span
-                                                                        className="text-[10px] text-subtle-text block mb-0.5"
+                                                                        className="text-[10px] text-gray-600 dark:text-slate-300 block mb-0.5"
                                                                     >Start</span
                                                                     >
                                                                     <TimePicker value="13:30" />
                                                                 </div>
                                                                 <div className="w-full">
                                                                     <span
-                                                                        className="text-[10px] text-subtle-text block mb-0.5"
+                                                                        className="text-[10px] text-gray-600 dark:text-slate-300 block mb-0.5"
                                                                     >End</span
                                                                     >
                                                                     <TimePicker value="14:15" />
@@ -674,20 +674,20 @@ const ShiftCreate = () => {
                                                         </div>
                                                         <div className="space-y-2">
                                                             <span
-                                                                className="text-[10px] uppercase font-bold text-subtle-text block"
+                                                                className="text-[10px] uppercase font-bold text-gray-600 dark:text-slate-300 block"
                                                             >Clock-Out Window</span
                                                             >
                                                             <div className="flex gap-2">
                                                                 <div className="w-full">
                                                                     <span
-                                                                        className="text-[10px] text-subtle-text block mb-0.5"
+                                                                        className="text-[10px] text-gray-600 dark:text-slate-300 block mb-0.5"
                                                                     >Start</span
                                                                     >
                                                                     <TimePicker value="17:15" />
                                                                 </div>
                                                                 <div className="w-full">
                                                                     <span
-                                                                        className="text-[10px] text-subtle-text block mb-0.5"
+                                                                        className="text-[10px] text-gray-600 dark:text-slate-300 block mb-0.5"
                                                                     >End</span
                                                                     >
                                                                     <TimePicker value="19:00" />

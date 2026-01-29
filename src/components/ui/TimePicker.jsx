@@ -142,7 +142,7 @@ const TimePicker = forwardRef(function TimePicker(
 
         <PopoverContent
           align="start"
-          className="w-50 rounded-lg p-4 shadow-lg border border-gray-200 dark:border-white/10 bg-background-light dark:bg-slate-900"
+          className="w-50 rounded-lg p-4 shadow-lg border border-border  bg-white dark:bg-slate-900"
         >
           <div className="flex justify-between mb-3">
             <div className="text-sm font-medium text-muted-foreground">Select Time</div>
@@ -158,7 +158,7 @@ const TimePicker = forwardRef(function TimePicker(
                 size="icon"
                 variant="outline"
                 onClick={() => incHour(1)}
-                className="h-7 w-7 p-0"
+                className="h-7 w-7 p-0 border border-border"
               >
                 <span className="material-icons text-sm">expand_less</span>
               </Button>
@@ -168,7 +168,7 @@ const TimePicker = forwardRef(function TimePicker(
                 size="icon"
                 variant="outline"
                 onClick={() => incHour(-1)}
-                className="h-7 w-7 p-0 mt-1"
+                className="h-7 w-7 p-0 mt-1 border border-border"
               >
                 <span className="material-icons text-sm">expand_more</span>
               </Button>
@@ -182,7 +182,7 @@ const TimePicker = forwardRef(function TimePicker(
                 size="icon"
                 variant="outline"
                 onClick={() => incMinute(minuteStep)}
-                className="h-7 w-7 p-0"
+                className="h-7 w-7 p-0 border border-border"
               >
                 <span className="material-icons text-sm">expand_less</span>
               </Button>
@@ -192,7 +192,7 @@ const TimePicker = forwardRef(function TimePicker(
                 size="icon"
                 variant="outline"
                 onClick={() => incMinute(-minuteStep)}
-                className="h-7 w-7 p-0 mt-1"
+                className="h-7 w-7 p-0 mt-1 border border-border"
               >
                 <span className="material-icons text-sm">expand_more</span>
               </Button>
@@ -200,7 +200,7 @@ const TimePicker = forwardRef(function TimePicker(
           </div>
 
           <div className="">
-            <Button className=" w-full" type="button" size="sm" onClick={() => setOpen(false)}>
+            <Button className="w-full  text-white" type="button" size="sm" onClick={() => setOpen(false)}>
               Done
             </Button>
           </div>
