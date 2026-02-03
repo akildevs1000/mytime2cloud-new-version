@@ -72,7 +72,7 @@ function EventsAndInsights({ branch_id }) {
   const currentData = useMemo(() => MOCK_DATA[activeTab] || [], [activeTab]);
 
   return (
-    <div className="flex flex-col h-full bg-inherit">
+    <div className="flex flex-col h-full">
       {/* Header Section */}
       <div className="p-4 border-b border-white/5 bg-white/[0.02]">
         <div className="flex items-center justify-between mb-4">

@@ -146,3 +146,43 @@ export const getRandomItem = (array) => {
     const randomIndex = Math.floor(Math.random() * array.length);
     return array[randomIndex];
 };
+
+export const generateSecurePassword = () => {
+  const length = 12;
+  const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+~`|}{[]:;?><,./-=";
+  let retVal = "";
+  
+  // Ensure we get at least one of each for 100% strength
+  retVal += "ABCDEFGHIJKLMNOPQRSTUVWXYZ".charAt(Math.floor(Math.random() * 26));
+  retVal += "0123456789".charAt(Math.floor(Math.random() * 10));
+  retVal += "!@#$%^&*()".charAt(Math.floor(Math.random() * 10));
+
+  for (let i = 0; i < length - 3; ++i) {
+    retVal += charset.charAt(Math.floor(Math.random() * charset.length));
+  }
+  
+  // Shuffle the result
+  return retVal.split('').sort(() => 0.5 - Math.random()).join('');
+};
+
+export const getStrength = (password) => {
+  if (!password) return { width: "0%", label: "None", color: "bg-slate-700", text: "text-slate-500" };
+
+  let score = 0;
+  if (password.length > 6) score++;         // 1
+  if (password.length > 10) score++;        // 2
+  if (/[A-Z]/.test(password)) score++;      // 3
+  if (/[0-9]/.test(password)) score++;      // 4
+  if (/[^A-Za-z0-9]/.test(password)) score++; // 5
+
+  const levels = {
+    0: { width: "5%", label: "Very Weak", color: "bg-red-600", text: "text-red-600" },
+    1: { width: "20%", label: "Weak", color: "bg-red-500", text: "text-red-500" },
+    2: { width: "40%", label: "Fair", color: "bg-orange-500", text: "text-orange-500" },
+    3: { width: "60%", label: "Good", color: "bg-blue-500", text: "text-blue-500" },
+    4: { width: "80%", label: "Strong", color: "bg-emerald-500", text: "text-emerald-500" },
+    5: { width: "100%", label: "Elite", color: "bg-emerald-400", text: "text-emerald-400" },
+  };
+
+  return levels[score];
+};

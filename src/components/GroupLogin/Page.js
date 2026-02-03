@@ -78,11 +78,11 @@ export default function GroupLogin() {
       <div className="flex flex-wrap items-center justify-between mb-6">
         <div className="flex flex-wrap items-center space-x-3">
           <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100 flex items-center">
-            Group Login {successOpen}
+            Manager Login {successOpen}
           </h2>
         </div>
 
-        <Create pageTitle="Group Login" onSuccess={handleSuccess} />
+        <Create pageTitle="Manager Login" onSuccess={handleSuccess} />
 
         <SuccessDialog
           open={successOpen}
@@ -112,8 +112,6 @@ export default function GroupLogin() {
           />
         }
       />
-
-
     </>
   );
 }

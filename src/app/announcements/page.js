@@ -106,126 +106,121 @@ export default function List() {
 
     return (
         <div className='p-10'>
-
-
-            <div className='space-y-5'>
-
-                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6  sm:space-y-0">
-                    <h1 className="text-2xl font-extrabold text-gray-600 dark:text-gray-300 flex items-center">
-                        {/* <User className="w-7 h-7 mr-3 text-indigo-600" /> */}
-                        Announcements
-                    </h1>
-                    <div className="flex flex-wrap items-center space-x-3 space-y-2 sm:space-y-0">
-                        <div className="relative">
-                            <Dropdown
-                                items={branches}
-                                selectedItem={selectedBranch}
-                                onSelect={(item) => {
-                                    setSelectedBranch(item);
-                                    setCurrentPage(1); // Any extra logic goes here
-                                }}
-                                placeholder="Select Branch"
-                                width="w-[250px]"
-                            />
-                        </div>
-
-                        <div className="relative">
-                            <Dropdown
-                                items={departments}
-                                selectedItem={selectedDepartment}
-                                onSelect={(item) => {
-                                    setSelectedDepartment(item);
-                                    setCurrentPage(1); // Any extra logic goes here
-                                }}
-                                placeholder="Select Department"
-                                width="w-[250px]"
-                            />
-                        </div>
-
-                        <div className="relative">
-                            <Dropdown
-                                items={[
-                                    {
-                                        id: "Published", name: "Published",
-
-                                    },
-                                    {
-                                        id: "Scheduled", name: "Scheduled",
-
-                                    },
-                                    { id: "Draft", name: "Draft", }
-                                ]}
-                                selectedItem={selectedStatus}
-                                onSelect={(item) => {
-                                    setSelectedStatus(item);
-                                    setCurrentPage(1); // Any extra logic goes here
-                                }}
-                                placeholder="Select Status"
-                                width="w-[250px]"
-                            />
-                        </div>
-
-                        <div className="relative">
-                            <DateRangeSelect
-                                value={{ from, to }}
-                                onChange={({ from, to }) => {
-                                    setFrom(from);
-                                    setTo(to);
-                                }
-                                } />
-                        </div>
-
-                        {/* Search Input */}
-                        <div className="relative">
-                            <Input
-                                placeholder="Search by name or ID"
-                                icon="search"
-                                value={searchTerm}
-                                onChange={(e) => setSearchTerm(e.target.value)}
-                            />
-                        </div>
-
-                        <IconButton
-                            icon={RefreshCw}
-                            onClick={handleRefresh}
-                            isLoading={isLoading}
-                            title="Refresh Data"
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6  sm:space-y-0">
+                <h1 className="text-2xl font-extrabold text-gray-600 dark:text-gray-300 flex items-center">
+                    {/* <User className="w-7 h-7 mr-3 text-indigo-600" /> */}
+                    Announcements
+                </h1>
+                <div className="flex flex-wrap items-center space-x-3 space-y-2 sm:space-y-0">
+                    <div className="relative">
+                        <Dropdown
+                            items={branches}
+                            selectedItem={selectedBranch}
+                            onSelect={(item) => {
+                                setSelectedBranch(item);
+                                setCurrentPage(1); // Any extra logic goes here
+                            }}
+                            placeholder="Select Branch"
+                            width="w-[250px]"
                         />
+                    </div>
 
-                        {/* <EmployeeExtras data={records} onUploadSuccess={fetchRecords} /> */}
+                    <div className="relative">
+                        <Dropdown
+                            items={departments}
+                            selectedItem={selectedDepartment}
+                            onSelect={(item) => {
+                                setSelectedDepartment(item);
+                                setCurrentPage(1); // Any extra logic goes here
+                            }}
+                            placeholder="Select Department"
+                            width="w-[250px]"
+                        />
+                    </div>
+
+                    <div className="relative">
+                        <Dropdown
+                            items={[
+                                {
+                                    id: "Published", name: "Published",
+
+                                },
+                                {
+                                    id: "Scheduled", name: "Scheduled",
+
+                                },
+                                { id: "Draft", name: "Draft", }
+                            ]}
+                            selectedItem={selectedStatus}
+                            onSelect={(item) => {
+                                setSelectedStatus(item);
+                                setCurrentPage(1); // Any extra logic goes here
+                            }}
+                            placeholder="Select Status"
+                            width="w-[250px]"
+                        />
+                    </div>
+
+                    <div className="relative">
+                        <DateRangeSelect
+                            value={{ from, to }}
+                            onChange={({ from, to }) => {
+                                setFrom(from);
+                                setTo(to);
+                            }
+                            } />
+                    </div>
+
+                    {/* Search Input */}
+                    <div className="relative">
+                        <Input
+                            placeholder="Search by name or ID"
+                            icon="search"
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                        />
+                    </div>
+
+                    <IconButton
+                        icon={RefreshCw}
+                        onClick={handleRefresh}
+                        isLoading={isLoading}
+                        title="Refresh Data"
+                    />
+
+                    {/* <EmployeeExtras data={records} onUploadSuccess={fetchRecords} /> */}
 
 
-                        {/* New Employee Button */}
-                        <Create onSuccess={fetchRecords} />
-                        {/* <Link href="/schedule/create">
+                    {/* New Employee Button */}
+                    <Create onSuccess={fetchRecords} />
+                    {/* <Link href="/schedule/create">
                             <button className="bg-primary text-white px-4 py-1 rounded-lg font-semibold shadow-md hover:bg-indigo-700 transition-all flex items-center space-x-2 whitespace-nowrap">
                                 <Plus className="w-4 h-4" />
                                 <span>New</span>
                             </button>
                         </Link> */}
-                    </div>
                 </div>
-
-                <DataTable
-                    columns={Columns(handleRowClick)}
-                    data={records}
-                    isLoading={isLoading}
-                    error={error}
-                    pagination={
-                        <Pagination
-                            page={currentPage}
-                            perPage={perPage}
-                            total={total}
-                            onPageChange={setCurrentPage}
-                            onPerPageChange={(n) => {
-                                setPerPage(n);
-                                setCurrentPage(1);
-                            }}
-                            pageSizeOptions={[10, 25, 50]}
-                        />
-                    }
-                />
             </div>
+
+            <DataTable
+                columns={Columns(handleRowClick)}
+                data={records}
+                isLoading={isLoading}
+                error={error}
+                pagination={
+                    <Pagination
+                        page={currentPage}
+                        perPage={perPage}
+                        total={total}
+                        onPageChange={setCurrentPage}
+                        onPerPageChange={(n) => {
+                            setPerPage(n);
+                            setCurrentPage(1);
+                        }}
+                        pageSizeOptions={[10, 25, 50]}
+                    />
+                }
+            />
         </div>
     );
 }

@@ -64,9 +64,31 @@ export const getRoles = async () => {
 // companyId will be passed dynamically
 export const getDepartments = async (branch_id = null) => {
 
+
+    console.log(`from getDepartments: ${branch_id}`);
+    
+
     let params = { branch_id };
 
     const { data } = await axios.get(`${API_BASE}/department-list`, { params: await buildQueryParams(params) });
+
+    console.log(data);
+    
+    return data;
+};
+
+export const getDepartmentsByBranchIds = async (branch_ids = null) => {
+
+
+    console.log(`from getDepartments: ${branch_ids}`);
+    
+
+    let params = { branch_ids };
+
+    const { data } = await axios.get(`${API_BASE}/department-list`, { params: await buildQueryParams(params) });
+
+    console.log(data);
+    
     return data;
 };
 
@@ -94,6 +116,23 @@ export const getDeviceLogs = async (params = {}) => {
         params: await buildQueryParams(params),
     });
     return data;
+};
+
+export const getPaginatedRoles = async (params = {}) => {
+    const { data } = await axios.get(`${API_BASE}/role`, {
+        params: await buildQueryParams(params),
+    });
+    return data;
+};
+
+export const storeRole = async (payload) => {
+    const user = await getUser();
+    return await axios.post(`${API_BASE}/role`, { ...payload, company_id: user?.company_id || 0 });
+};
+
+export const removeRole = async (id = 0) => {
+    await axios.delete(`${API_BASE}/delete-role/${id}`);
+    return true;
 };
 
 export const getAccessControlReport = async (params = {}) => {
@@ -156,19 +195,7 @@ export async function uploadEmployeeDocument(employeeId, payload) {
 }
 
 
-export const getAttendnaceCount = async (branch_id = null) => {
-    const params = {};
 
-    // Include branch_id if passed
-    if (branch_id) {
-        params.branch_id = branch_id;
-    }
-
-    const { data } = await axios.get(`${API_BASE}/dashbaord_attendance_count`, {
-        params: await buildQueryParams(params),
-    });
-    return data;
-};
 
 // companyId will be passed dynamically
 export const getLogs = async (page = 1, count = 10) => {

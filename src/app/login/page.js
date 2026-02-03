@@ -7,104 +7,24 @@ import { useRouter } from 'next/navigation'; // Or 'next/navigation' for App Rou
 import axios from 'axios';
 import { Input } from '@/components/ui/input';
 
+import {
+    RefreshCw,
+    User,
+    Lock,
+    Eye,
+    EyeOff,
+    ArrowRight,
+    ShieldCheck,
+    LayoutDashboard,
+    Users,
+    UserCircle
+} from 'lucide-react';
 
-// Placeholder components (You would replace these with actual modal/otp/snackbar components)
-const WhatsappVerificationDialog = ({ open, onClose, mobileNumber, onVerify }) => {
-    const [otp, setOtp] = useState('');
-    const [msg, setMsg] = useState('');
-    const [loading, setLoading] = useState(false);
+const isBrowser = typeof window !== 'undefined';
 
-    const handleVerify = () => {
-        if (otp.length !== 6) {
-            setMsg('Enter 6 Digit Security Code');
-            return;
-        }
-        setLoading(true);
-        // In a real app, you'd call an API here
-        onVerify(otp).finally(() => setLoading(false));
-    };
-
-    return (
-        <div
-            className={`fixed inset-0 z-50 overflow-y-auto ${open ? 'block' : 'hidden'}`}
-            aria-labelledby="modal-title"
-            role="dialog"
-            aria-modal="true"
-        >
-            <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-                <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
-                <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-                <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
-                    <div className="bg-[#6946dd] text-white px-4 py-3 flex justify-between items-center">
-                        <h3 className="text-lg leading-6 font-medium">Whatsapp Verification</h3>
-                        <button onClick={onClose} className="text-white hover:text-gray-200">
-                            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                            </svg>
-                        </button>
-                    </div>
-                    <div className="p-6">
-                        <div className="text-center">
-                            <h2 className="text-2xl font-bold mb-4">MyTime2Cloud</h2>
-                            <h5 className="text-lg font-semibold mb-2">
-                                Two Step Whatsapp OTP Verification <span className="text-green-500">✅</span>
-                            </h5>
-                            <p className="text-gray-600 mb-4">
-                                We sent a verification code to your mobile number. Enter the Code from the mobile in the field below
-                            </p>
-                            <h2 className="text-2xl font-bold mb-6">{mobileNumber}</h2>
-                        </div>
-                        <div className="mb-4">
-                            <label htmlFor="otp-input" className="block text-lg font-bold mb-2">Type your 6 Digit Security Code</label>
-                            <input
-                                id="otp-input"
-                                type="text"
-                                maxLength="6"
-                                value={otp}
-                                onChange={(e) => {
-                                    setOtp(e.target.value.replace(/\D/g, '').slice(0, 6));
-                                    setMsg('');
-                                }}
-                                className="w-full text-center border-2 border-gray-300 rounded-lg p-3 text-2xl tracking-widest focus:ring-[#6946dd] focus:border-[#6946dd]"
-                            />
-                        </div>
-                        <div className="text-center">
-                            {msg && <span className="text-red-500 block mb-3">{msg}</span>}
-                            <button
-                                onClick={handleVerify}
-                                className={`w-full py-3 mt-1 mb-3 text-white font-bold rounded-lg transition duration-200 ${loading ? 'bg-gray-400 cursor-not-allowed' : 'bg-[#6946dd] hover:bg-[#5237b6]'
-                                    }`}
-                                disabled={loading}
-                            >
-                                {loading ? 'Verifying...' : 'Verify OTP'}
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    );
-};
-
-// Simplified/Placeholder Snackbar
-const Snackbar = ({ open, message, onClose }) => {
-    useEffect(() => {
-        if (open) {
-            const timer = setTimeout(() => {
-                onClose();
-            }, 3000); // Auto-hide after 3 seconds
-            return () => clearTimeout(timer);
-        }
-    }, [open, onClose]);
-
-    if (!open) return null;
-
-    return (
-        <div className="fixed top-0 left-1/2 transform -translate-x-1/2 mt-4 p-3 bg-red-500 text-white rounded-lg shadow-lg z-[60] transition-opacity duration-300">
-            {message}
-        </div>
-    );
-};
+const savedEmail = isBrowser ? localStorage.getItem('rememberedEmail') || '' : '';
+const savedPassword = isBrowser ? localStorage.getItem('rememberedPassword') || '' : '';
+const rememberPref = isBrowser ? localStorage.getItem('rememberMe') === 'true' : false;
 
 
 // Main Login Component
@@ -112,44 +32,34 @@ const Login = () => {
 
     const router = useRouter(); // Initialize router
 
-    const [credentials, setCredentials] = useState({ email: '', password: 'AkiL@332211', source: 'admin' });
-    const [showPassword, setShowPassword] = useState(false);
+    const [credentials, setCredentials] = useState({
+        email: savedEmail,
+        password: savedPassword,
+        rememberMe: rememberPref,
+        source: 'admin'
+    });
+
     const [loading, setLoading] = useState(false);
     const [msg, setMsg] = useState('');
-    const [snackbar, setSnackbar] = useState(false);
-    const [snackbarMessage, setSnackbarMessage] = useState('');
-    const [dialogWhatsapp, setDialogWhatsapp] = useState(false);
-    const [maskMobileNumber, setMaskMobileNumber] = useState('');
-    const [userId, setUserId] = useState('');
-    const [dialogForgotPassword, setDialogForgotPassword] = useState(false);
+    const [role, setRole] = useState('company');
+    const [showPassword, setShowPassword] = useState(false);
 
-    const maskMobileNumberFn = (inputString) => {
-        if (typeof inputString !== 'string' || inputString.length < 5) return inputString;
-        // Mask all but the last 5 digits
-        const prefixLength = inputString.length - 5;
-        const prefix = inputString.substring(0, prefixLength);
-        const lastDigits = inputString.substring(prefixLength);
-        return '*'.repeat(prefix.length) + lastDigits;
-    };
 
     const validateForm = () => {
         // Basic validation
         if (!credentials.email || !credentials.password) {
-            setSnackbarMessage('Email and Password are required.');
-            setSnackbar(true);
+            setMsg('Email and Password are required.');
             return false;
         }
         // Simple email format check
         if (!/.+@.+\..+/.test(credentials.email)) {
-            setSnackbarMessage('E-mail must be valid.');
-            setSnackbar(true);
+            setMsg('E-mail must be valid.');
             return false;
         }
         return true;
     };
 
     const handleLogin = async (e) => {
-
         e.preventDefault();
         if (!validateForm()) return;
 
@@ -157,302 +67,263 @@ const Login = () => {
         setLoading(true);
 
         try {
+            let payload = { user_type: role, ...credentials };
+            let endpoint = `${process.env.NEXT_PUBLIC_API_URL || "https://backend.mytime2cloud.com/api"}/login`;
 
-            const { data } = await axios.post(
-                `${process.env.NEXT_PUBLIC_API_URL || "https://backend.mytime2cloud.com/api"}/login`, credentials
-            );
-
-            const token = data?.token; // Sanctum returns your token here
-            const user = data?.user; // Sanctum returns your user object here
-
+            const { data } = await axios.post(endpoint, payload);
+            const token = data?.token;
 
             if (token) {
+                // --- REMEMBER ME (WITH PASSWORD) ---
+                if (credentials.rememberMe) {
+                    localStorage.setItem('rememberedEmail', credentials.email);
+                    localStorage.setItem('rememberedPassword', credentials.password); // Stored as plain text
+                    localStorage.setItem('rememberMe', 'true');
+                } else {
+                    localStorage.removeItem('rememberedEmail');
+                    localStorage.removeItem('rememberedPassword');
+                    localStorage.setItem('rememberMe', 'false');
+                }
+
                 localStorage.setItem("token", token);
-                localStorage.setItem("user", JSON.stringify(user));
+                localStorage.setItem("user", JSON.stringify(data?.user));
+
                 window.location.href = "/";
-                // router.push("/dashboard");
-            } else {
-                setError("No token received from server");
             }
-
-
-            console.log("Login successful. Redirecting to /");
-
-            // 👇 REDIRECT HERE
-            router.push('/');
         } catch (error) {
-            console.error(error);
-            setMsg('Login failed. Please try again.');
+            setMsg('Login failed.');
+        } finally {
             setLoading(false);
         }
-        setLoading(false); // Ensure loading is stopped if an error occurs before the final login
     };
 
-    const performAuthLogin = (user) => {
 
-        if (user.branch_id === 0 && user.is_master === false) {
-            setSnackbarMessage("You do not have Permission to access this page");
-            setSnackbar(true);
-            return false;
-        }
+    const handleInputChange = (e) => {
 
-        if (user.role_id === 0 && user.user_type === "employee") {
-            // window.location.href = process.env.EMPLOYEE_APP_URL;
-            // In Next.js, use router.push or redirect in a server component
-            console.log("Redirecting to Employee App URL");
-            return;
-        }
-
-        // Successful login - Redirect to dashboard or home page
-        // router.push('/dashboard');
-        console.log('Login successful. Redirecting...');
-    }
-
-
-    const handleCheckOTP = async (otp) => {
-        // **Placeholder for OTP API call**
-        // Replace with actual API call (e.g., axios.post(`/api/check_otp/${otp}`, { userId }))
-        console.log(`Checking OTP: ${otp} for user: ${userId}`);
-        await new Promise(resolve => setTimeout(resolve, 500)); // Simulate API delay
-
-        const otpValid = otp === '123456'; // Mock check
-
-        if (otpValid) {
-            setDialogWhatsapp(false);
-            // OTP successful, perform the main login (re-call handleLogin or a separate function)
-            // Since we're mocking, let's assume successful OTP leads to the final login step:
-            performAuthLogin({ // Mock user data after OTP success
-                branch_id: 1,
-                is_master: true,
-                role_id: 1,
-                user_type: 'admin'
-            });
-        } else {
-            alert("Invalid OTP. Please try again");
-        }
-    };
-
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setCredentials(prev => ({ ...prev, [name]: value }));
+        const { id, value, type, checked } = e.target;
+        setCredentials(prev => ({
+            ...prev,
+            [id]: type === 'checkbox' ? checked : value
+        }));
     };
 
     return (
-        <div className="min-h-screen pt-[5%] bg-cover bg-center bg-no-repeat lg:bg-[url('/login/bgimage3.png')]">
-            <div className="flex flex-col lg:flex-row h-full">
-                {/* Login Form Column */}
-                <div className="w-full lg:w-5/12 p-6">
-                    <div className="p-8 max-w-lg mx-auto text-center">
-                        <div className="min-h-[100px]">
-                            <div className="w-full text-center mb-4">
-                                <img
-                                    src="/logo22.png" // The direct URL
-                                    alt="Mytime2Cloud Logo"
-                                    width={200} // Set explicit dimensions
-                                    height={50}
-                                    className="mx-auto" // Tailwind classes still work
-                                />
-                            </div>
-                            <h3 className="pb-7 pt-10 text-xl font-medium text-gray-600 dark:text-gray-300">
-                                Welcome To <span className="text-2xl font-bold"> Mytime2Cloud </span>
-                            </h3>
-                        </div>
-                        <div>
-                            <form onSubmit={handleLogin} autoComplete="off" className="space-y-4">
-                                {/* Email Field */}
-                                <div className="form-outline">
-                                    <div className="relative">
-                                        <Input
-                                            type="email"
-                                            id="email"
-                                            name="email"
-                                            placeholder="Email"
-                                            value={credentials.email}
-                                            onChange={handleChange}
-                                            required
-                                            autoComplete="off"
-                                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-[#6946dd] focus:border-[#6946dd] pl-10"
-                                        />
-                                        <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 material-icons">person</span>
-                                        <span className="absolute right-5 top-1/2 transform -translate-y-1/2 text-xl text-gray-400">@</span>
+        <div className="flex flex-col lg:flex-row w-full overflow-hidden font-sans dark:bg-slate-50 dark:bg-slate-950 text-slate-900 antialiased">
 
+            {/* Left Side: Branding & Visual (40%) */}
+            <div className="relative hidden lg:flex w-full lg:w-[40%] flex-col justify-between p-12 overflow-hidden bg-slate-900">
+                {/* Background Image - Using object-cover for better scaling */}
+                <div className="absolute inset-0 z-0">
+                    <img
+                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuA9quZCvIjVlQL6X_XAulwnuRzVyiwbnVR0FcONLLQ8OVwVYYTVchCvz8Ly60e-BJf_M327SvaKt3bdgrlEdwXWS7oTFRCYoCUjbepAD5azOW3E8sB133d9e34HdlPfTdWUkZxjDc5WlnGdIKz0sHIM-wM1Qz8s0BNVtVaajnOpQIl2ETK0Q4xQDvw26aFuZFHxCIaen3w_tPtd_ZEHru--lGDSO1cc788CnFDRReCpwY3LW7L8kOzxqF7nISMVZMEbxZ8t4pNkqhIa"
+                        alt="Background"
+                        className="w-full h-full object-cover opacity-60"
+                    />
+                    {/* Refined Gradient: Deep at the bottom/left, clearer at the top/right */}
+                    <div className="absolute inset-0 bg-gradient-to-tr from-slate-900 via-slate-900/70 to-transparent" />
+                </div>
+
+                {/* Logo Area */}
+                <div className="relative z-10 flex items-center gap-4">
+                    <div className="flex items-center justify-center">
+                        <img
+                            src="https://mytime2cloud.com/logo22.png"
+                            alt="MyTime Cloud Logo"
+                            className="h-12 w-auto object-contain brightness-110"
+                        // If the logo has a white background you want to hide, 
+                        // add: className="mix-blend-screen"
+                        />
+                    </div>
+                </div>
+
+                {/* Value Proposition */}
+                <div className="relative z-10 mb-12 max-w-md">
+                    <div className="inline-flex items-center gap-2 px-3 py-1 mb-8 text-[10px] font-bold tracking-[0.2em] text-emerald-400 uppercase rounded-full bg-emerald-500/10 border border-emerald-500/20">
+                        <span className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse shadow-[0_0_10px_#34d399]"></span>
+                        Enterprise Intelligence
+                    </div>
+                    <h2 className="text-4xl lg:text-5xl font-extrabold text-white mb-6 leading-tight">
+                        Empower your workforce with <span className="text-emerald-400">next-gen</span> intelligence.
+                    </h2>
+                    <p className="text-slate-300 text-lg font-medium leading-relaxed">
+                        Streamline attendance, optimize complex scheduling, and gain real-time insights with our award-winning platform.
+                    </p>
+                </div>
+
+                {/* Bottom Decorative Element */}
+                <div className="relative z-10 flex items-center gap-4 text-white/40 text-xs tracking-wide uppercase">
+                    <ShieldCheck className="w-5 h-5 text-emerald-500/50" />
+                    <span className="font-semibold">Bank-grade security encryption active</span>
+                </div>
+            </div>
+
+            {/* Right Side: Login Workspace (60%) */}
+            <div className="flex-1 flex flex-col min-h-screen overflow-y-auto bg-white dark:bg-[#131022] relative">
+
+                {/* Mobile Header */}
+                <div className="lg:hidden p-6 flex items-center justify-between bg-white dark:bg-[#131022] border-b border-slate-200 dark:border-slate-800">
+                    <div className="flex items-center gap-2">
+                        <RefreshCw className="text-[#3713ec] w-6 h-6" />
+                        <h1 className="text-slate-900 dark:text-white text-lg font-bold">MYTIME CLOUD</h1>
+                    </div>
+                </div>
+
+                {/* Main Content */}
+                <main className="flex-1 bg-white dark:bg-slate-900 flex items-center justify-center p-6 sm:p-12 lg:p-24">
+                    <div className="w-full max-w-[440px] flex flex-col gap-10">
+
+                        {/* Header */}
+                        <div className="flex flex-col gap-3">
+                            <h2 className="text-3xl md:text-4xl font-black text-slate-900 dark:text-white tracking-tight">
+                                Welcome Back
+                            </h2>
+                            <p className="text-slate-500 dark:text-slate-400 text-base">
+                                Securely log in to your enterprise dashboard.
+                            </p>
+                        </div>
+
+                        {/* Login Form */}
+                        <form className="flex flex-col gap-6" onSubmit={handleLogin}>
+
+                            {/* Role Selector */}
+                            <div className="flex flex-col gap-3">
+                                <label className="text-[11px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-[0.15em] ml-1">
+                                    Access Level
+                                </label>
+                                <div className="grid grid-cols-3 p-1.5 bg-slate-100 dark:bg-slate-900/50 rounded-2xl border border-slate-200 dark:border-slate-800">
+                                    {[
+                                        { id: 'company', label: 'Admin', icon: LayoutDashboard },
+                                        { id: 'manager', label: 'Manager', icon: Users },
+                                        { id: 'employee', label: 'Staff', icon: UserCircle }
+                                    ].map((item) => (
+                                        <button
+                                            key={item.id}
+                                            type="button"
+                                            onClick={() => setRole(item.id)}
+                                            className={`
+                        flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-bold transition-all duration-300
+                        ${role === item.id
+                                                    ? 'bg-white dark:bg-slate-800 text-[#3713ec] dark:text-white shadow-sm ring-1 ring-slate-200 dark:ring-slate-700'
+                                                    : 'text-slate-500 hover:text-slate-900 dark:hover:text-slate-300'}
+                      `}
+                                        >
+                                            <item.icon className="w-4 h-4" />
+                                            {item.label}
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+
+                            {/* Inputs */}
+                            <div className="flex flex-col gap-5">
+                                <div className="flex flex-col gap-2.5">
+                                    <label className="text-sm font-bold text-slate-700 dark:text-slate-300" htmlFor="email">
+                                        Username or Email
+                                    </label>
+                                    <div className="relative group">
+                                        <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                            <User className="text-slate-400 group-focus-within:text-[#3713ec] transition-colors w-5 h-5" />
+                                        </div>
+                                        <input
+                                            id="email"
+                                            type="text"
+                                            required
+                                            value={credentials.email}
+                                            onChange={handleInputChange}
+                                            className="w-full h-14 pl-12 pr-4 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-4 focus:ring-[#3713ec]/10 focus:border-[#3713ec] transition-all text-base font-medium"
+                                            placeholder="e.g. j.doe@company.com"
+                                        />
                                     </div>
                                 </div>
 
-                                {/* Password Field */}
-                                <div className="form-outline">
-                                    <div className="relative">
-                                        <Input
-                                            type={showPassword ? 'text' : 'password'}
+                                {/* Password */}
+                                <div className="flex flex-col gap-2.5">
+                                    <label className="text-sm font-bold text-slate-700 dark:text-slate-300" htmlFor="password">
+                                        Password
+                                    </label>
+                                    <div className="relative group">
+                                        <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                            <Lock className="text-slate-400 group-focus-within:text-[#3713ec] transition-colors w-5 h-5" />
+                                        </div>
+                                        <input
                                             id="password"
-                                            name="password"
-                                            placeholder="Password"
-                                            value={credentials.password}
-                                            onChange={handleChange}
+                                            type={showPassword ? "text" : "password"}
                                             required
-                                            autoComplete="off"
-                                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-[#6946dd] focus:border-[#6946dd] pl-10 pr-10"
+                                            value={credentials.password}
+                                            onChange={handleInputChange}
+                                            className="w-full h-14 pl-12 pr-12 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-4 focus:ring-[#3713ec]/10 focus:border-[#3713ec] transition-all text-base font-medium"
+                                            placeholder="••••••••••••"
                                         />
-                                        <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 material-icons">lock</span>
                                         <button
                                             type="button"
-                                            onClick={() => setShowPassword(prev => !prev)}
-                                            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                                            onClick={() => setShowPassword(!showPassword)}
+                                            className="absolute inset-y-0 right-0 pr-4 flex items-center text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 focus:outline-none transition-colors"
                                         >
-                                            <span className="absolute right-1 top-1/2 transform -translate-y-1/2 text-gray-400 material-icons">{showPassword ? 'visibility' : 'visibility_off'}</span>
+                                            {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                                         </button>
                                     </div>
+
+                                    <div className="text-center pt-4 mb-5 pb-1">
+                                        {msg && <span className="text-red-500 block mb-3">{msg}</span>}
+                                    </div>
+
                                 </div>
+                            </div>
 
-                                <div className="flex justify-end pt-2">
-                                    <button
-                                        type="button"
-                                        onClick={() => setDialogForgotPassword(false)}
-                                        className="text-sm font-normal text-gray-600 hover:underline"
-                                    >
-                                        Forgot password?
-                                    </button>
-                                </div>
-
-                                <div className="text-center pt-4 mb-5 pb-1">
-                                    {msg && <span className="text-red-500 block mb-3">{msg}</span>}
-                                    <button
-                                        type="submit"
-                                        className={`w-full py-3 text-white font-bold rounded-lg transition duration-200 ${loading ? 'bg-gray-400 cursor-not-allowed' : 'bg-[#6946dd] hover:bg-[#5237b6]'
-                                            }`}
-                                        disabled={loading}
-                                    >
-                                        {loading ? 'Logging in...' : 'Login'}
-                                    </button>
-                                </div>
-                            </form>
-                        </div>
-                        <div className="text-center text-sm mt-4 text-gray-600 dark:text-gray-300">
-                            Don't Have an Account? Contact Admin
-                        </div>
-
-                        <div className="text-center text-sm pt-4">
-
-                            {/* WhatsApp Link with Icon and Number */}
-                            <div className="flex justify-center p-1">
-                                <a
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    href="https://wa.me/971529048025?text=Hello MyTime2Cloud. I need your support."
-                                    className="text-gray-600 dark:text-gray-300 flex items-center"
-                                    aria-label="Contact via WhatsApp"
-                                >
-                                    {/* WhatsApp Icon - Using 'chat' as a standard placeholder or mdi-whatsapp if using a specific library */}
-                                    For Technical Support :
-                                    <span className=" hover:underline text-sm">
-                                        +971 52 904 8025
+                            {/* Actions Row */}
+                            <div className="flex items-center justify-between">
+                                <label className="flex items-center gap-3 cursor-pointer group">
+                                    <div className="relative flex items-center">
+                                        <input
+                                            id="rememberMe"
+                                            type="checkbox"
+                                            checked={credentials.rememberMe}
+                                            onChange={handleInputChange}
+                                            className="peer h-5 w-5 rounded-lg border-slate-300 dark:border-slate-700 text-[#3713ec] focus:ring-[#3713ec]/20 cursor-pointer transition-all"
+                                        />
+                                    </div>
+                                    <span className="text-sm font-semibold text-slate-500 group-hover:text-slate-700 dark:group-hover:text-slate-300 transition-colors select-none">
+                                        Remember me
                                     </span>
+                                </label>
+                                <a href="#" className="text-sm font-bold text-[#3713ec] hover:text-[#2c0fb8] transition-colors">
+                                    Forgot Password?
                                 </a>
                             </div>
 
-                            {/* Email Link */}
-                            <div className="flex justify-center p-1">
-                                <a
-                                    href="mailto:support@mytime2cloud.com"
-                                    className="text-gray-600 dark:text-gray-300 hover:underline flex items-center"
-                                    aria-label="Email technical support"
-                                >
-                                    {/* Mail Icon */}
-
-                                    support@mytime2cloud.com
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                {/* About Content Column (Hidden on small screens) */}
-                <div className="hidden lg:flex lg:w-7/12 pl-80  text-white about-content relative overflow-hidden">
-                    <div className='relative z-10'>
-                        <h4 className="text-2xl font-bold mb-4">About Mytime2Cloud</h4>
-                        <p className="font-light mb-5">
-                            MyTime2Cloud is an innovative and comprehensive platform meticulously crafted to redefine how organizations approach workforce management. By combining time attendance management with facial recognition access control, MyTime2Cloud simplifies and provides a streamlined experience for both employees and HR professionals.
-                        </p>
-                        <p className="font-light mb-5">
-                            Customization and Reporting: The platform offers customizable settings to fit the specific needs of different organizations. It generates comprehensive reports and analytics based on attendance data, enabling informed decision-making and efficient resource allocation.
-                        </p>
-                        <h3 className="text-2xl font-bold pt-3 mb-4">Features</h3>
-                        <ul className="font-light list-disc list-inside space-y-1">
-                            <li>Employees management</li>
-                            <li>Time Attendance</li>
-                            <li>Leave management</li>
-                            <li>Payroll management</li>
-                            <li>Access Controll</li>
-                            <li>Visitor management</li>
-                            <li>Face Recognisation Integration</li>
-                            <li>Custom Reports</li>
-                            <li>Custom Dashboards</li>
-                            <li>Email and Whatsapp Notifications</li>
-                        </ul>
-                        <div className="pt-8">
-                            <div className="text-xl font-bold mb-5">Technical Support</div>
+                            {/* Login Button */}
+                            <button
+                                type="submit"
+                                className="w-full h-14 bg-[#3713ec] hover:bg-[#2c0fb8] text-white font-bold rounded-2xl shadow-xl shadow-[#3713ec]/20 hover:shadow-[#3713ec]/30 hover:-translate-y-0.5 active:translate-y-0 transition-all duration-300 flex items-center justify-center gap-2 group mt-4"
+                            >
+                                <span> {loading ? 'Logging in...' : 'Authenticate User'} </span>
+                                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                            </button>
+                        </form>
 
 
-                            <p className="font-light flex items-center mb-2 text-sm">
-                                <a
-                                    href="tel:+971529048025"
-                                    className="text-white hover:underline flex items-center"
-                                    aria-label="Call technical support"
-                                >
-                                    {/* Phone Icon */}
-                                    <span className="material-icons text-white text-lg mr-1">
-                                        phone
-                                    </span>
-                                    +971 52 904 8025
-                                </a>
-                            </p>
-
-                            {/* Email Link */}
-                            <p className="font-light flex items-center text-sm">
-                                <a
-                                    href="mailto:support@mytime2cloud.com"
-                                    className="text-white hover:underline flex items-center"
-                                    aria-label="Email technical support"
-                                >
-                                    {/* Mail Icon */}
-                                    <span className="material-icons text-white text-lg mr-1">
-                                        mail
-                                    </span>
-                                    support@mytime2cloud.com
-                                </a>
+                        <div className="lg:hidden text-center">
+                            <p className="text-sm font-medium text-slate-500">
+                                Facing issues? <a href="#" className="text-[#3713ec] font-bold hover:underline">Support Center</a>
                             </p>
                         </div>
                     </div>
-                </div>
-            </div>
+                </main>
 
-            {/* Modals and Notifications */}
-            <WhatsappVerificationDialog
-                open={dialogWhatsapp}
-                onClose={() => setDialogWhatsapp(false)}
-                mobileNumber={maskMobileNumber}
-                onVerify={handleCheckOTP}
-            />
-            {/* Forgot Password Dialog Placeholder - Replace with a real modal component */}
-            <div className={`fixed inset-0 bg-black bg-opacity-50 z-40 ${dialogForgotPassword ? 'block' : 'hidden'}`} onClick={() => setDialogForgotPassword(false)}>
-                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-8 rounded-lg shadow-2xl w-full max-w-md" onClick={e => e.stopPropagation()}>
-                    <div className="flex justify-between items-center pb-4 border-b">
-                        <h4 className="text-xl font-bold">Forgot Password</h4>
-                        <button onClick={() => setDialogForgotPassword(false)}>✖</button>
+                {/* Footer */}
+                <footer className="w-full p-8 lg:px-24 bg-white bg-white dark:bg-slate-900">
+                    <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+                        <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">
+                            © 2024 MYTIME CLOUD SYSTEMS
+                        </span>
+                        <div className="flex gap-8">
+                            <a href="#" className="text-xs font-bold text-slate-400 hover:text-[#3713ec] transition-colors uppercase tracking-widest">Privacy</a>
+                            <a href="#" className="text-xs font-bold text-slate-400 hover:text-[#3713ec] transition-colors uppercase tracking-widest">Terms</a>
+                            <a href="#" className="text-xs font-bold text-slate-400 hover:text-[#3713ec] transition-colors uppercase tracking-widest">Help</a>
+                        </div>
                     </div>
-                    <div className="mt-4">
-                        {/* Replace with actual ForgotPassword component logic */}
-                        <p>Forgot Password Component Placeholder</p>
-                    </div>
-                </div>
+                </footer>
             </div>
-
-
-            <Snackbar
-                open={snackbar}
-                message={snackbarMessage}
-                onClose={() => setSnackbar(false)}
-            />
         </div>
     );
 };
