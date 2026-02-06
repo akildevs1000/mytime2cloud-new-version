@@ -22,8 +22,8 @@ import {
 
 const isBrowser = typeof window !== 'undefined';
 
-const savedEmail = isBrowser ? localStorage.getItem('rememberedEmail') || '' : '';
-const savedPassword = isBrowser ? localStorage.getItem('rememberedPassword') || '' : '';
+const savedEmail = isBrowser ? localStorage.getItem('rememberedEmail') || 'demo@gmail.com' : 'demo@gmail.com';
+const savedPassword = isBrowser ? localStorage.getItem('rememberedPassword') || 'demo' : 'demo';
 const rememberPref = isBrowser ? localStorage.getItem('rememberMe') === 'true' : false;
 
 
@@ -296,7 +296,7 @@ const Login = () => {
                                 type="submit"
                                 className="w-full h-14 bg-[#3713ec] hover:bg-[#2c0fb8] text-white font-bold rounded-2xl shadow-xl shadow-[#3713ec]/20 hover:shadow-[#3713ec]/30 hover:-translate-y-0.5 active:translate-y-0 transition-all duration-300 flex items-center justify-center gap-2 group mt-4"
                             >
-                                <span> {loading ? 'Logging in...' : 'Authenticate User'} </span>
+                                <span> {loading ? 'Logging in...' : 'Login'} </span>
                                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                             </button>
                         </form>

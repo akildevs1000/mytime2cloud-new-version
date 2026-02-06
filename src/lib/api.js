@@ -66,14 +66,14 @@ export const getDepartments = async (branch_id = null) => {
 
 
     console.log(`from getDepartments: ${branch_id}`);
-    
+
 
     let params = { branch_id };
 
     const { data } = await axios.get(`${API_BASE}/department-list`, { params: await buildQueryParams(params) });
 
     console.log(data);
-    
+
     return data;
 };
 
@@ -81,14 +81,14 @@ export const getDepartmentsByBranchIds = async (branch_ids = null) => {
 
 
     console.log(`from getDepartments: ${branch_ids}`);
-    
+
 
     let params = { branch_ids };
 
     const { data } = await axios.get(`${API_BASE}/department-list`, { params: await buildQueryParams(params) });
 
     console.log(data);
-    
+
     return data;
 };
 
@@ -440,22 +440,22 @@ export const deleteDevice = async (id) => {
 // Device End
 
 // Group
-export const getGroupLogins = async (params = {}) => {
-    const { data } = await axios.get(`${API_BASE}/group-login`, {
+export const getManagerLogins = async (params = {}) => {
+    const { data } = await axios.get(`${API_BASE}/manager-login`, {
         params: await buildQueryParams(params),
     });
     return data;
 };
-export const createGroupLogin = async (payload = {}) => {
+export const createManagerLogin = async (payload = {}) => {
     const user = await getUser();
-    return await axios.post(`${API_BASE}/group-login`, { ...payload, company_id: user?.company_id || 0 });
+    return await axios.post(`${API_BASE}/manager-login`, { ...payload, company_id: user?.company_id || 0 });
 };
-export const updateGroupLogin = async (id, payload = {}) => {
+export const updateManagerLogin = async (id, payload = {}) => {
     const user = await getUser();
-    return await axios.put(`${API_BASE}/group-login/${id}`, { ...payload, company_id: user?.company_id || 0 });
+    return await axios.put(`${API_BASE}/manager-login/${id}`, { ...payload, company_id: user?.company_id || 0 });
 };
 export const deleteGroupLogin = async (id) => {
-    await axios.delete(`${API_BASE}/group-login/${id}`);
+    await axios.delete(`${API_BASE}/manager-login/${id}`);
     return true;
 };
 

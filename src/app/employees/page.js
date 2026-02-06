@@ -117,6 +117,10 @@ export default function EmployeeDataTable() {
         }
     }
 
+    const editEmployee = async (id) => {
+        router.push(`/employees/edit?id=${id}`)
+    }
+
     return (
         <div className='p-5'>
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6  sm:space-y-0">
@@ -175,11 +179,11 @@ export default function EmployeeDataTable() {
             </div>
 
             <DataTable
-                columns={Columns(deleteEmployee)}
+                columns={Columns(deleteEmployee, editEmployee)}
                 data={employees}
                 isLoading={isLoading}
                 error={error}
-                onRowClick={(item) => router.push('/employees-short-list')}
+                onRowClick={(item) => router.push(`/employees/short?id=${item.id}`)}
                 pagination={
                     <Pagination
                         page={currentPage}

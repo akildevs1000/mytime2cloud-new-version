@@ -1,136 +1,119 @@
 // columns.js
-"use client";
+import {
+  ScanFace,
+  QrCode,
+  Fingerprint,
+  Hand,
+  Lock,
+  MoreVertical,
+  Pencil,
+  Trash
+} from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+} from "@/components/ui/dropdown-menu";
 
-import { useState } from "react";
-import { MoreVertical, PenBox, Trash2 } from "lucide-react";
-import Edit from "@/components/GroupLogin/Edit";
-import { Badge } from "@/components/ui/badge";
-import { Tooltip } from "@/components/ui/tooltip";
-
-import { deleteAdmin } from "@/lib/api";
-import { parseApiError } from "@/lib/utils";
-
-
-function OptionsMenu({ admin, pageTitle, onSuccess = (e) => { e } }) {
-  const [openEdit, setOpenEdit] = useState(false);
-
-  const onDelete = async (id) => {
-    const confirmDelete = window.confirm("Are you sure you want to delete this item?");
-    if (!confirmDelete) return; // exit if user cancels
-    try {
-      await deleteAdmin(id);
-      onSuccess({ title: `${pageTitle} Deleted`, description: `${pageTitle} Deleted successfully` }); actualSetOpen(false);
-      setOpenEdit(false); // close menu
-    } catch (error) {
-      console.log(parseApiError(error));
-    }
-  };
-
-  const handleSuccess = (e) => {
-    onSuccess(e); // refresh parent data
-    setOpenEdit(false);
-  }
-
-  return (
-    <div className="relative">
-      <MoreVertical
-        className="text-gray-600 hover:text-gray-800 cursor-pointer"
-        onClick={() => setOpenEdit(!openEdit)}
-      />
-
-      {openEdit && (
-        <div className="absolute mt-2 w-24 bg-white border rounded shadow-lg z-10">
-          <button
-            onClick={() => setOpenEdit("edit")}
-            className="flex items-center gap-2 text-sm w-full text-left px-3 py-2 hover:bg-gray-100 text-gray-600"
-          >
-            <PenBox size={14} /> Edit
-          </button>
-          <button
-            onClick={() => onDelete(admin.id)}
-            className="flex items-center gap-2 text-sm w-full text-left px-3 py-2 hover:bg-gray-100 text-gray-600"
-          >
-            <Trash2 size={14} /> Delete
-          </button>
+export default (editItem, deleteItem) => [
+  {
+    key: "employee",
+    header: "Name",
+    render: (item) => (
+      <div className="flex items-center gap-4">
+        <div className="relative">
+          <img
+            alt={item?.name}
+            className="h-10 w-10 rounded-full object-cover ring-2 ring-white dark:ring-slate-700 shadow-sm"
+            src={
+              item?.login_employee?.profile_picture ||
+              `https://placehold.co/40x40/6946dd/ffffff?text=${item?.name.charAt(0)}`
+            }
+            onError={(e) => {
+              e.target.onerror = null;
+              e.target.src = `https://placehold.co/40x40/6946dd/ffffff?text=${item?.name.charAt(0)}`;
+            }} />
+          <div className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 border-2 border-white dark:border-slate-800 rounded-full"></div>
         </div>
-      )}
-
-      {/* 👇 Edit Dialog Integration */}
-      {openEdit === "edit" && (
-        <Edit
-          pageTitle={pageTitle}
-          initialData={admin}
-          controlledOpen={true}
-          controlledSetOpen={(val) => setOpenEdit(val ? "edit" : false)}
-          onSuccess={handleSuccess}
-        />
-      )}
-    </div>
-  );
-}
-
-export default function Columns({ pageTitle, onSuccess = (e) => { e } } = {}) {
-  return [
-    {
-      key: "name",
-      header: "Name",
-      render: (admin) => (
-        <span className="text-gray-800 cursor-pointer" title={admin.name || "—"}>
-          {admin.name || "—"}
-        </span>
-      ),
-    },
-    {
-      key: "email",
-      header: "Email",
-      render: (admin) => (
-        <span className="text-gray-800 cursor-pointer" title={admin.email || "—"}>
-          {admin.email || "—"}
-        </span>
-      ),
-    },
-    {
-      key: "role",
-      header: "Role",
-      render: (admin) => (
-        <span className="text-gray-800 cursor-pointer" title={admin.role?.name || "—"}>
-          {admin.role?.name || "—"}
-        </span>
-      ),
-    },
-    {
-      key: "departments",
-      header: "Departments",
-      render: (admin) => {
-        if (!admin.departments || admin.departments.length === 0) return "—";
-
-        const maxDisplay = 1; // show first 2 departments
-        const firstTwo = admin.departments.slice(0, maxDisplay);
-        const remainingCount = admin.departments.length - maxDisplay;
-
-        return (
-          <div className="flex flex-wrap gap-1">
-            {firstTwo.map((dept) => (
-              <Badge key={dept.id} variant="outline">
-                {dept.name}
-              </Badge>
-            ))}
-
-            {remainingCount > 0 && (
-              <Tooltip content={admin.departments.map((d) => d.name).join(", ")}>
-                <Badge variant="secondary">+{remainingCount} more</Badge>
-              </Tooltip>
-            )}
+        <div>
+          <div className="font-medium text-slate-800 dark:text-slate-100">
+            {item?.name}
           </div>
-        );
-      },
-    },
-    {
-      key: "options",
-      header: "Options",
-      render: (admin) => (
-        <OptionsMenu pageTitle={pageTitle} admin={admin} onSuccess={onSuccess} />
-      ),
-    },
-  ];
-}
+          <div className="text-xs text-slate-400">
+            ID: {item?.login_employee?.employee_id || "-"}
+          </div>
+        </div>
+      </div>
+    ),
+  },
+  {
+    key: "mobile_email",
+    header: "Mobile / Email",
+    render: (item) => (
+      <div className="text-sm text-slate-500 dark:text-slate-400 hidden xl:table-cell font-mono">
+        <p className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium">{item?.email || "—"}</p>
+        <br />
+        <p className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium">{item?.login_employee?.phone_number || "—"}</p>
+      </div>
+    ),
+  },
+  {
+    key: "branch_department",
+    header: "Branch / Department",
+    render: (item) => (
+      <div className="text-sm text-slate-500 dark:text-slate-400 hidden xl:table-cell font-mono">
+        <p className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium">{item?.login_employee?.department?.branch?.name || "—"}</p>
+        <br />
+        <p className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium">{item?.login_employee?.department?.name || "—"}</p>
+      </div>
+    ),
+  },
+  {
+    key: "role",
+    header: "Role",
+    render: (item) => (
+      <div className="text-sm text-slate-500 dark:text-slate-400 hidden xl:table-cell font-mono">
+        {item?.role?.name || "N/A"}
+      </div>
+    ),
+  },
+
+  {
+    key: "validty",
+    header: "Validty",
+    render: (item) => (
+      <div className="text-sm text-slate-500 dark:text-slate-400 hidden xl:table-cell font-mono">
+        {item?.start_date_display || "N/A"} - {item?.end_date_display || "N/A"}
+      </div>
+    ),
+  },
+
+  {
+    key: "actions",
+    header: "Actions",
+    render: (item) => (
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <MoreVertical className="w-5 h-5 text-gray-400 hover:text-gray-700 cursor-pointer" title="More Options" />
+        </DropdownMenuTrigger>
+
+        <DropdownMenuContent align="end" className="w-30 bg-white shadow-md rounded-md py-1">
+          <DropdownMenuItem
+            onClick={() => editItem(item)}
+            className="flex items-center gap-2 px-3 py-2 text-gray-700 hover:bg-gray-100"
+          >
+            <Pencil className="w-4 h-4 text-primary" /> <span className="text-primary">Edit</span>
+          </DropdownMenuItem>
+
+          <DropdownMenuItem
+            onClick={() => deleteItem(item.id)}
+            className="flex items-center gap-2 px-3 py-2 text-gray-700 hover:bg-gray-100"
+          >
+            <Trash className="w-4 h-4 text-gray-500" /> <span className="text-gray-500">Delete</span>
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    ),
+  },
+];

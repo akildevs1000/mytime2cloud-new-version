@@ -16,7 +16,7 @@ import {
   DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
 
-export default (deleteEmployee) => [
+export default (deleteEmployee, editEmployee) => [
   {
     key: "employee",
     header: "Name",
@@ -126,23 +126,42 @@ export default (deleteEmployee) => [
     header: "Actions",
     render: (employee) => (
       <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <MoreVertical className="w-5 h-5 text-gray-400 hover:text-gray-700 cursor-pointer" title="More Options" />
+        <DropdownMenuTrigger
+          asChild
+          /* This prevents the dropdown trigger itself from triggering the row click */
+          onClick={(e) => e.stopPropagation()}
+        >
+          <div className="p-2 hover:bg-gray-100 rounded-full cursor-pointer w-fit">
+            <MoreVertical className="w-5 h-5 text-gray-400" />
+          </div>
         </DropdownMenuTrigger>
 
-        <DropdownMenuContent align="end" className="w-30 bg-white shadow-md rounded-md py-1">
+        <DropdownMenuContent
+          align="end"
+          className="w-32 bg-white shadow-md rounded-md py-1"
+          /* This prevents clicking inside the menu from triggering the row click */
+          onClick={(e) => e.stopPropagation()}
+        >
           <DropdownMenuItem
-            onClick={() => console.log("Edit", employee.id)}
-            className="flex items-center gap-2 px-3 py-2 text-gray-700 hover:bg-gray-100"
+            onClick={(e) => {
+              e.stopPropagation(); // Stop row redirect
+              editEmployee(employee.id)
+            }}
+            className="flex items-center gap-2 px-3 py-2 text-gray-700 hover:bg-gray-100 cursor-pointer"
           >
-            <Pencil className="w-4 h-4 text-primary" /> <span className="text-primary">Edit</span>
+            <Pencil className="w-4 h-4 text-primary" />
+            <span className="text-primary font-medium">Edit</span>
           </DropdownMenuItem>
 
           <DropdownMenuItem
-            onClick={() => deleteEmployee(employee.id)}
-            className="flex items-center gap-2 px-3 py-2 text-gray-700 hover:bg-gray-100"
+            onClick={(e) => {
+              e.stopPropagation(); // Stop row redirect
+              deleteEmployee(employee.id);
+            }}
+            className="flex items-center gap-2 px-3 py-2 text-gray-700 hover:bg-gray-100 cursor-pointer"
           >
-            <Trash className="w-4 h-4 text-gray-500" /> <span className="text-gray-500">Delete</span>
+            <Trash className="w-4 h-4 text-red-500" />
+            <span className="text-red-500 font-medium">Delete</span>
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

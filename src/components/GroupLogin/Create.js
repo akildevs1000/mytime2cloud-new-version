@@ -3,7 +3,7 @@
 
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { getBranches, getRoles, createGroupLogin, getDepartments, getDepartmentsByBranchIds } from "@/lib/api";
+import { getBranches, getRoles, createManagerLogin, getDepartments, getDepartmentsByBranchIds, updateManagerLogin } from "@/lib/api";
 import { generateSecurePassword, getStrength, parseApiError } from "@/lib/utils";
 
 import {
@@ -25,30 +25,14 @@ import MultiDropDown from "../ui/MultiDropDown";
 import Input from "../Theme/Input";
 import DatePicker from "../ui/DatePicker";
 import { getEmployeesByDepartmentIds } from "@/lib/api/employee";
+import Dropdown from "../Theme/DropDown";
 
-let defaultPayload = {
-  name: "",
-  email: "",
-  start_date: "",
-  end_date: "",
-  password: "",
-  password_confirmation: "",
-  notify: false,
-  role_id: "",
-  department_ids: []
-};
-
-
-const Create = ({ pageTitle = "Add Item", onSuccess = (e) => { e } }) => {
-
+const Create = ({ isEditOpen = false, defaultPayload = {}, pageTitle = "Add Item", onSuccess = (e) => { e } }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [isSearching, setIsSearching] = useState(false);
-
   const [autoPassword, setAutoPassword] = useState(false);
   const [showPass, setShowPass] = useState(false);
-
   const [open, setOpen] = useState(false);
-
   const [form, setForm] = useState(defaultPayload);
   const [branches, setBranches] = useState([]);
   const [roles, setRoles] = useState([]);
@@ -57,36 +41,30 @@ const Create = ({ pageTitle = "Add Item", onSuccess = (e) => { e } }) => {
   const [loading, setLoading] = useState(false);
   const [globalError, setGlobalError] = useState(null);
 
-  const handleEmployeeSearch = async () => {
-    if (!searchTerm.trim()) return;
+  const [selectedEmployee, setSelectedEmployee] = useState({ id: null, name: "Select Employee" });
 
-    setIsSearching(true);
-    setGlobalError(null);
 
-    // Artificial delay for UI feel
-    await new Promise(resolve => setTimeout(resolve, 600));
+  const handleEmployeeSearch = (id) => {
+    if (!id || employees.length === 0) return;
 
-    const foundEmployee = employees.find(emp =>
-      emp.name.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-
+    const foundEmployee = employees.find(emp => emp.id == id);
     if (foundEmployee) {
-
-      if (!foundEmployee?.user?.email) {
-        setGlobalError(`Email not found for: ${searchTerm}`);
-      } else {
-        console.log(foundEmployee?.user?.email);
-
-        handleChange("email", foundEmployee?.user?.email)
-
-      }
-
-    } else {
-      setGlobalError("Personnel not found in selected departments.");
+      setForm(prev => ({
+        ...prev,
+        employee_id: id,
+        name: foundEmployee.name,
+        email: foundEmployee.login_user?.email ?? prev.email
+      }));
+      setSelectedEmployee(id);
     }
-
-    setIsSearching(false);
   };
+  // 3. Trigger the search ONLY when the employees list finally loads
+  useEffect(() => {
+    if (open && employees.length > 0 && form.employee_id) {
+      handleEmployeeSearch(form.employee_id);
+    }
+  }, [employees, open]);
+
   // API Logic
   const fetchDepartments = async () => {
     setGlobalError(null);
@@ -120,7 +98,6 @@ const Create = ({ pageTitle = "Add Item", onSuccess = (e) => { e } }) => {
     }
   };
 
-
   useEffect(() => { fetchEmployees(); }, [form.department_ids]);
 
   useEffect(() => { fetchDepartments(); }, [form.branch_ids]);
@@ -129,9 +106,18 @@ const Create = ({ pageTitle = "Add Item", onSuccess = (e) => { e } }) => {
     if (open) {
       fetchBranches();
       fetchRoles();
+      // Ensure the form has the default data immediately
       setForm(defaultPayload);
+      setAutoPassword(false);
     }
-  }, [open]);
+  }, [open, defaultPayload]);
+
+
+  useEffect(() => {
+    setOpen(isEditOpen)
+  }, [isEditOpen]);
+
+
 
   const fetchBranches = async () => {
     try { setBranches(await getBranches()); }
@@ -154,9 +140,7 @@ const Create = ({ pageTitle = "Add Item", onSuccess = (e) => { e } }) => {
     setGlobalError(null);
     setLoading(true);
     try {
-      console.log(form);
-      return
-      await createGroupLogin(form);
+      isEditOpen ? await updateManagerLogin(form.id, form) : await createManagerLogin(form);
       await new Promise(resolve => setTimeout(resolve, 2000));
       onSuccess({ title: `${pageTitle} Save`, description: `${pageTitle} Save successfully` });
       setOpen(false);
@@ -222,7 +206,7 @@ const Create = ({ pageTitle = "Add Item", onSuccess = (e) => { e } }) => {
                 <div className="space-y-1">
                   <label className="block text-[10px] font-black mb-1.5 ml-1 uppercase tracking-widest text-slate-400 dark:text-slate-500">Branch</label>
                   <div className="relative">
-                     <MultiDropDown
+                    <MultiDropDown
                       placeholder={'Select Branch'}
                       items={branches}
                       value={form.branch_ids}
@@ -252,29 +236,27 @@ const Create = ({ pageTitle = "Add Item", onSuccess = (e) => { e } }) => {
               <div className="space-y-1">
                 <label className="block text-[10px] font-black mb-1.5 ml-1 uppercase tracking-widest text-slate-400 dark:text-slate-500">Employee Name</label>
                 <div className="relative flex items-center">
-
-                  <Input
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)} disabled={isSearching}
-                    onKeyDown={(e) => e.key === 'Enter' && handleEmployeeSearch()}
-                    placeholder="Search and select personnel..."
-                    type="text"
+                  <DropDown
+                    placeholder="Select Employee"
+                    onChange={handleEmployeeSearch}
+                    value={selectedEmployee}
+                    items={employees}
+                    width="max-w-full"
                   />
-                  <button onClick={handleEmployeeSearch}
-                    className="absolute right-2 bg-primary hover:bg-accent-cyan/20 text-accent-cyan p-1.5 rounded-lg transition-colors"
-                    type="button"
-                  >
-                    {isSearching ? (
-                      <Loader2 className="w-4 h-4 animate-spin" />
-                    ) : (
-                      <UserSearch className="w-4 h-4" />
-                    )}
-                  </button>
                 </div>
               </div>
 
-              {/* Email & Role */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-1">
+                  <label className="block text-[10px] font-black mb-1.5 ml-1 uppercase tracking-widest text-slate-400 dark:text-slate-500">Name</label>
+                  <div className="relative">
+                    <Input
+                      value={form.name}
+                      onChange={(e) => handleChange("name", e.target.value)}
+                      placeholder="Employee Name"
+                    />
+                  </div>
+                </div>
                 <div className="space-y-1">
                   <label className="block text-[10px] font-black mb-1.5 ml-1 uppercase tracking-widest text-slate-400 dark:text-slate-500">Email Address</label>
                   <div className="relative">
@@ -287,19 +269,19 @@ const Create = ({ pageTitle = "Add Item", onSuccess = (e) => { e } }) => {
                     <Mail className="absolute right-3 top-3.5 text-slate-500 w-4 h-4" />
                   </div>
                 </div>
-                <div className="space-y-1">
-                  <label className="block text-[10px] font-black mb-1.5 ml-1 uppercase tracking-widest text-slate-400 dark:text-slate-500">Access Role</label>
-                  <div className="relative">
-                    <DropDown
-                      placeholder="Select Role"
-                      onChange={(val) => handleChange("role_id", val)}
-                      value={form.role_id}
-                      items={roles}
-                    />
-                  </div>
+
+              </div>
+              <div className="space-y-1">
+                <label className="block text-[10px] font-black mb-1.5 ml-1 uppercase tracking-widest text-slate-400 dark:text-slate-500">Access Role</label>
+                <div className="relative">
+                  <DropDown
+                    placeholder="Select Role"
+                    onChange={(val) => handleChange("role_id", val)}
+                    value={form.role_id}
+                    items={roles}
+                  />
                 </div>
               </div>
-
               <div className="space-y-1">
                 <label className="block text-[10px] font-black mb-1.5 ml-1 uppercase tracking-widest text-slate-400 dark:text-slate-500">Validity Period</label>
                 <div className="grid grid-cols-2 gap-3  mt-2">
@@ -320,12 +302,12 @@ const Create = ({ pageTitle = "Add Item", onSuccess = (e) => { e } }) => {
                 </div>
               </div>
 
-              <div className="space-y-1 my-5">
+              {/* <div className="space-y-1 my-5">
                 <label className="text-sm text-gray-600 dark:text-white">Communication & Security</label>
-              </div>
+              </div> */}
 
-              <div className="space-y-4">
-
+              <div className="space-y-4  mt-10">
+                {/* 
                 <div className="flex items-start justify-between gap-4">
                   <div className="flex flex-col">
                     <span className="text-sm font-semibold text-gray-600 dark:text-slate-300"
@@ -348,7 +330,6 @@ const Create = ({ pageTitle = "Add Item", onSuccess = (e) => { e } }) => {
                         : 'bg-slate-300 dark:bg-slate-700 shadow-[inset_0_2px_4px_rgba(0,0,0,0.05)]'}
   `}
                   >
-                    {/* The Thumb */}
                     <span
                       className={`
       inline-block h-5 w-5 rounded-full bg-white 
@@ -359,7 +340,7 @@ const Create = ({ pageTitle = "Add Item", onSuccess = (e) => { e } }) => {
                     />
 
                   </button>
-                </div>
+                </div> */}
 
                 <div className="flex items-start justify-between gap-4">
                   <div className="flex flex-col">
@@ -409,10 +390,6 @@ const Create = ({ pageTitle = "Add Item", onSuccess = (e) => { e } }) => {
                   </button>
                 </div>
               </div>
-
-
-
-
 
               {/* Password & Confirm Password Grid */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

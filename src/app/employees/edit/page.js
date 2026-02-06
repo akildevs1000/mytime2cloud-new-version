@@ -5,11 +5,14 @@ import useImageUpload from "@/hooks/useImageUpload";
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 
 import { getBranches, getEmployees, updateProfilePicture } from '@/lib/api';
-import { convertFileToBase64 } from '@/lib/utils';
-import EmployeeTabs from "@/components/Employees/EmployeeTabs";
-import { useRouter } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation"; // Import useSearchParams
+import EmployeeEditTabs from "@/components/Employees/EmployeeEditTabs";
 
 export default function EmployeeShortList() {
+
+  const searchParams = useSearchParams();
+
+  const employeeId = searchParams.get('id');
 
   const router = useRouter();
 
@@ -31,67 +34,7 @@ export default function EmployeeShortList() {
   const [branches, setBranches] = useState([]);
 
   const [selectedEmployee, setSelectedEmployee] = useState(null);
-  const [imagePreview, setImagePreview] = useState(null);
 
-
-  const { FileInput, handleUploadClick, imageError } = useImageUpload({
-    onChange: (base64) => {
-      setSelectedEmployee((prev) => ({
-        ...prev,
-        profile_picture: base64,
-      }));
-      setImagePreview(base64)
-    }
-  });
-
-  const [loading, setLoading] = useState(false);
-  const [success, setSuccess] = useState("");
-
-  // 👇 this runs when user clicks the Save icon
-  const handleSaveClick = async () => {
-    try {
-      setLoading(true);
-      setSuccess("");
-
-      let payload = {
-        id: selectedEmployee.id,
-        profile_image_base64: selectedEmployee.profile_picture,
-      };
-
-      await updateProfilePicture(payload);
-
-      await new Promise(resolve => setTimeout(resolve, 2000));
-
-      setSuccess("Profile picture updated successfully!");
-
-      fetchEmployees(currentPage, perPage);
-    } catch (err) {
-      console.error(err);
-      setSuccess("Error updating profile picture");
-    } finally {
-      setLoading(false);
-      await new Promise(resolve => setTimeout(resolve, 2000));
-
-      setImagePreview(null)
-
-      setSuccess("");
-
-    }
-  };
-
-  const handleSelectBranch = (currentValue) => {
-    if (currentValue === "Select All") {
-      setSelectedBranch(null);
-    } else {
-      const selectedBranchItem = branches.find((b) => b.name === currentValue);
-      if (selectedBranchItem) {
-        setSelectedBranch(
-          selectedBranchItem.id === selectedBranch ? null : selectedBranchItem.id
-        );
-      }
-    }
-    setOpen(false);
-  };
 
   // Fetch branches
   useEffect(() => {
@@ -104,6 +47,7 @@ export default function EmployeeShortList() {
     };
     fetchBranches();
   }, []);
+
 
 
   const fetchEmployees = useCallback(async (page, perPage) => {
@@ -121,11 +65,15 @@ export default function EmployeeShortList() {
 
       // Check if result has expected structure before setting state
       if (result && Array.isArray(result.data)) {
+        
         setEmployees(result.data);
+
         setCurrentPage(result.current_page || 1);
         setTotalPages(result.last_page || 1);
         setTotalEmployees(result.total || 0);
-        setSelectedEmployee(result.data[0] || null); // Select the first employee by default
+
+        let foundEmployee = result.data.find(e => e.id == employeeId);
+        setSelectedEmployee(foundEmployee); // Select the first employee by default
         return; // Success, exit
       } else {
         // If the API returned a 2xx status but the data structure is wrong
@@ -249,12 +197,7 @@ export default function EmployeeShortList() {
           </div>
         </div>
         <div className="flex-1 pt-5 pr-5">
-          <EmployeeTabs selectedEmployee={selectedEmployee} />
-
-          <div className="p-6 rounded-lg">
-            {imageError && <p className="text-red-500 text-sm mt-1">{imageError}</p>}
-
-          </div>
+          <EmployeeEditTabs selectedEmployee={selectedEmployee} employeeId={employeeId} />
         </div>
 
       </div>

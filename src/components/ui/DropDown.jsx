@@ -20,6 +20,7 @@ export default function DropDown({
   value,
   onChange,
   placeholder = "Select Item",
+  width = "w-[230px]",
 }) {
   const [itemOpen, setItemOpen] = useState(false);
 
@@ -41,13 +42,14 @@ export default function DropDown({
           className="w-full justify-between"
         >
           {itemName}
-          <span className="material-icons ml-2">
-            expand_more
-          </span>
+          <span className="material-icons ml-2">expand_more</span>
         </Button>
       </PopoverTrigger>
 
-      <PopoverContent className="w-[230px] overflow-y-auto max-w-full max-h-80 p-0">
+      <PopoverContent
+        align="start"
+        className={`${width} overflow-y-auto max-h-80 p-0`}
+      >
         <Command>
           <CommandInput placeholder="Search item..." />
           <CommandEmpty>No item found.</CommandEmpty>

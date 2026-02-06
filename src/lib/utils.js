@@ -1,5 +1,6 @@
 import { clsx } from "clsx";
 import { twMerge } from "tailwind-merge"
+import Swal from 'sweetalert2';
 
 export function cn(...inputs) {
   return twMerge(clsx(inputs));
@@ -67,91 +68,91 @@ export const formatDateDubai = (date) => {
 };
 
 export const parseApiError = (error) => {
-    console.log("🚀 ~ parseApiError ~ error:", error)
-    if (error.response) {
+  console.log("🚀 ~ parseApiError ~ error:", error)
+  if (error.response) {
 
-        const status = error.response.status;
-        const responseData = error.response.data;
+    const status = error.response.status;
+    const responseData = error.response.data;
 
-        if (status === 422) {
-            return (
-                responseData.message || "Validation failed. Please check the form fields for errors."
-            );
+    if (status === 422) {
+      return (
+        responseData.message || "Validation failed. Please check the form fields for errors."
+      );
 
-            // You may also want to integrate responseData.errors with react-hook-form's setError here
+      // You may also want to integrate responseData.errors with react-hook-form's setError here
 
-        } else if (status >= 500) {
-            // 500: Server error
-            return ("A critical server error occurred. Please try again later.");
-        } else {
-            // Other errors (401, 403, 404, etc.)
-            return (responseData.message || `An error occurred with status ${status}.`);
-        }
-
+    } else if (status >= 500) {
+      // 500: Server error
+      return ("A critical server error occurred. Please try again later.");
     } else {
-        // Network error
-        return ("Network error: Could not connect to the API.");
+      // Other errors (401, 403, 404, etc.)
+      return (responseData.message || `An error occurred with status ${status}.`);
     }
+
+  } else {
+    // Network error
+    return ("Network error: Could not connect to the API.");
+  }
 }
 
 
 export const setStatusLabel = (status) => {
-    const statuses = {
-        A: "Absent",
-        P: "Present",
-        M: "Missed",
-        LC: "Present",
-        EG: "Present",
-        O: "Week Off",
-        L: "Leave",
-        H: "Holiday",
-        V: "Vacation",
-    };
-    return statuses[status];
+  const statuses = {
+    A: "Absent",
+    P: "Present",
+    M: "Missed",
+    LC: "Present",
+    EG: "Present",
+    O: "Week Off",
+    L: "Leave",
+    H: "Holiday",
+    V: "Vacation",
+  };
+  return statuses[status];
 };
 
 export const getBgColor = (status) => {
-    const colors = {
-        A: "#dc2626", // light orange
-        P: "#bbf7d0", // light green
-        M: "#e5e7eb", // light gray
-        LC: "#bbf7d0",
-        EG: "#bbf7d0",
-        O: "#fed7aa",
-        L: "#fef08a", // light yellow
-        H: "#c7d2fe", // light indigo
-        V: "#c7d2fe",
-    };
-    return colors[status] || "#f3f4f6";
+  const colors = {
+    A: "#dc2626", // light orange
+    P: "#bbf7d0", // light green
+    M: "#e5e7eb", // light gray
+    LC: "#bbf7d0",
+    EG: "#bbf7d0",
+    O: "#fed7aa",
+    L: "#fef08a", // light yellow
+    H: "#c7d2fe", // light indigo
+    V: "#c7d2fe",
+  };
+  return colors[status] || "#f3f4f6";
 };
 
 export const getTextColor = (status) => {
-    const colors = {
-        A: "#fee2e2", // dark orange
-        P: "#15803d", // dark green
-        M: "#374151", // dark gray
-        LC: "#15803d",
-        EG: "#15803d",
-        O: "#c2410c",
-        L: "#854d0e", // dark yellow-brown
-        H: "#3730a3", // dark indigo
-        V: "#3730a3",
-    };
-    return colors[status] || "#111827";
+  const colors = {
+    A: "#fee2e2", // dark orange
+    P: "#15803d", // dark green
+    M: "#374151", // dark gray
+    LC: "#15803d",
+    EG: "#15803d",
+    O: "#c2410c",
+    L: "#854d0e", // dark yellow-brown
+    H: "#3730a3", // dark indigo
+    V: "#3730a3",
+  };
+  return colors[status] || "#111827";
 };
 
 export const getRandomItem = (array) => {
-    if (!array || array.length === 0) return null;
-    
-    const randomIndex = Math.floor(Math.random() * array.length);
-    return array[randomIndex];
+  if (!array || array.length === 0) return null;
+
+  const randomIndex = Math.floor(Math.random() * array.length);
+  return array[randomIndex];
 };
 
 export const generateSecurePassword = () => {
   const length = 12;
   const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+~`|}{[]:;?><,./-=";
   let retVal = "";
-  
+
   // Ensure we get at least one of each for 100% strength
   retVal += "ABCDEFGHIJKLMNOPQRSTUVWXYZ".charAt(Math.floor(Math.random() * 26));
   retVal += "0123456789".charAt(Math.floor(Math.random() * 10));
@@ -160,7 +161,7 @@ export const generateSecurePassword = () => {
   for (let i = 0; i < length - 3; ++i) {
     retVal += charset.charAt(Math.floor(Math.random() * charset.length));
   }
-  
+
   // Shuffle the result
   return retVal.split('').sort(() => 0.5 - Math.random()).join('');
 };
@@ -185,4 +186,54 @@ export const getStrength = (password) => {
   };
 
   return levels[score];
+};
+
+export const notify = (title, text, type = 'success') => {
+  return Swal.fire({
+    title,
+    text,
+    icon: type,
+    timer: type === 'success' ? 3000 : 5000,
+    heightAuto: false,
+  });
+};
+
+/**
+ * Compresses an image file and returns a Base64 string.
+ */
+export const compressImage = (file, { maxWidth = 600, maxHeight = 600, quality = 0.7 } = {}) => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+
+    reader.onload = (event) => {
+      const img = new Image();
+      img.onload = () => {
+        let width = img.width;
+        let height = img.height;
+
+        // Maintain Aspect Ratio
+        if (width > maxWidth) {
+          height = (height * maxWidth) / width;
+          width = maxWidth;
+        }
+        if (height > maxHeight) {
+          width = (width * maxHeight) / height;
+          height = maxHeight;
+        }
+
+        const canvas = document.createElement("canvas");
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext("2d");
+        ctx.drawImage(img, 0, 0, width, height);
+
+        const compressedBase64 = canvas.toDataURL(file.type, quality);
+        resolve(compressedBase64);
+      };
+      img.onerror = (err) => reject(err);
+      img.src = event.target.result;
+    };
+    reader.onerror = (err) => reject(err);
+    reader.readAsDataURL(file);
+  });
 };

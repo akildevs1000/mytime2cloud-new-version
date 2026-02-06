@@ -31,6 +31,8 @@ api.interceptors.request.use((config) => {
 export const buildQueryParams = async (params = {}) => {
     const user = await getUser();
 
+    console.log(user);
+
     const queryParams = {
         company_id: user?.company_id ?? 0,
         ...params, // Overwrites defaults if specific params are passed

@@ -4,6 +4,7 @@ import Header from "@/components/Header";
 import MainContentWrapper from "@/components/MainContentWrapper";
 import { Noto_Sans } from 'next/font/google';
 import { DarkModeProvider } from "@/context/DarkModeContext";
+import { AuthProvider } from "@/context/AuthContext";
 
 const notoSans = Noto_Sans({
   subsets: ['latin'],
@@ -28,13 +29,16 @@ export default function RootLayout({ children }) {
       </head>
       <body className="text-slate-200 font-body overflow-hidden">
         <DarkModeProvider>
-          <Header />
-          <div className="flex flex-1 ">
-            <LeftMenu />
-            <MainContentWrapper>
-              {children}
-            </MainContentWrapper>
-          </div>
+          <AuthProvider>
+            <Header />
+            <div className="flex flex-1 ">
+              <LeftMenu />
+              <MainContentWrapper>
+                {children}
+              </MainContentWrapper>
+            </div>
+          </AuthProvider>
+
         </DarkModeProvider>
 
       </body>

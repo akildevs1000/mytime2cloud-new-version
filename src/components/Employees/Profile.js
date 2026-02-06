@@ -45,152 +45,7 @@ import DatePicker from '@/components/ui/DatePicker';
 
 
 
-const Profile = ({ payload }) => {
-  const fileInputRef = useRef(null);
-  const handleUploadClick = () => fileInputRef.current.click();
-
-  const router = useRouter();
-  const handleCancel = () => router.push(`/employees`);
-  const form = useForm({
-    defaultValues: {
-      // Personal Details
-      title: "Mr.",
-      first_name: "John", // Initial value
-      last_name: "Doe", // Initial value
-      full_name: "",
-      display_name: "",
-      // Employment Details
-      employee_id: "",
-      joining_date: "2023-10-11",
-      branch_id: null, // null for no selection
-      // Contact Information
-      phone_number: "",
-      whatsapp_number: "",
-      // Other payload fields not tied to a visible input
-      system_user_id: "",
-      department_id: null,
-      // Field present in original JSX but not in final payload keys (kept for form use)
-      employee_device_id: "",
-    },
-  });
-  const { reset, watch, setValue, handleSubmit, formState: { isSubmitting } } = form;
-
-  useEffect(() => {
-    if (payload) {
-      reset({
-        id: payload.id || 0,
-        title: payload.title || "Mr.",
-        first_name: payload.first_name || "",
-        last_name: payload.last_name || "",
-        full_name: payload.full_name || "",
-        display_name: payload.display_name || "",
-        employee_id: payload.employee_id || "",
-        joining_date: payload.joining_date || "",
-        branch_id: payload.branch_id ?? null,
-        phone_number: payload.phone_number || "",
-        whatsapp_number: payload.whatsapp_number || "",
-        system_user_id: payload.system_user_id || "",
-        department_id: payload.department_id ?? null,
-        employee_device_id: payload.employee_device_id || "",
-      });
-    }
-  }, [payload, reset]);
-
-  const [isBranchPopoverOpen, setIsBranchPopoverOpen] = useState(false);
-
-  const [open, setOpen] = useState(false);
-  const [globalError, setGlobalError] = useState(null);
-  const [branches, setBranches] = useState([]);
-  const [departments, setDepartments] = useState([]);
-  const [imagePreview, setImagePreview] = useState(null);
-  const [imageFile, setImageFile] = useState(null);
-
-  const selectedBranchId = watch("branch_id");
-
-  useEffect(() => {
-    const fetchBranches = async () => {
-      try {
-        setBranches(await getBranches());
-      } catch (error) {
-        console.error("Error fetching branches:", error);
-        setBranches([]);
-      }
-    };
-    fetchBranches();
-  }, []);
-
-
-  useEffect(() => {
-    const branchId = watch("branch_id");
-
-    if (!branchId) {
-      setDepartments([]);
-      setValue("department_id", null);
-      return;
-    }
-
-    const fetchDepartments = async () => {
-      try {
-        const data = await getDepartments(branchId);
-        setDepartments(data);
-
-        const currentDeptId = watch("department_id");
-        if (currentDeptId && !data.some(d => d.id === currentDeptId)) {
-          setValue("department_id", null);
-        }
-      } catch (error) {
-        console.error("Error fetching departments:", error);
-        setDepartments([]);
-      }
-    };
-
-    fetchDepartments();
-  }, [watch("branch_id"), payload]); // ✅ also depend on payload
-
-
-  const selectedBranchName = branches.find((b) => b.id === selectedBranchId)?.name || "Select Branch";
-
-  const onSubmit = async (data) => {
-
-    setGlobalError(null); // 👈 CRITICAL: Clear previous errors on new submission
-
-    // Map the collected form data to the final required employee payload structure
-    const finalPayload = {
-      title: data.title,
-      joining_date: data.joining_date,
-      // Construct full_name if not explicitly entered
-      full_name: data.full_name || `${data.first_name || ''} ${data.last_name || ''}`.trim(),
-      display_name: data.display_name,
-      first_name: data.first_name,
-      last_name: data.last_name,
-      employee_id: data.employee_id,
-      system_user_id: data.system_user_id, // Empty string if no input field exists
-      phone_number: data.phone_number,
-      whatsapp_number: data.whatsapp_number,
-      branch_id: data.branch_id,
-      department_id: data.department_id,
-    };
-
-    if (imageFile) {
-      finalPayload.profile_image_base64 = await convertFileToBase64(imageFile);
-    }
-
-    try {
-
-      await updateEmployee(finalPayload, data.id);
-
-      setOpen(true);
-
-      await new Promise(resolve => setTimeout(resolve, 2000));
-
-      setOpen(false);
-
-      router.push(`/employees`);
-
-    } catch (error) {
-      setGlobalError(parseApiError(error));
-    }
-  };
+const Profile = ({ payload, employeeId }) => {
 
   return (
     <>
@@ -223,7 +78,7 @@ const Profile = ({ payload }) => {
                 className="size-24 rounded-2xl bg-cover bg-center no-repeat "
                 data-alt="High resolution professional portrait of employee"
                 style={{
-                  backgroundImage: `url("https://lh3.googleusercontent.com/aida-public/AB6AXuBy91H_sAck7802OraM2Bi7mJAwHll1qP1a6pqfnfhDs3WNn67hHTpxnjdf7BRvngncy1RgHoY6TNkxTypaknUow-0MRyrpB3AAsz7Yc6-mpoYFiHdx6tp1oD-3-x-w24B2XB9NAtI1FXwW-ai8gwOxdYr4Czoyybwib1lBNVticZmhasZTIO47RvPNjT7fz9liYRT8hyTxixelcTkn_Lbext9llfOzWY7DXRjAveXepklWlJ6szMCiM1LnqE5uL1TCqsN0mG5tTlil")`,
+                  backgroundImage: `url("${payload.profile_picture}")`,
                 }}
               ></div>
               {/* <div
@@ -239,10 +94,10 @@ const Profile = ({ payload }) => {
               <h2
                 className="text-3xl font-bold text-gray-600 dark:text-gray-300 tracking-tight"
               >
-                Alex Morgan
+                {payload.full_name}
               </h2>
               <p className="text-lg text-gray-600 dark:text-gray-300 font-medium">
-                Senior Product Designer
+                Dept: {payload?.department?.name}
               </p>
               <div
                 className="flex items-center gap-4 mt-2 text-sm text-gray-500 dark:text-gray-300"

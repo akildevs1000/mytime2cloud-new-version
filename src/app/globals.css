@@ -58,6 +58,8 @@
   }
 
   :root {
+    --swal-bg: #ffffff;
+    --swal-text: #1f2937;
     --gauge-bg: #f4f6f8;
 
     --color-obsidian: #f4f6f8;
@@ -82,6 +84,8 @@
     --gauge-bg: rgba(255, 255, 255, 0.1);
     --color-obsidian: #0f172a;
     --color-border: oklch(1 0 0 / 10%); /* This is white/10 in v4 */
+    --swal-bg: #1f2937;
+    --swal-text: #f3f4f6;
   }
 }
 
@@ -158,4 +162,57 @@
     background-color: #1e293b;
     color: #cbd5e1;
   }
+}
+
+/* SweetAlert2 Theme Integration */
+.swal2-popup {
+  background: var(--swal-bg) !important;
+  color: var(--swal-text) !important;
+  border-radius: var(--radius) !important; /* Matches your UI radius */
+  font-family: var(--font-body) !important;
+}
+
+/* Fix the "Bad" Ring Color */
+.swal2-styled:focus {
+  /* This removes the default blue and uses a soft version of your primary indigo */
+  box-shadow: 0 0 0 3px rgba(105, 70, 221, 0.4) !important;
+}
+
+/* 1. Kill the default SweetAlert animation and width */
+.swal2-timer-progress-bar {
+  background: var(--color-primary) !important;
+}
+
+/* Confirm Button - using your primary #6946dd */
+.swal2-confirm {
+  background-color: var(--color-primary) !important;
+  font-weight: 600 !important;
+}
+
+/* Success Icon Styling */
+.dark .swal2-icon.swal2-success {
+  border-color: var(--color-emerald-glow) !important;
+}
+
+/* This targets the actual checkmark lines inside the circle */
+.dark .swal2-icon.swal2-success [class^="swal2-success-line"] {
+  background-color: var(--color-emerald-glow) !important;
+}
+
+/* This fixes the little 'circular-line' element Swal uses for animations */
+.dark .swal2-icon.swal2-success .swal2-success-ring {
+  border: 0.25em solid rgba(16, 185, 129, 0.2) !important; /* Your emerald with low opacity */
+}
+
+/* Repeat for Error and Warning if needed */
+.dark .swal2-icon.swal2-error {
+  border-color: var(--color-rose-glow) !important;
+}
+.dark .swal2-icon.swal2-error [class^="swal2-x-mark-line"] {
+  background-color: var(--color-rose-glow) !important;
+}
+
+.dark .swal2-icon.swal2-warning {
+  border-color: var(--color-gold-glow) !important;
+  color: var(--color-gold-glow) !important;
 }
