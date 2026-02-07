@@ -20,7 +20,7 @@ const EmployeeCreatePage = () => {
                     department_id: 1,
                     designation_id: 1,
                     rfid_card_number: "sdkjf",
-                    gender: "Male",
+                    gender: "",
                     profile_image_base64: null,
 
                     nationality: "test",

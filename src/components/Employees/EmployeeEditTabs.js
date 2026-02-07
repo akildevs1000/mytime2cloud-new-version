@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useEffect, useState } from 'react';
 import { ChevronRight } from 'lucide-react';
 
@@ -6,7 +8,7 @@ import BankingDetails from './Edit/BankingDetails';
 import EmployeeProfileTest from './Edit/Education';
 import EmployeeDocuments from './Edit/Document';
 import Form from './Form';
-import Contact from './Contact';
+import EmployeeContact from './Edit/Contact';
 
 const EditEmployeeRecord = ({ selectedEmployee }) => {
 
@@ -60,12 +62,8 @@ const EditEmployeeRecord = ({ selectedEmployee }) => {
             </div>
 
             {activeTab == "Personal" && <Form action={'Edit'} payload={payload} />}
+            {activeTab == "Contact" && <EmployeeContact action={'Edit'} payload={payload} />}
 
-            {
-                activeTab == "Contact" && <>
-                    <Contact />
-                </>
-            }
             {
                 activeTab == "Document" && <>
                     <EmployeeDocuments />

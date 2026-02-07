@@ -11,7 +11,7 @@ import ImageUploader from '@/components/ImageUploader';
 import { getBranches, getDepartments, getDesignations, storeEmployee, updateEmployee } from '@/lib/api';
 import { useRouter } from 'next/navigation';
 
-const Form = ({ action = "Add", payload }) => {
+const EmployeeContact = ({ action = "Add", payload }) => {
 
     const router = useRouter();
 
@@ -419,4 +419,4 @@ dark:bg-slate-700 dark:text-slate-400 dark:hover:bg-slate-600 dark:hover:text-sl
     );
 };
 
-export default Form;
+export default EmployeeContact;
