@@ -53,7 +53,7 @@ const DocumentModal = ({ onSuccess = () => { }, employee_id }) => {
         onClick={toggleModal}
       >
         <FileText size={20} />
-        Add New Document for # {employee_id}
+        Add New Document
       </Button>
 
       {/* Modal Overlay */}

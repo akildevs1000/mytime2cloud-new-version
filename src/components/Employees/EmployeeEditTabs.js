@@ -64,6 +64,8 @@ const EditEmployeeRecord = ({ selectedEmployee }) => {
             {activeTab == "Personal" && <Form action={'Edit'} payload={payload} />}
             {activeTab == "Contact" && <EmployeeContact action={'Edit'} payload={payload} />}
             {activeTab == "Document" && <EmployeeDocuments employee_id={payload.id} />}
+            {activeTab == "Banking" && <BankingDetails action={'Edit'} payload={payload} />}
+
 
             {
                 activeTab == "Payroll" && <>
@@ -71,12 +73,7 @@ const EditEmployeeRecord = ({ selectedEmployee }) => {
                 </>
             }
 
-            {
-                activeTab == "Banking" && <>
-                    <BankingDetails />
-                </>
-            }
-
+         
             {
                 activeTab == "Education" && <>
                     <EmployeeProfileTest />
