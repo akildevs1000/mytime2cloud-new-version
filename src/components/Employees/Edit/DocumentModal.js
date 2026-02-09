@@ -1,38 +1,70 @@
 import React, { useState } from 'react';
 import { X, ChevronDown, Calendar, FileText, Check, UploadCloud } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import DropDown from '@/components/ui/DropDown';
+import Input from '@/components/Theme/Input';
+import { uploadEmployeeDocument } from '@/lib/api';
+import DatePicker from '@/components/ui/DatePicker';
+import { notify } from '@/lib/utils';
 
-const DocumentModal = () => {
+const DocumentModal = ({ onSuccess = () => { }, employee_id }) => {
+
   const [isOpen, setIsOpen] = useState(false);
-  const [fileName, setFileName] = useState("No file chosen");
+  const [file, setFile] = useState(null);
+  const [submitting, setSubmitting] = useState(false);
+  const [form, setForm] = useState({
+    type: "",
+    title: "",
+    issue_date: "",
+    expiry_date: "",
+    attachment: "",
+  });
 
   const toggleModal = () => setIsOpen(!isOpen);
 
   const handleFileChange = (e) => {
     if (e.target.files.length > 0) {
-      setFileName(e.target.files[0].name);
+      setForm({ ...form, file: e.target.files?.[0] ?? null })
+    }
+  };
+
+  const onSubmit = async (e) => {
+    e.preventDefault();
+    if (!form.file) return;
+
+    setSubmitting(true);
+    try {
+      await uploadEmployeeDocument(employee_id, form);
+      await notify("Success!", `Document uploaded.`, "success");
+      toggleModal();
+      onSuccess(employee_id);
+    } catch ({ response }) {
+      await notify("Error!", response?.data?.message, "error");
+      // Optionally show a toast here
+    } finally {
+      setSubmitting(false);
     }
   };
 
   return (
-    <div className="p-8 flex justify-center">
+    <div className="flex justify-center">
       {/* Trigger Button - Styled like the Education Modal trigger */}
-      <button
+      <Button
         onClick={toggleModal}
-        className="flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl shadow-lg transition-all transform hover:scale-105"
       >
         <FileText size={20} />
-        Add New Document
-      </button>
+        Add New Document for # {employee_id}
+      </Button>
 
       {/* Modal Overlay */}
       {isOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
-          
+
           {/* Modal Container - Reference style from Education Modal */}
           <div className="relative w-full max-w-[640px] max-h-[90vh] flex flex-col bg-white dark:bg-slate-900 rounded-xl shadow-2xl overflow-hidden border border-slate-200 dark:border-slate-800">
-            
+
             {/* Header */}
-            <div className="flex items-center justify-between px-6 py-5 border-b border-slate-100 dark:border-slate-800 shrink-0">
+            <div className="flex items-center justify-between px-6 py-5 border-b border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-800 shrink-0">
               <h3 className="text-slate-900 dark:text-white text-xl font-bold tracking-tight">
                 Add New Document
               </h3>
@@ -47,31 +79,32 @@ const DocumentModal = () => {
             {/* Scrollable Content */}
             <div className="flex-1 overflow-y-auto p-6 bg-slate-50/50 dark:bg-slate-950/20">
               <form id="document-form" className="flex flex-col gap-6">
-                
+
                 {/* Document Type Selection */}
                 <div className="flex flex-col gap-2">
                   <label className="text-slate-900 dark:text-slate-200 text-sm font-semibold">Document Type</label>
                   <div className="relative">
-                    <select 
-                      className="w-full h-12 px-4 pr-10 rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-900 dark:text-white text-base focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 appearance-none cursor-pointer outline-none transition-all"
-                      defaultValue=""
-                    >
-                      <option value="" disabled>Select document type</option>
-                      <option value="contract">Employment Contract</option>
-                      <option value="id">Identification</option>
-                      <option value="tax">Tax Form</option>
-                    </select>
-                    <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-blue-500" size={20} />
+
+                    <DropDown
+                      width="w-full"
+                      items={[
+                        { id: "pdf", name: "pdf" },
+                        { id: "image", name: "image" },
+                      ]}
+                      value={form.type}
+                      onChange={(type) => setForm({ ...form, type })}
+                    />
                   </div>
                 </div>
 
                 {/* Document Name */}
                 <div className="flex flex-col gap-2">
-                  <label className="text-slate-900 dark:text-slate-200 text-sm font-semibold">Document Name</label>
-                  <input
+                  <label className="text-slate-900 dark:text-slate-200 text-sm font-semibold">Document Title</label>
+                  <Input
                     type="text"
-                    placeholder="e.g. Signed NDA 2023"
-                    className="w-full h-12 px-4 rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-900 dark:text-white placeholder:text-slate-400 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all"
+                    placeholder="e.g. Passport"
+                    value={form.title}
+                    onChange={(e) => setForm({ ...form, title: e.target.value })}
                   />
                 </div>
 
@@ -80,18 +113,20 @@ const DocumentModal = () => {
                   <div className="flex flex-col gap-2">
                     <label className="text-slate-900 dark:text-slate-200 text-sm font-semibold">Issue Date</label>
                     <div className="relative">
-                      <input
-                        type="date"
-                        className="w-full h-12 px-4 rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all"
+                      <DatePicker
+                        placeholder="Pick a Issue Date"
+                        value={form.issue_date}
+                        onChange={(e) => setForm({ ...form, issue_date: e })}
                       />
                     </div>
                   </div>
                   <div className="flex flex-col gap-2">
                     <label className="text-slate-900 dark:text-slate-200 text-sm font-semibold">Expiry Date</label>
                     <div className="relative">
-                      <input
-                        type="date"
-                        className="w-full h-12 px-4 rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all"
+                      <DatePicker
+                        placeholder="Pick a Expiry Date"
+                        value={form.expiry_date}
+                        onChange={(e) => setForm({ ...form, expiry_date: e })}
                       />
                     </div>
                   </div>
@@ -108,7 +143,7 @@ const DocumentModal = () => {
                     </div>
                     <div className="flex flex-1 flex-col items-center md:items-start text-center md:text-left">
                       <p className="text-slate-900 dark:text-white text-sm font-medium leading-tight">
-                        {fileName === "No file chosen" ? "Click to upload or drag and drop" : fileName}
+                        {file === "No file chosen" ? "Click to upload or drag and drop" : file}
                       </p>
                       <p className="text-slate-500 text-xs mt-1">PDF, JPG or PNG (max. 5MB)</p>
                     </div>
@@ -122,20 +157,20 @@ const DocumentModal = () => {
             </div>
 
             {/* Footer */}
-            <div className="flex items-center justify-end gap-3 px-6 py-4 border-t border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 shrink-0">
+            <div className="flex items-center justify-end gap-3 px-6 py-4 border-t border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-800 shrink-0">
               <button
                 onClick={toggleModal}
-                className="px-5 py-2.5 rounded-lg text-slate-600 dark:text-slate-300 font-bold text-sm hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                className="px-5 py-2.5 bg-slate-100 dark:bg-slate-700 rounded-lg text-slate-600 dark:text-slate-300 font-bold text-sm hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
               >
                 Cancel
               </button>
               <button
+                onClick={onSubmit}
                 type="submit"
                 form="document-form"
-                className="px-5 py-2.5 rounded-lg bg-blue-600 text-white font-bold text-sm shadow-md hover:bg-blue-700 transition-all flex items-center gap-2"
+                className="px-5 py-2.5 rounded-lg bg-primary text-white font-bold text-sm shadow-md hover:bg-blue-700 transition-all flex items-center gap-2"
               >
-                <Check size={18} />
-                Upload Document
+                {submitting ? "Uploading..." : "Upload Document"}
               </button>
             </div>
           </div>

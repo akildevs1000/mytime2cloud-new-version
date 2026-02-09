@@ -184,7 +184,10 @@ export async function uploadEmployeeDocument(employeeId, payload) {
     const user = await getUser();
 
     const fd = new FormData();
+    fd.append("type", payload.type);
     fd.append("title", payload.title);
+    fd.append("issue_date", payload.issue_date);
+    fd.append("expiry_date", payload.expiry_date);
     fd.append("attachment", payload.file);
     fd.append("employee_id", employeeId);
     fd.append("company_id", user?.company_id || 0);

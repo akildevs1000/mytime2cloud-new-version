@@ -104,7 +104,7 @@ const EmployeeContact = ({ action = "Add", payload }) => {
             router.push(`/employees`);
         } catch (error) {
             setLoading(false);
-            await notify("Oops!", parseApiError(error), "error")
+            await notify("Error!", parseApiError(error), "error")
         }
     };
 

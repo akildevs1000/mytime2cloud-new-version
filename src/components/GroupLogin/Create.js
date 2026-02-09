@@ -153,7 +153,7 @@ const Create = ({ isEditOpen = false, defaultPayload = {}, pageTitle = "Add Item
 
   return (
     <>
-      <Button onClick={() => setOpen(true)} className="rounded-xl font-bold">
+      <Button onClick={() => setOpen(true)} className="">
         Add {pageTitle}
       </Button>
 

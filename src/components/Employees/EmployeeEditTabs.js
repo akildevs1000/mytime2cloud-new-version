@@ -63,12 +63,7 @@ const EditEmployeeRecord = ({ selectedEmployee }) => {
 
             {activeTab == "Personal" && <Form action={'Edit'} payload={payload} />}
             {activeTab == "Contact" && <EmployeeContact action={'Edit'} payload={payload} />}
-
-            {
-                activeTab == "Document" && <>
-                    <EmployeeDocuments />
-                </>
-            }
+            {activeTab == "Document" && <EmployeeDocuments employee_id={payload.id} />}
 
             {
                 activeTab == "Payroll" && <>
