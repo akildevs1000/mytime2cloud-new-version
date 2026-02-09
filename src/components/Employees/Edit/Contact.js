@@ -1,134 +1,105 @@
 "use client";
 import React, { useEffect, useState } from 'react';
-import { BadgeCheck, Play, User, Briefcase, Contact, CreditCard, RefreshCw, Eye, EyeOff, Info, } from 'lucide-react';
+import { BadgeCheck, Play, User, Briefcase, Contact, CreditCard, RefreshCw, Eye, EyeOff, Info, Phone, Home, MapPin, } from 'lucide-react';
 import Input from '@/components/Theme/Input';
 import { Label, SectionTitle } from '@/components/ui/label';
-import RadioGroup from '@/components/Theme/RadioGroup';
 import DropDown from '@/components/ui/DropDown';
 import { generateSecurePassword, notify, parseApiError } from '@/lib/utils';
-import DatePicker from '@/components/ui/DatePicker';
 import ImageUploader from '@/components/ImageUploader';
-import { getBranches, getDepartments, getDesignations, storeEmployee, updateEmployee } from '@/lib/api';
+import { updateContact } from '@/lib/api';
 import { useRouter } from 'next/navigation';
+import { Checkbox } from '@/components/ui/checkbox';
+import { updateEmployeeContact } from '@/lib/endpoint/employees';
 
 const EmployeeContact = ({ action = "Add", payload }) => {
 
+    const { contact, present_address, permanent_address, primary_contact, secondary_contact } = payload;
+
+    console.log({ contact, present_address, permanent_address, primary_contact, secondary_contact });
+
+
     const router = useRouter();
-
-    const [showPassword, setShowPassword] = useState(false);
-    const [form, setForm] = useState({
-        title: "Mr.",
-        first_name: "",
-        last_name: "",
-        full_name: "",
-        display_name: "",
-        employee_id: 0,
-        joining_date: null,
-        branch_id: 1,
-        phone_number: "",
-        whatsapp_number: "",
-        system_user_id: 0,
-        department_id: 1,
-        designation_id: 1,
-        rfid_card_number: "",
-        gender: "",
-        profile_image_base64: null,
-
-        nationality: "",
-        date_of_birth: null,
-        religion: "",
-        blood_group: "",
-        marital_status: "",
-        email: "",
-        password: ""
-    });
-    const [branches, setBranches] = useState([]);
-    const [departments, setDepartments] = useState([]);
-    const [designations, setDesignations] = useState([]);
 
     const [loading, setLoading] = useState(false);
 
+    const [contactInfo, setContactInfo] = useState(contact || {
+        work_email: "---",
+        person_email: "---",
+        work_phone: "---",
+        mobile_phone: "---"
+    });
 
-    useEffect(() => {
-        setForm(payload);
-    }, [payload])
+    const [presentAddress, setPresentAddress] = useState(present_address || {
+        room_no: "---",
+        building: "---",
+        street_address: "---",
+        landmark: "---",
+        city: "---",
+        state: "---",
+        country: "---",
+        zip_code: "---",
+    });
 
-    const fetchBranches = async () => {
-        try {
-            setBranches(await getBranches());
-        } catch (error) {
-            await notify("Oops!", parseApiError(error), "error")
+    const [permanentAddress, setPermanentAddress] = useState(permanent_address || {
+        room_no: "---",
+        building: "---",
+        street_address: "---",
+        landmark: "---",
+        city: "---",
+        state: "---",
+        country: "---",
+        zip_code: "---",
+    });
+
+    const [primaryContact, setPrimaryContact] = useState(primary_contact || {
+        full_name: "---",
+        relation: "---",
+        primary_phone: "---",
+        alternative_phone: "---",
+        email: "tet"
+    });
+
+    const [secondaryContact, setSecondaryContact] = useState(secondary_contact || {
+        full_name: "---",
+        relation: "---",
+        primary_phone: "---",
+        alternative_phone: "---",
+        email: "---"
+    });
+
+    const [isPermanetButtonButtonClicked, setIsPermanetButtonButtonClicked] = useState(false);
+
+    const handleSyncAddress = (checked) => {
+        setIsPermanetButtonButtonClicked(checked);
+
+        if (checked) {
+            setPermanentAddress({ ...presentAddress });
+        } else {
+            // Optional: Clear it or leave it as is
+            setPermanentAddress({
+                room_no: "",
+                building: "",
+                street_address: "",
+                landmark: "",
+                city: "",
+                state: "",
+                country: "",
+                zip_code: "",
+            });
         }
     };
 
-    const fetchDesignations = async () => {
-        try {
-            let data = (await getDesignations());
-
-            console.log(`designations:`, data.data);
-
-
-            setDesignations(data.data);
-        } catch (error) {
-            await notify("Oops!", parseApiError(error), "error")
-        }
-    };
-
-    useEffect(() => {
-        fetchBranches();
-        fetchDesignations();
-    }, []);
-
-
-    useEffect(() => {
-        // Reset departments and department_id if no branch is selected
-        if (!form.branch_id) {
-            setDepartments([]);
-            return;
-        }
-
-        const fetchDepartments = async () => {
-            try {
-                setDepartments(await getDepartments(form.branch_id));
-            } catch (error) {
-                console.error("Error fetching departments:", error);
-                await notify("Oops!", "Error fetching departments", "error")
-                setDepartments([]); // Clear departments on error
-            }
-        };
-        fetchDepartments();
-    }, [form.branch_id]);
-
-
-    const generatePassword = () => {
-        setForm({
-            ...form,
-            password: generateSecurePassword()
-        })
-        setShowPassword(true);
-    };
-
-    useEffect(() => {
-        setForm(prev => ({
-            ...prev,
-            full_name: `${prev.first_name} ${prev.last_name}`.trim()
-        }));
-    }, [form.first_name, form.last_name]);
-
-    const handleImageUpload = (e) => {
-        setForm({ ...form, profile_image_base64: e });
-
-    }
+   
 
     const onSubmit = async () => {
 
-        alert(form.profile_image_base64)
-
         setLoading(true);
 
+        let formRequest = { contact: contactInfo, present_address: presentAddress, permanent_address: permanentAddress, primary_contact: primaryContact, secondary_contact: secondaryContact };
+
         try {
-            form.id ? await updateEmployee(form, payload.id) : await storeEmployee(form)
-            await notify("Success!", `Employee ${form.id ? 'Edit' : 'Create'}.`, "success");
+            await updateEmployeeContact(formRequest, payload.id)
+            await notify("Success!", `Contact ${payload.id ? 'Edited' : 'Created'}.`, "success");
             setLoading(false);
             router.push(`/employees`);
         } catch (error) {
@@ -138,7 +109,7 @@ const EmployeeContact = ({ action = "Add", payload }) => {
     };
 
     return (
-        <div className="mt-5 bg-white/90 dark:bg-slate-800/85 backdrop-blur-xl border border-white/50 dark:border-slate-700 w-full  rounded-2xl shadow-2xl flex flex-col lg:flex-row overflow-hidden relative h-[95vh] lg:h-auto lg:max-h-[92vh]">
+        <div className="mt-5 bg-white/90 dark:bg-slate-800/85 backdrop-blur-xl border border-white/50 dark:border-slate-700 w-full  rounded-2xl shadow-2xl flex flex-col lg:flex-row overflow-hidden relative">
             {/* Left Section: Form */}
             <div className="flex-1 flex flex-col h-full overflow-hidden order-2 lg:order-1 border-r border-slate-200 dark:border-slate-700">
 
@@ -151,7 +122,7 @@ const EmployeeContact = ({ action = "Add", payload }) => {
                                 <h2 className="text-[10px] font-bold uppercase tracking-widest text-primary">New Enrollment</h2>
                             </div>
                         }
-                        <h1 className="text-xl font-bold text-slate-900 dark:text-white tracking-tight mt-3">{action} Employee</h1>
+                        <h1 className="text-xl font-bold text-slate-900 dark:text-white tracking-tight mt-3">{action} Contact</h1>
                     </div>
                     <div className="hidden md:flex items-center gap-4">
                         <a href="#" className="group flex items-center gap-2 text-xs font-bold text-slate-600 hover:text-red-600 dark:text-slate-400 bg-white dark:bg-slate-800 px-3 py-1.5 rounded-full transition-all border border-slate-200 dark:border-slate-600 shadow-sm">
@@ -168,176 +139,219 @@ const EmployeeContact = ({ action = "Add", payload }) => {
                     <form className="space-y-6">
 
                         {/* Personal Info */}
-                        <SectionTitle icon={<User size={14} />} title="Personal Information" />
+                        <SectionTitle icon={<Phone size={14} />} title="Contact Info" />
                         <div className="grid grid-cols-12 gap-4">
-                            <div className="col-span-4">
-                                <Label>Title</Label>
-                                <DropDown
-                                    width="w-full"
-                                    items={[
-                                        { id: "Mr.", name: "Mr." },
-                                        { id: "Mrs.", name: "Mrs." },
-                                        { id: "Ms.", name: "Ms." },
-                                        { id: "Dr.", name: "Dr." },
-                                    ]}
-                                    value={form.title}
-                                    onChange={(title) => setForm({ ...form, title })}
-                                />
-                            </div>
-                            <div className="col-span-4">
-                                <Label>First Name</Label>
-                                <Input value={form.first_name} onChange={(e) => setForm({ ...form, first_name: e.target.value })} placeholder="Jonathan" />
-                            </div>
-                            <div className="col-span-4">
-                                <Label>Last Name</Label>
-                                <Input value={form.last_name} onChange={(e) => setForm({ ...form, last_name: e.target.value })} placeholder="Doe" />
-                            </div>
-                            <div className="col-span-4">
-                                <Label>Display</Label>
-                                <Input value={form.display_name} onChange={(e) => setForm({ ...form, display_name: e.target.value })} placeholder="John D." />
-                            </div>
-                            <div className="col-span-4">
-                                <Label>Full Name</Label>
-                                <Input value={form.full_name} onChange={(e) => setForm({ ...form, full_name: e.target.value })} placeholder="Jonathan Doe" readOnly className="bg-slate-50 dark:bg-slate-800 text-slate-500" />
-                            </div>
-
-
-
-                            <div className="col-span-4">
-                                <Label>Gender</Label>
-                                <RadioGroup
-                                    options={[
-                                        { label: "Male", value: "Male" },
-                                        { label: "Female", value: "Female" },
-                                    ]}
-                                    selectedValue={form.gender}
-                                    onChange={(e) => setForm({ ...form, gender: e })}
-                                />
-                            </div>
-
-                            <div className="col-span-4">
-                                <Label>Religion</Label>
-                                <Input value={form.religion} onChange={(e) => setForm({ ...form, religion: e.target.value })} placeholder="Religion" className="bg-slate-50 dark:bg-slate-800 text-slate-500" />
-                            </div>
-
-                            <div className="col-span-4">
-                                <Label>Nationality</Label>
-                                <Input value={form.nationality} onChange={(e) => setForm({ ...form, nationality: e.target.value })} placeholder="Nationality" className="bg-slate-50 dark:bg-slate-800 text-slate-500" />
-                            </div>
-
-                            <div className="col-span-4">
-                                <Label>Blood Group</Label>
-                                <DropDown width="w-full"
-                                    value={form.blood_group}
-                                    onChange={(e) => setForm({ ...form, blood_group: e })}
-                                    items={[
-                                        { id: "O+", name: "O+" },
-                                        { id: "O-", name: "O-" },
-                                        { id: "A+", name: "A+" },
-                                        { id: "A-", name: "A-" },
-                                        { id: "B+", name: "B+" },
-                                        { id: "B-", name: "B-" },
-                                        { id: "AB+", name: "AB+" },
-                                        { id: "AB-", name: "AB-" },
-                                    ]} />
-                            </div>
-
-                            <div className="col-span-4">
-                                <Label>Marital Status</Label>
-                                <DropDown width="w-full"
-                                    value={form.marital_status}
-                                    onChange={(e) => setForm({ ...form, marital_status: e })}
-                                    items={[
-                                        { id: "Married", name: "Married" },
-                                        { id: "Single", name: "Single" },
-                                        { id: "Divorced", name: "Divorced" },
-                                        { id: "Widowed", name: "Widowed" },
-                                    ]} />
-
-                            </div>
-
-                            <div className="col-span-4">
-                                <Label>Date Of Birth</Label>
-                                <DatePicker value={form.date_of_birth} onChange={(e) => setForm({ ...form, date_of_birth: e })} />
-                            </div>
-
-
-                        </div>
-
-                        {/* Employment Details */}
-                        <SectionTitle icon={<Briefcase size={14} />} title="Employment Details" />
-                        <div className="grid grid-cols-12 gap-4">
-                            <div className="col-span-3">
-                                <Label>Employee Type</Label>
-                                <DropDown width="w-full"
-                                    value={form.employee_type}
-                                    onChange={(e) => setForm({ ...form, employee_type: e })}
-                                    items={[
-                                        { id: "Full Time", name: "Full Time" },
-                                        { id: "Part Time", name: "Part Time" },
-                                        { id: "Contractor", name: "Contractor" },
-                                    ]} />
-                            </div>
-                            <div className="col-span-3">
-                                <Label>Branch</Label>
-                                <DropDown
-                                    placeholder="Select Branch"
-                                    width="w-full"
-                                    value={form.branch_id}
-                                    onChange={(e) => setForm({ ...form, branch_id: e })}
-                                    items={branches}
-                                />
-                            </div>
-                            <div className="col-span-3">
-                                <Label>Dept</Label>
-                                <DropDown width="w-full"
-                                    value={form.department_id}
-                                    onChange={(e) => setForm({ ...form, department_id: e })}
-                                    items={departments} />
-
-                            </div>
-                            <div className="col-span-3">
-                                <Label>Position</Label>
-
-                                <DropDown width="w-full"
-                                    value={form.designation_id}
-                                    onChange={(e) => setForm({ ...form, designation_id: e })}
-
-
-                                    designations
-                                    items={designations} />
-                            </div>
-                            <div className="col-span-4">
-                                <Label>Employee ID</Label>
-                                <Input value={form.employee_id} onChange={(e) => setForm({ ...form, employee_id: e.target.value })} placeholder="EMP-001" />
-                            </div>
-                            <div className="col-span-4">
-                                <Label>Employee Device ID</Label>
-                                <Input value={form.system_user_id} onChange={(e) => setForm({ ...form, system_user_id: e.target.value })} placeholder="EMP-001" />
-                            </div>
-
-                            <div className="col-span-4">
-                                <Label>Joined Date</Label>
-                                <DatePicker value={form.joining_date} onChange={(e) => setForm({ ...form, joining_date: e })} />
-                            </div>
-
-                        </div>
-
-                        {/* Contact Info */}
-                        <SectionTitle icon={<Contact size={14} />} title="Contact Info" />
-                        <div className="grid grid-cols-12 gap-4">
-                            <div className="col-span-6"><Label>Mobile</Label>
-                                <Input
-                                    value={form.phone_number}
-                                    onChange={(e) => setForm({ ...form, phone_number: e.target.value })}
-                                    placeholder="971xxxxxxxxx"
-                                />
+                            <div className="col-span-6">
+                                <Label>Work Email</Label>
+                                <Input value={contactInfo.work_email} onChange={(e) => setContactInfo({ ...contactInfo, work_email: e.target.value })} placeholder="employee@email.com" />
                             </div>
                             <div className="col-span-6">
-                                <Label>Email</Label>
-                                <Input type="email" value={form.email}
-                                    onChange={(e) => setForm({ ...form, email: e.target.value })} placeholder="hr@company.com" />
+                                <Label>Personal Email</Label>
+                                <Input value={contactInfo.person_email} onChange={(e) => setContactInfo({ ...contactInfo, person_email: e.target.value })} placeholder="employee@email.com" />
                             </div>
+                            <div className="col-span-6">
+                                <Label>Work Phone</Label>
+                                <Input value={contactInfo.work_phone} onChange={(e) => setContactInfo({ ...contactInfo, work_phone: e.target.value })} placeholder="971xxxxxxxx" />
+                            </div>
+                            <div className="col-span-6">
+                                <Label>Mobile Phone</Label>
+                                <Input value={contactInfo.mobile_phone} onChange={(e) => setContactInfo({ ...contactInfo, mobile_phone: e.target.value })} placeholder="971xxxxxxxx"
+                                />
+                            </div>
+
+                        </div>
+
+                        <div className="flex items-center justify-between mb-2">
+                            <SectionTitle icon={<MapPin size={14} />} title="Present Address" />
+
+                            <label
+                                className="px-4 py-2 border border-border text-primary hover:bg-primary-700 text-xs font-bold uppercase tracking-wide rounded-lg shadow-lg shadow-primary-200 dark:shadow-none flex items-center gap-2 cursor-pointer transition-all has-[:disabled]:opacity-50 has-[:disabled]:cursor-not-allowed has-[:disabled]:bg-gray-400"
+                            >
+                                <Checkbox
+                                    id="permanent-address"
+                                    checked={isPermanetButtonButtonClicked}
+                                    onCheckedChange={handleSyncAddress}
+                                // If you have a disabled prop, pass it here
+                                />
+                                <span>
+                                    {isPermanetButtonButtonClicked ? 'Saved as Permanent Address' : "Save as Permanent Address"}
+                                </span>
+                            </label>
+
+                        </div>
+
+                        <div className="grid grid-cols-12 gap-4">
+                            <div className="col-span-6">
+                                <Label>Room Number</Label>
+                                <Input value={presentAddress.room_no} onChange={(e) => setPresentAddress({ ...presentAddress, room_no: e.target.value })} placeholder="Room Number" />
+                            </div>
+                            <div className="col-span-6">
+                                <Label>Building Name</Label>
+                                <Input value={presentAddress.building} onChange={(e) => setPresentAddress({ ...presentAddress, building: e.target.value })} placeholder="Building Name" />
+                            </div>
+
+                            <div className="col-span-12">
+                                <Label>Street Address</Label>
+                                <Input value={presentAddress.street_address} onChange={(e) => setPresentAddress({ ...presentAddress, street_address: e.target.value })} placeholder="Street Address" />
+                            </div>
+
+                            <div className="col-span-12">
+                                <Label>Landmark</Label>
+                                <Input value={presentAddress.landmark} onChange={(e) => setPresentAddress({ ...presentAddress, landmark: e.target.value })} placeholder="Landmark" />
+                            </div>
+
+
+                            <div className="col-span-3">
+                                <Label>City</Label>
+                                <Input value={presentAddress.city} onChange={(e) => setPresentAddress({ ...presentAddress, city: e.target.value })} placeholder="City" />
+                            </div>
+                            <div className="col-span-3">
+                                <Label>State / Province
+                                </Label>
+                                <Input value={presentAddress.state} onChange={(e) => setPresentAddress({ ...presentAddress, state: e.target.value })} placeholder="State / Province" />
+                            </div>
+
+                            <div className="col-span-3">
+                                <Label>Country</Label>
+                                <Input value={presentAddress.country} onChange={(e) => setPresentAddress({ ...presentAddress, country: e.target.value })} placeholder="Country" />
+                            </div>
+
+                            <div className="col-span-3">
+                                <Label>Zip Code</Label>
+                                <Input value={presentAddress.zip_code} onChange={(e) => setPresentAddress({ ...presentAddress, zip_code: e.target.value })} placeholder="Zip Code" />
+                            </div>
+
+                        </div>
+
+
+                        <SectionTitle icon={<MapPin size={14} />} title="Permanent Address" />
+
+                        <div className="grid grid-cols-12 gap-4">
+                            <div className="col-span-6">
+                                <Label>Room Number</Label>
+                                <Input value={permanentAddress.room_no} onChange={(e) => setPermanentAddress({ ...permanentAddress, room_no: e.target.value })} placeholder="Room Number" />
+                            </div>
+                            <div className="col-span-6">
+                                <Label>Building Name</Label>
+                                <Input value={permanentAddress.building} onChange={(e) => setPermanentAddress({ ...permanentAddress, building: e.target.value })} placeholder="Building Name" />
+                            </div>
+
+                            <div className="col-span-12">
+                                <Label>Street Address</Label>
+                                <Input value={permanentAddress.street_address} onChange={(e) => setPermanentAddress({ ...permanentAddress, street_address: e.target.value })} placeholder="Street Address" />
+                            </div>
+
+                            <div className="col-span-12">
+                                <Label>Landmark</Label>
+                                <Input value={permanentAddress.landmark} onChange={(e) => setPermanentAddress({ ...permanentAddress, landmark: e.target.value })} placeholder="Landmark" />
+                            </div>
+
+
+                            <div className="col-span-3">
+                                <Label>City</Label>
+                                <Input value={permanentAddress.city} onChange={(e) => setPermanentAddress({ ...permanentAddress, city: e.target.value })} placeholder="City" />
+                            </div>
+                            <div className="col-span-3">
+                                <Label>State / Province
+                                </Label>
+                                <Input value={permanentAddress.state} onChange={(e) => setPermanentAddress({ ...permanentAddress, state: e.target.value })} placeholder="State / Province" />
+                            </div>
+
+                            <div className="col-span-3">
+                                <Label>Country</Label>
+                                <Input value={permanentAddress.country} onChange={(e) => setPermanentAddress({ ...permanentAddress, country: e.target.value })} placeholder="Country" />
+                            </div>
+
+                            <div className="col-span-3">
+                                <Label>Zip Code</Label>
+                                <Input value={permanentAddress.zip_code} onChange={(e) => setPermanentAddress({ ...permanentAddress, zip_code: e.target.value })} placeholder="Zip Code" />
+                            </div>
+
+                        </div>
+
+
+                        <SectionTitle icon={<Phone size={14} />} title="Emergency Contacts (Primary)" />
+
+                        <div className="grid grid-cols-12 gap-4">
+
+                            <div className="col-span-6">
+                                <Label>Full Name</Label>
+                                <Input
+                                    value={primaryContact.full_name}
+                                    onChange={(e) => setPrimaryContact({ ...primaryContact, full_name: e.target.value })} placeholder="Full Name" />
+                            </div>
+
+                            <div className="col-span-6">
+                                <Label>Relationship</Label>
+                                <DropDown
+                                    width="w-full"
+                                    items={[
+                                        { id: "Spouse", name: "Spouse" },
+                                        { id: "Parent", name: "Parent" },
+                                        { id: "Sibling", name: "Sibling" },
+                                        { id: "Child", name: "Child" },
+                                        { id: "Friend", name: "Friend" },
+                                        { id: "Other", name: "Other" },
+                                    ]}
+                                    value={primaryContact.relation}
+                                    onChange={(relation) => setPrimaryContact({ ...primaryContact, relation })}
+                                />
+                            </div>
+
+                            <div className="col-span-6">
+                                <Label>Primary Phone</Label>
+                                <Input value={primaryContact.primary_phone} onChange={(e) => setPrimaryContact({ ...primaryContact, primary_phone: e.target.value })} placeholder="Primary Phone" />
+                            </div>
+                            <div className="col-span-6">
+                                <Label>Alternative Phone</Label>
+                                <Input value={primaryContact.alternative_phone} onChange={(e) => setPrimaryContact({ ...primaryContact, alternative_phone: e.target.value })} placeholder="Alternative Phone" />
+                            </div>
+                            <div className="col-span-6">
+                                <Label>Email Address</Label>
+                                <Input value={primaryContact.email} onChange={(e) => setPrimaryContact({ ...primaryContact, email: e.target.value })} placeholder="Email Address" className="bg-slate-50 dark:bg-slate-800 text-slate-500" />
+                            </div>
+
+                        </div>
+
+                        <SectionTitle icon={<Phone size={14} />} title="Emergency Contacts (Secondary)" />
+
+                        <div className="grid grid-cols-12 gap-4">
+
+                            <div className="col-span-6">
+                                <Label>Full Name</Label>
+                                <Input value={secondaryContact.full_name} onChange={(e) => setSecondaryContact({ ...secondaryContact, full_name: e.target.value })} placeholder="Full Name" />
+                            </div>
+
+                            <div className="col-span-6">
+                                <Label>Relationship</Label>
+                                <DropDown
+                                    width="w-full"
+                                    items={[
+                                        { id: "Spouse", name: "Spouse" },
+                                        { id: "Parent", name: "Parent" },
+                                        { id: "Sibling", name: "Sibling" },
+                                        { id: "Child", name: "Child" },
+                                        { id: "Friend", name: "Friend" },
+                                        { id: "Other", name: "Other" },
+                                    ]}
+                                    value={secondaryContact.relation}
+                                    onChange={(relation) => setSecondaryContact({ ...secondaryContact, relation })}
+                                />
+                            </div>
+
+                            <div className="col-span-6">
+                                <Label>Primary Phone</Label>
+                                <Input value={secondaryContact.primary_phone} onChange={(e) => setSecondaryContact({ ...secondaryContact, primary_phone: e.target.value })} placeholder="Primary Phone" />
+                            </div>
+                            <div className="col-span-6">
+                                <Label>Alternative Phone</Label>
+                                <Input value={secondaryContact.alternative_phone} onChange={(e) => setSecondaryContact({ ...secondaryContact, alternative_phone: e.target.value })} placeholder="Alternative Phone" />
+                            </div>
+                            <div className="col-span-6">
+                                <Label>Email Address</Label>
+                                <Input value={secondaryContact.email} onChange={(e) => setSecondaryContact({ ...secondaryContact, email: e.target.value })} placeholder="Email Address" className="bg-slate-50 dark:bg-slate-800 text-slate-500" />
+                            </div>
+
                         </div>
 
                     </form>
@@ -350,7 +364,7 @@ dark:bg-slate-700 dark:text-slate-400 dark:hover:bg-slate-600 dark:hover:text-sl
                         Cancel
                     </button>
                     <button
-                        disabled={!form.profile_image_base64 || loading}
+                        disabled={loading}
                         onClick={onSubmit}
                         className="px-4 py-2 bg-primary hover:bg-primary-700 text-white text-xs font-bold uppercase tracking-wide rounded-lg shadow-lg shadow-primary-200 dark:shadow-none flex items-center gap-2 
              disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-gray-400 disabled:shadow-none transition-all"
@@ -367,44 +381,7 @@ dark:bg-slate-700 dark:text-slate-400 dark:hover:bg-slate-600 dark:hover:text-sl
                     <span className="px-2 py-0.5 rounded-full bg-primary-100 dark:bg-primary-900 text-primary-700 dark:text-primary-300 text-[10px] font-bold border border-slate-200 dark:border-white/10 ">AI READY</span>
                 </div>
 
-                <ImageUploader onImageSet={handleImageUpload} existingImage={form.profile_picture} />
-
-                {/* Auth Methods */}
-                <div className="w-full space-y-4 pt-4 border-t border-slate-200 dark:border-slate-700">
-                    <h4 className="text-xs font-bold flex items-center gap-2 text-gray-600 dark:text-slate-300"><CreditCard size={14} /> Authentication</h4>
-                    <div>
-                        <Label>RFID Card</Label>
-                        <Input value={form.rfid_card_number} onChange={(e) => setForm({ ...form, rfid_card_number: e.target.value })} placeholder="Scan Card..." />
-                    </div>
-                    <div>
-                        <Label>System Password</Label>
-                        <div className="flex gap-2">
-                            <div className="relative flex-1">
-                                <Input
-                                    type={showPassword ? "text" : "password"}
-                                    value={form.password}
-                                    onChange={(e) => setForm({
-                                        ...form,
-                                        password: e.target.value
-                                    })}
-                                />
-                                <button
-                                    type="button"
-                                    onClick={() => setShowPassword(!showPassword)}
-                                    className="absolute right-2 top-2 text-slate-400 hover:text-primary-500"
-                                >
-                                    {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
-                                </button>
-                            </div>
-                            <button
-                                onClick={generatePassword}
-                                className="p-2 border border-slate-300 dark:border-slate-600 rounded-lg text-gray-600 dark:text-slate-30 hover:text-primary transition-colors"
-                            >
-                                <RefreshCw size={16} />
-                            </button>
-                        </div>
-                    </div>
-                </div>
+                <ImageUploader existingImage={payload.profile_picture} />
 
                 {/* Guidelines */}
                 <div className="mt-auto w-full pt-4 border-t border-slate-200 dark:border-slate-700 text-slate-500">

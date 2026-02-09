@@ -25,7 +25,6 @@ const EmployeeCreatePage = () => {
 
                     nationality: "test",
                     date_of_birth: null,
-                    gender: "Male",
                     religion: "test",
                     blood_group: "test",
                     marital_status: "test",

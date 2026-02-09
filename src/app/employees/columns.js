@@ -131,14 +131,14 @@ export default (deleteEmployee, editEmployee) => [
           /* This prevents the dropdown trigger itself from triggering the row click */
           onClick={(e) => e.stopPropagation()}
         >
-          <div className="p-2 hover:bg-gray-100 rounded-full cursor-pointer w-fit">
+          <div className="p-2 rounded-full cursor-pointer w-fit">
             <MoreVertical className="w-5 h-5 text-gray-400" />
           </div>
         </DropdownMenuTrigger>
 
         <DropdownMenuContent
           align="end"
-          className="w-32 bg-white shadow-md rounded-md py-1"
+          className="w-32 bg-white dark:bg-gray-900 shadow-md rounded-md py-1"
           /* This prevents clicking inside the menu from triggering the row click */
           onClick={(e) => e.stopPropagation()}
         >
@@ -147,7 +147,7 @@ export default (deleteEmployee, editEmployee) => [
               e.stopPropagation(); // Stop row redirect
               editEmployee(employee.id)
             }}
-            className="flex items-center gap-2 px-3 py-2 text-gray-700 hover:bg-gray-100 cursor-pointer"
+            className="flex items-center gap-2 px-3 py-2 text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
           >
             <Pencil className="w-4 h-4 text-primary" />
             <span className="text-primary font-medium">Edit</span>
@@ -158,7 +158,7 @@ export default (deleteEmployee, editEmployee) => [
               e.stopPropagation(); // Stop row redirect
               deleteEmployee(employee.id);
             }}
-            className="flex items-center gap-2 px-3 py-2 text-gray-700 hover:bg-gray-100 cursor-pointer"
+            className="flex items-center gap-2 px-3 py-2 text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
           >
             <Trash className="w-4 h-4 text-red-500" />
             <span className="text-red-500 font-medium">Delete</span>
