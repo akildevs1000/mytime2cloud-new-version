@@ -1,77 +1,51 @@
-import { useState } from "react";
-import { AlarmClock, MoreVertical, PenBox, Trash2 } from "lucide-react";
-import { deleteDevice } from "@/lib/api";
-import { parseApiError } from "@/lib/utils";
+import { AlarmClock, MoreVertical, Pencil, Trash, } from "lucide-react";
 
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@/components/ui/dropdown-menu";
 
-export default function Columns({ pageTitle, handleRowClick, onSuccess = (e) => { e } } = {}) {
+export default function Columns(deleteEmployee, editEmployee) {
 
   return [
+    {
+      key: "branch",
+      header: "Branch",
+      render: (device) => (
+        <span
+          className="text-slate-500 dark:text-slate-400 cursor-pointer block max-w-[150px] truncate"
+          title={device.name || "—"}
+
+        >
+          {device.branch?.branch_name || "—"}
+        </span>
+      ),
+    },
     {
       key: "name",
       header: "Name",
       render: (device) => (
         <span
-          className="text-gray-800 cursor-pointer block max-w-[150px] truncate"
+          className="text-slate-500 dark:text-slate-400 cursor-pointer block max-w-[150px] truncate"
           title={device.name || "—"}
-          onClick={() => handleRowClick(device.id)}
+
         >
-          {device.name || "—"}
+          {device.name || "—"} - {device.device_id || "—"}
         </span>
       ),
     },
-    {
-      key: "utc_time_zone",
-      header: "Time zone",
-      render: (device) => (
-        <span
-          className="text-gray-800 cursor-pointer block max-w-[100px] truncate"
-          title={device.utc_time_zone || "—"}
-          onClick={() => handleRowClick(device.id)}
-        >
-          {device.utc_time_zone || "—"}
-        </span>
-      ),
-    },
-    {
-      key: "device_id",
-      header: "Serial Number",
-      render: (device) => (
-        <span
-          className="text-gray-800 cursor-pointer block max-w-[120px] truncate"
-          title={device.device_id || "—"}
-          onClick={() => handleRowClick(device.id)}
-        >
-          {device.device_id || "—"}
-        </span>
-      ),
-    },
+   
     {
       key: "function",
       header: "Function",
       render: (device) => (
         <span
-          className="text-gray-800 cursor-pointer block max-w-[100px] truncate"
+          className="text-slate-500 dark:text-slate-400 cursor-pointer block max-w-[100px] truncate"
           title={device.function || "—"}
-          onClick={() => handleRowClick(device.id)}
+
         >
           {device.function || "—"}
         </span>
       ),
     },
-    {
-      key: "device_type",
-      header: "Type",
-      render: (device) => (
-        <span
-          className="text-gray-800 cursor-pointer block max-w-[100px] truncate"
-          title={device.device_type || "—"}
-          onClick={() => handleRowClick(device.id)}
-        >
-          {device.device_type || "—"}
-        </span>
-      ),
-    },
+    
     {
       key: "door_open",
       header: "Door Open",
@@ -118,7 +92,7 @@ export default function Columns({ pageTitle, handleRowClick, onSuccess = (e) => 
       key: "alarm",
       header: "Alarm",
       render: (device) => (
-        <span className="text-center text-gray-800">
+        <span className="text-center text-slate-500 dark:text-slate-400">
           <AlarmClock size={25} />
         </span>
       ),
@@ -128,7 +102,7 @@ export default function Columns({ pageTitle, handleRowClick, onSuccess = (e) => 
       header: "Time Sync",
       render: (device) => (
         <span
-          className="text-gray-800 cursor-pointer block max-w-[150px] truncate"
+          className="text-slate-500 dark:text-slate-400 cursor-pointer block max-w-[150px] truncate"
           title={device.sync_date_time || "—"}
           onClick={() => console.log(device.id)}
         >
@@ -154,48 +128,52 @@ export default function Columns({ pageTitle, handleRowClick, onSuccess = (e) => 
         );
       },
     },
-
     {
-      key: "options",
-      header: "Options",
-      render: (device) => {
-        const [open, setOpen] = useState(false);
+      key: "actions",
+      header: "Actions",
+      render: (employee) => (
+        <DropdownMenu>
+          <DropdownMenuTrigger
+            asChild
+            /* This prevents the dropdown trigger itself from triggering the row click */
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="p-2 rounded-full cursor-pointer w-fit">
+              <MoreVertical className="w-5 h-5 text-gray-400" />
+            </div>
+          </DropdownMenuTrigger>
 
+          <DropdownMenuContent
+            align="end"
+            className="w-32 bg-white dark:bg-gray-900 shadow-md rounded-md py-1"
+            /* This prevents clicking inside the menu from triggering the row click */
+            onClick={(e) => e.stopPropagation()}
+          >
+            <DropdownMenuItem
+              onClick={(e) => {
+                e.stopPropagation(); // Stop row redirect
+                editEmployee(employee.id)
+              }}
+              className="flex items-center gap-2 px-3 py-2 text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
+            >
+              <Pencil className="w-4 h-4 text-primary" />
+              <span className="text-primary font-medium">Edit</span>
+            </DropdownMenuItem>
 
-        const onDeleteDevice = async (id) => {
-          const confirmDelete = window.confirm("Are you sure you want to delete this item?");
-          if (!confirmDelete) return; // exit if user cancels
-          try {
-            await deleteDevice(id);
-            onSuccess({ title: `${pageTitle} Deleted`, description: `${pageTitle} Deleted successfully` }); actualSetOpen(false);
-            setOpenEdit(false); // close menu
-          } catch (error) {
-            console.log(parseApiError(error));
-          }
-        };
+            <DropdownMenuItem
+              onClick={(e) => {
+                e.stopPropagation(); // Stop row redirect
+                deleteEmployee(employee.id);
+              }}
+              className="flex items-center gap-2 px-3 py-2 text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
+            >
+              <Trash className="w-4 h-4 text-red-500" />
+              <span className="text-red-500 font-medium">Delete</span>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      ),
+    },
 
-        return (
-          <div className="relative">
-            {/* Three dots button */}
-            <MoreVertical className="text-gray-600 hover:text-gray-800" onClick={() => setOpen(!open)} />
-
-            {/* Dropdown menu */}
-            {open && (
-              <div className="absolute mt-2 w-24 bg-white border rounded shadow-lg z-10">
-                <button
-                  onClick={() => {
-                    onDeleteDevice(device.id);
-                    setOpen(false);
-                  }}
-                  className="flex items-center gap-2 w-full text-sm text-left px-3 py-2 hover:bg-gray-100 text-gray-600"
-                >
-                  <Trash2 size={14} /> Delete
-                </button>
-              </div>
-            )}
-          </div>
-        );
-      },
-    }
   ];
 }

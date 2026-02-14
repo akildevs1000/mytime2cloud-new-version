@@ -68,7 +68,6 @@ export const formatDateDubai = (date) => {
 };
 
 export const parseApiError = (error) => {
-  console.log("🚀 ~ parseApiError ~ error:", error)
   if (error.response) {
 
     const status = error.response.status;
@@ -236,4 +235,43 @@ export const compressImage = (file, { maxWidth = 600, maxHeight = 600, quality =
     reader.onerror = (err) => reject(err);
     reader.readAsDataURL(file);
   });
+};
+
+/**
+ * Converts minutes (number) to HH:MM (string)
+ */
+export const minutesToHHMM = (totalMinutes) => {
+  if (!totalMinutes || isNaN(totalMinutes)) return "00:00";
+
+  const hours = Math.floor(totalMinutes / 60);
+  const minutes = totalMinutes % 60;
+
+  return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
+};
+
+/**
+ * Converts HH:MM (string) back to total minutes (number)
+ */
+export const hhmmToMinutes = (timeStr) => {
+  if (!timeStr || typeof timeStr !== 'string' || !timeStr.includes(':')) return 0;
+
+  const [hours, minutes] = timeStr.split(':').map(Number);
+  return (hours * 60) + (minutes || 0);
+};
+
+export const debounce = (func, delay) => {
+  let timer;
+
+  const debounced = function (...args) {
+    const context = this;
+    clearTimeout(timer);
+    timer = setTimeout(() => func.apply(context, args), delay);
+  };
+
+  // Utility to stop the execution if needed
+  debounced.cancel = () => {
+    clearTimeout(timer);
+  };
+
+  return debounced;
 };

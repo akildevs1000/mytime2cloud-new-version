@@ -1,3 +1,4 @@
+import ProfilePicture from "@/components/ProfilePicture";
 import { getBgColor, getTextColor, setStatusLabel } from "@/lib/utils";
 
 export default (shiftTypeId) => {
@@ -6,27 +7,22 @@ export default (shiftTypeId) => {
         {
             key: "name",
             header: "Name",
-            render: ({ employee }) => (
+            render: ({employee}) => (
                 <div className="flex items-center space-x-3">
-                    <img
-                        alt={employee.full_name}
-                        className="w-10 h-10 rounded-full object-cover shadow-sm"
-                        src={
-                            employee.profile_picture ||
-                            `https://placehold.co/40x40/6946dd/ffffff?text=${employee.full_name.charAt(0)}`
-                        }
-                        onError={(e) => {
-                            e.target.onerror = null;
-                            e.target.src = `https://placehold.co/40x40/6946dd/ffffff?text=${employee.full_name.charAt(0)}`;
-                        }}
-                    />
+
+                    <ProfilePicture src={employee.profile_picture} />
+
                     <div>
-                        <p className="font-medium text-gray-800 max-w-[150] truncate">{employee.display_name} {employee.employee_id}</p>
-                        <p className="text-sm text-gray-500">{employee.branch?.branch_name}</p>
+                        <p className="font-medium text-sm text-slate-500 dark:text-slate-400 hidden xl:table-cell font-mono">{employee?.first_name}</p>
+                        <p className="text-sm text-gray-500">
+                            ID: {employee.employee_id}
+                        </p>
                     </div>
                 </div>
             ),
         },
+
+     
         {
             key: "department", header: "Dept",
             render: ({ employee }) => (

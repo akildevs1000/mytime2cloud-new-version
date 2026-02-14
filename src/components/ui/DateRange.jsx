@@ -17,8 +17,10 @@ import { useState } from "react";
 export default function DateRangeSelect({ className, onChange = () => {} }) {
   // 1. Main state for the selected range (displayed in the button)
   const [date, setDate] = useState({
-    from: new Date(new Date().getFullYear(), new Date().getMonth(), 1), // First day of current month
-    to: new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0), // Last day of current month
+    // from: new Date(new Date().getFullYear(), new Date().getMonth(), 1), // First day of current month
+    // to: new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0), // Last day of current month
+    from: null, // First day of current month
+    to: null, // Last day of current month
   });
 
   // 2. Draft state for the range selection happening *inside* the calendar

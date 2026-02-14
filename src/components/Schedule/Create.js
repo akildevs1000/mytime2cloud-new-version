@@ -3,15 +3,19 @@
 
 import { useEffect, useState } from "react";
 
-import { createDesignations, getBranches, getDepartments } from "@/lib/api";
+import { createDesignations, getBranches, getDepartments, getDepartmentsByBranchIds, getEmployeeList, getScheduledEmployeeList, getScheduleEmployees, getShiftDropDownList, getShifts, storeSchedule } from "@/lib/api";
 import { SuccessDialog } from "@/components/SuccessDialog";
-import { parseApiError } from "@/lib/utils";
+import { notify, parseApiError } from "@/lib/utils";
 import Input from "../Theme/Input";
 import TextArea from "../Theme/TextArea";
 import Dropdown from "../Theme/DropDown";
+import DropDown from "../ui/DropDown";
 import MultiDropDown from "../ui/MultiDropDown";
 import DateRangeSelect from "../ui/DateRange";
 import { Checkbox } from "../ui/checkbox";
+import { useDebounce } from "@/hooks/useDebounce";
+import { id } from "date-fns/locale";
+import ShiftPreview from "../Shift/ShiftPreview";
 
 // Reusable Toggle Component
 const ToggleItem = ({ title, desc, checked, onChange }) => (
@@ -47,47 +51,53 @@ let defaultPayload = {
 
 const Create = ({ onSuccess = () => { } }) => {
 
-    const [selectedCount, setSelectedCount] = useState(3);
-    const [isOvertimeEnabled, setIsOvertimeEnabled] = useState(true);
+    const [open, setOpen] = useState(false);
+    const [successOpen, setSuccessOpen] = useState(false);
+    const [globalError, setGlobalError] = useState(null);
+    const [loading, setLoading] = useState(false);
+
     const [searchTerm, setSearchTerm] = useState('');
     const [error, setError] = useState(null);
 
-    const [selectedBranch, setSelectedBranch] = useState({ name: "Select Branch", id: "" });
     const [selectedDepartmentIds, setSelectedDepartment] = useState([]);
-    const [selectedShiftStatus, setSelectedShiftStatus] = useState({ name: "Select Scheduled / Un Scheduled", id: "" });
-    const [selectedEmployee, setSelectedEmployee] = useState({ name: "Select Employee", id: "" });
+    const [selectedBranchIds, setSelectedBranchIds] = useState([]);
+    const [selectedShiftId, setSelectedShiftId] = useState(0);
+    const [previewShift, setPreviewShift] = useState(null);
+    const [shifts, setShifts] = useState([]);
     const [from, setFrom] = useState(null);
     const [to, setTo] = useState(null);
 
     const [branches, setBranches] = useState([]);
     const [departments, setDepartments] = useState([]);
-    const [employees, setEmployees] = useState([
-        { id: 'EMP-2024-042', name: 'Sarah Jenkins', email: 'sarah.j@company.com', dept: 'Engineering', role: 'Senior Developer', img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDDX4U7iiTK5ShudUldj9tzZfxOtUmjJi58np4sSrz4a-2sCDOu0b7kDd2SOeEM-fxruzRcK0PgUTlbXYSEtfZvWkL0-DWVO5O4wnwC2HDqk5dfcmInS9mYaNcbArigElI7-VsQ3-wmmz8RCMgziNFHtXGmogHhSUK0SW6ScL84LLI3TOpH5ZOcS2I2dBjLH_pBZZFCMkfCt-mesd7wYf2ZtvsCAjI4fR24Nb0d3c01SuSVVG45iTEMIN2cj-WssK891xigUWNh9t6p', color: 'blue' },
-        { id: 'EMP-2024-089', name: 'Emily Davis', email: 'emily.d@company.com', dept: 'Design', role: 'Product Designer', img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBoYgaOzt6eR8qNSkBhbzjwXQ_so6sw9GgsNJOZgBM3C0idBhbYZLA1ZEvkizJuxjaMWJEBK7e4Z51RYFMtrvHttbvM-mSMTihBRn4KmrN36dxYtve2h0y_pusxYIjuBcZnnJe-1ZipLow3Wg2by21KW_NLZ5aBCG7rMSSmLIg5xOt4W2LY5S--1NgwWoOTUCEJVUhGfaU_D9wdHw6WzkcB1LHaa-uaSxGy9C2dP3eS5d2T9pM3EeED2Tq5QJNixvsetkIoII0J88Jh', color: 'purple' },
-        { id: 'EMP-2024-103', name: 'Michael Brown', email: 'michael.b@company.com', dept: 'Marketing', role: 'Marketing Lead', img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBF-9sFBl0giPF8I1rgRDanyFo3HIkZcuEI_ipiNEU1TbD0mrfw63VPDJTJ4Wr8RavZ3twI4d3S8ZffG0TomE_bdVTAusnUkwx5JcXv2AAcLIGqYNxJcPlWln9XGxdwOy4qPFqZ8aYIhJkiFJjKxWU0fEMizV2IESoUxD05RqC16R0_4AKcprZ6SuWoehl1lOyfphOg0xyQSw4yNNeiNTGPmEUqqtBtT8fS59YsVaNQZOvsxm_yN3bLqGbYHdAOEWsX3eZMTZ2ZCOxf', color: 'orange' },
-        { id: 'EMP-2024-104', name: 'Michael Brown', email: 'michael.b@company.com', dept: 'Marketing', role: 'Marketing Lead', img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBF-9sFBl0giPF8I1rgRDanyFo3HIkZcuEI_ipiNEU1TbD0mrfw63VPDJTJ4Wr8RavZ3twI4d3S8ZffG0TomE_bdVTAusnUkwx5JcXv2AAcLIGqYNxJcPlWln9XGxdwOy4qPFqZ8aYIhJkiFJjKxWU0fEMizV2IESoUxD05RqC16R0_4AKcprZ6SuWoehl1lOyfphOg0xyQSw4yNNeiNTGPmEUqqtBtT8fS59YsVaNQZOvsxm_yN3bLqGbYHdAOEWsX3eZMTZ2ZCOxf', color: 'orange' },
-        { id: 'EMP-2024-105', name: 'Michael Brown', email: 'michael.b@company.com', dept: 'Marketing', role: 'Marketing Lead', img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBF-9sFBl0giPF8I1rgRDanyFo3HIkZcuEI_ipiNEU1TbD0mrfw63VPDJTJ4Wr8RavZ3twI4d3S8ZffG0TomE_bdVTAusnUkwx5JcXv2AAcLIGqYNxJcPlWln9XGxdwOy4qPFqZ8aYIhJkiFJjKxWU0fEMizV2IESoUxD05RqC16R0_4AKcprZ6SuWoehl1lOyfphOg0xyQSw4yNNeiNTGPmEUqqtBtT8fS59YsVaNQZOvsxm_yN3bLqGbYHdAOEWsX3eZMTZ2ZCOxf', color: 'orange' },
-        { id: 'EMP-2024-106', name: 'Michael Brown', email: 'michael.b@company.com', dept: 'Marketing', role: 'Marketing Lead', img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBF-9sFBl0giPF8I1rgRDanyFo3HIkZcuEI_ipiNEU1TbD0mrfw63VPDJTJ4Wr8RavZ3twI4d3S8ZffG0TomE_bdVTAusnUkwx5JcXv2AAcLIGqYNxJcPlWln9XGxdwOy4qPFqZ8aYIhJkiFJjKxWU0fEMizV2IESoUxD05RqC16R0_4AKcprZ6SuWoehl1lOyfphOg0xyQSw4yNNeiNTGPmEUqqtBtT8fS59YsVaNQZOvsxm_yN3bLqGbYHdAOEWsX3eZMTZ2ZCOxf', color: 'orange' },
-    ]);
+    const [employees, setEmployees] = useState([]);
+    const [filteredEmployees, setFilteredEmployees] = useState([]);
 
     const fetchDropdowns = async () => {
         try {
-            setBranches([{ name: "Select All", id: "" }, ...await getBranches()]);
-            setDepartments([{ name: "Select All", id: "" }, ...await getDepartments()]);
+            setBranches(await getBranches());
+            setShifts(await getShiftDropDownList());
         } catch (error) {
             setError(parseApiError(error));
         }
     };
 
     useEffect(() => {
-        fetchDropdowns();
-    }, []);
+        const fetchDepartment = async (selectedBranchIds) => {
+            setDepartments(await getDepartmentsByBranchIds(selectedBranchIds));
+        }
+        fetchDepartment(selectedBranchIds);
+    }, [selectedBranchIds]);
 
 
-    const [open, setOpen] = useState(false);
-    const [successOpen, setSuccessOpen] = useState(false);
-    const [globalError, setGlobalError] = useState(null);
-    const [loading, setLoading] = useState(false);
+    useEffect(() => {
+        let foundShift = shifts.find(e => e.id == selectedShiftId);
+
+        console.log(foundShift);
+
+        if (foundShift) {
+            setPreviewShift(foundShift);
+        }
+    }, [selectedShiftId]);
 
     const [form, setForm] = useState(defaultPayload);
     const toggleModal = () => setOpen(!open);
@@ -95,35 +105,100 @@ const Create = ({ onSuccess = () => { } }) => {
     useEffect(() => {
         if (open) {
             setForm(defaultPayload);
+            fetchDropdowns();
+            setSelectedDepartment([]);
+            setSelectedBranchIds([]);
+            setShifts([]);
+            setSelectedShiftId(0);
+            setPreviewShift(null);
+            setFrom(null);
+            setTo(null);
         }
     }, [open]);
+
+    useEffect(() => {
+
+        const fetchEmployees = async (selectedDepartmentIds) => {
+            try {
+                console.log(`await getScheduledEmployeeList()`);
+                let emp = await getScheduledEmployeeList(selectedDepartmentIds);
+                console.log(emp);
+                setEmployees(emp);
+                setFilteredEmployees(emp);
+                console.log(`await getScheduledEmployeeList()`);
+            } catch (error) {
+                setError(parseApiError(error));
+            }
+        };
+
+        fetchEmployees(selectedDepartmentIds);
+
+    }, [selectedDepartmentIds]);
 
     const handleChange = (field, value) => {
         setForm((prev) => ({ ...prev, [field]: value }));
     };
 
     const onSubmit = async () => {
-        setGlobalError(null);
+
+        if (!selectedIds.length) {
+            notify("Error", "Employee must be selected", "error");
+            setLoading(false);
+            return;
+        }
+
+        if (!previewShift) {
+            notify("Error", "Shift must be selected", "error");
+            setLoading(false);
+            return;
+        }
+
+        if (!from || !to) {
+            notify("Error", "Date range must be selected", "error");
+            setLoading(false);
+            return;
+        }
+
+
+        let json = {
+            "employee_ids": selectedIds,
+            "schedules": [
+                {
+                    "shift_id": previewShift?.id,
+                    "shift_type_id": previewShift?.shift_type_id,
+                    "from_date": from,
+                    "to_date": to,
+                    "is_over_time": false,
+                    "isAutoShift": false
+                }
+            ],
+            "company_id": 0,
+            "replace_schedules": false,
+            "branch_id": 0
+        }
+
         setLoading(true);
+
         try {
-            let { data } = await createDesignations(form);
+            let { data } = await storeSchedule(json);
+
+            console.log(data);
+
 
             // FIX: Check if status is explicitly false
             if (data?.status === false) {
                 const firstKey = Object.keys(data.errors)[0];
                 const firstError = data.errors[firstKey][0];
-                setGlobalError(firstError);
+                notify("Error", firstError, "error");
                 return; // Stop execution if there's a validation error
             }
 
-            // Success Path
-            onSuccess();
-            setSuccessOpen(true);
+            await notify("Success", "Shift has been assign", "success");
             setOpen(false);
         } catch (error) {
-            setGlobalError(parseApiError(error));
+            await notify("Error", parseApiError(error), "error");
         } finally {
-            setLoading(false);
+            // setLoading(false);
         }
     };
 
@@ -143,6 +218,32 @@ const Create = ({ onSuccess = () => { } }) => {
         } else {
             setSelectedIds(employees.map(emp => emp.id));
         }
+    };
+
+    // Create the debounced version of your search logic
+    const debouncedSearch = useDebounce((value) => {
+        // 1. If no value, show everyone
+        if (!value) {
+            setFilteredEmployees(employees);
+            return;
+        }
+
+        // 2. Normalize search term to lowercase
+        const searchTerm = value.toLowerCase();
+
+        const filtered = employees.filter(e =>
+            // 3. Normalize employee name to lowercase for the comparison
+            e.name.toLowerCase().includes(searchTerm)
+        );
+
+        setFilteredEmployees(filtered);
+        console.log("Searching API for:", value);
+    }, 500);
+
+    const handleSearch = (e) => {
+        const val = e.target.value;
+        setSearchTerm(val);   // Updates the input instantly
+        debouncedSearch(val); // Triggers the delayed action
     };
 
     return (
@@ -168,7 +269,7 @@ const Create = ({ onSuccess = () => { } }) => {
                     ></div>
 
                     {/* Modal Card */}
-                    <div className="relative  overflow-y-auto max-h-[calc(100vh-130px)]  bg-white dark:bg-slate-800 rounded-2xl shadow-2xl border border-gray-100 dark:border-white/10  overflow-hidden transform transition-all animate-in fade-in zoom-in duration-200">
+                    <div className="relative min-w-[1200px]  overflow-y-auto max-h-[calc(100vh-130px)]  bg-white dark:bg-slate-800 rounded-2xl shadow-2xl border border-gray-100 dark:border-white/10  overflow-hidden transform transition-all animate-in fade-in zoom-in duration-200">
 
                         {/* Header */}
                         <div className="px-6 py-5 border-b border-gray-200 dark:border-white/10 flex justify-between items-center">
@@ -201,17 +302,14 @@ const Create = ({ onSuccess = () => { } }) => {
                                     <div className="flex flex-col gap-6">
 
                                         {/* Filters */}
-                                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                                            <Dropdown
+                                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                                            <MultiDropDown
+                                                placeholder={'Select Branch'}
                                                 items={branches}
-                                                selectedItem={selectedBranch}
-                                                onSelect={(item) => {
-                                                    setSelectedBranch(item);
-                                                }}
-                                                placeholder="Select Branch"
-                                                width="w-[320px]"
+                                                value={selectedBranchIds}
+                                                onChange={setSelectedBranchIds}
+                                                badgesCount={1}
                                             />
-
 
                                             <MultiDropDown
                                                 placeholder={'Select Department'}
@@ -221,26 +319,12 @@ const Create = ({ onSuccess = () => { } }) => {
                                                 badgesCount={1}
                                             />
 
-                                            <Dropdown
-                                                items={[
-                                                    { id: "Schedule", name: "Schedule" },
-                                                    { id: "Un Schedule", name: "Un Schedule" },
-                                                ]}
-                                                selectedItem={selectedShiftStatus}
-                                                onSelect={(item) => {
-                                                    setSelectedShiftStatus(item);
-                                                }}
-                                                placeholder="Select Schedule/Un Schedule"
-                                                width="w-[320px]"
-                                            />
-
                                             <Input
                                                 placeholder="Search by name or ID"
                                                 icon="search"
                                                 value={searchTerm}
-                                                onChange={(e) => setSearchTerm(e.target.value)}
+                                                onChange={handleSearch}
                                             />
-
                                         </div>
 
 
@@ -254,7 +338,7 @@ const Create = ({ onSuccess = () => { } }) => {
 
 
                                                             <Checkbox
-                                                                checked={employees.length > 0 && selectedIds.length === employees.length}
+                                                                checked={filteredEmployees.length > 0 && selectedIds.length === filteredEmployees.length}
                                                                 onCheckedChange={toggleAll}
                                                             />
 
@@ -266,7 +350,7 @@ const Create = ({ onSuccess = () => { } }) => {
                                                     </tr>
                                                 </thead>
                                                 <tbody className="divide-y divide-stone-100 dark:divide-white/5 bg-surface-light dark:bg-surface-dark">
-                                                    {employees.map((emp) => (
+                                                    {filteredEmployees.map((emp) => (
                                                         <tr
                                                             key={emp.id}
                                                             className={`transition-colors group hover:bg-[#f8f6f1] dark:hover:bg-white/5 ${selectedIds.includes(emp.id) ? 'bg-[#fcfaf6] dark:bg-white/[0.02]' : ''
@@ -285,9 +369,15 @@ const Create = ({ onSuccess = () => { } }) => {
                                                             <td className="pr-6 py-4">
                                                                 <div className="flex items-center gap-3">
                                                                     <img
-                                                                        src={emp.img}
-                                                                        alt={emp.name}
-                                                                        className="w-10 h-10 rounded-full object-cover ring-2 ring-white dark:ring-white/10 shadow-sm"
+                                                                        src={
+                                                                            emp.profile_picture ||
+                                                                            `https://placehold.co/40x40/6946dd/ffffff?text=${emp.name.charAt(0)}`
+                                                                        }
+                                                                        onError={(e) => {
+                                                                            e.target.onerror = null;
+                                                                            e.target.src = `https://placehold.co/40x40/6946dd/ffffff?text=${emp.name.charAt(0)}`;
+                                                                        }}
+                                                                        className="w-8 h-8 rounded-full object-cover ring-2 ring-white dark:ring-white/10 shadow-sm"
                                                                     />
                                                                     <div>
                                                                         <div className="font-bold text-slate-800 dark:text-white">{emp.name}</div>
@@ -295,31 +385,13 @@ const Create = ({ onSuccess = () => { } }) => {
                                                                     </div>
                                                                 </div>
                                                             </td>
-                                                            <td className="px-6 py-4 text-sm text-slate-600 dark:text-slate-400 font-mono">{emp.id}</td>
-                                                            <td className="px-6 py-4 text-sm text-slate-600 dark:text-slate-400">{emp.dept}</td>
-                                                            <td className="px-6 py-4 text-sm text-slate-600 dark:text-slate-400">{emp.role}</td>
+                                                            <td className="px-6 py-4 text-sm text-slate-600 dark:text-slate-400 font-mono">{emp.employee_id}</td>
+                                                            <td className="px-6 py-4 text-sm text-slate-600 dark:text-slate-400">{emp.department?.name}</td>
+                                                            <td className="px-6 py-4 text-sm text-slate-600 dark:text-slate-400">{emp.designation?.name}</td>
                                                         </tr>
                                                     ))}
                                                 </tbody>
                                             </table>
-                                        </div>
-                                    </div>
-                                </section>
-
-                                <section className="xl:col-span-1 bg-surface-light dark:bg-surface-dark rounded-3xl p-6 shadow-elevation-1 border border-gray-200 dark:border-white/5 h-full flex flex-col">
-                                    <div className="space-y-6">
-                                        <div
-                                            className="flex items-center justify-between p-2 rounded-xl hover:bg-surface-variant/30 transition-colors"
-                                        >
-                                            <div className="flex flex-col">
-                                                <p className="text-sm font-bold text-gray-600 dark:text-white">
-                                                    Enable Overtime
-                                                </p>
-                                                <p className="text-xs text-slate-500">
-                                                    Allow employees to clock in extra hours.
-                                                </p>
-                                            </div>
-                                            <ToggleItem checked={isOvertimeEnabled} onChange={() => setIsOvertimeEnabled(!isOvertimeEnabled)} />
                                         </div>
                                     </div>
                                 </section>
@@ -336,36 +408,18 @@ const Create = ({ onSuccess = () => { } }) => {
                                             <div className="space-y-2">
                                                 <label className="text-sm font-semibold text-slate-700 dark:text-gray-200 ml-1">Shift Profile</label>
                                                 <div className="relative">
-                                                    <Dropdown
-                                                        items={[
-                                                            { id: "General Shift (09:00 - 18:00)", name: "General Shift (09:00 - 18:00)" },
-                                                            { id: "Morning Shift (06:00 - 15:00)", name: "Morning Shift (06:00 - 15:00)" },
-                                                            { id: "Night Shift (22:00 - 07:00)", name: "Night Shift (22:00 - 07:00)" },
-                                                        ]}
-                                                        selectedItem={selectedShiftStatus}
-                                                        onSelect={(item) => {
-                                                            setSelectedShiftStatus(item);
+                                                    <DropDown
+                                                        items={shifts}
+                                                        value={selectedShiftId}
+                                                        onChange={(id) => {
+                                                            setSelectedShiftId(id);
                                                         }}
-                                                        placeholder="Select Schedule/Un Schedule"
+                                                        placeholder="Select Shift"
                                                         width="w-full"
                                                     />
-
                                                 </div>
                                             </div>
 
-                                            <div className="flex flex-col gap-2 w-full sm:w-auto">
-                                                <span className="text-sm font-medium text-gray-600 dark:text-slate-300">Auto-Shift Mode</span>
-
-                                            </div>
-
-
-
-                                            {/* <div className="space-y-2">
-                                                <div className="relative">
-                                                  
-
-                                                </div>
-                                            </div> */}
                                             <div className="space-y-2">
                                                 <label className="text-sm font-semibold text-slate-700 dark:text-gray-200 ml-1">Effective Range</label>
                                                 <div className="flex flex-col gap-3">
@@ -375,43 +429,26 @@ const Create = ({ onSuccess = () => { } }) => {
                                                             setFrom(from);
                                                             setTo(to);
                                                         }
-                                                        } /> </div>
+                                                        } />
+                                                </div>
                                             </div>
+
                                         </div>
                                     </section>
 
                                     {/* SECTION 3: PATTERN PREVIEW */}
                                     <section className="xl:col-span-2 bg-surface-light dark:bg-surface-dark rounded-xl shadow-elevation-1 border border-gray-200 dark:border-white/5  flex flex-col">
-                                        <div className="px-6 py-5 border-b border-gray-100 dark:border-white/5 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 bg-white/40 dark:bg-white/5 backdrop-blur-sm">
+                                        <div className="px-6 py-5 border-b border-gray-100 dark:border-white/5 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4  backdrop-blur-sm">
                                             <h2 className="text-lg font-bold text-gray-600 dark:text-white flex items-center gap-3">
                                                 Pattern Preview
                                             </h2>
-                                            <div className="flex items-center gap-4 text-xs font-medium text-slate-500">
-                                                <div className="flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-emerald-500"></span>Work</div>
-                                                <div className="flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-slate-300 dark:bg-slate-600"></span>Off</div>
-                                            </div>
                                         </div>
                                         <div className="p-6">
                                             {/* Timeline and Bars (Simplified for brevity, similar to your HTML) */}
-                                            <div className="flex flex-col w-full">
-                                                <div className="flex pl-14 pr-0 text-[10px] font-bold text-slate-400 dark:text-slate-500 justify-between uppercase tracking-widest mb-2">
-                                                    <span>00:00</span><span>06:00</span><span>12:00</span><span>18:00</span><span>23:59</span>
-                                                </div>
-                                                {['Mon', 'Tue', 'Wed', 'Thu', 'Fri'].map(day => (
-                                                    <div key={day} className="flex items-center group relative mb-2">
-                                                        <div className="w-14 text-xs font-bold text-slate-500 dark:text-slate-400 text-right pr-4">{day}</div>
-                                                        <div className="flex-1 h-2.5 bg-slate-100 dark:bg-gray-800 rounded-full relative overflow-hidden ring-1 ring-black/5 dark:ring-white/10">
-                                                            <div className="absolute top-0 bottom-0 left-[37.5%] w-[37.5%] bg-emerald-500 shadow-sm transition-colors cursor-pointer" />
-                                                        </div>
-                                                    </div>
-                                                ))}
-                                            </div>
+                                            <ShiftPreview shift={previewShift} />
                                         </div>
                                     </section>
                                 </div>
-
-
-
                             </div>
                         </div>
 
@@ -432,16 +469,9 @@ const Create = ({ onSuccess = () => { } }) => {
                                 {loading ? "Saving..." : "Save Schedule"}
                             </button>
                         </div>
-                    </div >
-                </div >
+                    </div>
+                </div>
             )}
-
-            <SuccessDialog
-                successOpen={successOpen}
-                onOpenChange={setSuccessOpen}
-                title="Schedule Saved"
-                description="Schedule Saved successfully."
-            />
         </>
     );
 };

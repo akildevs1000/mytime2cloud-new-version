@@ -45,8 +45,6 @@ const EmployeeProfileForm = () => {
 
     const [filterEmployeesByScheduleType, setFilterEmployeesByScheduleType] = useState(0);
 
-
-
     const [branches, setBranches] = useState([]);
 
     const fetchBranches = async () => {

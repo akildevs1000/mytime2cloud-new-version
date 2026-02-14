@@ -8,10 +8,10 @@ import { useRouter } from "next/navigation";
 import { getBranches, createDevice } from "@/lib/api";
 import DropDown from "@/components/ui/DropDown";
 import { parseApiError } from "@/lib/utils";
-import { Input } from "@/components/ui/input";
 
 import timezones from "@/lib/timezones";
 import { MODEL_NUMBERS, FUNCTIONS, DEVICE_TYPES, STATUSSES } from "@/lib/dropdowns";
+import Input from "@/components/Theme/Input";
 
 
 const Create = () => {

@@ -3,17 +3,16 @@
 
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-
-
 import { getBranches, createDepartment } from "@/lib/api";
-import { SuccessDialog } from "@/components/SuccessDialog";
-import { parseApiError } from "@/lib/utils";
+import { notify, parseApiError } from "@/lib/utils";
 import Input from "../Theme/Input";
 import TextArea from "../Theme/TextArea";
+import DropDown from "../ui/DropDown";
 
 let defaultPayload = {
+  branch_id: 0,
   name: "",
-  branch_id: "",
+  description: "",
 };
 
 const Create = ({ onSuccess = () => { } }) => {
@@ -49,23 +48,27 @@ const Create = ({ onSuccess = () => { } }) => {
     setForm((prev) => ({ ...prev, [field]: value }));
   };
 
-  const onSubmit = async () => {
-    setGlobalError(null);
+  const onSubmit = async (e) => {
+    e.preventDefault();
     setLoading(true);
     try {
+      let { data } = await createDepartment(form);
 
-      await createDepartment(form);
+      // FIX: Check if status is explicitly false
+      if (data?.status === false) {
+        const firstKey = Object.keys(data.errors)[0];
+        notify("Error", data.errors[firstKey][0], "error");
+        return; // Stop execution if there's a validation error
+      }
 
+      // Success Path
       onSuccess();
-
-      setOpen(false);
-
-      await new Promise(resolve => setTimeout(resolve, 2000));
-
       setSuccessOpen(true);
-
+      setOpen(false);
+      notify("Success", "Department Saved", "success")
     } catch (error) {
-      setGlobalError(parseApiError(error));
+      notify("Error", parseApiError(error), "error");
+
     } finally {
       setLoading(false);
     }
@@ -117,16 +120,27 @@ const Create = ({ onSuccess = () => { } }) => {
               <div className="p-6 space-y-5 bg-white/50 dark:bg-gray-900">
                 <div className="space-y-1.5">
                   <label className="block text-sm font-medium text-slate-400">
+                    Branch <span className="text-red-400">*</span>
+                  </label>
+                  <DropDown
+                    placeholder="Select Branch"
+                    width="w-full"
+                    value={form.branch_id}
+                    onChange={(value) => handleChange("branch_id", value)}
+                    items={branches} />
+                </div>
+                <div className="space-y-1.5">
+                  <label className="block text-sm font-medium text-slate-400">
                     Department Title <span className="text-red-400">*</span>
                   </label>
                   <Input
-                    required
                     placeholder="e.g. Sales"
                     type="text"
                     value={form.title}
                     onChange={(e) => handleChange("name", e.target.value)}
                   />
                 </div>
+
                 <div className="space-y-1.5">
                   <label className="block text-sm font-medium text-slate-400">
                     Description
@@ -161,13 +175,6 @@ const Create = ({ onSuccess = () => { } }) => {
           </div>
         </div>
       )}
-
-      <SuccessDialog
-        successOpen={successOpen}
-        onOpenChange={setSuccessOpen}
-        title="Department Saved"
-        description="Department Saved successfully."
-      />
     </>
   );
 };

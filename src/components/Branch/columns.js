@@ -32,16 +32,16 @@ function OptionsMenu({ item, onSuccess = () => { } }) {
       />
 
       {openEdit && (
-        <div className="absolute mt-2 w-24 bg-white border rounded shadow-lg z-10">
+        <div className="absolute mt-2 w-24 bg-white dark:bg-slate-900 border border-border rounded shadow-lg z-10">
           <button
             onClick={() => setOpenEdit("edit")}
-            className="flex items-center gap-2 text-sm w-full text-left px-3 py-2 hover:bg-gray-100 text-gray-600"
+            className="flex items-center gap-2 text-sm w-full text-left px-3 py-2 dark:hover:bg-gray-700 hover:bg-gray-100 text-gray-600 dark:text-slate-300"
           >
             <PenBox size={14} /> Edit
           </button>
           <button
             onClick={() => onDelete(item.id)}
-            className="flex items-center gap-2 text-sm w-full text-left px-3 py-2 hover:bg-gray-100 text-gray-600"
+            className="flex items-center gap-2 text-sm w-full text-left px-3 py-2 dark:hover:bg-gray-700 hover:bg-gray-100 text-gray-600 dark:text-slate-300"
           >
             <Trash2 size={14} /> Delete
           </button>
@@ -101,18 +101,7 @@ export default function Columns({ handleRowClick, onSuccess = () => { } } = {}) 
         </span>
       ),
     },
-    {
-      key: "city",
-      header: "City",
-      render: (item) => (
-        <span
-          className="text-sm text-slate-500 dark:text-slate-400 hidden xl:table-cell font-mono"
-        >
-          {item.address || "—"}
-        </span>
-      ),
-    },
-
+    
     {
       key: "created_date",
       header: "Since",
@@ -121,17 +110,6 @@ export default function Columns({ handleRowClick, onSuccess = () => { } } = {}) 
           className="text-sm text-slate-500 dark:text-slate-400 hidden xl:table-cell font-mono"
         >
           {item.created_date || "—"}
-        </span>
-      ),
-    },
-    {
-      key: "status",
-      header: "Status",
-      render: (item) => (
-        <span
-          className="text-sm text-slate-500 dark:text-slate-400 hidden xl:table-cell font-mono"
-        >
-          {item.address || "—"}
         </span>
       ),
     },

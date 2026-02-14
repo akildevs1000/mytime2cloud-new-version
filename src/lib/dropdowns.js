@@ -94,3 +94,35 @@ export const ONE_TO_TEN_NUMBERS = [
     { id: "9", name: "9" },
     { id: "10", name: "10" },
 ]
+
+
+export const SCHEDULE_STATS = [
+    {
+        label: "Total Workforce",
+        value: 0,
+        icon: "groups",
+        color: "emerald",
+        class: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20 shadow-emerald-500/10",
+    },
+    {
+        label: "Shift Assigned",
+        value: 0,
+        icon: "domain_verification",
+        color: "indigo",
+        class: "bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border-indigo-500/20",
+    },
+    {
+        label: "Unscheduled",
+        value: 0,
+        icon: "schedule",
+        color: "purple",
+        class: "bg-purple-500/10 text-purple-600 dark:text-purple-400 border-purple-500/20",
+    },
+    {
+        label: "Upcoming Expiry",
+        value: 0,
+        icon: "pending_actions",
+        color: "amber",
+        class: "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20",
+    }
+];

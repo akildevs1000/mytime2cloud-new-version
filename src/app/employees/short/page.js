@@ -192,7 +192,7 @@ export default function EmployeeShortList() {
             </ul>
           </div>
         </div>
-        <div className="flex-1 pt-5 pr-5">
+        <div className="flex-1 pt-5 pr-5 overflow-y-auto max-h-[calc(100vh-100px)]">
           <EmployeeTabs selectedEmployee={selectedEmployee} employeeId={employeeId} />
         </div>
 

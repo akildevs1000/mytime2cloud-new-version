@@ -13,6 +13,7 @@ import DataTable from '@/components/ui/DataTable';
 import Columns from "./columns";
 import MultiDropDown from '@/components/ui/MultiDropDown';
 import { formatDate, formatDateDubai, parseApiError } from '@/lib/utils';
+import RegenerateReport from '@/components/Report/Regenerate';
 
 const reportTemplates = [
     { id: `Template1`, name: `Monthly Report Format A` },
@@ -84,7 +85,9 @@ export default function AttendanceTable() {
         try {
             let result = await getScheduledEmployeeList(selectedBranch, selectedDepartmentIds);
 
-            setScheduledEmployees(result.map((e) => ({ ...e, name: e.full_name, id: e.system_user_id })));
+            console.log(result);
+
+            setScheduledEmployees(result);
         } catch (error) {
             setError(parseApiError(error));
         }
@@ -103,6 +106,13 @@ export default function AttendanceTable() {
     useEffect(() => {
         fetchScheduledEmployees();
     }, [selectedDepartmentIds]);
+
+    useEffect(() => {
+        console.log(selectedEmployeeIds);
+    }, [selectedEmployeeIds]);
+
+
+
 
     const fetchRecords = async () => {
 
@@ -239,9 +249,9 @@ export default function AttendanceTable() {
                     className="w-full"
                 >
                     {/* --- Tabs Header aligned Right --- */}
-                    <div className="flex justify-start mb-4">
-                        <div className="p-2 bg-white w-full rounded-lg shadow">
-                            <TabsList className="flex bg-white   p-1">
+                    <div className="flex justify-between mb-4">
+                        <div className="flex justify-between p-2 bg-white dark:bg-slate-800 w-full rounded-lg shadow">
+                            <TabsList className="flex bg-white dark:bg-slate-700   p-1">
                                 {ShiftTypes.map((shift) => (
                                     <TabsTrigger
                                         key={shift.id}
@@ -256,7 +266,12 @@ export default function AttendanceTable() {
                                     </TabsTrigger>
                                 ))}
                             </TabsList>
+
+                            <RegenerateReport />
+
                         </div>
+
+
 
                     </div>
 

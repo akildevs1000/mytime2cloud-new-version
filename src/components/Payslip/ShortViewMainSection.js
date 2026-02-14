@@ -2,7 +2,6 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import { useForm } from "react-hook-form"; // Used for standard form handling
-import { SuccessDialog } from "@/components/SuccessDialog"; // Import the new component
 import { useRouter } from 'next/navigation';
 import { getBranches, getDepartments } from '@/lib/api';
 import Dropdown from '../Theme/DropDown';

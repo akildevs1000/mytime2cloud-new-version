@@ -21,6 +21,7 @@ export default function DropDown({
   onChange,
   placeholder = "Select Item",
   width = "w-[230px]",
+  ...props
 }) {
   const [itemOpen, setItemOpen] = useState(false);
 
@@ -40,6 +41,7 @@ export default function DropDown({
           role="combobox"
           aria-expanded={itemOpen}
           className="w-full justify-between"
+          {...props}
         >
           {itemName}
           <span className="material-icons ml-2">expand_more</span>

@@ -78,7 +78,7 @@ export default function Header() {
   const navLinks = [
     { name: 'DASHBOARD', href: '/' },
     { name: 'EMPLOYEES', href: '/employees' },
-    { name: 'ATTENDANCE', href: '/attendance' },
+    { name: 'ATTENDANCE', href: '/shift' },
     { name: 'PAYROLL', href: '/payslips' },
     // { name: 'ACCESS CONTROL', href: '/access_control_logs' },
     // { name: 'VISITORS', href: '/visitor' },

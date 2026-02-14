@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 
 import { createDesignations } from "@/lib/api";
 import { SuccessDialog } from "@/components/SuccessDialog";
-import { parseApiError } from "@/lib/utils";
+import { notify, parseApiError } from "@/lib/utils";
 import Input from "../Theme/Input";
 import TextArea from "../Theme/TextArea";
 
@@ -18,7 +18,6 @@ const Create = ({ onSuccess = () => { } }) => {
 
   const [open, setOpen] = useState(false);
   const [successOpen, setSuccessOpen] = useState(false);
-  const [globalError, setGlobalError] = useState(null);
   const [loading, setLoading] = useState(false);
 
   const [form, setForm] = useState(defaultPayload);
@@ -34,30 +33,30 @@ const Create = ({ onSuccess = () => { } }) => {
     setForm((prev) => ({ ...prev, [field]: value }));
   };
 
-const onSubmit = async () => {
-  setGlobalError(null);
-  setLoading(true);
-  try {
-    let { data } = await createDesignations(form);
+  const onSubmit = async () => {
+    setLoading(true);
+    try {
+      let { data } = await createDesignations(form);
 
-    // FIX: Check if status is explicitly false
-    if (data?.status === false) {
-      const firstKey = Object.keys(data.errors)[0];
-      const firstError = data.errors[firstKey][0];
-      setGlobalError(firstError);
-      return; // Stop execution if there's a validation error
+      // FIX: Check if status is explicitly false
+      if (data?.status === false) {
+        const firstKey = Object.keys(data.errors)[0];
+        notify("Error", data.errors[firstKey][0], "error");
+        return; // Stop execution if there's a validation error
+      }
+
+      // Success Path
+      onSuccess();
+      setSuccessOpen(true);
+      setOpen(false);
+      notify("Success", "Designation Saved", "success")
+    } catch (error) {
+      notify("Error", parseApiError(error), "error");
+
+    } finally {
+      setLoading(false);
     }
-
-    // Success Path
-    onSuccess();
-    setSuccessOpen(true);
-    setOpen(false);
-  } catch (error) {
-    setGlobalError(parseApiError(error));
-  } finally {
-    setLoading(false);
-  }
-};
+  };
 
   return (
     <>
@@ -147,13 +146,6 @@ const onSubmit = async () => {
           </div>
         </div>
       )}
-
-      <SuccessDialog
-        successOpen={successOpen}
-        onOpenChange={setSuccessOpen}
-        title="Designation Saved"
-        description="Designation Saved successfully."
-      />
     </>
   );
 };

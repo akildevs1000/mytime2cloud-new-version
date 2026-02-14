@@ -18,25 +18,8 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 
-
-import { SuccessDialog } from "@/components/SuccessDialog";
-
-let defaultPayload = {
-  user_id: 0, // dont changedefault 
-
-  branch_name: "",
-  licence_number: "",
-  licence_issue_by_department: "",
-  licence_expiry: "",
-  lat: "",
-  lon: "",
-  address: "",
-};
-
-
 export default function Branch() {
   const [open, setOpen] = useState(false);
-  const [successOpen, setSuccessOpen] = useState(false);
   const [records, setRecords] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -84,7 +67,6 @@ export default function Branch() {
 
   const handleSuccess = () => {
     setOpen(false);
-    setSuccessOpen(true);
     fetchRecords();
   }
 
@@ -106,21 +88,14 @@ export default function Branch() {
         <Button onClick={() => setOpen(true)}>Add Branch</Button>
 
         <Dialog open={open} onOpenChange={setOpen}>
-          <DialogContent className="!w-[600px] !max-w-[90%]">
+          <DialogContent className="!w-[600px] !max-w-[90%] p-7 ">
             <DialogHeader>
               <DialogTitle>New Branch</DialogTitle>
             </DialogHeader>
 
-            <Create onSuccess={handleSuccess} />
+            <Create setOpen={setOpen} onSuccess={handleSuccess} />
           </DialogContent>
         </Dialog>
-
-        <SuccessDialog
-          successOpen={successOpen}
-          onOpenChange={setSuccessOpen}
-          title="Branch Saved"
-          description="Branch Saved successfully."
-        />
       </div>
 
       <DataTable

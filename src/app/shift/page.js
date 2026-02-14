@@ -79,7 +79,9 @@ export default function ShiftPage() {
         }
     }
 
-    const onEdit = async (id) => { }
+    const onEdit = async (id) => {
+        router.push(`/shift/create?id=${id}`)
+    }
 
     const handleRowClick = (shift) => {
         localStorage.setItem("selectedShift", JSON.stringify(shift));
@@ -110,7 +112,7 @@ export default function ShiftPage() {
                         isLoading={isLoading}
                         title="Refresh Data"
                     />
-                 
+
 
                     <Link href="/shift/create">
                         <button className="bg-primary text-white px-4 py-1 rounded-lg font-semibold shadow-md hover:bg-indigo-700 transition-all flex items-center space-x-2 whitespace-nowrap">

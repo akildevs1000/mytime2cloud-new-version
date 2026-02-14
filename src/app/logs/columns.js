@@ -1,124 +1,58 @@
+import ProfilePicture from "@/components/ProfilePicture";
+
 export default [
   {
     key: "employee",
-    header: "Name",
+    header: "Personnel",
     render: ({ employee }) => (
-      <div
-        onClick={() => handleRowClick(employee.id)}
-        className="flex items-center space-x-3 cursor-pointer"
-      >
-        <img
-          alt={employee.full_name}
-          className="w-10 h-10 rounded-full object-cover shadow-sm"
-          src={
-            employee.profile_picture ||
-            `https://placehold.co/40x40/6946dd/ffffff?text=${employee.full_name.charAt(0)}`
-          }
-          onError={(e) => {
-            e.target.onerror = null;
-            e.target.src = `https://placehold.co/40x40/6946dd/ffffff?text=${employee.full_name.charAt(0)}`;
-          }}
-        />
+      <div className="flex items-center space-x-3">
+
+        <ProfilePicture src={employee.profile_picture} />
+
         <div>
-          <p className="font-medium text-gray-800">{employee.full_name}</p>
+          <p className="font-medium text-sm text-slate-500 dark:text-slate-400 hidden xl:table-cell font-mono">{employee?.first_name}</p>
           <p className="text-sm text-gray-500">
-            {employee.designation?.title || employee.last_name}
+            ID: {employee.employee_id}
           </p>
         </div>
       </div>
     ),
   },
-  {
-    key: "emp_device",
-    header: "Emp Id / Device Id",
-    render: ({ employee }) => (
-      <div onClick={() => handleRowClick(employee.id)} className="cursor-pointer">
-        <p className="text-gray-800">{employee.employee_id || "—"}</p>
-        <p className="text-sm text-gray-500">
-          Device ID: {employee.system_user_id || "—"}
-        </p>
-      </div>
-    ),
-  },
+
   {
     key: "branch",
-    header: "Branch",
+    header: "Branch / Department",
     render: ({ employee }) => (
-      <span
-        onClick={() => handleRowClick(employee.id)}
-        className="text-gray-800 cursor-pointer"
-      >
-        {employee.branch?.branch_name || "N/A"}
-      </span>
+      <p className="font-medium text-sm text-slate-500 dark:text-slate-400 hidden xl:table-cell font-mono">{employee?.branch?.branch_name || "N/A"} / {employee?.department?.name || "N/A"}</p>
     ),
-  },
-  {
-    key: "department",
-    header: "Department",
-    render: ({ employee }) => {
-      return (<span
-        onClick={() => handleRowClick(employee.id)}
-        className="text-gray-800 cursor-pointer"
-      >
-        {employee.department?.name || "N/A"}
-      </span >)
-    }
-    ,
   },
   {
     key: "datetime",
-    header: "Date",
+    header: "Date Time",
     render: (log) => (
-      <span
-        onClick={() => handleRowClick(log.employee.id)}
-        className="text-gray-800 cursor-pointer"
-      >
-        {log?.time} {log?.date}
-      </span>
+      <p className="font-medium text-sm text-slate-500 dark:text-slate-400 hidden xl:table-cell font-mono">{log?.date} {log?.time} </p>
+    ),
+  },
+  {
+    key: "log_type",
+    header: "Log Type",
+    render: (log) => (
+      <p className="font-medium text-sm text-slate-500 dark:text-slate-400 hidden xl:table-cell font-mono">{log?.log_type || "—"}</p>
     ),
   },
   {
     key: "device",
     header: "Device",
     render: (log) => (
-      <span
-        onClick={() => handleRowClick(log.employee.id)}
-        className="text-gray-800 cursor-pointer"
-      >
-        {log?.device?.name || "—"}
-      </span>
+      <p className="font-medium text-sm text-slate-500 dark:text-slate-400 hidden xl:table-cell font-mono">{log?.device?.name || "—"}</p>
     ),
   },
-  {
-    key: "type",
-    header: "In/Out",
-    render: (log) => {
-      const typeClass =
-        log?.log_type === "Out"
-          ? "text-red-600"
-          : log?.log_type === "In"
-            ? "text-green-600"
-            : "text-gray-600";
-      return (
-        <span
-          onClick={() => handleRowClick(log.employee.id)}
-          className={`font-medium cursor-pointer ${typeClass}`}
-        >
-          {log?.log_type || "—"}
-        </span>
-      );
-    },
-  },
+
   {
     key: "location",
     header: "Location",
     render: (log) => (
-      <span
-        onClick={() => handleRowClick(log.employee.id)}
-        className="text-gray-800 cursor-pointer"
-      >
-        {log?.device?.location || "—"}
-      </span>
+      <p className="font-medium text-sm text-slate-500 dark:text-slate-400 hidden xl:table-cell font-mono">{log?.device?.location || "—"}</p>
     ),
   },
 ];

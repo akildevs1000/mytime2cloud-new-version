@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 
 import EmergencyContact from './EmergencyContact';
 import Profile from './Profile';
-import Document from './Document';
+import Document from './Edit/Document';
 import SETTINGRFIDLOGIN from './SETTINGRFIDLOGIN';
 import Payroll from './Payroll';
 import Leaves from './Leaves';
@@ -16,14 +16,12 @@ const EmployeeTabs = ({ selectedEmployee }) => {
         setPayload(selectedEmployee);
     }, [selectedEmployee])
 
-
-
     const [activeTab, setActiveTab] = useState('profile');
 
     // Data structure for the tabs
     const TABS = [
         { id: 'profile', name: 'Personal' },
-        { id: 'emergency', name: 'Contact' },
+        { id: 'contact', name: 'Contact' },
         { id: 'payroll', name: 'Payroll' },
         { id: 'documents', name: 'Documents' },
         { id: 'leaves', name: 'Leaves' },
@@ -43,7 +41,6 @@ const EmployeeTabs = ({ selectedEmployee }) => {
             rfid_card_number, rfid_card_password, leave_group_id, reporting_manager_id, status,
 
             // relations
-            visa, emirate, passport,
             qualification, bank,
             user,
             payroll
@@ -54,16 +51,8 @@ const EmployeeTabs = ({ selectedEmployee }) => {
         switch (activeTab) {
             case 'profile':
                 return <Profile payload={payload} />;
-            case 'emergency':
-                return (
-                    <EmergencyContact
-                        id={id}
-                        phone_relative_number={phone_relative_number}
-                        relation={relation}
-                        local_address={local_address}
-                        local_city={local_city}
-                        local_country={local_country} />
-                );
+            case 'contact':
+                return <EmergencyContact payload={payload} />;
             case 'address':
                 return (
                     <Address
@@ -90,12 +79,16 @@ const EmployeeTabs = ({ selectedEmployee }) => {
             case 'settings':
                 return (
                     <SETTINGRFIDLOGIN
-                        employee_id={id}
-                        user={user}
+                        id={id}
+                        email={user.email}
+                        web_login_access={user.web_login_access}
+                        mobile_app_login_access={user.mobile_app_login_access}
+                        tracking_status={user.tracking_status}
+
                         rfid_card_number={rfid_card_number}
                         rfid_card_password={rfid_card_password}
                         leave_group_id={leave_group_id}
-                        reporting_manager_id={reporting_manager_id} s
+                        reporting_manager_id={reporting_manager_id}
                         tatus={status} />
                 );
             case 'documents':
@@ -136,9 +129,6 @@ const EmployeeTabs = ({ selectedEmployee }) => {
                                 </button>
                             );
                         })}
-
-
-
                     </div>
                 </div>
                 <div className="min-h-[250px]">{renderTabContent()}</div>

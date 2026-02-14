@@ -1,15 +1,15 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { UserLock } from "lucide-react";
-import { getDepartmentsForTable } from "@/lib/api";
+import { Pencil, Trash, UserLock } from "lucide-react";
+import { deleteDepartment, deleteSubDepartments, getDepartmentsForTable, getSubDepartments } from "@/lib/api";
 
 import Pagination from "@/lib/Pagination";
 import DataTable from "@/components/ui/DataTable";
 import Columns from "./columns";
 import Create from "./Create";
 import SubDepartmentCreate from "../SubDepartment/Create";
-import { parseApiError } from "@/lib/utils";
+import { notify, parseApiError } from "@/lib/utils";
 
 export default function Department() {
   const [records, setRecords] = useState([]);
@@ -23,17 +23,21 @@ export default function Department() {
 
   useEffect(() => {
     fetchRecords();
-  }, [currentPage, perPage]);
+  }, []);
 
   const fetchRecords = async () => {
     try {
       setIsLoading(true);
       setError(null);
 
-      const result = await getDepartmentsForTable({
+      const result = await getSubDepartments({
         page: currentPage,
         per_page: perPage,
       });
+
+      console.log(`getSubDepartments`);
+      console.log(result);
+
 
       if (result && Array.isArray(result.data)) {
         setRecords(result.data);
@@ -48,6 +52,32 @@ export default function Department() {
       setIsLoading(false);
     }
   };
+
+  const handleDelete = async (id) => {
+    if (confirm("Are you sure you want to delete this employee?")) {
+      try {
+        await deleteSubDepartments(id);
+        fetchRecords();
+        notify("Success", "Sub department deleted", "success")
+      } catch (error) {
+        console.error("Error deleting employee:", error);
+      }
+    }
+  };
+
+  const handleParentDelete = async (id) => {
+    if (confirm("Are you sure you want to delete this employee?")) {
+      try {
+        await deleteDepartment(id);
+        fetchRecords();
+        notify("Success", "Department deleted", "success")
+      } catch (error) {
+        console.error("Error deleting employee:", error);
+      }
+    }
+  };
+
+
 
   const columns = Columns({
     onSuccess: fetchRecords, // refresh after edit
@@ -115,147 +145,86 @@ export default function Department() {
             </tr>
           </thead>
           <tbody className="text-sm">
-            <tr
-              className="group border-b border-gray-200 dark:border-white/10 transition-colors"
-            >
-              <td className="py-3 px-6">
-                <div className="flex items-center gap-3  relative">
+            {records.map((record, index) => {
+              // Check if the previous record belongs to the same parent department
+              const isSameParentAsPrevious =
+                index > 0 && records[index - 1].department_id === record.department_id;
 
+              return (
+                <React.Fragment key={record.id}>
+                  {/* Only render this Parent row if it's the first time we see this parent in the list */}
+                  {!isSameParentAsPrevious && (
+                    <tr className="group border-b border-gray-200 dark:border-white/10 transition-colors">
+                      <td className="py-3 px-6">
+                        <div className="flex items-center gap-3 relative">
+                          <div className="w-8 h-8 rounded flex items-center justify-center bg-indigo-500/10 text-indigo-400">
+                            <span className="material-symbols-outlined text-[18px]">
+                              apartment
+                            </span>
+                          </div>
+                          <div>
+                            <span className="text-slate-400 font-medium">
+                              {record.department?.name}
+                            </span>
+                          </div>
+                        </div>
+                      </td>
+                      <td className="py-3 px-4 font-mono text-xs text-slate-500 group-hover:text-slate-400">
+                        DEP-{record.department_id}
+                      </td>
+                      <td className="py-3 px-4 text-blue-400 text-xs font-medium">-</td>
+                      <td className="py-3 px-4 text-center text-slate-300">{record?.department?.employees_count}</td>
+                      <td className="py-3 px-4 text-slate-500 text-xs">
+                        {record.department?.formatted_updated_at}
+                      </td>
+                      <td className="py-3 px-4 text-center">
+                        <button className="p-1.5 rounded-md text-slate-400 hover:text-white hover:bg-slate-700 transition-colors">
+                          <Pencil size={15} />
+                        </button>
+                        <button onClick={() => handleParentDelete(record.department.id)} className="p-1.5 rounded-md text-slate-400 hover:text-white hover:bg-slate-700 transition-colors">
+                          <Trash size={15} />
+                        </button>
+                      </td>
+                    </tr>
+                  )}
 
-                  <div
-                    className="w-8 h-8 rounded flex items-center justify-center bg-indigo-500/10 text-indigo-400"
-                  >
-                    <span className="material-symbols-outlined text-[18px]"
-                    >apartment</span
-                    >
-                  </div>
-                  <div>
-                    <span className="text-slate-400 font-medium"
-                    >Frontend Development</span
-                    >
-                  </div>
-                </div>
-              </td>
-              <td
-                className="py-3 px-4 font-mono text-xs text-slate-500 group-hover:text-slate-400"
-              >
-                SUB-FE-01
-              </td>
-              <td className="py-3 px-4 text-blue-400 text-xs font-medium">
-                -
-              </td>
-              <td className="py-3 px-4 text-center text-slate-300">45</td>
-              <td className="py-3 px-4 text-slate-500 text-xs">
-                Oct 26, 2023
-              </td>
-              <td className="py-3 px-4 text-center">
-                <button
-                  className="p-1.5 rounded-md text-slate-400 hover:text-white hover:bg-slate-700 transition-colors"
-                >
-                  <span className="material-symbols-outlined text-[18px]"
-                  >edit</span
-                  >
-                </button>
-                <button
-                  className="p-1.5 rounded-md text-slate-400 hover:text-white hover:bg-slate-700 transition-colors"
-                >
-                  <span className="material-symbols-outlined text-[18px]"
-                  >delete</span
-                  >
-                </button>
-              </td>
-            </tr>
-
-
-            <tr
-              className="group border-b border-gray-200 dark:border-white/10 transition-colors"
-            >
-              <td className="py-3 px-6">
-                <div className="flex items-center gap-3  relative">
-
-
-                  <div
-                    className="w-8 h-8 rounded flex items-center justify-center bg-gray-500/10 text-indigo-400"
-                  >
-
-                  </div>
-                  <div>
-                    <span className="text-slate-400 font-medium"
-                    >Frontend Development</span
-                    >
-                  </div>
-                </div>
-              </td>
-              <td
-                className="py-3 px-4 font-mono text-xs text-slate-500 group-hover:text-slate-400"
-              >
-                SUB-FE-01
-              </td>
-              <td className="py-3 px-4 text-blue-400 text-xs font-medium">
-                Engineering
-              </td>
-              <td className="py-3 px-4 text-center text-slate-300">45</td>
-              <td className="py-3 px-4 text-slate-500 text-xs">
-                Oct 26, 2023
-              </td>
-              <td className="py-3 px-4 text-center">
-                <button
-                  className="p-1.5 rounded-md text-slate-400 hover:text-white hover:bg-slate-700 transition-colors"
-                >
-                  <span className="material-symbols-outlined text-[18px]"
-                  >edit</span
-                  >
-                </button>
-                <button
-                  className="p-1.5 rounded-md text-slate-400 hover:text-white hover:bg-slate-700 transition-colors"
-                >
-                  <span className="material-symbols-outlined text-[18px]"
-                  >delete</span
-                  >
-                </button>
-              </td>
-            </tr>
-
-
+                  {/* This sub-department row will always render */}
+                  <tr className="group border-b border-gray-200 dark:border-white/10 transition-colors">
+                    <td className="py-3 px-6">
+                      <div className="flex items-center gap-3 relative">
+                        <div className="w-8 h-8 rounded flex items-center justify-center bg-gray-500/10 text-indigo-400">
+                          {/* Empty icon box as per your HTML */}
+                        </div>
+                        <div>
+                          <span className="text-slate-400 font-medium">{record.name}</span>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="py-3 px-4 font-mono text-xs text-slate-500 group-hover:text-slate-400">
+                      SUB-{record.id}
+                    </td>
+                    <td className="py-3 px-4 text-blue-400 text-xs font-medium">
+                      {record.department?.name}
+                    </td>
+                    <td className="py-3 px-4 text-center text-slate-300">{record?.employees_count}</td>
+                    <td className="py-3 px-4 text-slate-500 text-xs">
+                      {record.formatted_updated_at}
+                    </td>
+                    <td className="py-3 px-4 text-center">
+                      <button className="p-1.5 rounded-md text-slate-400 hover:text-white hover:bg-slate-700 transition-colors">
+                        <Pencil size={15} />
+                      </button>
+                      <button onClick={() => handleDelete(record.id)} className="p-1.5 rounded-md text-slate-400 hover:text-white hover:bg-slate-700 transition-colors">
+                        <Trash size={15} />
+                      </button>
+                    </td>
+                  </tr>
+                </React.Fragment>
+              );
+            })}
           </tbody>
         </table>
       </div>
     </>
   )
-
-  return (
-    <>
-      <div className="flex flex-wrap items-center justify-between mb-6">
-        <div className="flex flex-wrap items-center space-x-3">
-          <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100 flex items-center">
-            <UserLock className="mr-3 h-6 w-6 text-primary" />
-            Department
-          </h2>
-        </div>
-
-        <DepartmentCreate onSuccess={fetchRecords} />
-      </div>
-
-      <DataTable
-        className="bg-slate-50 overflow-hidden min-h-[300px]"
-        columns={columns}
-        data={records}
-        isLoading={isLoading}
-        error={error}
-        pagination={
-          <Pagination
-            page={currentPage}
-            perPage={perPage}
-            total={total}
-            onPageChange={setCurrentPage}
-            onPerPageChange={(n) => {
-              setPerPage(n);
-              setCurrentPage(1);
-            }}
-            pageSizeOptions={[10, 25, 50]}
-          />
-        }
-      />
-    </>
-  );
 }

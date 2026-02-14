@@ -4,6 +4,7 @@ import {
     Check,
     MoreVertical,
     Pencil,
+    Trash,
 } from "lucide-react";
 import {
     DropdownMenu,
@@ -12,27 +13,19 @@ import {
     DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
 
+import ProfilePicture from "@/components/ProfilePicture";
 
-export default (handleRowClick) => {
+
+export default (deleteItem) => {
     return [
         {
             key: "employee",
             header: "Personnel",
             render: (e) => (
-
                 <div className="flex items-center space-x-3" onClick={() => handleRowClick(e)}>
-                    <img
-                        alt={e.first_name}
-                        className="w-10 h-10 rounded-full object-cover shadow-sm"
-                        src={
-                            e.profile_picture ||
-                            `https://placehold.co/40x40/6946dd/ffffff?text=${e?.first_name.charAt(0)}`
-                        }
-                        // onError={(e) => {
-                        //     e.target.onerror = null;
-                        //     e.target.src = `https://placehold.co/40x40/6946dd/ffffff?text=${e?.first_name.charAt(0)}`;
-                        // }}
-                    />
+
+                    <ProfilePicture src={e.profile_picture} />
+
                     <div>
                         <p className="font-medium text-sm text-slate-500 dark:text-slate-400 hidden xl:table-cell font-mono">{e?.first_name}</p>
                         <p className="text-sm text-gray-500">
@@ -84,7 +77,7 @@ export default (handleRowClick) => {
             render: (e) => (
                 <div className="flex flex-col text-slate-500 dark:text-slate-400">
                     {!e.schedule?.shift && e.schedule_all?.length > 0 ? (
-                        <div className="  dark:text-slate-400 text-sm"><AlertCircle className="text-red-700"  /></div>
+                        <div className="  dark:text-slate-400 text-sm"><AlertCircle className="text-red-700" /></div>
                     ) : (
                         <div>
                             <Check className="text-green-500" />
@@ -106,19 +99,31 @@ export default (handleRowClick) => {
             header: "Actions",
             render: (employee) => (
                 <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                        <MoreVertical
-                            className="w-5 h-5 text-gray-400 cursor-pointer hover:text-gray-700 transition-colors"
-                            title="More Options"
-                        />
+                    <DropdownMenuTrigger
+                        asChild
+                        /* This prevents the dropdown trigger itself from triggering the row click */
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        <div className="p-2 rounded-full cursor-pointer w-fit">
+                            <MoreVertical className="w-5 h-5 text-gray-400" />
+                        </div>
                     </DropdownMenuTrigger>
 
-                    <DropdownMenuContent align="end" className="w-30 bg-white shadow-md rounded-md py-1">
+                    <DropdownMenuContent
+                        align="end"
+                        className="w-32 bg-white dark:bg-gray-900 shadow-md rounded-md py-1"
+                        /* This prevents clicking inside the menu from triggering the row click */
+                        onClick={(e) => e.stopPropagation()}
+                    >
                         <DropdownMenuItem
-                            onClick={() => console.log("Edit", employee.id)}
-                            className="flex items-center gap-2 px-3 py-2 text-gray-700 hover:bg-gray-100"
+                            onClick={(e) => {
+                                e.stopPropagation(); // Stop row redirect
+                                deleteItem(employee.employee_id);
+                            }}
+                            className="flex items-center gap-2 px-3 py-2 text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
                         >
-                            <Pencil className="w-4 h-4 text-primary" /> <span className="text-primary">Edit</span>
+                            <Trash className="w-4 h-4 text-red-500" />
+                            <span className="text-red-500 font-medium">Delete</span>
                         </DropdownMenuItem>
                     </DropdownMenuContent>
                 </DropdownMenu>

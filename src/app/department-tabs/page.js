@@ -20,7 +20,7 @@ const DepartmentTabs = () => {
             Manage your company hierarchy, departments, and designations.
           </p>
         </div>
-        <div className="flex items-center gap-3">
+        {/* <div className="flex items-center gap-3">
           <button
             className="bg-primary hover:bg-blue-600 text-white text-sm font-semibold py-2 px-3 rounded-lg flex items-center gap-1 transition-all shadow-lg shadow-primary/20"
           >
@@ -29,7 +29,7 @@ const DepartmentTabs = () => {
             Export
           </button>
 
-        </div>
+        </div> */}
       </div>
     </header>
 

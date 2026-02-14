@@ -1,36 +1,52 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import { updateAccessSettings } from "@/lib/api";
+import { notify } from "@/lib/utils";
+import React, { useState, useEffect, useRef } from "react";
 
-const RFID = ({ 
-    employee_id, 
-    rfid_card_number = "", 
-    rfid_card_password = "", 
-    onUpdate // Parent callback function
+const RFID = ({
+    id,
+    rfid_card_number = "",
+    rfid_card_password = "",
 }) => {
-    // 1. Local states for input values
-    const [cardNumber, setCardNumber] = useState(rfid_card_number || "8843-2219-0043");
-    const [password, setPassword] = useState(rfid_card_password || "1234");
-    
-    // 2. Status for password visibility
+
+    const [isInputChanged, setInputChanged] = useState(false);
+    const [cardNumber, setCardNumber] = useState(rfid_card_number || "");
+    const [password, setPassword] = useState(rfid_card_password || "");
     const [showPassword, setShowPassword] = useState(false);
 
-    // 3. Debounce Effect: Only runs when cardNumber or password changes
-    useEffect(() => {
-        const handler = setTimeout(() => {
-            if (onUpdate) {
-                onUpdate({
-                    rfid_card_number: cardNumber,
-                    rfid_card_password: password
-                });
-            }
-        }, 500); // 500ms delay
+    // 2. Update state when user actually types
+    const handleCardChange = (e) => {
+        setCardNumber(e.target.value);
+        setInputChanged(true);
+    };
 
-        // Cleanup function: clears timeout if user types again before 500ms
-        return () => {
-            clearTimeout(handler);
-        };
-    }, [cardNumber, password, onUpdate]);
+    const handlePasswordChange = (e) => {
+        setPassword(e.target.value);
+        setInputChanged(true);
+    };
+
+    useEffect(() => {
+        // 3. Now the check works because it was set during the typing event
+        if (!isInputChanged || !id) return;
+
+        const handler = setTimeout(() => {
+            const fetchDropDowns = async () => {
+                try {
+                    await updateAccessSettings({
+                        rfid_card_number: cardNumber,
+                        rfid_card_password: password
+                    }, id);
+                    notify(`Success`, "Record Updated", 'success');
+                } catch (error) {
+                    notify(`Error`, parseApiError(error), 'error');
+                }
+            };
+            fetchDropDowns();
+        }, 500);
+
+        return () => clearTimeout(handler);
+    }, [cardNumber, password, isInputChanged]);
 
     const toggleVisibility = () => {
         setShowPassword(!showPassword);
@@ -65,7 +81,7 @@ const RFID = ({
                             placeholder="XXXX-XXXX-XXXX"
                             type="text"
                             value={cardNumber}
-                            onChange={(e) => setCardNumber(e.target.value)}
+                            onChange={handleCardChange}
                         />
                     </div>
                 </div>
@@ -84,7 +100,7 @@ const RFID = ({
                             placeholder="****"
                             type={showPassword ? "text" : "password"}
                             value={password}
-                            onChange={(e) => setPassword(e.target.value)}
+                            onChange={handlePasswordChange}
                         />
                         <button
                             onClick={toggleVisibility}

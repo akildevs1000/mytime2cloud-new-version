@@ -1,51 +1,31 @@
 "use client";
 
+import { getDocuments } from '@/lib/api';
+import { FileType, ImageIcon } from 'lucide-react';
 import React, { useEffect, useRef, useState } from 'react';
-import { useForm } from "react-hook-form"; // Used for standard form handling
-import { SuccessDialog } from "@/components/SuccessDialog"; // Import the new component
 
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-} from "@/components/ui/command";
+const Profile = ({ payload }) => {
+
+  const [documents, setDocuments] = useState([]);
+
+  const fetchDocuments = async () => {
+    try {
+      let employees = await getDocuments(payload.id);
+      console.log(employees);
+
+      setDocuments(employees);
+    } catch {
+      setDocuments([]);
+    }
+  };
+
+  // fetch documents
+  useEffect(() => {
+    fetchDocuments();
+  }, [payload.id]);
 
 
 
-import { Check, ChevronsUpDown, User, Briefcase, Phone } from "lucide-react";
-import { cn, convertFileToBase64, parseApiError } from "@/lib/utils";
-import { useRouter } from 'next/navigation';
-
-import { getBranches, getDepartments, storeEmployee, updateEmployee } from '@/lib/api';
-import DatePicker from '@/components/ui/DatePicker';
-
-
-
-const Profile = ({ payload, employeeId }) => {
 
   return (
     <>
@@ -106,13 +86,13 @@ const Profile = ({ payload, employeeId }) => {
                   <span className="material-symbols-outlined text-[16px]"
                   >id_card</span
                   >
-                  ID: #829304
+                  ID: {payload.employee_id}
                 </span>
                 <span className="flex items-center gap-1.5">
                   <span className="material-symbols-outlined text-[16px]"
                   >location_on</span
                   >
-                  San Francisco, CA
+                  {payload?.present_address?.room_no} {payload?.present_address?.street_address}, {payload?.present_address?.city}
                 </span>
               </div>
             </div>
@@ -127,7 +107,7 @@ const Profile = ({ payload, employeeId }) => {
               >
               <span
                 className="text-gray-600 dark:text-gray-300 font-medium hover:text-primary transition-colors cursor-pointer truncate"
-              >alex.morgan@elitehr.com</span
+              > {payload?.user?.email} </span
               >
             </div>
             <div className="flex flex-col gap-1">
@@ -136,7 +116,7 @@ const Profile = ({ payload, employeeId }) => {
               >Department</span
               >
               <span className="text-gray-600 dark:text-gray-300 font-medium"
-              >Design &amp; Experience</span
+              >{payload?.department?.name} </span
               >
             </div>
             <div className="flex flex-col gap-1">
@@ -145,7 +125,7 @@ const Profile = ({ payload, employeeId }) => {
               >Phone</span
               >
               <span className="text-gray-600 dark:text-gray-300 font-medium"
-              >+1 (555) 019-2834</span
+              >{payload?.phone_number}</span
               >
             </div>
             <div className="flex flex-col gap-1">
@@ -162,7 +142,7 @@ const Profile = ({ payload, employeeId }) => {
                   }}
                 ></div>
                 <span className="text-sm font-medium text-gray-600 dark:text-gray-300"
-                >Sarah Jenkins</span
+                >{payload?.reporting_manager?.first_name}</span
                 >
               </div>
             </div>
@@ -320,52 +300,45 @@ const Profile = ({ payload, employeeId }) => {
             >
           </div>
           <div className="flex flex-col gap-3">
-            <div
-              className="flex items-center p-3  rounded-xl glass-card  border border-transparent  hover:shadow-sm transition-all group cursor-pointer"
-            >
+
+            {documents.map((doc) => (
               <div
-                className="size-10 rounded-lg bg-red-50 text-red-500 border border-red-100 flex items-center justify-center mr-4 group-hover:scale-105 transition-transform"
+                key={doc.id}
+                className="flex items-center p-3 rounded-xl glass-card border border-transparent hover:shadow-sm transition-all group cursor-pointer"
               >
-                <span className="material-symbols-outlined"
-                >picture_as_pdf</span
+                {/* Icon Container */}
+                {/* <div className="size-10 rounded-lg bg-red-50 text-red-500 border border-red-100 flex items-center justify-center mr-4 group-hover:scale-105 transition-transform">
+                  <span className="material-symbols-outlined">picture_as_pdf</span>
+                </div> */}
+                <div className={`flex-shrink-0 h-10 w-10 rounded-xl flex items-center justify-center rounded ${doc.type === 'pdf' ? 'bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400' : 'bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400'
+                  }`}>
+                  {doc.type === 'pdf' ? <FileType size={20} /> : <ImageIcon size={20} />}
+                </div>
+
+                {/* Document Details */}
+                <div className="flex-1 min-w-0 ml-5">
+                  <h4 className="text-sm font-bold text-gray-600 dark:text-gray-300 truncate">
+                    {doc.title}
+                  </h4>
+                  <p className="text-xs text-gray-600 dark:text-gray-300">
+                    Added on {doc.created_at}
+                  </p>
+                </div>
+
+                {/* Action Button */}
+                <a
+                  href={doc.access_url}
+                  download={doc.access_url} // Force download filename
+                  target="_blank"
+                  rel="noopener noreferrer"
                 >
+                  <button className="p-2 text-gray-400 hover:text-blue-500">
+                    <span className="material-symbols-outlined">download</span>
+                  </button>
+                </a>
               </div>
-              <div className="flex-1 min-w-0">
-                <h4 className="text-sm font-bold text-gray-600 dark:text-gray-300 truncate">
-                  Employment_Contract_2024.pdf
-                </h4>
-                <p className="text-xs text-gray-600 dark:text-gray-300">
-                  Added on Oct 12 • 2.4 MB
-                </p>
-              </div>
-              <button
-                className="p-2 text-gray-500 dark:text-gray-300 hover:text-primary transition-colors"
-              >
-                <span className="material-symbols-outlined">download</span>
-              </button>
-            </div>
-            <div
-              className="flex items-center p-3 rounded-xl glass-card border border-transparent  hover:shadow-sm transition-all group cursor-pointer"
-            >
-              <div
-                className="size-10 rounded-lg bg-blue-50 text-blue-500 border border-blue-100 flex items-center justify-center mr-4 group-hover:scale-105 transition-transform"
-              >
-                <span className="material-symbols-outlined">description</span>
-              </div>
-              <div className="flex-1 min-w-0">
-                <h4 className="text-sm font-bold text-gray-600 dark:text-gray-300 truncate">
-                  NDA_Confidentiality.docx
-                </h4>
-                <p className="text-xs text-gray-600 dark:text-gray-300">
-                  Added on Sep 04 • 840 KB
-                </p>
-              </div>
-              <button
-                className="p-2 text-gray-500 dark:text-gray-300 hover:text-primary transition-colors"
-              >
-                <span className="material-symbols-outlined">download</span>
-              </button>
-            </div>
+            ))}
+
           </div>
         </div>
         <div

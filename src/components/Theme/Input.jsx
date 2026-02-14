@@ -39,7 +39,7 @@ const Input = ({
             dark:!bg-slate-900 dark:border-white/10 dark:text-slate-300 dark:placeholder:text-slate-600
             
             /* Focus State */
-            focus:ring-2 focus:ring-primary/20 focus:border-primary/50
+            focus:ring-2 focus:ring-primary focus:border-primary
             
             /* Padding adjustment if icon exists */
             ${icon ? "pl-10" : ""}

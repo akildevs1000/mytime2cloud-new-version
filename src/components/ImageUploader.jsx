@@ -67,7 +67,7 @@ const ImageUploader = ({ onImageSet = () => {}, existingImage = null }) => {
     <div className="flex flex-col items-center gap-4 w-full max-w-sm">
       <label className="relative group cursor-pointer block w-fit">
         <div
-          className={`w-40 h-40 rounded-full border-4 border-dashed shadow-xl overflow-hidden flex items-center justify-center transition-all duration-300 transform group-hover:scale-105 
+          className={`w-40 h-40 rounded-full border-4 border-border shadow-xl overflow-hidden flex items-center justify-center transition-all duration-300 transform group-hover:scale-105 
           ${loading ? "animate-pulse border-primary-500" : "border-slate-300 dark:border-white/20"}
           ${qualityScore >= 70 ? "border-emerald-500" : ""}`}
         >

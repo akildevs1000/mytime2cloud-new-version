@@ -1,88 +1,27 @@
 "use client";
 
 import React, { useState } from "react";
-import { useForm } from "react-hook-form";
-import { SuccessDialog } from "@/components/SuccessDialog";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { useRouter } from "next/navigation";
-import { PhoneCall } from "lucide-react";
-import { updateEmergencyContact } from "@/lib/api";
-import { parseApiError } from "@/lib/utils";
 
-const EmergencyContact = ({ id, phone_relative_number, relation, local_address, local_city, local_country }) => {
+const EmergencyContact = ({ payload }) => {
 
-  const router = useRouter();
-  const [open, setOpen] = useState(false);
-  const [globalError, setGlobalError] = useState(null);
-
-  const form = useForm({
-    defaultValues: {
-      id: id,
-      phone_relative_number: phone_relative_number || "",
-      relation: relation || "",
-      local_address: local_address || "",
-      local_city: local_city || "",
-      local_country: local_country || "",
-    },
-  });
-
-  const { handleSubmit, formState } = form;
-  const { isSubmitting } = formState;
-
-  const handleCancel = () => router.push(`/employees`);
-
-  const onSubmit = async (data) => {
-    console.log("🚀 ~ onSubmit ~ data:", data)
-    setGlobalError(null);
-    try {
-      const finalPayload = {
-        phone_relative_number: data.phone_relative_number,
-        relation: data.relation,
-        local_address: data.local_address,
-        local_city: data.local_city,
-        local_country: data.local_country,
-      };
-
-      await updateEmergencyContact(finalPayload, data.id);
-
-      setOpen(true);
-
-      await new Promise(resolve => setTimeout(resolve, 2000));
-
-      setOpen(false);
-
-      router.push(`/employees`);
-    } catch (error) {
-      setGlobalError(parseApiError(error));
-    }
-  };
-
+  const { present_address, permanent_address, contact, primary_contact } = payload || {};
 
   return (<>
-   <div
-        className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8"
-      >
-        <div>
-          <h2 className="text-3xl font-bold text-slate-900 dark:text-white">
-            Contact Details
-          </h2>
-          <p className="text-slate-500 dark:text-slate-400 mt-1">
-            Maintain employee primary communication channels and emergency contact information.
-          </p>
-        </div>
+    <div
+      className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8"
+    >
+      <div>
+        <h2 className="text-3xl font-bold text-slate-900 dark:text-white">
+          Contact Details
+        </h2>
+        <p className="text-slate-500 dark:text-slate-400 mt-1">
+          Maintain employee primary communication channels and emergency contact information.
+        </p>
       </div>
-  
+    </div>
+
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 auto-rows-[minmax(140px,auto)]">
-      
+
       <div
         className="glass-card col-span-1 md:col-span-2 lg:col-span-2 p-6 flex flex-col rounded-lg relative overflow-hidden group min-h-[260px]">
         <div
@@ -112,31 +51,31 @@ const EmergencyContact = ({ id, phone_relative_number, relation, local_address, 
           <div className="flex flex-col gap-1.5">
             <span className="text-xs font-bold text-[#5f717a] uppercase tracking-wider">Street
               Address</span>
-            <span className="text-gray-600 dark:text-gray-300 text-lg font-medium">4521 Innovation Loop</span>
-            <span className="text-[#9db0b9] text-sm">Apartment 4B</span>
+            <span className="text-gray-600 dark:text-gray-300 text-lg font-medium">{present_address?.room_no} {present_address?.building}</span>
+            <span className="text-[#9db0b9] text-sm">{present_address?.street_address}</span>
           </div>
           <div className="flex flex-col gap-4">
             <div className="flex flex-col gap-1.5">
               <span className="text-xs font-bold text-[#5f717a] uppercase tracking-wider">City
                 &amp; State</span>
-              <span className="text-gray-600 dark:text-gray-300 font-medium">San Francisco, CA</span>
+              <span className="text-gray-600 dark:text-gray-300 font-medium">{present_address?.city}, UAE</span>
             </div>
             <div className="flex flex-col gap-1.5">
               <span className="text-xs font-bold text-[#5f717a] uppercase tracking-wider">Postal
                 Code</span>
-              <span className="text-gray-600 dark:text-gray-300 font-medium">94103</span>
+              <span className="text-gray-600 dark:text-gray-300 font-medium">{present_address?.zip_code}</span>
             </div>
           </div>
         </div>
         <div
           className="mt-6 pt-5 border-t border-white/5 z-10 relative flex justify-between items-center">
-          <span className="text-xs text-[#5f717a]">Last updated: Oct 04, 2024</span>
-          <button
+          <span className="text-xs text-[#5f717a]">Last updated: {payload?.updated_at}</span>
+          {/* <button
             className="text-sm text-primary hover:text-gray-600 dark:text-gray-300 transition-colors flex items-center gap-2 group/btn">
             <span
               className="material-symbols-outlined text-[18px] group-hover/btn:scale-110 transition-transform">edit</span>
             Edit Details
-          </button>
+          </button> */}
         </div>
       </div>
       <div
@@ -160,29 +99,29 @@ const EmergencyContact = ({ id, phone_relative_number, relation, local_address, 
           <div className="flex flex-col gap-1.5">
             <span className="text-xs font-bold text-[#5f717a] uppercase tracking-wider">Street
               Address</span>
-            <span className="text-gray-600 dark:text-gray-300 text-lg font-medium">892 Lakeview Estate</span>
-            <span className="text-[#9db0b9] text-sm">Building C</span>
+            <span className="text-gray-600 dark:text-gray-300 text-lg font-medium">{permanent_address?.room_no} {permanent_address?.building}</span>
+            <span className="text-[#9db0b9] text-sm">{permanent_address?.street_address}</span>
           </div>
           <div className="flex flex-col gap-4">
             <div className="flex flex-col gap-1.5">
               <span className="text-xs font-bold text-[#5f717a] uppercase tracking-wider">City
                 &amp; State</span>
-              <span className="text-gray-600 dark:text-gray-300 font-medium">Austin, TX</span>
+              <span className="text-gray-600 dark:text-gray-300 font-medium">{permanent_address?.city}, UAE</span>
             </div>
             <div className="flex flex-col gap-1.5">
               <span className="text-xs font-bold text-[#5f717a] uppercase tracking-wider">Postal
                 Code</span>
-              <span className="text-gray-600 dark:text-gray-300 font-medium">78701</span>
+              <span className="text-gray-600 dark:text-gray-300 font-medium">{permanent_address?.zip_code}</span>
             </div>
           </div>
         </div>
-        <div className="mt-6 pt-5 border-t border-white/5 z-10 relative flex justify-end items-center">
+        {/* <div className="mt-6 pt-5 border-t border-white/5 z-10 relative flex justify-end items-center">
           <button
             className="text-sm text-[#9db0b9] hover:text-gray-600 dark:text-gray-300 transition-colors flex items-center gap-2 group/btn">
             <span className="material-symbols-outlined text-[18px]">content_copy</span>
             Copy as Current
           </button>
-        </div>
+        </div> */}
       </div>
       <div className="glass-card col-span-1 lg:col-span-1 p-6 flex flex-col gap-5 rounded-lg">
         <div className="flex items-center gap-3 mb-1">
@@ -198,7 +137,7 @@ const EmergencyContact = ({ id, phone_relative_number, relation, local_address, 
               className="text-xs font-bold text-[#5f717a] uppercase tracking-wider mb-1 block">Work
               Email</span>
             <div className="flex items-center justify-between">
-              <span className="text-gray-600 dark:text-gray-300 text-sm truncate pr-2">alex.morgan@elitehr.com</span>
+              <span className="text-gray-600 dark:text-gray-300 text-sm truncate pr-2">{contact?.work_email}</span>
               <span
                 className="material-symbols-outlined text-[16px] text-[#5f717a] opacity-0 group-hover:opacity-100 transition-opacity">content_copy</span>
             </div>
@@ -208,7 +147,7 @@ const EmergencyContact = ({ id, phone_relative_number, relation, local_address, 
               className="text-xs font-bold text-[#5f717a] uppercase tracking-wider mb-1 block">Work
               Phone</span>
             <div className="flex items-center justify-between">
-              <span className="text-gray-600 dark:text-gray-300 text-sm truncate pr-2">+1 (555) 019-2834</span>
+              <span className="text-gray-600 dark:text-gray-300 text-sm truncate pr-2">{contact?.work_phone}</span>
               <span
                 className="material-symbols-outlined text-[16px] text-[#5f717a] opacity-0 group-hover:opacity-100 transition-opacity">call</span>
             </div>
@@ -217,7 +156,7 @@ const EmergencyContact = ({ id, phone_relative_number, relation, local_address, 
             <span
               className="text-xs font-bold text-[#5f717a] uppercase tracking-wider mb-1 block">Mobile</span>
             <div className="flex items-center justify-between">
-              <span className="text-gray-600 dark:text-gray-300 text-sm truncate pr-2">+1 (555) 982-1122</span>
+              <span className="text-gray-600 dark:text-gray-300 text-sm truncate pr-2">{contact?.mobile_phone}</span>
               <span
                 className="material-symbols-outlined text-[16px] text-[#5f717a] opacity-0 group-hover:opacity-100 transition-opacity">sms</span>
             </div>
@@ -241,10 +180,11 @@ const EmergencyContact = ({ id, phone_relative_number, relation, local_address, 
               <span className="text-xs text-[#9db0b9]">Primary contact for emergencies</span>
             </div>
           </div>
-          <button
+          {/* <button
             className="px-3 py-1.5 rounded-md bg-primary hover:bg-[#3a4b53] text-xs font-medium text-gray-100 dark:text-gray-300 transition-colors border border-white/5">
             + Add Secondary
-          </button>
+          </button> */}
+
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="flex items-start gap-4 col-span-1">
@@ -255,10 +195,10 @@ const EmergencyContact = ({ id, phone_relative_number, relation, local_address, 
             <div className="flex flex-col gap-1">
               <span className="text-xs font-bold text-[#5f717a] uppercase tracking-wider">Name
                 &amp; Relationship</span>
-              <span className="text-gray-600 dark:text-gray-300 font-bold text-lg">Sarah Jenkins</span>
+              <span className="text-gray-600 dark:text-gray-300 font-bold text-lg">{primary_contact?.full_name}</span>
               <span
                 className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-white/10 text-gray-600 dark:text-gray-300 w-fit">
-                Spouse
+                {primary_contact?.relation}
               </span>
             </div>
           </div>
@@ -267,26 +207,30 @@ const EmergencyContact = ({ id, phone_relative_number, relation, local_address, 
               <span
                 className="text-xs font-bold text-[#5f717a] uppercase tracking-wider">Emergency
                 Phone</span>
-              <span className="text-gray-600 dark:text-gray-300 font-medium text-base">+1 (555) 234-5678</span>
+              <span className="text-gray-600 dark:text-gray-300 font-medium text-base">{primary_contact?.primary_phone}</span>
             </div>
             <div className="flex gap-2">
-              <button
-                className="flex-1 py-1.5 rounded bg-primary/10 hover:bg-primary/20 text-primary text-xs font-bold transition-colors flex items-center justify-center gap-1">
+              {/* {primary_contact?.primary_phone} */}
+              <a
+                href={`tel:${primary_contact?.primary_phone}`}
+                className="flex-1 py-1.5 rounded bg-primary/10 hover:bg-primary/20 text-primary text-xs font-bold transition-colors flex items-center justify-center gap-1"
+              >
                 <span className="material-symbols-outlined text-[14px]">call</span> Call
-              </button>
-              <button
-                className="flex-1 py-1.5 rounded bg-primary hover:bg-[#3a4b53] text-gray-100 dark:text-gray-300 text-xs font-bold transition-colors flex items-center justify-center gap-1">
+              </a>
+              <a
+                href={`sms:${primary_contact?.primary_phone}`}
+                className="flex-1 py-1.5 rounded bg-primary hover:bg-[#3a4b53] text-gray-100 dark:text-gray-300 text-xs font-bold transition-colors flex items-center justify-center gap-1"
+              >
                 <span className="material-symbols-outlined text-[14px]">sms</span> Message
-              </button>
+              </a>
             </div>
           </div>
           <div className="flex flex-col gap-1 col-span-1 border-l border-white/5 pl-0 md:pl-6">
             <span
               className="text-xs font-bold text-[#5f717a] uppercase tracking-wider mb-1">Address</span>
             <p className="text-sm text-[#9db0b9] leading-relaxed">
-              Same as current residential address.<br />
-              <span className="text-xs italic opacity-60">4521 Innovation Loop, Apt 4B, San
-                Francisco, CA</span>
+              {present_address?.room_no} {present_address?.building}<br />
+              <span className="text-xs italic opacity-60">{present_address?.street_address}, UAE</span>
             </p>
           </div>
         </div>

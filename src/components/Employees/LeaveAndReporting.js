@@ -1,175 +1,108 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import { SuccessDialog } from "@/components/SuccessDialog";
-import { Button } from "@/components/ui/button";
-import {
-    Form,
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
-} from "@/components/ui/form";
-import { useRouter } from "next/navigation";
-import { Settings2 } from "lucide-react";
-import { updateSettings, getLeaveManagers, getLeaveGroups } from "@/lib/api";
-import { Switch } from "@/components/ui/switch";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { parseApiError } from "@/lib/utils";
-import Dropdown from "../Theme/DropDown";
+import React, { useEffect, useRef, useState } from "react";
+import { getLeaveManagers, getLeaveGroups, leaveGroupAndReportManagerUpdate } from "@/lib/api";
+import { notify, parseApiError } from "@/lib/utils";
+import DropDown from "../ui/DropDown";
 
-const LeaveAndReporting = ({ employee_id, leave_group_id, reporting_manager_id, status, web_login_access, mobile_app_login_access, tracking_status, user_id }) => {
-    const router = useRouter();
-    const [open, setOpen] = useState(false);
-    const [globalError, setGlobalError] = useState(null);
-    const [leaveGroups, setLeaveGroups] = useState([]);
+const LeaveAndReporting = ({ id, leave_group_id, reporting_manager_id }) => {
+    const isInitialMount = useRef(true);
     const [leaveManagers, setLeaveManagers] = useState([]);
+    const [leaveGroups, setLeaveGroups] = useState([]);
+    
+    const [selectedLeaveGroupId, setSelectedLeaveGroupId] = useState(leave_group_id);
+    const [selectedReportingManagerId, setSelectedReportingManagerId] = useState(reporting_manager_id);
 
-    const form = useForm({
-        defaultValues: {
-            leave_group_id: leave_group_id || "",
-            reporting_manager_id: reporting_manager_id || "",
-            status: status || "",
-
-            web_login_access: web_login_access || "",
-            mobile_app_login_access: mobile_app_login_access || "",
-            tracking_status: tracking_status || "",
-            user_id: user_id || "",
-        },
-    });
-
-    const { handleSubmit, formState } = form;
-    const { isSubmitting } = formState;
-
+    // 1. Fetch Dropdown Data once on load
     useEffect(() => {
-        const fetchLeaveManagers = async () => {
+        const fetchOptions = async () => {
             try {
-                setLeaveManagers(await getLeaveManagers());
+                const [managers, groups] = await Promise.all([
+                    getLeaveManagers(),
+                    getLeaveGroups()
+                ]);
+
+                setLeaveManagers(managers.map(e => ({ name: e.full_name, id: e.id })));
+                setLeaveGroups(groups.map(e => ({ name: e.group_name, id: e.id })));
             } catch (error) {
-                setLeaveManagers([]);
+                console.error("Failed to load dropdowns", error);
             }
         };
-        fetchLeaveManagers();
+        fetchOptions();
     }, []);
 
+    // 2. Handle Auto-Update logic
     useEffect(() => {
-        const fetchLeaveGroups = async () => {
-            try {
-                setLeaveGroups(await getLeaveGroups());
-            } catch (error) {
-                setLeaveGroups([]);
-            }
-        };
-        fetchLeaveGroups();
-    }, []);
-
-    const onSubmit = async (data) => {
-        console.log("🚀 ~ onSubmit ~ data:", data)
-        setGlobalError(null);
-        try {
-            const finalPayload = {
-                leave_group_id: data.leave_group_id,
-                reporting_manager_id: data.reporting_manager_id,
-                employee_id: employee_id || "",
-                user_id: data.user_id || "",
-            };
-
-            await updateSettings(finalPayload);
-
-            setOpen(true);
-
-            await new Promise(resolve => setTimeout(resolve, 2000));
-
-            setOpen(false);
-
-            router.push(`/employees`);
-        } catch (error) {
-            setGlobalError(parseApiError(error));
+        // Guard: Don't run on mount
+        if (isInitialMount.current) {
+            isInitialMount.current = false;
+            return;
         }
-    };
+
+        // Guard: Ensure ID exists
+        if (!id) return;
+
+        // Guard: Only update if values are actually different from initial props
+        const hasChanged = 
+            selectedLeaveGroupId !== leave_group_id || 
+            selectedReportingManagerId !== reporting_manager_id;
+
+        if (!hasChanged) return;
+
+        const performUpdate = async () => {
+            try {
+                const finalPayload = {
+                    leave_group_id: selectedLeaveGroupId,
+                    reporting_manager_id: selectedReportingManagerId,
+                };
+
+                await leaveGroupAndReportManagerUpdate(finalPayload, id);
+                notify(`Success`, "Reporting settings updated", 'success');
+            } catch (error) {
+                notify(`Error`, parseApiError(error), 'error');
+            }
+        };
+
+        performUpdate();
+        
+    }, [selectedLeaveGroupId, selectedReportingManagerId]); // Listen for selection changes
 
     return (
-        <section
-            className="glass-card bg-card-light dark:bg-card-dark border border-white/50 dark:border-slate-700/50 rounded-2xl p-6 md:p-8 scroll-mt-28"
-            id="general"
-        >
-            <div
-                className="flex items-center gap-3 mb-6 border-b border-slate-200 dark:border-slate-700 pb-4"
-            >
-                <span
-                    className="material-icons text-primary bg-indigo-50 dark:bg-indigo-900/30 p-2 rounded-lg"
-                >tune</span
-                >
-                <h3
-                    className="text-xl font-semibold text-slate-800 dark:text-slate-100"
-                >
-                    Leave & Reporting
-                </h3>
+        <section className="glass-card bg-card-light dark:bg-card-dark border border-white/50 dark:border-slate-700/50 rounded-2xl p-6 md:p-8 scroll-mt-28">
+            <div className="flex items-center gap-3 mb-6 border-b border-slate-200 dark:border-slate-700 pb-4">
+                <span className="material-icons text-primary bg-indigo-50 dark:bg-indigo-900/30 p-2 rounded-lg">tune</span>
+                <h3 className="text-xl font-semibold text-slate-800 dark:text-slate-100">Leave & Reporting</h3>
             </div>
+            
             <div className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {/* Leave Group */}
                     <div className="space-y-2">
-                        <label
-                            className="block text-sm font-medium text-slate-700 dark:text-slate-300"
-                        >Leave Group</label
-                        >
-                        <div className="relative">
-                            <Dropdown
-                                items={[
-                                    {
-                                        "id": 1,
-                                        "name": "Engineering - Team Alpha"
-                                    },
-                                    {
-                                        "id": 2,
-                                        "name": "Design - Creative Unit"
-                                    },
-                                    {
-                                        "id": 3,
-                                        "name": "Marketing - Growth"
-                                    }
-                                ]}
-                                onSelect={(item) => {}}
-                                placeholder="Select a Leave Group"
-                                width="w-full"
-                            />
-                        </div>
+                        <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">Leave Group</label>
+                        <DropDown
+                            items={leaveGroups}
+                            value={selectedLeaveGroupId}
+                            onChange={(val) => setSelectedLeaveGroupId(val)}
+                            placeholder="Select a Leave Group"
+                            width="w-full"
+                        />
                     </div>
-                    <div className="space-y-2">
-                        <label
-                            className="block text-sm font-medium text-slate-700 dark:text-slate-300"
-                        >Reporting Manager</label
-                        >
-                        <div className="relative">
 
-                              <Dropdown
-                                items={[
-                                    {
-                                        "id": 1,
-                                        "name": "Sarah Connor"
-                                    },
-                                    {
-                                        "id": 2,
-                                        "name": "John Doe"
-                                    },
-                                    {
-                                        "id": 3,
-                                        "name": "Jane Smith"
-                                    }
-                                ]}
-                                onSelect={(item) => {}}
-                                placeholder="Select a Reporting Manager"
-                                width="w-full"
-                            />
-                        </div>
+                    {/* Reporting Manager */}
+                    <div className="space-y-2">
+                        <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">Reporting Manager</label>
+                        <DropDown
+                            items={leaveManagers}
+                            value={selectedReportingManagerId}
+                            onChange={(val) => setSelectedReportingManagerId(val)}
+                            placeholder="Select a Reporting Manager"
+                            width="w-full"
+                        />
                     </div>
                 </div>
             </div>
         </section>
-    )
-        ;
+    );
 };
 
 export default LeaveAndReporting;

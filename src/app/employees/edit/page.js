@@ -1,7 +1,5 @@
 "use client";
 
-import useImageUpload from "@/hooks/useImageUpload";
-
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 
 import { getBranches, getEmployees, updateProfilePicture } from '@/lib/api';

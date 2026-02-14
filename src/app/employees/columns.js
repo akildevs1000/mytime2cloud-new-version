@@ -15,66 +15,44 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
+import ProfilePicture from "@/components/ProfilePicture";
 
 export default (deleteEmployee, editEmployee) => [
   {
     key: "employee",
-    header: "Name",
-    render: (employee) => (
-      <div className="flex items-center gap-4">
-        <div className="relative">
-          <img
-            alt={employee.full_name}
-            className="h-10 w-10 rounded-full object-cover ring-2 ring-white dark:ring-slate-700 shadow-sm"
-            src={
-              employee.profile_picture ||
-              `https://placehold.co/40x40/6946dd/ffffff?text=${employee.full_name.charAt(0)}`
-            }
-            onError={(e) => {
-              e.target.onerror = null;
-              e.target.src = `https://placehold.co/40x40/6946dd/ffffff?text=${employee.full_name.charAt(0)}`;
-            }} />
-          <div className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 border-2 border-white dark:border-slate-800 rounded-full"></div>
-        </div>
+    header: "Personnel",
+    render: (e) => (
+      <div className="flex items-center space-x-3">
+
+        <ProfilePicture src={e.profile_picture} />
+
         <div>
-          <div className="font-medium text-slate-800 dark:text-slate-100">
-            {employee.full_name}
-          </div>
-          <div className="text-xs text-slate-400">
-            {employee.designation?.title || employee.last_name}
-          </div>
+          <p className="font-medium text-sm text-slate-500 dark:text-slate-400 hidden xl:table-cell font-mono">{e?.first_name}</p>
+          <p className="text-sm text-gray-500">
+            ID: {e.employee_id}
+          </p>
         </div>
-      </div>
-    ),
-  },
-  {
-    key: "emp_device",
-    header: "Emp Id / Device Id",
-    render: (employee) => (
-      <div className="text-sm text-slate-500 dark:text-slate-400 hidden xl:table-cell font-mono">
-        {employee.system_user_id}
       </div>
     ),
   },
   {
     key: "branch",
-    header: "Branch",
+    header: "Branch / Department",
     render: (employee) => (
       <div className="text-sm text-slate-500 dark:text-slate-400 hidden xl:table-cell font-mono">
-        {employee.branch?.branch_name || "N/A"}
+        {employee.branch?.branch_name || "N/A"} / {employee.department?.name || "N/A"}
       </div>
     ),
   },
   {
-    key: "department",
-    header: "Department",
+    key: "position",
+    header: "Position",
     render: (employee) => (
       <div className="text-sm text-slate-500 dark:text-slate-400 hidden xl:table-cell font-mono">
-        {employee.department?.name || "N/A"}
+        {employee.designation?.name || "N/A"}
       </div>
     ),
   },
-
   {
     key: "mobile_email",
     header: "Mobile / Email",
@@ -88,14 +66,13 @@ export default (deleteEmployee, editEmployee) => [
   },
   {
     key: "timezone",
-    header: "Timezone / Join Date",
+    header: "Join Date",
     render: (employee) => (
       <div className="text-sm text-slate-500 dark:text-slate-400 hidden xl:table-cell font-mono">
         {employee.show_joining_date || "N/A"}
       </div>
     ),
   },
-
   {
     key: "access",
     header: "Access",

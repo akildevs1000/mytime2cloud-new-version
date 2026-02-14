@@ -3,18 +3,16 @@
 
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-
-
-import { getBranches, createDepartment } from "@/lib/api";
-import { SuccessDialog } from "@/components/SuccessDialog";
-import { parseApiError } from "@/lib/utils";
+import { createDepartment, createSubDepartments, getDepartments } from "@/lib/api";
+import { notify, parseApiError } from "@/lib/utils";
 import Input from "../Theme/Input";
 import TextArea from "../Theme/TextArea";
-import Dropdown from "../Theme/DropDown";
+import DropDown from "../ui/DropDown";
 
 let defaultPayload = {
+  department_id: 0,
   name: "",
-  branch_id: "",
+  description: "",
 };
 
 const Create = ({ onSuccess = () => { } }) => {
@@ -23,13 +21,13 @@ const Create = ({ onSuccess = () => { } }) => {
   const [successOpen, setSuccessOpen] = useState(false);
   const [globalError, setGlobalError] = useState(null);
 
-  const [branches, setBranches] = useState([]);
+  const [departments, setDepartments] = useState([]);
 
   const toggleModal = () => setOpen(!open);
 
-  const fetchBranches = async () => {
+  const fetchDepartments = async () => {
     try {
-      setBranches(await getBranches());
+      setDepartments(await getDepartments());
     } catch (error) {
       setGlobalError(parseApiError(error));
     }
@@ -41,7 +39,7 @@ const Create = ({ onSuccess = () => { } }) => {
 
   useEffect(() => {
     if (open) {
-      fetchBranches();
+      fetchDepartments();
       setForm(defaultPayload);
     }
   }, [open]);
@@ -50,23 +48,27 @@ const Create = ({ onSuccess = () => { } }) => {
     setForm((prev) => ({ ...prev, [field]: value }));
   };
 
-  const onSubmit = async () => {
-    setGlobalError(null);
+  const onSubmit = async (e) => {
+    e.preventDefault();
     setLoading(true);
     try {
+      let { data } = await createSubDepartments(form);
 
-      await createDepartment(form);
+      // FIX: Check if status is explicitly false
+      if (data?.status === false) {
+        const firstKey = Object.keys(data.errors)[0];
+        notify("Error", data.errors[firstKey][0], "error");
+        return; // Stop execution if there's a validation error
+      }
 
+      // Success Path
       onSuccess();
-
-      setOpen(false);
-
-      await new Promise(resolve => setTimeout(resolve, 2000));
-
       setSuccessOpen(true);
-
+      setOpen(false);
+      notify("Success", "Sub Department Saved", "success")
     } catch (error) {
-      setGlobalError(parseApiError(error));
+      notify("Error", parseApiError(error), "error");
+
     } finally {
       setLoading(false);
     }
@@ -116,32 +118,22 @@ const Create = ({ onSuccess = () => { } }) => {
             {/* Form Content */}
             <form onSubmit={onSubmit}>
               <div className="p-6 space-y-5 bg-white/50 dark:bg-gray-900">
-
-                <div className="space-y-1.5">
-                  <label className="block text-sm font-medium text-slate-400">
-                    Parent Department <span className="text-red-400">*</span>
-                  </label>
-
-                  <Dropdown
-                    items={[
-                      { id: 1, name: `Department 1` },
-                      { id: 2, name: `Department 2` },
-                      { id: 3, name: `Department 3` },
-                    ]}
-                    onSelect={(item) => {
-
-                    }}
-                    placeholder="Select Parent Department"
-                    width="w-full"
-                  />
-                </div>
-
                 <div className="space-y-1.5">
                   <label className="block text-sm font-medium text-slate-400">
                     Department Title <span className="text-red-400">*</span>
                   </label>
+                  <DropDown
+                    placeholder="Select Department"
+                    width="w-full"
+                    value={form.department_id}
+                    onChange={(value) => handleChange("department_id", value)}
+                    items={departments} />
+                </div>
+                <div className="space-y-1.5">
+                  <label className="block text-sm font-medium text-slate-400">
+                    Title <span className="text-red-400">*</span>
+                  </label>
                   <Input
-                    required
                     placeholder="e.g. Sales"
                     type="text"
                     value={form.title}
@@ -183,13 +175,6 @@ const Create = ({ onSuccess = () => { } }) => {
           </div>
         </div>
       )}
-
-      <SuccessDialog
-        successOpen={successOpen}
-        onOpenChange={setSuccessOpen}
-        title="Department Saved"
-        description="Department Saved successfully."
-      />
     </>
   );
 };

@@ -11,6 +11,7 @@ export const buildQueryParams = async (params = {}) => {
     const queryParams = {
         ...params,
         company_id: user?.company_id ?? 0,
+        company_ids: [user?.company_id ?? 0],
     };
 
     // Only include branch_id if it's not 0
@@ -77,7 +78,7 @@ export const getDepartments = async (branch_id = null) => {
     return data;
 };
 
-export const getDepartmentsByBranchIds = async (branch_ids = null) => {
+export const getDepartmentsByBranchIds = async (branch_ids = []) => {
 
 
     console.log(`from getDepartments: ${branch_ids}`);
@@ -109,6 +110,33 @@ export const getScheduleEmployees = async (params = {}) => {
         params: await buildQueryParams(params),
     });
     return data;
+};
+
+export const getScheduleStats = async (params = {}) => {
+    const { data } = await axios.get(`${API_BASE}/schedule_stats`, {
+        params: await buildQueryParams(params),
+    });
+    return data;
+};
+
+export const getScheduleEmployeesV1 = async (params = {}) => {
+
+    const { data } = await axios.get(`${API_BASE}/schedule_employees`, {
+        params: await buildQueryParams(params),
+    });
+
+    return data;
+};
+
+export const removeEmployeeSchedule = async (id) => {
+
+    const user = await getUser();
+    let payload = {
+        employee_id: id,
+        company_id: user?.company_id || 0
+    }
+    await axios.post(`${API_BASE}/schedule_employees_delete`, payload);
+    return true;
 };
 
 export const getDeviceLogs = async (params = {}) => {
@@ -197,9 +225,6 @@ export async function uploadEmployeeDocument(employeeId, payload) {
     });
 }
 
-
-
-
 // companyId will be passed dynamically
 export const getLogs = async (page = 1, count = 10) => {
     const params = { page };
@@ -268,9 +293,34 @@ export const storeShift = async (payload) => {
     return data;
 };
 
+export const updateShift = async (payload, id = 0) => {
+    let { data } = await axios.put(`${API_BASE}/shift/${id}`, payload);
+    return data;
+};
+
+export const shiftDetails = async (id = 0) => {
+    return await axios.get(`${API_BASE}/shift/${id}`);
+};
+
 export const storeSchedule = async (payload) => {
     const user = await getUser();
     return await axios.post(`${API_BASE}/schedule_employees`, { ...payload, company_id: user?.company_id || 0 });
+};
+
+
+export const regenerateReport = async (params = {}) => {
+    let { data } = await axios.get(`${API_BASE}/render_logs`, { params: await buildQueryParams(params) });
+    return data;
+};
+
+export const deleteSchedule = async (payload) => {
+    const user = await getUser();
+    return await axios.post(`${API_BASE}/schedule_employees_delete`, { ...payload, company_id: user?.company_id || 0 });
+};
+
+export const getPayroll = async (employee_id) => {
+    const user = await getUser();
+    return await axios.get(`${API_BASE}/payroll/${employee_id}`, { company_id: user?.company_id || 0 });
 };
 
 export const storePayroll = async (payload) => {
@@ -301,19 +351,24 @@ export const updateBank = async (payload) => {
     return await axios.post(`${API_BASE}/employee-update-bank-new`, { ...payload, company_id: user?.company_id || 0 });
 };
 
-export const updateAccessSettings = async (payload) => {
-    const user = await getUser();
-    return await axios.post(`${API_BASE}/employee-update-access-settings-new`, { ...payload, company_id: user?.company_id || 0 });
+export const updateAccessSettings = async (payload, id) => {
+    return await axios.post(`${API_BASE}/employee-update-access-settings-new/${id}`, payload);
 };
 
-export const updateLogin = async (payload) => {
-    const user = await getUser();
-    return await axios.post(`${API_BASE}/employee-update-login-new`, { ...payload, company_id: user?.company_id || 0 });
+export const updateLogin = async (payload, id) => {
+    return await axios.post(`${API_BASE}/employee-update-login-new/${id}`, payload);
 };
 
-export const updateSettings = async (payload) => {
-    const user = await getUser();
-    return await axios.post(`${API_BASE}/employee-update-settings-new`, { ...payload, company_id: user?.company_id || 0 });
+export const updateGeneralSettings = async (payload, id) => {
+    return await axios.post(`${API_BASE}/employee-update-general-settings/${id}`, payload);
+};
+
+export const leaveGroupAndReportManagerUpdate = async (payload, id) => {
+    return await axios.post(`${API_BASE}/leave-group-and-report-manager-update/${id}`, payload);
+};
+
+export const rfidAndPinUpdate = async (payload, id) => {
+    return await axios.post(`${API_BASE}/rfid-and-pin-update/${id}`, payload);
 };
 
 export const getLeaveGroups = async () => {
@@ -361,15 +416,6 @@ export const uploadEmployee = async (payload) => {
     return data;
 };
 
-export const uploadCompanyDocument = async (payload) => {
-
-    let { data } = await axios.post(`${API_BASE}/document`, payload, {
-        headers: { "Content-Type": "multipart/form-data" },
-    });
-
-    return data;
-};
-
 export const getCompanyDocuments = async () => {
     const { data } = await axios.get(`${API_BASE}/document`, {
         params: await buildQueryParams(),
@@ -389,13 +435,11 @@ export const getEmployeeList = async (branch_id = 0, department_id = 0) => {
     return data;
 };
 
-export const getScheduledEmployeeList = async (branch_id = null, department_ids = [], shift_type_id = 2) => {
+export const getScheduledEmployeeList = async (department_ids = [], per_page = 1000) => {
 
     const params = {
-        per_page: 1000,
-        branch_id,
-        department_ids, // passed from dropdown
-        shift_type_id,
+        per_page: per_page,
+        department_ids,
     };
 
     const { data } = await axios.get(`${API_BASE}/scheduled_employees_with_type`, {
